@@ -151,10 +151,11 @@ jobs:
           REPO: ${{ github.repository }}
           PR: ${{ github.event.pull_request.number }}
           HEAD_REF: ${{ github.head_ref }}
-          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
         run: |
           set -euo pipefail
           files="$(gh api --paginate "repos/${REPO}/pulls/${PR}/files" --jq '.[] | "\(.status) \(.filename)"')"
+          # Live labels, not the event payload: `gh pr create --label` adds them after the opened event, and a re-run sees labels set later.
+          LABELS="$(gh api "repos/${REPO}/pulls/${PR}" --jq '[.labels[].name] | join(",")')"
           fail=0
           case "$HEAD_REF" in
             release/*) echo "Release branch: guard skipped."; exit 0 ;;

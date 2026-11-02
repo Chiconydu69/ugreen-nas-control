@@ -20,7 +20,7 @@ Feature PRs target `next`; `main` holds releases only. Branch roles: [docs/relea
 1. Branch from `next` (`git fetch upstream && git switch -c my-change upstream/next`).
 2. One topic per PR. Rebase on `next` right before you open it.
 3. Several PRs touching the same file: stack them (each branched on the previous) or send one PR. Do not open parallel PRs that edit the same lines.
-4. Add one fragment `.changes/<slug>.md` ([format](../.changes/README.md)), or ask for the label `no-changelog` when nothing a user sees changes.
+4. Add one fragment `.changes/<slug>.md` ([format](../.changes/README.md)), or ask for the label `no-changelog` when no fragment is needed ([when](../.changes/README.md#when-no-fragment-is-needed)).
 5. `just check` before you push. Run `just harness` and look at UI changes; say in the PR which model you tested on, or that you used the harness only.
 6. PR title: `type(scope): summary`, for example `feat(led): night mode per bay`. Types: `feat`, `fix`, `model`, `docs`, `chore`. The squash commit uses it.
 
@@ -56,7 +56,7 @@ Everything `just check` runs (format, PHP syntax, XML, docs links, models, gener
 
 ## Labels
 
-- Type, matching the `.changes` fragment type: `bug` = fix, `enhancement` = feat, `model` = model, `documentation` = docs, `chore` = chore. `no-changelog`: the CI guard skips the fragment check.
-- Area: `area: fans`, `area: leds`, `area: ui`, `area: site`, `area: tooling`.
+- Type, matching the `.changes` fragment type: `bug` = fix, `enhancement` = feat, `model` = model, `documentation` = docs, `chore` = chore. `no-changelog`: the CI guard skips the fragment check. The guard reads the labels when it runs: after adding the label later, re-run the failed `guard` job.
+- Area: `area: fans`, `area: leds`, `area: ui`, `area: panel`, `area: widget`, `area: mqtt`, `area: install`, `area: site`, `area: tooling`.
 - Status: `needs hardware test` (writes registers or unconfirmed hardware: test on a device before release), `release` (release prep and tracking).
 - Other: `model-report`, `good first issue`, `help wanted`.
