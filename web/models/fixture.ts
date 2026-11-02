@@ -197,7 +197,7 @@ export function status(m: Model) {
     // What backend/internal/fan/info.go requireSupportedModel says, as the status reports it in chip_error.
     const chipError =
         m.fan?.kind === 'probe'
-            ? `${m.fixtureDmi} has no confirmed fan map yet: run the fan probe first (ugreen-nas-fan probe-fans run)`
+            ? `${m.fixtureDmi} has no confirmed fan map yet: run the fan probe first (/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan probe-fans run)`
             : `${m.fixtureDmi} has no fan control`;
     const fans = fanIds.map(id => {
         const cpu = m.fan?.fans[id] === 'cpu';

@@ -50,7 +50,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Fan map saved [success]"],
-        "text": "ecea471bed7b"
+        "text": "8152fb346df3"
       },
       "forget map": {
         "requests": ["nas POST {\"action\":\"fan_probe_forget\"}", "nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],

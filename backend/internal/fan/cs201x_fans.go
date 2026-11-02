@@ -17,7 +17,7 @@ import (
 // automatic mode and does not hand the fans back on unload (ug_201x.c:816-832), so Restore writes the duty found
 // at the start back.
 //
-// Off by default: the model counts as a fan model only with a confirmed map (`ugreen-nas-fan cs201x confirm`,
+// Off by default: the model counts as a fan model only with a confirmed map (`cs201x confirm`,
 // stored in fan_map.json like the IT8613E models). The host interface (cfg 0x30) is never switched on: with
 // it off the BIOS does not expose the fan controller, and Snapshot, SetPWM and Restore refuse.
 const (
@@ -66,7 +66,7 @@ type CS201x struct {
 
 var errCSHostOff = errors.New("host interface off: the BIOS does not expose the fan controller")
 
-var errCSNotConfirmed = errors.New("fan control of the DXP2800 GT is off until you confirm the fans: ugreen-nas-fan cs201x confirm")
+var errCSNotConfirmed = errors.New("fan control of the DXP2800 GT is off until you confirm the fans: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm")
 
 // DetectCS201x opens the driver for a confirmed map. It only reads.
 func DetectCS201x(p Ports, model string) (*CS201x, error) {

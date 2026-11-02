@@ -21,5 +21,5 @@ export const powerEn = {
     'power_ac.not_verified': 'Written, but the value read back is different. Check the BIOS setting.',
     'power_ac.no_readback': 'The command was accepted. This model cannot confirm that it applied.',
     'power_ac.unknown_note':
-        'The board reports a value the plugin does not know ({raw}). The encoding may differ on this BIOS, so the plugin does not offer to set it. To set it anyway, run `ugreen-nas-fan power-on-ac set on|off|last --force` in a terminal.'
+        'The board reports a value the plugin does not know ({raw}). The encoding may differ on this BIOS, so the plugin does not offer to set it. To set it anyway, run `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan power-on-ac set on|off|last --force` in a terminal.'
 } as const;

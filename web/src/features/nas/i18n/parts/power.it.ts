@@ -22,5 +22,5 @@ export const powerIt: Record<keyof typeof powerEn, string> = {
     'power_ac.not_verified': "Scritto, ma il valore riletto è diverso. Controlla l'impostazione nel BIOS.",
     'power_ac.no_readback': 'Il comando è stato accettato. Questo modello non può confermare che sia stato applicato.',
     'power_ac.unknown_note':
-        'La scheda riporta un valore che il plugin non conosce ({raw}). La codifica può differire su questo BIOS, quindi il plugin non propone di modificarlo. Per modificarlo comunque, esegui `ugreen-nas-fan power-on-ac set on|off|last --force` in un terminale.'
+        'La scheda riporta un valore che il plugin non conosce ({raw}). La codifica può differire su questo BIOS, quindi il plugin non propone di modificarlo. Per modificarlo comunque, esegui `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan power-on-ac set on|off|last --force` in un terminale.'
 };

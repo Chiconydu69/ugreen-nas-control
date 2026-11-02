@@ -53,7 +53,7 @@ func readProposal(model string) *ProbeProposal {
 // and goes through `cs201x confirm`. Every probe-fans path checks it first, so no IT8613E write can happen there.
 func errNoIT8613Probe(model string) error {
 	if isDXP2800GT(model) {
-		return fmt.Errorf("%s has a Chipsea CS201x, not an IT8613E: use ugreen-nas-fan cs201x", model)
+		return fmt.Errorf("%s has a Chipsea CS201x, not an IT8613E: use /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x", model)
 	}
 	if FanKind(model) != KindProbe {
 		return fmt.Errorf("%s has no fan probe: its fans are wired as known", orUnknown(model))

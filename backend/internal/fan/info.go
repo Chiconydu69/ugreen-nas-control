@@ -51,10 +51,10 @@ func requireSupportedModel() error {
 				return errCSNotConfirmed
 			}
 			if isDXP2800GT(model) {
-				return fmt.Errorf("%s: %w; confirm again: ugreen-nas-fan cs201x confirm", model, err)
+				return fmt.Errorf("%s: %w; confirm again: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm", model, err)
 			}
 			if errors.Is(err, errNoFanMap) {
-				return fmt.Errorf("%s has no confirmed fan map yet: run the fan probe first (ugreen-nas-fan probe-fans run)", model)
+				return fmt.Errorf("%s has no confirmed fan map yet: run the fan probe first (/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan probe-fans run)", model)
 			}
 			return fmt.Errorf("%s: %w; run the fan probe again", model, err)
 		}

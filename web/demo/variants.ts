@@ -27,7 +27,8 @@ export const withVariants = (models: Model[]): Model[] => {
 export const isReadOnlyFan = (m: Model): boolean => m.id === PLAIN_IDX;
 export const isCs201x = (m: Model): boolean => m.fixtureDmi.startsWith('DXP2800 GT') && m.fan?.kind === 'probe';
 
-const CS201X_STATUS_ERROR = 'fan control of the DXP2800 GT is off until you confirm the fans: ugreen-nas-fan cs201x confirm';
+const CS201X_STATUS_ERROR =
+    'fan control of the DXP2800 GT is off until you confirm the fans: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm';
 
 /** What `ugreen-nas-fan cs201x` reads on a DXP2800 GT (UGREEN's CS201x driver; sample numbers). */
 const CS201X_READ = {
