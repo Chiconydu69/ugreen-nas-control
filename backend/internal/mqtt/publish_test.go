@@ -3,6 +3,7 @@ package mqtt
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"net"
 	"os"
 	"path/filepath"
@@ -29,7 +30,7 @@ func TestLoadConfig(t *testing.T) {
 	p := filepath.Join(t.TempDir(), "fan.cfg")
 	writeFile(t, p, "mqtt_enabled=\"1\"\nmqtt_host=\"broker\"\nmqtt_tls=\"1\"\nmqtt_name=\"My NAS!\"\nmqtt_interval=\"1\"\nmqtt_control=\"1\"\n")
 	c := LoadConfig(p)
-	if !c.Enabled || c.Host != "broker" || !c.TLS || c.Port != 8883 || c.Name != "MyNAS" || !c.Control || c.ControlUpdates {
+	if !c.Enabled || c.Host != "broker" || !c.TLS || c.Port != 8883 || c.Name != "MyNAS" || !c.Control || c.ControlUpdates || c.ControlContainers {
 		t.Fatalf("config: %+v", c)
 	}
 	if c.Interval != 5*time.Second {
@@ -199,6 +200,10 @@ func TestCommander(t *testing.T) {
 		updates: func() []Update {
 			return []Update{{Kind: "plugin", Name: "ugreen-nas-control", File: "ugreen-nas-control.plg"}, {Kind: "plugin", Name: "evil", File: "../x.plg"}, {Kind: "plugin", Name: "-rf", File: "-rf.plg"}}
 		},
+		containers: func(string) ([]string, error) {
+			t.Fatal("containers must not be looked up while switched off")
+			return nil, nil
+		},
 	}
 	check := func(cmd command, at time.Time, ok bool, text string) func() {
 		t.Helper()
@@ -226,7 +231,8 @@ func TestCommander(t *testing.T) {
 	check(command{Cmd: "shutdown", TS: now.Unix(), Nonce: "n4"}, l2, false, "too old")
 	check(command{Cmd: "format", TS: l2.Unix(), Nonce: "n5"}, l2, false, "unknown")
 	check(command{Cmd: "reboot", TS: l2.Unix()}, l2, false, "nonce")
-	check(command{Cmd: "update", Target: "container", Name: "x", TS: l2.Unix(), Nonce: "n6"}, l2, false, "only plugin")
+	check(command{Cmd: "update", Target: "container", Name: "x", TS: l2.Unix(), Nonce: "n6"}, l2, false, "container updates from the display are switched off")
+	check(command{Cmd: "update", Target: "volume", Name: "x", TS: l2.Unix(), Nonce: "n6b"}, l2, false, "only plugin and container")
 	check(command{Cmd: "update", Target: "plugin", Name: "nothing", TS: l2.Unix(), Nonce: "n7"}, l2, false, "no such update")
 	check(command{Cmd: "update", Target: "plugin", Name: "evil", TS: l2.Unix(), Nonce: "n8"}, l2, false, "no such update")
 	check(command{Cmd: "update", Target: "plugin", Name: "-rf", TS: l2.Unix(), Nonce: "n8b"}, l2, false, "no such update")
@@ -240,11 +246,142 @@ func TestCommander(t *testing.T) {
 	}
 }
 
+func TestCommanderContainers(t *testing.T) {
+	now := time.Now()
+	rl := &runLog{}
+	c := &commander{
+		cfg: Config{ControlContainers: true}, run: rl.run,
+		updates: func() []Update {
+			return []Update{{Kind: "container", Name: "ghcr.io/x/homarr:latest"}, {Kind: "container", Name: "evil:1"}, {Kind: "container", Name: "two:1"}, {Kind: "container", Name: "gone:1"}}
+		},
+		containers: func(image string) ([]string, error) {
+			switch image {
+			case "ghcr.io/x/homarr:latest":
+				return []string{"homarr"}, nil
+			case "evil:1":
+				return []string{"a; reboot"}, nil
+			case "two:1":
+				return []string{"two-a", "two-b"}, nil
+			}
+			return nil, nil
+		},
+	}
+	at := now
+	check := func(cmd command, ok bool, text string) func() {
+		t.Helper()
+		at = at.Add(20 * time.Second)
+		cmd.TS = at.Unix()
+		res, after := c.handle(cmdJSON(cmd), at)
+		if res.OK != ok || (text != "" && !strings.Contains(res.Text, text)) || (ok != (after != nil)) {
+			t.Fatalf("%+v: result %+v, after set %v", cmd, res, after != nil)
+		}
+		return after
+	}
+	check(command{Cmd: "update", Target: "plugin", Name: "p", Nonce: "c1"}, false, "updates from the display are switched off")
+	check(command{Cmd: "reboot", Nonce: "c2"}, false, "switched off")
+	check(command{Cmd: "update", Target: "container", Name: "not-in-list:1", Nonce: "c3"}, false, "no such update")
+	check(command{Cmd: "update", Target: "container", Name: "gone:1", Nonce: "c4"}, false, "no container found")
+	check(command{Cmd: "update", Target: "container", Name: "evil:1", Nonce: "c5"}, false, "not allowed")
+	after := check(command{Cmd: "update", Target: "container", Name: "ghcr.io/x/homarr:latest", Nonce: "c6"}, true, "")
+	after()
+	if len(rl.calls) != 1 || rl.calls[0][0] != updateContainerBin || rl.calls[0][1] != "homarr" || len(rl.calls[0]) != 2 {
+		t.Fatalf("container update call: %v", rl.calls)
+	}
+	after = check(command{Cmd: "update", Target: "container", Name: "two:1", Nonce: "c7"}, true, "")
+	after()
+	if len(rl.calls) != 3 || rl.calls[1][1] != "two-a" || rl.calls[2][1] != "two-b" {
+		t.Fatalf("one update per container expected: %v", rl.calls)
+	}
+}
+
+func TestCommanderAllContainers(t *testing.T) {
+	now := time.Now()
+	var got []cmdResult
+	var mu sync.Mutex
+	failOn := "b"
+	c := &commander{
+		cfg: Config{ControlContainers: true},
+		run: func(_ string, args ...string) error {
+			if len(args) == 1 && args[0] == failOn {
+				return errors.New("pull failed")
+			}
+			return nil
+		},
+		report: func(r cmdResult) { mu.Lock(); got = append(got, r); mu.Unlock() },
+		updates: func() []Update {
+			return []Update{{Kind: "container", Name: "img-a"}, {Kind: "plugin", Name: "p", File: "p.plg"}, {Kind: "container", Name: "img-b"}, {Kind: "container", Name: "img-c"}, {Kind: "container", Name: "img-none"}}
+		},
+		containers: func(image string) ([]string, error) {
+			return map[string][]string{"img-a": {"a"}, "img-b": {"b"}, "img-c": {"c1", "c2"}}[image], nil
+		},
+	}
+	res, after := c.handle(cmdJSON(command{Cmd: "update", Target: "containers", TS: now.Unix(), Nonce: "x1"}), now)
+	if !res.OK || after == nil {
+		t.Fatalf("update of all containers: %+v", res)
+	}
+	if r2, a2 := c.handle(cmdJSON(command{Cmd: "update", Target: "containers", TS: now.Add(15 * time.Second).Unix(), Nonce: "x2"}), now.Add(15*time.Second)); r2.OK || a2 != nil || !strings.Contains(r2.Text, "busy") {
+		t.Fatalf("a second command must wait while the first runs: %+v", r2)
+	}
+	after()
+	if len(got) != 6 {
+		t.Fatalf("running per step (4), one failure and the end: %+v", got)
+	}
+	steps := ""
+	for _, r := range got {
+		steps += r.Name + ":" + r.Text + ","
+	}
+	if !strings.Contains(steps, "a:running,") || !strings.Contains(steps, "b:failed: pull failed,") || !strings.Contains(steps, "c2:running,") {
+		t.Fatalf("steps: %s", steps)
+	}
+	last := got[len(got)-1]
+	if !last.Done || last.OK || last.Step != 4 || last.Total != 4 || last.Nonce != "x1" || last.Text != "1 of 4 failed" {
+		t.Fatalf("last answer: %+v", last)
+	}
+	failOn = ""
+	later := now.Add(40 * time.Second)
+	res, after = c.handle(cmdJSON(command{Cmd: "update", Target: "containers", TS: later.Unix(), Nonce: "x3"}), later)
+	if !res.OK {
+		t.Fatalf("after the first run the next command may start: %+v", res)
+	}
+	after()
+	if last := got[len(got)-1]; !last.Done || !last.OK || last.Text != "done" {
+		t.Fatalf("clean run: %+v", last)
+	}
+}
+
+func TestMatchContainers(t *testing.T) {
+	list := "homarr\tghcr.io/homarr-labs/homarr:latest\nweb\tnginx\nweb2\tlibrary/nginx\nother\tredis:7\nwp\twordpress\nbs\tlscr.io/linuxserver/bookstack\nnc\tnextcloud:latest\nreg\tlocalhost:5000/app\n"
+	cases := []struct {
+		image string
+		want  string
+	}{
+		{"ghcr.io/homarr-labs/homarr:latest", "homarr"},
+		{"nginx:latest", "web web2"},
+		{"wordpress:latest", "wp"},
+		{"docker.io/library/wordpress:latest", "wp"},
+		{"lscr.io/linuxserver/bookstack:latest", "bs"},
+		{"nextcloud", "nc"},
+		{"redis:7", "other"},
+		{"redis:latest", ""},
+		{"localhost:5000/app:latest", "reg"},
+		{"nope", ""},
+	}
+	for _, c := range cases {
+		if got := strings.Join(matchContainers(list, c.image), " "); got != c.want {
+			t.Errorf("%s: got %q, want %q", c.image, got, c.want)
+		}
+	}
+}
+
 func TestCommanderOff(t *testing.T) {
 	now := time.Now()
 	c := &commander{cfg: Config{}, run: (&runLog{}).run, updates: func() []Update { return nil }}
-	for i, cmd := range []string{"reboot", "shutdown", "update"} {
-		res, after := c.handle(cmdJSON(command{Cmd: cmd, Target: "plugin", TS: now.Unix(), Nonce: "n" + string(rune('a'+i))}), now)
+	for i, cmd := range []string{"reboot", "shutdown", "update", "container"} {
+		target := "plugin"
+		if cmd == "container" {
+			cmd, target = "update", "container"
+		}
+		res, after := c.handle(cmdJSON(command{Cmd: cmd, Target: target, TS: now.Unix(), Nonce: "n" + string(rune('a'+i))}), now)
 		if res.OK || after != nil || !strings.Contains(res.Text, "switched off") {
 			t.Fatalf("%s must be refused while remote control is off: %+v", cmd, res)
 		}

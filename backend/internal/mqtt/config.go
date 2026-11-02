@@ -22,9 +22,11 @@ type Config struct {
 	// Name is the part of the topics that tells this NAS from another one.
 	Name     string
 	Interval time.Duration
-	// Control: restart and shut down. ControlUpdates: update plugins. Both off unless switched on.
-	Control        bool
-	ControlUpdates bool
+	// Control: restart and shut down. ControlUpdates: update plugins. ControlContainers: update containers.
+	// All off unless switched on.
+	Control           bool
+	ControlUpdates    bool
+	ControlContainers bool
 }
 
 var nameRe = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
@@ -32,16 +34,17 @@ var nameRe = regexp.MustCompile(`[^a-zA-Z0-9_-]`)
 func LoadConfig(path string) Config {
 	v := fan.ReadValues(path)
 	c := Config{
-		Enabled:        v["mqtt_enabled"] == "1",
-		Host:           v["mqtt_host"],
-		Port:           1883,
-		TLS:            v["mqtt_tls"] == "1",
-		User:           v["mqtt_user"],
-		Pass:           v["mqtt_pass"],
-		Name:           nameRe.ReplaceAllString(v["mqtt_name"], ""),
-		Interval:       5 * time.Second,
-		Control:        v["mqtt_control"] == "1",
-		ControlUpdates: v["mqtt_control_updates"] == "1",
+		Enabled:           v["mqtt_enabled"] == "1",
+		Host:              v["mqtt_host"],
+		Port:              1883,
+		TLS:               v["mqtt_tls"] == "1",
+		User:              v["mqtt_user"],
+		Pass:              v["mqtt_pass"],
+		Name:              nameRe.ReplaceAllString(v["mqtt_name"], ""),
+		Interval:          5 * time.Second,
+		Control:           v["mqtt_control"] == "1",
+		ControlUpdates:    v["mqtt_control_updates"] == "1",
+		ControlContainers: v["mqtt_control_containers"] == "1",
 	}
 	if c.TLS {
 		c.Port = 8883

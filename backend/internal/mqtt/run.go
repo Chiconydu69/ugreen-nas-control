@@ -24,7 +24,7 @@ func Run() error {
 
 	prefix := "ugreen-nas/" + cfg.Name + "/"
 	col := newCollector()
-	cmdr := &commander{cfg: cfg, run: execRun, delay: time.Second,
+	cmdr := &commander{cfg: cfg, run: execRun, containers: dockerContainers, delay: time.Second,
 		updates: func() []Update { return readUpdates(pluginsBoot, pluginsFresh, dockerStatus, unraidCheck) }}
 
 	cl := &client{
@@ -51,9 +51,13 @@ func Run() error {
 		last = map[string][]byte{}
 		lastMu.Unlock()
 		_ = cl.publish(prefix+"availability", []byte("online"), true)
-		if cfg.Control || cfg.ControlUpdates {
+		if cfg.Control || cfg.ControlUpdates || cfg.ControlContainers {
 			_ = cl.subscribe(prefix + "cmd")
 		}
+	}
+	cmdr.report = func(r cmdResult) {
+		b, _ := json.Marshal(r)
+		_ = cl.publish(prefix+"cmd_result", b, false)
 	}
 	cl.onMessage = func(topic string, payload []byte, retained bool) {
 		// The nonce map lives in memory only: a retained command would run again after every restart.
