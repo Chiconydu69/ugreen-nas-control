@@ -2,4 +2,4 @@
 type: chore
 ---
 
-Next channel: every push to `next` publishes a rolling build `X.(Y+1)-next.NNNNNN` as `ugreen-nas-control.plg` (GitHub Pages, `/next/`), replacing the beta channel. It installs over stable and local test builds in place; going back to a lower version needs `plugin install <url> forced`.
+Next channel: every push to `next` publishes a rolling test build `X.(Y+1).0-next.NNNNNN` (install URL `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`), replacing the beta channel; it installs over stable in place, going back to a lower version needs `plugin install <url> forced`.
