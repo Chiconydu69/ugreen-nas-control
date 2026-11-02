@@ -88,6 +88,7 @@ const rgbText = (s: string) => {
 };
 function merge(into: Obj, from: Obj): void {
     for (const [k, v] of Object.entries(from)) {
+        if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
         const old = into[k];
         if (v && old && typeof v === 'object' && typeof old === 'object' && !Array.isArray(v) && !Array.isArray(old)) merge(old as Obj, v as Obj);
         else into[k] = v;

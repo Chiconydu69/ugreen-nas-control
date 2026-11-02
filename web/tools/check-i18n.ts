@@ -26,6 +26,8 @@ import { historyEn } from '../src/features/nas/i18n/parts/history.en';
 import { scheduleEn } from '../src/features/nas/i18n/parts/schedule.en';
 import { toolsEn } from '../src/features/nas/i18n/parts/tools.en';
 
+const escapeRe = (s: string) => s.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+
 const root = resolve(import.meta.dir, '../..');
 const errors: string[] = [];
 const warnings: string[] = [];
@@ -116,7 +118,7 @@ for (const set of sets) {
         }
         for (const match of text.matchAll(/`([\w.-]*)\$\{[^}]*\}([\w.-]*)`/g)) {
             const [, prefix = '', suffix = ''] = match;
-            if (prefix.includes('.')) patterns.push(new RegExp(`^${prefix.replace(/\./g, '\\.')}.+${suffix.replace(/\./g, '\\.')}$`));
+            if (prefix.includes('.')) patterns.push(new RegExp(`^${escapeRe(prefix)}.+${escapeRe(suffix)}$`));
         }
     }
 
