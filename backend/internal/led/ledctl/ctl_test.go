@@ -3,6 +3,7 @@ package ledctl
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -439,8 +440,12 @@ func TestDaemonLoop(t *testing.T) {
 	}
 
 	// Traffic makes the bay blink, and it goes back to steady when the counters stand still.
-	r.write("sys/block/sda/stat", "2 0 0 0 2 0 0 0\n")
+	// The daemon takes its baseline counter a moment after the LEDs are set, and a change that
+	// lands before it is the baseline, not traffic. So keep the counters moving until it blinks.
+	reads := 1
 	waitFor("activity blink", func() bool {
+		reads++
+		r.write("sys/block/sda/stat", fmt.Sprintf("%d 0 0 0 %d 0 0 0\n", reads, reads))
 		for _, c := range r.chip.callList() {
 			if c == "set disk1 blink 100 100" {
 				return true
