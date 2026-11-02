@@ -27,6 +27,7 @@ test('the optional fan parts are checked when present', () => {
     const wdt = { armed: true, timeout: 300, interval: 60, last_pet: 1, time: 2, state: 'armed' };
 
     expect(isStatusResponse({ ...status, fan_caps: caps, watchdog: wdt })).toBe(true);
+    expect(isStatusResponse({ ...status, watchdog: { ...wdt, armed: false, state: 'not_counting' } })).toBe(true);
     expect(isStatusResponse({ ...status, watchdog: null })).toBe(true);
     expect(isStatusResponse({ ...status, fan_caps: { kind: 'fixed' } })).toBe(false);
     expect(isStatusResponse({ ...status, watchdog: { ...wdt, state: 'fed' } })).toBe(false);

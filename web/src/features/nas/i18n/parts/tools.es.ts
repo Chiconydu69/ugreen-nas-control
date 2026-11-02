@@ -75,6 +75,8 @@ export const toolsEs: Record<keyof typeof toolsEn, string> = {
     'watchdog.hint_action':
         'El watchdog está armado pero lleva un rato sin alimentarse, así que el NAS podría reiniciarse solo. Comprueba que el servicio de ventiladores esté en marcha.',
     'watchdog.none': 'Sin lectura todavía',
+    'watchdog.hint_kill':
+        'Mientras el watchdog de la BIOS esté armado, una terminación forzada del servicio de ventiladores (kill -9, falta de memoria) lo deja sin alimentar y el NAS se reinicia al agotarse el tiempo. Una parada o un reinicio normal es seguro.',
     'backlight.title': 'Brillo de la pantalla',
     'backlight.hint': 'Brillo del LCD del frontal.'
 };

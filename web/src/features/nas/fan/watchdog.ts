@@ -29,6 +29,10 @@ registerFanModule({
         });
         const hint =
             state === 'action_needed' ? ctx.ui.note(escapeHtml(ctx.t('watchdog.hint_action')), { tone: 'warn', box: true, tag: 'div', ico: 'alert' }) : '';
-        body.innerHTML = `<div class="unc-fan-tools-status">${pill}</div>${hint}`;
+        const kill =
+            state === 'armed' || state === 'action_needed'
+                ? ctx.ui.note(escapeHtml(ctx.t('watchdog.hint_kill')), { tone: 'plain', box: true, tag: 'div' })
+                : '';
+        body.innerHTML = `<div class="unc-fan-tools-status">${pill}</div>${hint}${kill}`;
     }
 });

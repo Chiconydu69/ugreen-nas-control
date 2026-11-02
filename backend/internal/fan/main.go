@@ -57,7 +57,7 @@ func usage() {
                       find which output drives which fan on an IT8613E model without a known map (JSON, run: about 1 minute)
   backlight [set <0-100>]
                       iDX6011 Pro LCD brightness: read, or set (JSON)
-  power-on-ac [set on|off|last]
+  power-on-ac [set on|off|last [--force]]
                       power-on behaviour after AC loss: read, or set (JSON; only ever written by this command)
   cs201x              DXP2800 GT only: read the chip and its fan registers, writes nothing to a fan (JSON)
   daemon              run the fan curves until SIGTERM

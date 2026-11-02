@@ -18,13 +18,6 @@ export const rawText = (raw: Record<string, number>): string =>
         .map(([key, value]) => `${key.toUpperCase()} 0x${value.toString(16).padStart(2, '0')}`)
         .join(', ');
 
-const UNRECOGNISED = /^the board reports a value this tool does not know.*\(([^)]*)\)\s*$/;
-
-/** The tool's refusal for a value it does not know carries the registers in brackets; the page words the rest itself. */
-export function unrecognisedRaw(message: string): string | null {
-    return UNRECOGNISED.exec(message)?.[1] ?? null;
-}
-
 const MODE_KEYS: Record<PowerAcMode | 'unknown', Key> = {
     on: 'power_ac.on',
     off: 'power_ac.off',
@@ -56,12 +49,14 @@ function draw(ctx: FanCtx): void {
         : `<p class="unc-muted">${escapeHtml(t('power_ac.unreadable'))}</p>`;
     const unknown = d.readable && d.mode === 'unknown' ? warn(t('power_ac.unknown_note', { raw: rawText(d.raw) })) : '';
     const last = d.last_set ? t('power_ac.last_set', { mode: t(MODE_KEYS[d.last_set.mode]), time: berlin(d.last_set.time) }) : t('power_ac.never_set');
+    // An undecodable value (older BIOS encoding) is not set from the page: the note shows it and points to the CLI.
+    const offerSet = !(d.readable && d.mode === 'unknown');
     const buttons = d.settable
         .map(mode => ui.btn({ label: t(MODE_KEYS[mode]), tone: d.readable && d.mode === mode ? 'primary' : '', attrs: `data-mode="${mode}"` }))
         .join('');
     const notice = state.notice ? ui.note(escapeHtml(state.notice), { tone: 'info', box: true, tag: 'div', ico: 'info' }) : '';
-    const html = `${current}${unknown}<p class="unc-muted">${escapeHtml(last)}</p>${notice}
-        ${ui.sectionHead(t('power_ac.set_to'))}<div class="unc-fan-tools-actions">${buttons}</div>`;
+    const setTo = offerSet ? `${ui.sectionHead(t('power_ac.set_to'))}<div class="unc-fan-tools-actions">${buttons}</div>` : '';
+    const html = `${current}${unknown}<p class="unc-muted">${escapeHtml(last)}</p>${notice}${setTo}`;
     if (html === state.shown) return;
     state.shown = html;
     body.innerHTML = html;
@@ -84,15 +79,10 @@ async function set(ctx: FanCtx, mode: PowerAcMode): Promise<void> {
     state.notice = '';
     await ctx.run(
         async () => {
-            try {
-                const answer = await ctx.api.post('power_ac_set', { mode });
-                state.data = answer;
-                if (!answer.readable) state.notice = ctx.t('power_ac.no_readback');
-                else if (answer.verified === false) state.notice = ctx.t('power_ac.not_verified');
-            } catch (error) {
-                const raw = unrecognisedRaw(errorMessage(error));
-                throw raw === null ? error : new Error(ctx.t('power_ac.unrecognised', { raw }));
-            }
+            const answer = await ctx.api.post('power_ac_set', { mode });
+            state.data = answer;
+            if (!answer.readable) state.notice = ctx.t('power_ac.no_readback');
+            else if (answer.verified === false) state.notice = ctx.t('power_ac.not_verified');
         },
         ctx.t('power_ac.saved', { mode: ctx.t(MODE_KEYS[mode]) })
     );

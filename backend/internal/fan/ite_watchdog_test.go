@@ -398,3 +398,160 @@ func TestOpenWatchdogOnlyRefusesOtherModels(t *testing.T) {
 		}
 	}
 }
+
+// A clean stop leaves a marker, the next daemon start puts the timer back and feeds it as before.
+func TestITEWatchdogRestartRestoresTimer(t *testing.T) {
+	r := newWdtRig(t, 1000, cfgSecondsKRST, true)
+	r.tick(t, 0)
+	r.tick(t, 2*time.Second)
+	if err := r.p.Stop(r.chip); err != nil || r.f.val() != 0 {
+		t.Fatalf("stop: %v, value %d", err, r.f.val())
+	}
+	if m := readWdtMarker(); m == nil || m.Cfg != cfgSecondsKRST || m.Value != 300 {
+		t.Fatalf("marker %+v", m)
+	}
+
+	r.p = &Petter{} // the restarted daemon
+	r.f.counting = false
+	r.f.wlog = nil
+	st := r.tick(t, time.Second)
+	if st.State != WdtArmed || !st.Armed || r.f.val() != 300 || r.f.regs[[2]byte{sioLDNGPIO, iteRegWdtCfg}] != cfgSecondsKRST {
+		t.Fatalf("status %+v, value %d", st, r.f.val())
+	}
+	if readWdtMarker() != nil {
+		t.Fatal("marker kept")
+	}
+	for _, w := range r.f.wlog {
+		if w.reg == iteRegWdtCtrl {
+			t.Fatal("0x71 written")
+		}
+	}
+	r.f.counting = true
+	r.f.wlog = nil
+	if r.tick(t, 60*time.Second); len(r.f.wlog) == 0 {
+		t.Fatal("restored timer was not fed")
+	}
+	if err := r.p.Stop(r.chip); err != nil || readWdtMarker() == nil {
+		t.Fatalf("second stop: %v, marker %v", err, readWdtMarker())
+	}
+}
+
+func TestITEWatchdogMarkerIgnoredWhenTimerRuns(t *testing.T) {
+	r := newWdtRig(t, 1000, cfgSecondsKRST, false)
+	if err := writeJSONAtomic(iteWdtMarkerPath, wdtMarker{Cfg: cfgSecondsKRST, Value: 300}); err != nil {
+		t.Fatal(err)
+	}
+	r.tick(t, 0)
+	if readWdtMarker() != nil || len(r.f.wlog) != 0 {
+		t.Fatalf("marker %v, writes %v", readWdtMarker(), r.f.wlog)
+	}
+	// a stale marker must not re-arm a timer that is off later
+	r.f.setVal(0)
+	if st := r.tick(t, time.Second); st.State != WdtOff || len(r.f.wlog) != 0 {
+		t.Fatalf("%+v %v", st, r.f.wlog)
+	}
+}
+
+func TestITEWatchdogNoMarkerStaysOff(t *testing.T) {
+	r := newWdtRig(t, 0, cfgSecondsKRST, false)
+	if st := r.tick(t, 0); st.State != WdtOff || len(r.f.wlog) != 0 {
+		t.Fatalf("%+v %v", st, r.f.wlog)
+	}
+}
+
+// The value never reads 0 while a feed grows the MSB: MSB first then, LSB first when it does not grow.
+func TestITEWatchdogPetOrder(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		cur  uint16
+		cfg  byte
+		want []sioWrite
+	}{
+		{"msb grows, lsb wraps to 0", 5, cfgSecondsKRST, []sioWrite{{7, 0x72, cfgSecondsKRST}, {7, 0x74, 1}, {7, 0x73, 0x2c}}},
+		{"msb shrinks", 1000, cfgSecondsKRST, []sioWrite{{7, 0x72, cfgSecondsKRST}, {7, 0x73, 0x2c}, {7, 0x74, 1}}},
+		{"msb equal", 0x1ff, cfgSecondsKRST, []sioWrite{{7, 0x72, cfgSecondsKRST}, {7, 0x73, 0x2c}, {7, 0x74, 1}}},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r := newWdtRig(t, tc.cur, tc.cfg, false)
+			cur, err := r.chip.WatchdogRead()
+			if err != nil {
+				t.Fatal(err)
+			}
+			r.f.wlog = nil
+			if err := r.chip.WatchdogPet(cur, 300); err != nil {
+				t.Fatal(err)
+			}
+			if !slices.Equal(r.f.wlog, tc.want) {
+				t.Fatalf("writes %v, want %v", r.f.wlog, tc.want)
+			}
+		})
+	}
+}
+
+// A timer that reads 0 because someone stopped it is not ours to restore: no marker, the next start stays off.
+func TestITEWatchdogStopAfterExternalZeroLeavesNoMarker(t *testing.T) {
+	r := newWdtRig(t, 1000, cfgSecondsKRST, true)
+	r.tick(t, 0)
+	r.tick(t, 2*time.Second)
+	if !r.p.petted {
+		t.Fatal("not petted")
+	}
+	r.f.counting = false
+	r.f.setVal(0)
+	r.tick(t, time.Second)
+	if r.p.petted {
+		t.Fatal("petted stays set after the timer read 0")
+	}
+	if err := r.p.Stop(r.chip); err != nil || readWdtMarker() != nil {
+		t.Fatalf("stop: %v, marker %v", err, readWdtMarker())
+	}
+
+	// Stop between two ticks, before the daemon saw the 0: the read right before the disarm decides.
+	r = newWdtRig(t, 1000, cfgSecondsKRST, true)
+	r.tick(t, 0)
+	r.tick(t, 2*time.Second)
+	r.f.counting = false
+	r.f.setVal(0)
+	if err := r.p.Stop(r.chip); err != nil || readWdtMarker() != nil {
+		t.Fatalf("stop on 0: %v, marker %v", err, readWdtMarker())
+	}
+	r.p = &Petter{}
+	if st := r.tick(t, time.Second); st.State != WdtOff || r.f.val() != 0 {
+		t.Fatalf("next start: %+v, value %d", st, r.f.val())
+	}
+}
+
+// Yielding to it87_wdt drops a marker of an earlier stop for good and the petted flag with it.
+func TestITEWatchdogYieldRemovesMarker(t *testing.T) {
+	r := newWdtRig(t, 0, cfgSecondsKRST, false)
+	if err := writeJSONAtomic(iteWdtMarkerPath, wdtMarker{Cfg: cfgSecondsKRST, Value: 300}); err != nil {
+		t.Fatal(err)
+	}
+	r.p.petted = true
+	r.p.Yield = true
+	if st := r.tick(t, 0); st.State != WdtYielded || readWdtMarker() != nil || r.p.petted {
+		t.Fatalf("%+v marker %v petted %v", st, readWdtMarker(), r.p.petted)
+	}
+	r.p.Yield = false
+	if st := r.tick(t, time.Second); st.State != WdtOff || len(r.f.wlog) != 0 || readWdtMarker() != nil {
+		t.Fatalf("restored after the yield: %+v %v", st, r.f.wlog)
+	}
+}
+
+// A marker that cannot be written must not keep the timer armed.
+func TestITEWatchdogStopDisarmsWhenMarkerFails(t *testing.T) {
+	r := newWdtRig(t, 1000, cfgSecondsKRST, true)
+	r.tick(t, 0)
+	r.tick(t, 2*time.Second)
+	blocker := filepath.Join(t.TempDir(), "file")
+	if err := os.WriteFile(blocker, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	iteWdtMarkerPath = filepath.Join(blocker, "marker")
+	if err := r.p.Stop(r.chip); err == nil {
+		t.Fatal("marker error not reported")
+	}
+	if r.f.val() != 0 {
+		t.Fatalf("timer left at %d", r.f.val())
+	}
+}

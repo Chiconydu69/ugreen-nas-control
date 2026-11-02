@@ -21,6 +21,6 @@ export const powerDe: Record<keyof typeof powerEn, string> = {
     'power_ac.saved': 'Gesetzt: {mode}',
     'power_ac.not_verified': 'Geschrieben, aber der zurückgelesene Wert weicht ab. Prüfe die Einstellung im BIOS.',
     'power_ac.no_readback': 'Der Befehl wurde angenommen. Dieses Modell kann nicht bestätigen, dass er gewirkt hat.',
-    'power_ac.unknown_note': 'Das Mainboard meldet einen Wert, den das Plugin nicht kennt ({raw}). Schreiben wird abgelehnt, damit nichts überschrieben wird.',
-    'power_ac.unrecognised': 'Das Mainboard meldet einen Wert, den dieses Werkzeug nicht kennt ({raw}). Es wurde nichts geändert. Bitte melde es.'
+    'power_ac.unknown_note':
+        'Das Mainboard meldet einen Wert, den das Plugin nicht kennt ({raw}). Die Kodierung kann bei diesem BIOS abweichen, deshalb bietet das Plugin das Setzen nicht an. Trotzdem setzen: `ugreen-nas-fan power-on-ac set on|off|last --force` in einem Terminal ausführen.'
 };

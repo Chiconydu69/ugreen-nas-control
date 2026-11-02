@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"slices"
+	"strings"
 	"time"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan/conflict"
@@ -15,7 +17,24 @@ import (
 // there; on other models it is shown next to the value read.
 var powerACRecordPath = envOr("UGREEN_FAN_POWER_AC", "/boot/config/plugins/ugreen-nas-control/power_ac.json")
 
-var errACUsage = errors.New("usage: power-on-ac [set on|off|last]")
+var errACUsage = errors.New("usage: power-on-ac [set on|off|last [--force]]")
+
+// errACUnknown refuses a set from a value this tool cannot decode: an older BIOS encodes the same bits differently,
+// so writing the target bits could mean something else there. --force writes anyway.
+var errACUnknown = errors.New("the board reports a value this tool does not know")
+
+func rawACText(raw map[string]int) string {
+	keys := make([]string, 0, len(raw))
+	for k := range raw {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	parts := make([]string, len(keys))
+	for i, k := range keys {
+		parts[i] = fmt.Sprintf("%s 0x%02x", strings.ToUpper(k), raw[k])
+	}
+	return strings.Join(parts, ", ")
+}
 
 type acRecord struct {
 	Mode string `json:"mode"`
@@ -34,10 +53,14 @@ func readACRecord() *acRecord {
 	return &r
 }
 
-// runPowerAC is the command: no argument reads, `set <mode>` writes. rival returns an error while another fan tool
+// runPowerAC is the command: no argument reads, `set <mode> [--force]` writes. rival returns an error while another fan tool
 // runs (only asked for a write). The port lock is held for the whole access.
 func runPowerAC(args []string, model string, env *acEnv, rival func() error, at time.Time) (map[string]any, error) {
 	var want acMode
+	force := false
+	if len(args) == 3 && slices.Equal(args[2:], []string{"--force"}) {
+		force, args = true, args[:2]
+	}
 	switch {
 	case len(args) == 0:
 	case len(args) == 2 && args[0] == "set":
@@ -63,6 +86,11 @@ func runPowerAC(args []string, model string, env *acEnv, rival func() error, at 
 			return err
 		}
 		if want != "" {
+			if !force {
+				if st, err := ac.Get(); err == nil && st.Readable && st.Mode == acUnknown {
+					return fmt.Errorf("%w (%s): the encoding may differ on this BIOS, nothing was changed; `power-on-ac set %s --force` writes anyway", errACUnknown, rawACText(st.Raw), want)
+				}
+			}
 			if err := ac.Set(want); err != nil {
 				return err
 			}
@@ -95,7 +123,7 @@ func runPowerAC(args []string, model string, env *acEnv, rival func() error, at 
 	return out, nil
 }
 
-// PowerACCommand is `ugreen-nas-fan power-on-ac [set on|off|last]`.
+// PowerACCommand is `ugreen-nas-fan power-on-ac [set on|off|last [--force]]`.
 func PowerACCommand(args []string) {
 	env := &acEnv{openPorts: hw.OpenPorts, openMem: hw.OpenMem}
 	rival := func() error {

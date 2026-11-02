@@ -73,6 +73,7 @@ export const toolsZh: Record<keyof typeof toolsEn, string> = {
     'watchdog.state.action_needed': '需要处理',
     'watchdog.hint_action': '看门狗已启用，但已有一段时间没有喂狗，NAS 可能会自行重启。请检查风扇服务是否在运行。',
     'watchdog.none': '暂无读数',
+    'watchdog.hint_kill': 'BIOS 看门狗启用期间，强制终止风扇服务（kill -9、内存不足）会使其不再被喂狗，NAS 将在超时后重启。正常停止或重启是安全的。',
     'backlight.title': '屏幕亮度',
     'backlight.hint': '正面 LCD 的亮度。'
 };

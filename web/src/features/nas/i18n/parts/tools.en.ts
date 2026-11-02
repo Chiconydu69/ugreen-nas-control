@@ -72,6 +72,8 @@ export const toolsEn = {
     'watchdog.state.action_needed': 'Action needed',
     'watchdog.hint_action': 'The watchdog is armed but has not been fed for a while, so the NAS may reset itself. Check that the fan service is running.',
     'watchdog.none': 'No reading yet',
+    'watchdog.hint_kill':
+        'While the BIOS watchdog is armed, a hard kill of the fan service (kill -9, out of memory) leaves it unfed and the NAS resets after the timeout. A normal stop or restart is safe.',
     'backlight.title': 'Display brightness',
     'backlight.hint': 'Brightness of the LCD on the front.'
 } as const;

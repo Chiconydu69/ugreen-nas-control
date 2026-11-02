@@ -21,6 +21,6 @@ export const powerNl: Record<keyof typeof powerEn, string> = {
     'power_ac.saved': 'Ingesteld: {mode}',
     'power_ac.not_verified': 'Geschreven, maar de teruggelezen waarde wijkt af. Controleer de BIOS-instelling.',
     'power_ac.no_readback': 'De opdracht is geaccepteerd. Dit model kan niet bevestigen dat hij is toegepast.',
-    'power_ac.unknown_note': 'Het moederbord meldt een waarde die de plugin niet kent ({raw}). Schrijven wordt geweigerd zodat niets wordt overschreven.',
-    'power_ac.unrecognised': 'Het moederbord meldt een waarde die dit hulpmiddel niet kent ({raw}). Er is niets gewijzigd. Meld het alsjeblieft.'
+    'power_ac.unknown_note':
+        'Het moederbord meldt een waarde die de plugin niet kent ({raw}). De codering kan op deze BIOS afwijken, daarom biedt de plugin het instellen niet aan. Toch instellen: voer `ugreen-nas-fan power-on-ac set on|off|last --force` uit in een terminal.'
 };

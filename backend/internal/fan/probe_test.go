@@ -16,10 +16,10 @@ func isolate(t *testing.T, model string) string {
 	t.Helper()
 	dir := t.TempDir()
 	oldDMI, oldMap, oldState, oldProp, oldRestore := dmiDir, fanMapPath, probeStatePath, probeProposalPath, probeRestorePath
-	oldPause, oldLock, oldWdt, oldBackoff := calibPausePath, calibLockPath, watchdogStatePath, restoreBackoff
+	oldPause, oldLock, oldWdt, oldBackoff, oldMarker := calibPausePath, calibLockPath, watchdogStatePath, restoreBackoff, iteWdtMarkerPath
 	t.Cleanup(func() {
 		dmiDir, fanMapPath, probeStatePath, probeProposalPath, probeRestorePath = oldDMI, oldMap, oldState, oldProp, oldRestore
-		calibPausePath, calibLockPath, watchdogStatePath, restoreBackoff = oldPause, oldLock, oldWdt, oldBackoff
+		calibPausePath, calibLockPath, watchdogStatePath, restoreBackoff, iteWdtMarkerPath = oldPause, oldLock, oldWdt, oldBackoff, oldMarker
 	})
 	dmiDir = filepath.Join(dir, "dmi")
 	if err := os.MkdirAll(dmiDir, 0o755); err != nil {
@@ -35,6 +35,7 @@ func isolate(t *testing.T, model string) string {
 	calibPausePath = filepath.Join(dir, "pause")
 	calibLockPath = filepath.Join(dir, "lock")
 	watchdogStatePath = filepath.Join(dir, "wdt.json")
+	iteWdtMarkerPath = filepath.Join(dir, "wdt.armed")
 	restoreBackoff = time.Millisecond
 	return dir
 }

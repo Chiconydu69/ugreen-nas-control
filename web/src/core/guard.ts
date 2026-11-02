@@ -10,7 +10,9 @@ export const isStatusResponse = (value: unknown): boolean =>
     isObject(value.settings) &&
     has(value.settings, 'mode', 'min_pct') &&
     (!('fan_caps' in value) || (isObject(value.fan_caps) && has(value.fan_caps, 'kind', 'channels', 'watchdog', 'backlight'))) &&
-    (!isObject(value.watchdog) || (has(value.watchdog, 'armed', 'state') && ['off', 'armed', 'action_needed'].includes(String(value.watchdog.state)))) &&
+    (!isObject(value.watchdog) ||
+        (has(value.watchdog, 'armed', 'state') &&
+            ['off', 'armed', 'action_needed', 'yielded', 'not_counting', 'not_effective'].includes(String(value.watchdog.state)))) &&
     (!('fan_config' in value.settings) || (isObject(value.settings.fan_config) && has(value.settings.fan_config, 'cpu', 'case', 'quiet')));
 
 export const isHardwareResponse = (value: unknown): boolean => isObject(value) && has(value, 'ok', 'model', 'memory', 'nvme', 'bays', 'net');

@@ -76,6 +76,8 @@ export const toolsDe: Record<keyof typeof toolsEn, string> = {
     'watchdog.hint_action':
         'Der Watchdog ist scharf, wurde aber länger nicht gefüttert. Das NAS kann sich selbst neu starten. Prüfe, ob der Lüfterdienst läuft.',
     'watchdog.none': 'Noch kein Messwert',
+    'watchdog.hint_kill':
+        'Solange der BIOS-Watchdog scharf ist, lässt ein hartes Beenden des Lüfterdienstes (kill -9, Speichermangel) ihn ungefüttert, und das NAS startet nach der Wartezeit neu. Normales Stoppen oder Neustarten ist sicher.',
     'backlight.title': 'Display-Helligkeit',
     'backlight.hint': 'Helligkeit des LCD an der Front.'
 };

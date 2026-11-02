@@ -14,7 +14,8 @@ import (
 // Facts per chip (UGREEN GPL-2.0-only drivers, kernel-6.12 drivers/ugreen @c75c5ab; facts only, nothing copied):
 //   - IT8613E, LDN 4 registers 0xF2 and 0xF4: v = (F2[5] << 2) | F4[6:5]; 1 = on, 3 = off, 7 = last, anything else
 //     unknown. Set = one bit at a time, F2 then F4 (ug_it86x-sio.c:153-203,260-301). An older BIOS encodes it
-//     differently (dh2600/ug_it86x-sio-dh2600.c:182-255), so nothing is written unless the value decodes.
+//     differently (dh2600/ug_it86x-sio-dh2600.c:182-255): `get` then reports unknown with the raw bytes, and `set`
+//     refuses without --force; forced, it writes the three target bits from there and checks them by reading back.
 //   - IT5571 EC of the DXP4800 GT: bare commands 0x88 (on) and 0x89 (off) on port 0x66, no read at all; the vendor
 //     keeps a RAM cache (ug_it55_4800gt_functions.c:55-57,109-188).
 //   - iDX6011/6012 and iDX6011 Pro: dword at physical 0xFE001020, bit 0 set = stay off, clear = power on. Accessed
@@ -47,11 +48,10 @@ type acLoss interface {
 }
 
 var (
-	errNoACControl    = errors.New("this model has no power-on setting this tool can reach")
-	errACNotSettable  = errors.New("this model does not offer that mode")
-	errACUnrecognised = errors.New("the board reports a value this tool does not know: nothing was changed, please report it")
-	errACReadOnly     = errors.New("this model's power-on setting is declared read-only here (iDX6011/6012): it can be read, not changed")
-	errACVerify       = errors.New("the value read back is not the one written")
+	errNoACControl   = errors.New("this model has no power-on setting this tool can reach")
+	errACNotSettable = errors.New("this model does not offer that mode")
+	errACReadOnly    = errors.New("this model's power-on setting is declared read-only here (iDX6011/6012): it can be read, not changed")
+	errACVerify      = errors.New("the value read back is not the one written")
 )
 
 func parseACMode(s string) (acMode, bool) {
@@ -148,9 +148,6 @@ func (a iteAC) Set(m acMode) error {
 	f2, f4, err := a.chip.ACRead()
 	if err != nil {
 		return err
-	}
-	if decodeITEAC(f2, f4) == acUnknown {
-		return fmt.Errorf("%w (F2 0x%02x, F4 0x%02x)", errACUnrecognised, f2, f4)
 	}
 	nf2, nf4 := encodeITEAC(f2, f4, m)
 	if err := a.chip.ACWrite(nf2, nf4); err != nil {

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"testing"
 	"time"
 
@@ -105,18 +106,25 @@ func TestITEACReadbackMismatchFails(t *testing.T) {
 	}
 }
 
-func TestITEACUnknownPatternRefuses(t *testing.T) {
+func TestITEACUnknownPatternGetReportsRawSetWrites(t *testing.T) {
 	for _, b := range [][2]byte{{0x00, 0x00}, {0x00, 0x40}, {0x20, 0x00}, {0xdf, 0x9f}} { // old BIOS encodings and a plain 0
 		f, ac := newACFake(b[0], b[1])
-		if err := ac.Set(acOn); !errors.Is(err, errACUnrecognised) {
-			t.Errorf("%x: err %v", b, err)
-		}
-		if len(f.wlog) != 0 {
-			t.Errorf("%x: writes %v", b, f.wlog)
-		}
 		st, err := ac.Get()
 		if err != nil || st.Mode != acUnknown || st.Raw["f2"] != int(b[0]) || st.Raw["f4"] != int(b[1]) {
 			t.Errorf("%x: get %+v %v", b, st, err)
+		}
+		if len(f.wlog) != 0 {
+			t.Errorf("%x: get wrote %v", b, f.wlog)
+		}
+		for _, m := range []acMode{acOn, acOff, acLast} {
+			_, ac := newACFake(b[0], b[1])
+			if err := ac.Set(m); err != nil {
+				t.Errorf("%x -> %s: %v", b, m, err)
+			}
+			w2, w4 := iteACBytes(m, b[0], b[1])
+			if st, err := ac.Get(); err != nil || st.Mode != m || st.Raw["f2"] != int(w2) || st.Raw["f4"] != int(w4) {
+				t.Errorf("%x -> %s: read back %+v %v, want f2 %02x f4 %02x", b, m, st, err, w2, w4)
+			}
 		}
 	}
 	if err := (iteAC{}).Set(acUnknown); !errors.Is(err, errACNotSettable) {
@@ -537,6 +545,43 @@ func TestStatusNeverTouchesPowerAC(t *testing.T) {
 	for k := range out {
 		if k == "power_ac" || k == "power_on_ac" {
 			t.Fatalf("status has %q", k)
+		}
+	}
+}
+
+// From a value this tool cannot decode, `set` needs --force; the refusal names the raw bytes and writes nothing.
+func TestPowerACSetFromUnknownNeedsForce(t *testing.T) {
+	setup := func() (*acEnv, *fakeSIO) {
+		env, f := acRig(t, "DXP4800")
+		f.regs[[2]byte{4, iteRegACF2}], f.regs[[2]byte{4, iteRegACF4}] = 0x00, 0x40
+		return env, f
+	}
+	env, f := setup()
+	_, err := runPowerAC([]string{"set", "on"}, "DXP4800", env, noRival, time.Unix(1, 0))
+	if !errors.Is(err, errACUnknown) || len(f.wlog) != 0 || readACRecord() != nil {
+		t.Fatalf("err %v writes %v", err, f.wlog)
+	}
+	for _, want := range []string{"F2 0x00", "F4 0x40", "may differ", "--force"} {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("message %q lacks %q", err, want)
+		}
+	}
+
+	env, f = setup()
+	out, err := runPowerAC([]string{"set", "on", "--force"}, "DXP4800", env, noRival, time.Unix(1, 0))
+	if err != nil || out["mode"] != acOn || out["verified"] != true || len(f.wlog) == 0 {
+		t.Fatalf("forced: %v %v writes %v", out, err, f.wlog)
+	}
+
+	// A known value needs no flag; --force alone or in the wrong place is a usage error.
+	env, _ = acRig(t, "DXP4800")
+	if _, err := runPowerAC([]string{"set", "on"}, "DXP4800", env, noRival, time.Unix(1, 0)); err != nil {
+		t.Fatalf("known value: %v", err)
+	}
+	for _, args := range [][]string{{"--force"}, {"set", "--force", "on"}, {"set", "on", "--forced"}} {
+		env, f = acRig(t, "DXP4800")
+		if _, err := runPowerAC(args, "DXP4800", env, noRival, time.Now()); !errors.Is(err, errACUsage) || f.access != 0 {
+			t.Errorf("%v: %v", args, err)
 		}
 	}
 }

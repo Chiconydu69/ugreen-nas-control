@@ -21,7 +21,7 @@ Talks to the fan chip, runs the curves every 2 s, reads sensors. Subcommands: `i
 
 `status` prints sensors, chip state, presets and the daemon's state file (`/var/run/ugreen-nas-control.json`). `watchdog` is the petter's last state: `state` is `off`, `armed`, `action_needed`, `yielded` (IT8613E: the `it87_wdt` module is loaded, nothing is accessed) or `not_counting` (IT8613E: the value is non-zero but stands still, nothing is written); `counter` is the timer value read back (IT8613E: the 16-bit value register). See [watchdog.md](watchdog.md).
 
-`power-on-ac` reads, `power-on-ac set on|off|last` writes what the NAS does when AC power returns (JSON). Only this command ever touches it: not `status`, the daemon, `restore` or the probe. A write refuses while a fan rival runs. Models, registers and caveats: [power-on-ac.md](power-on-ac.md).
+`power-on-ac` reads, `power-on-ac set on|off|last` writes what the NAS does when AC power returns (JSON); from a value it cannot decode (IT8613E, older BIOS) it needs `--force`. Only this command ever touches it: not `status`, the daemon, `restore` or the probe. A write refuses while a fan rival runs. Models, registers and caveats: [power-on-ac.md](power-on-ac.md).
 
 `cs201x` (DXP2800 GT only):
 

@@ -76,6 +76,8 @@ export const toolsNl: Record<keyof typeof toolsEn, string> = {
     'watchdog.hint_action':
         'De watchdog is ingeschakeld maar wordt al een tijd niet gevoed, dus de NAS kan zichzelf herstarten. Controleer of de ventilatorservice draait.',
     'watchdog.none': 'Nog geen meting',
+    'watchdog.hint_kill':
+        'Zolang de BIOS-watchdog is ingeschakeld, laat een harde kill van de ventilatorservice (kill -9, geheugentekort) hem ongevoed en herstart de NAS na de wachttijd. Normaal stoppen of herstarten is veilig.',
     'backlight.title': 'Helderheid van het scherm',
     'backlight.hint': 'Helderheid van de LCD aan de voorkant.'
 };

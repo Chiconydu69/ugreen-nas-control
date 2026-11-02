@@ -21,6 +21,6 @@ export const powerFr: Record<keyof typeof powerEn, string> = {
     'power_ac.saved': 'Réglé : {mode}',
     'power_ac.not_verified': 'Écrit, mais la valeur relue est différente. Vérifie le réglage du BIOS.',
     'power_ac.no_readback': "La commande a été acceptée. Ce modèle ne peut pas confirmer qu'elle a été appliquée.",
-    'power_ac.unknown_note': "La carte indique une valeur que le plugin ne connaît pas ({raw}). L'écriture est refusée pour ne rien écraser.",
-    'power_ac.unrecognised': "La carte indique une valeur que cet outil ne connaît pas ({raw}). Rien n'a été modifié. Merci de le signaler."
+    'power_ac.unknown_note':
+        'La carte indique une valeur que le plugin ne connaît pas ({raw}). Le codage peut différer sur ce BIOS, le plugin ne propose donc pas de la modifier. Pour la modifier quand même, exécutez `ugreen-nas-fan power-on-ac set on|off|last --force` dans un terminal.'
 };

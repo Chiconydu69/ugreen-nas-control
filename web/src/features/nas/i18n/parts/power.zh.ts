@@ -20,6 +20,6 @@ export const powerZh: Record<keyof typeof powerEn, string> = {
     'power_ac.saved': '已设置：{mode}',
     'power_ac.not_verified': '已写入，但回读的值不同。请检查 BIOS 设置。',
     'power_ac.no_readback': '命令已被接受。此型号无法确认是否已生效。',
-    'power_ac.unknown_note': '主板报告了插件不认识的值（{raw}）。为避免覆盖任何内容，已拒绝写入。',
-    'power_ac.unrecognised': '主板报告了此工具不认识的值（{raw}）。未做任何更改。请反馈此问题。'
+    'power_ac.unknown_note':
+        '主板报告了插件不认识的值（{raw}）。此 BIOS 的编码可能不同，因此插件不提供设置。如仍要设置，请在终端运行 `ugreen-nas-fan power-on-ac set on|off|last --force`。'
 };
