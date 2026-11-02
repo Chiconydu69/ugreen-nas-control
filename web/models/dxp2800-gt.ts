@@ -21,13 +21,15 @@ export default {
             note: "AMD DesignWare I2C controller like the DXP4800 GT, no Intel SMBus; miskcoo's driver for it is work in progress (issues 122, 123). Bay order guessed."
         },
         fans: {
-            status: 'expected',
-            note: "Fan control stays off until you run `ugreen-nas-fan cs201x confirm`. Registers and the CPU/case fan roles are from UGREEN's own CS201x driver; nobody has run them on a device with this plugin. 25 % floor, stall point not measured."
+            status: 'community',
+            by: 'users',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/95',
+            note: "Fan control stays off until you run `ugreen-nas-fan cs201x confirm`. A community tester (2026-10-31, next channel) saw both fans follow the modes and a custom curve, 1834 rpm (CPU) and 603 rpm (case) at 25 %, and the BIOS speed (about 60 %) back after removing the plugin. Registers and fan roles are from UGREEN's own CS201x driver. 25 % floor, stall point not measured."
         },
         case: { status: 'expected', note: 'Drawn after the product photos, not compared on a device.' },
         sensors: { status: 'expected' }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp2800-gt-2-bay-nas-storage', 'https://github.com/miskcoo/ugreen_leds_controller/issues/122'],
-    note: 'Two bays (U.2 capable), two M.2 slots, one 10G LAN port. LEDs are enabled but nobody has confirmed them. Case view (front, rear) after the product photos; fan control after `ugreen-nas-fan cs201x confirm` (Chipsea CS201x embedded controller; wiring from the UGREEN driver, unconfirmed on a device).',
+    note: 'Two bays (U.2 capable), two M.2 slots, one 10G LAN port. LEDs are enabled but nobody has confirmed them. Case view (front, rear) after the product photos; fan control after `ugreen-nas-fan cs201x confirm` (Chipsea CS201x embedded controller; wiring from the UGREEN driver, confirmed on a device by a community tester).',
     shots: true
 } satisfies Model;

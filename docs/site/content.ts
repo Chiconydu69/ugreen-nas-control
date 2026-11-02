@@ -119,7 +119,10 @@ export const SOURCES = {
     sub: 'UGREEN publishes its GPL kernel drivers. The plugin takes chip IDs, register addresses and frame formats from them and cites file and line. No UGREEN code is copied; the plugin is MIT. Nobody has checked that the published sources match the firmware UGREEN ships. Not endorsed or certified by UGREEN.',
     points: [
         ['Fans', "Registers from UGREEN's IT5571 and IT8613E drivers. Hardware status stays in the matrix."],
-        ['DXP2800 GT', 'Fan control stays off until you run a one-minute probe and confirm. Vendor-sourced, not yet confirmed on hardware.'],
+        [
+            'DXP2800 GT',
+            "Fan control stays off until you run a one-minute probe and confirm. Wiring from UGREEN's driver; fan control confirmed on hardware by a community tester, LEDs not yet."
+        ],
         ['LEDs', "Protocol from miskcoo's ugreen_leds_controller, which matches UGREEN's LED driver."]
     ],
     credits: [
