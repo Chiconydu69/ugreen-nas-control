@@ -16,7 +16,7 @@ import (
 )
 
 // The publisher: sends the status of this NAS to an MQTT broker for displays and Home Assistant, and, only
-// if switched on, carries out a few fixed commands (restart, shut down, update a plugin). It only reads
+// if switched on, carries out a few fixed commands (restart, shut down, update a plugin or a container). It only reads
 // the hardware the way `status` does and never writes a fan register.
 //
 // Topics, below ugreen-nas/<name>/: state, notifications and updates (JSON, retained), availability
@@ -29,9 +29,13 @@ var (
 	pluginsFresh = envOr("UGREEN_PLUGINS_FRESH", "/tmp/plugins")
 	dockerStatus = envOr("UGREEN_DOCKER_STATUS", "/var/lib/docker/unraid-update-status.json")
 	unraidCheck  = envOr("UGREEN_UNRAID_CHECK", "/tmp/unraidcheck/result.json")
+	sysDir       = envOr("UGREEN_SYS", "/sys")
 	procNetDev   = envOr("UGREEN_PROC_NET_DEV", "/proc/net/dev")
 	powerdownBin = envOr("UGREEN_POWERDOWN", "/usr/local/sbin/powerdown")
 	pluginBin    = envOr("UGREEN_PLUGIN_BIN", "/usr/local/sbin/plugin")
+	dockerBin    = envOr("UGREEN_DOCKER_BIN", "/usr/bin/docker")
+	// Unraid's own script for pulling a new image and recreating a container, the same one its Docker page uses.
+	updateContainerBin = envOr("UGREEN_UPDATE_CONTAINER", "/usr/local/emhttp/plugins/dynamix.docker.manager/scripts/update_container")
 )
 
 func envOr(key, def string) string {
@@ -65,6 +69,7 @@ type PubNet struct {
 	MaxMbit   int    `json:"max_mbit"`
 	RxBps     int64  `json:"rx_bps"`
 	TxBps     int64  `json:"tx_bps"`
+	IP        string `json:"ip,omitempty"`
 }
 
 type Alarm struct {
@@ -78,20 +83,22 @@ type Alarm struct {
 }
 
 type PubState struct {
-	Time       int64     `json:"time"`
-	Model      string    `json:"model"`
-	Unraid     string    `json:"unraid"`
-	Uptime     int       `json:"uptime"`
-	Mode       string    `json:"mode"`
-	FanControl bool      `json:"fan_control"`
-	CPU        *int      `json:"cpu"`
-	Board      *int      `json:"board"`
-	CaseTemp   *int      `json:"case_temp"`
-	Fans       []PubFan  `json:"fans"`
-	Bays       []fan.Bay `json:"bays"`
-	NVMe       []PubNVMe `json:"nvme"`
-	Net        []PubNet  `json:"net"`
-	Alarms     []Alarm   `json:"alarms"`
+	Time       int64       `json:"time"`
+	Model      string      `json:"model"`
+	Unraid     string      `json:"unraid"`
+	Uptime     int         `json:"uptime"`
+	Mode       string      `json:"mode"`
+	FanControl bool        `json:"fan_control"`
+	CPU        *int        `json:"cpu"`
+	Board      *int        `json:"board"`
+	CaseTemp   *int        `json:"case_temp"`
+	Fans       []PubFan    `json:"fans"`
+	Bays       []fan.Bay   `json:"bays"`
+	NVMe       []PubNVMe   `json:"nvme"`
+	Net        []PubNet    `json:"net"`
+	Storage    *PubStorage `json:"storage"`
+	Parity     *PubParity  `json:"parity"`
+	Alarms     []Alarm     `json:"alarms"`
 }
 
 type Notification struct {
@@ -382,6 +389,7 @@ func (c *collector) state(now time.Time) PubState {
 	if s.Bays == nil {
 		s.Bays = []fan.Bay{}
 	}
+	s.Storage, s.Parity = readStorage(disksINI), readParity(varINI)
 	if st != nil {
 		s.CaseTemp = st.CaseTemp
 		s.Mode = st.Mode
@@ -398,7 +406,7 @@ func (c *collector) state(now time.Time) PubState {
 	}
 	for _, p := range c.hw.Net {
 		r := c.rates[p.Name]
-		s.Net = append(s.Net, PubNet{Name: p.Name, Link: p.Link, SpeedMbit: p.SpeedMbit, MaxMbit: p.MaxMbit, RxBps: r[0], TxBps: r[1]})
+		s.Net = append(s.Net, PubNet{Name: p.Name, Link: p.Link, SpeedMbit: p.SpeedMbit, MaxMbit: p.MaxMbit, RxBps: r[0], TxBps: r[1], IP: ifaceIPv4(p.Name)})
 	}
 	s.Alarms = buildAlarms(sensors.CPU, c.hw.Bays, c.hw.NVMe, st, cfg)
 	return s
