@@ -116,6 +116,13 @@ Model missing or marked Expected? [Report it](docs/cli.md#report-a-model).
 
 [Discussions](https://github.com/ugreen-nas-control/ugreen-nas-control/discussions) · [Unraid forum thread](https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/) · [GitHub issues](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new/choose) · [Which channel for what](.github/CONTRIBUTING.md#where-to-ask) · [FAQ](docs/faq.md)
 
+## Help the project
+
+The project takes no money for now. It needs test reports and test hardware.
+
+- Test on your model: in the plugin open About, "Confirm my device", and send the prefilled report.
+- Lend or donate a test device (DXP2800 GT, DXP480T Plus, DXP8800 Plus, iDX6011 Pro, DXP2800 V1.2 board): [Test hardware wanted](https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134).
+
 ## Documentation
 
 [All documents](docs/README.md) · [FAQ](docs/faq.md) · [Hardware](docs/hardware.md) · [MQTT](docs/mqtt.md) · [Unraid compatibility](docs/unraid.md) · [Changelog](CHANGELOG.md)

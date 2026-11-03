@@ -1109,6 +1109,12 @@ footer {
 .steps + .acts {
     margin-top: 40px;
 }
+#help .help-list {
+    max-width: 62ch;
+    margin: 0 0 18px;
+    padding-left: 1.2em;
+}
+
 #install .getit {
     max-width: none;
 }

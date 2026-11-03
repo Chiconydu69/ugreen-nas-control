@@ -19,6 +19,7 @@ import {
     DISCUSSIONS,
     GITHUB,
     HEADLINE,
+    HELP,
     KEYWORDS,
     META_DESC,
     OVERALL_HELP,
@@ -516,6 +517,15 @@ function install(m: Model): string {
 </section>`;
 }
 
+function helpProject(): string {
+    return `<section class="band" id="help" aria-labelledby="hlp">
+  <h2 id="hlp">${esc(HELP.title)}</h2>
+  <p class="intro">${esc(HELP.intro)}</p>
+  <ul class="help-list"><li>${esc(HELP.test)}</li><li>${esc(HELP.lend)}</li></ul>
+  <p class="acts"><a class="btn quiet" href="${HELP.url}" rel="noopener">${icon('github', 16)}${esc(HELP.button)}</a></p>
+</section>`;
+}
+
 // ---- pages ------------------------------------------------------------------------------------------------
 
 function landing(listed: Model[]): string {
@@ -564,6 +574,7 @@ ${secs.dashboard}
 ${comparison()}
 ${support(listed, rel)}
 ${install(def)}
+${helpProject()}
 ${techies()}`;
     return layout({
         title: 'UGREEN NAS Control: Unraid plugin for UGREEN NAS, with the real UI live in your browser',

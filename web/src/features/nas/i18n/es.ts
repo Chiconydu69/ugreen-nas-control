@@ -327,6 +327,8 @@ export const es: Record<Key, string> = {
     'about.issues_hint': 'Fallos e informes de modelo como issue',
     'about.discussions': 'Preguntar o compartir',
     'about.discussions_hint': 'Preguntas, ideas y tu configuración en Discussions',
+    'about.help':
+        'Ayuda al proyecto: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">se buscan equipos de prueba</a>, en préstamo o donados. O confirma tu equipo arriba.',
     'about.thanks': 'Agradecimientos',
     'about.thanks_text':
         '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocolo y asignación de bahías del control de LEDs), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> y <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (desarrollo de UGREEN NAS Control; j3n57h0m45 también el soporte del DXP4800 GT: ventiladores mediante el IT5571, LEDs, vistas de la caja y del sistema, y el rediseño de la interfaz), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traducción al español) y todos los que probaron en su modelo',

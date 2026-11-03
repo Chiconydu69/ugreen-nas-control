@@ -3082,6 +3082,7 @@
 /* "Confirm my device": ticks, a comment, one button. */
 .unc-confirm { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--unc-border); display: grid; gap: 10px; }
 .unc-confirm p { margin: 0; }
+.unc-about-help { margin: 14px 0 0; font-size: 13px; }
 .unc-confirm-list { display: flex; flex-wrap: wrap; gap: 8px; }
 .unc-confirm-comment { display: grid; gap: 4px; font-size: 12px; color: var(--unc-muted); }
 .unc-confirm-comment textarea { width: 100%; resize: vertical; padding: 8px 10px; border: 1px solid var(--unc-border); border-radius: 8px; background: var(--unc-card-2); color: var(--unc-text); font: inherit; }
