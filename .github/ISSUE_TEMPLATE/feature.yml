@@ -19,3 +19,19 @@ body:
     id: model
     attributes:
       label: NAS model
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Fans
+        - LEDs
+        - Front panel and power-on (buttons, beeper, power-on after power loss)
+        - Dashboard widget
+        - Plugin page
+        - MQTT / Home Assistant
+        - Install and update
+        - Website
+        - Other
+    validations:
+      required: true
