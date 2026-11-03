@@ -20,8 +20,7 @@ export const SOCKET = {
 // Sockets per model as [drawing, label]; rear labels are i18n keys, a LAN port is ['lan', index of
 // the interface] in the order it sits on the panel.
 // pcie: the model has a PCIe slot. Any model not listed is drawn like the DXP6800 Pro.
-// strip: front strip with a power button and one LED per LAN / bay (no model uses it now: all have the bay LEDs
-// below the bays like the DXP6800 Pro).
+// strip: front strip with a power button and one LED per LAN / bay, bay bars hidden (DXP2800 GT, after its panel).
 // fan: the rear fan behind its dust filter. hint: i18n key of the note below the inside view.
 export type SocketKind = keyof typeof SOCKET;
 export type RearPort = ['lan', number] | [SocketKind, Key];
@@ -99,8 +98,8 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
     ],
     // iDX6011 and iDX6011 Pro: six bays and a small display at the front, the ports like the DXP6800 Pro's;
     // the back after a photo (PCIe slot, mesh, vent, power inlet). No inside view, no fan control.
-    // DXP2800 GT: the same chassis in black with a grille like the DXP4800 GT; one 10G LAN port. Drawn after the
-    // product photos. No inside view, no fan control.
+    // DXP2800 GT: the same chassis in black with a grille like the DXP4800 GT; one 10G LAN port. Front after the product
+    // photos: power button, LAN/DISK1/DISK2 LEDs, no bay LED bars. No inside view.
     [
         /^DXP2800 GT/,
         {
@@ -108,6 +107,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
                 ['usbc', '10G'],
                 ['usba', '10G']
             ],
+            strip: true,
             gt: true,
             rear2800: true,
             lan: 'LAN 10G',
@@ -226,7 +226,7 @@ export function frontHtml(hw: Hardware): string {
             </div>`;
 
     return `
-        <div class="unc-nas" style="--bays:${(hw.bays || []).length || 6}">
+        <div class="unc-nas${model.strip ? ' strip' : ''}" style="--bays:${(hw.bays || []).length || 6}">
             <div class="unc-nas-bays ${model.screen ? 'with-screen' : ''}">${(hw.bays || []).map(b => bayHtml(b)).join('')}${model.screen ? '<div class="unc-nscreen" aria-hidden="true"><i></i><b></b></div>' : ''}</div>${strip}
         </div>`;
 }

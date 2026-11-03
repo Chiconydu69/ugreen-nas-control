@@ -1618,7 +1618,7 @@
     align-items: flex-end;
 }
 
-/* Front strip with power button and one LED per LAN / bay (DXP4800 GT). */
+/* Front strip with power button and one LED per LAN / bay (DXP2800 GT). */
 .unc-pbtn {
     display: inline-flex;
     flex: none;
@@ -1632,6 +1632,7 @@
 }
 
 .unc-leds { display: inline-flex; gap: 12px; }
+.unc-nas.strip .unc-nbay .bar { display: none; }
 
 .unc-led {
     display: grid;
