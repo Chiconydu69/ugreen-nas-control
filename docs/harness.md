@@ -13,7 +13,7 @@ just harness [model]     # php -S on 127.0.0.1, model = id in web/models/ (defau
 - The LED API is the real `web/plugin/led/api.php`; its backend (`fake-led-ctl`) answers from JSON files.
 - `view.php` renders the `.page` files. Open the printed URL; `?p=dash` shows the dashboard tile, `?shot=1` freezes the clock and CSS animations.
 - `UNC_SCENARIO=conflict` (or `conflict-led`) starts a scenario with a rival tool ([conflicts.md](conflicts.md)); the same variable works for `web/tools/shots.ts`.
-- `just e2e --old` serves the hand-written front end of `upstream/main` (`src/web/js`, `led/src/web/js`, mapped in `serve.ts`) on the same layout to compare the UIs.
+- `just e2e --old [ref]` serves the hand-written front end of a ref (default `upstream/main`, or `UNC_E2E_OLD_REF`; `src/web/js`, `led/src/web/js`, mapped in `serve.ts`) on the same layout to compare the UIs. A ref without `src/web/js` (the TypeScript front end, 5.0.0 on) is refused with a message: there is nothing to compare, the golden file is the baseline.
 - Not covered: the Go tools against real chips, Unraid's own page chrome, and code paths that need the `/sys` of a UGREEN device. Those need hardware; say in the PR which model you tested on.
 
 A new model in `web/models/` shows up in the harness, the screenshots and the site ([development.md](development.md#add-a-model)).

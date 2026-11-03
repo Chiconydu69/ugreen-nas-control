@@ -16,6 +16,7 @@ export interface StepRecord {
 }
 
 export const VIEWPORT = { width: 1440, height: 900 };
+const SETTLE_MS = 20000;
 
 export class Session {
     steps: StepRecord[] = [];
@@ -56,20 +57,28 @@ export class Session {
         }
     }
 
+    /**
+     * Idle = no fetch in flight, none finished within `quiet` ms, document loaded. The limit is longer than the
+     * page's own 15 s abort of a hung poll request (core/ledfx/poll.ts), so a request that stalls once does not fail the run.
+     */
     async settle(quiet = 120): Promise<void> {
-        const end = Date.now() + 10000;
+        const end = Date.now() + SETTLE_MS;
         let stable = 0;
+        let last = 'no answer (navigating?)';
         while (stable < 2) {
             let idle = false;
             try {
-                idle = await this.eval<boolean>(
-                    `window.__e2e.pending === 0 && window.__e2e.now() - window.__e2e.lastIo >= ${quiet} && document.readyState === 'complete'`
+                const state = await this.eval<string>(
+                    `[window.__e2e.pending, Math.round(window.__e2e.now() - window.__e2e.lastIo), document.readyState].join(' ')`
                 );
+                const [pending, since, ready] = state.split(' ');
+                idle = pending === '0' && Number(since) >= quiet && ready === 'complete';
+                last = `${pending} fetches in flight, ${since} ms since the last, readyState ${ready}`;
             } catch {
                 /* navigating */
             }
             stable = idle ? stable + 1 : 0;
-            if (Date.now() > end) throw new Error('page never settled');
+            if (Date.now() > end) throw new Error(`page never settled (${last})`);
             await Bun.sleep(25);
         }
     }

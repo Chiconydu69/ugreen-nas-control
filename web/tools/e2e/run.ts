@@ -5,8 +5,9 @@
 //   bun web/tools/e2e/run.ts [--models a,b] [--scenarios x,y] [--old [ref]] [--update] [--jobs N] [--out DIR] [-v]
 //
 // Without --old the run is checked against web/tools/e2e/golden.json (requests, events and a hash of the screen text
-// per step). With --old the same flows also run against the front end of a git ref (default upstream/main, or
-// $UNC_E2E_OLD_REF), and the two are compared step by step, including a diff of the full DOM. --update writes
+// per step). With --old the same flows also run against the hand-written front end of a git ref (default
+// upstream/main = the released 4.x UI, or $UNC_E2E_OLD_REF; the ref must still have src/web/js, i.e. be older than
+// the TypeScript front end), and the two are compared step by step, including a diff of the full DOM. --update writes
 // golden.json from this run (from the old front end when --old is given). Exit code 1 on any regression.
 //
 // Browser: Bun.WebView; macOS uses WebKit, Linux Chromium (BUN_CHROME_PATH from the flake devShell; else chromium on PATH or nixpkgs#chromium).
@@ -39,6 +40,16 @@ const value = (name: string): string | undefined => {
 };
 const oldAt = args.indexOf('--old');
 const oldRef = oldAt >= 0 ? (value('--old') ?? process.env.UNC_E2E_OLD_REF ?? 'upstream/main') : undefined;
+if (oldRef) {
+    const probe = Bun.spawnSync(['git', '-C', root, 'cat-file', '-e', `${oldRef}:src/web/js/app.js`], { stderr: 'pipe' });
+    if (probe.exitCode !== 0) {
+        console.error(
+            `--old ${oldRef}: no hand-written front end there (src/web/js/app.js). --old compares with the pre-5.0 UI; ` +
+                `a ref with the TypeScript front end (web/src) needs no comparison, run without --old.`
+        );
+        process.exit(2);
+    }
+}
 const update = flag('--update');
 const verbose = flag('-v');
 const modelIds = value('--models')?.split(',') ?? DEFAULT_MODELS;

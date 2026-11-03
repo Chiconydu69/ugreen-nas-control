@@ -180,7 +180,7 @@ generated-check:
     bun scripts/check-generated.ts
 
 # UI end-to-end tests in a real browser (Bun.WebView) against web/tools/e2e/golden.json;
-# --old compares with upstream/main, --update rewrites the golden file
+# --old [ref] compares with the hand-written pre-5.0 UI of a ref (default upstream/main; needs src/web/js), --update rewrites the golden file
 [group('web')]
 e2e *args: web-build
     bun web/tools/e2e/run.ts {{ args }}

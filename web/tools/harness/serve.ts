@@ -6,7 +6,7 @@
 //   import { startHarness } from './serve'                  used by web/tools/shots.ts and web/tools/e2e
 //
 // Options of startHarness (all off by default, so the screenshots are not affected):
-//   js: 'old'          serve the front end of git ref `oldRef` (default upstream/main) instead of the build in the tree
+//   js: 'old'          serve the hand-written front end (src/web/js) of git ref `oldRef` (default upstream/main) instead of the build in the tree
 //   requestLog: true   record every api.php request (NAS and LED) as JSON lines, read with h.requests()
 //   inject: '<js>'     script put at the start of <head> of view.php (before the page's own scripts)
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';

@@ -76,6 +76,7 @@ export const SCENARIOS: Scenario[] = [
                     `language ${lang}`,
                     async () => {
                         await s.go('settings');
+                        await s.settle(); // the Settings cards (power on after AC loss) load before the page reloads
                         await s.set('#unc-language', lang);
                     },
                     { reload: true }
