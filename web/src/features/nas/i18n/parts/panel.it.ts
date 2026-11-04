@@ -11,7 +11,7 @@ export const panelIt: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Premuto',
     'panel.released': 'Rilasciato',
     'panel.unreadable': 'Non leggibile',
-    'panel.power_doubtful': "Secondo il codice di UGREEN, il tasto di accensione di questo modello passa da ACPI. Considera dubbia la lettura dell'accensione.",
+    'panel.power_doubtful': 'Secondo il codice di UGREEN, il tasto di accensione di questo modello passa da ACPI. Considera dubbia la lettura dell’accensione.',
     'panel.read': 'Leggi ora',
     'panel.read_at': 'Letto alle {time}',
     'panel.not_read': 'Non ancora letto.',
@@ -23,7 +23,7 @@ export const panelIt: Record<keyof typeof panelEn, string> = {
     'panel.beeped': 'Segnale inviato',
     'cs201x.title': 'Ventole (Chipsea CS201x)',
     'cs201x.intro':
-        'Il DXP2800 GT ha un controller embedded Chipsea CS201x invece di un IT8613E, quindi il rilevamento delle ventole non si applica. Controlla la diagnostica qui sotto, poi conferma le ventole collegate. Fino ad allora il controllo delle ventole resta spento.',
+        'Il DXP2800 GT ha un controller integrato Chipsea CS201x invece di un IT8613E, quindi il rilevamento delle ventole non si applica. Controlla la diagnostica qui sotto, poi conferma le ventole collegate. Fino ad allora il controllo delle ventole resta spento.',
     'cs201x.state_on': 'Controllo delle ventole confermato',
     'cs201x.state_off': 'Controllo delle ventole spento fino alla conferma',
     'cs201x.reason': 'Motivo: {error}',

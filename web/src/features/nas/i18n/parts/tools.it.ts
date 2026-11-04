@@ -41,7 +41,7 @@ export const toolsIt: Record<keyof typeof toolsEn, string> = {
     'probe.run': 'Avvia test',
     'probe.run_again': 'Ripeti',
     'probe.running': 'Test di {pwm}, passo {step} di {steps}',
-    'probe.aborted': "L'ultima esecuzione si è fermata: {reason}",
+    'probe.aborted': 'L’ultima esecuzione si è fermata: {reason}',
     'probe.refused': 'Il test non è partito: {error}',
     'probe.result': 'Risultato',
     'probe.col_out': 'Uscita',
@@ -59,7 +59,7 @@ export const toolsIt: Record<keyof typeof toolsEn, string> = {
     'probe.agrees': 'Corrisponde a quanto riferiscono altri utenti.',
     'probe.differs': 'Diverso da quanto riferiscono altri utenti. Controlla ogni ventola prima di confermare.',
     'probe.confirm': 'Conferma',
-    'probe.confirm_need': "Scegli CPU o case per almeno un'uscita.",
+    'probe.confirm_need': 'Scegli CPU o case per almeno un’uscita.',
     'probe.confirmed': 'Mappa delle ventole salvata',
     'probe.map': 'Mappa delle ventole confermata',
     'probe.forget': 'Dimentica mappa',
@@ -70,14 +70,14 @@ export const toolsIt: Record<keyof typeof toolsEn, string> = {
     'probe.read_tachs': 'Leggi ora',
     'probe.tach_row': '{id}: {rpm} giri/min',
     'watchdog.title': 'Watchdog',
-    'watchdog.state.armed': 'Armato dal BIOS, alimentato dal plugin',
+    'watchdog.state.armed': 'Armato dal BIOS, mantenuto attivo dal plugin',
     'watchdog.state.off': 'Spento: il BIOS non attiva il watchdog hardware',
     'watchdog.state.action_needed': 'Serve un intervento',
     'watchdog.hint_action':
-        "Il watchdog è armato ma da un po' non viene alimentato, quindi il NAS può riavviarsi da solo. Controlla che il servizio delle ventole sia attivo.",
+        'Il watchdog è armato ma da un po’ non riceve il segnale dal plugin, quindi il NAS può riavviarsi da solo. Controlla che il servizio delle ventole sia attivo.',
     'watchdog.none': 'Ancora nessuna lettura',
     'watchdog.hint_kill':
-        'Finché il watchdog del BIOS è armato, una chiusura forzata del servizio delle ventole (kill -9, memoria esaurita) lo lascia senza alimentazione e il NAS si riavvia allo scadere del tempo. Un arresto o un riavvio normale è sicuro.',
+        'Finché il watchdog del BIOS è armato, una chiusura forzata del servizio delle ventole (kill -9, memoria esaurita) lo lascia senza segnale e il NAS si riavvia allo scadere del tempo. Un arresto o un riavvio normale è sicuro.',
     'backlight.title': 'Luminosità dello schermo',
-    'backlight.hint': "Luminosità dell'LCD sul frontale."
+    'backlight.hint': 'Luminosità dell’LCD sul frontale.'
 };

@@ -54,7 +54,7 @@ export const inputsIt: Record<keyof typeof inputsEn, string> = {
     'shaping.instant': 'immediato',
     'shaping.measured': 'Usa il {pct} % misurato',
     'shaping.allow_off': 'Consenti l’arresto',
-    'shaping.allow_off_hint': 'Un punto della curva a 0 % può fermare la ventola. I minimi dei job e le emergenze la tengono comunque in moto.',
+    'shaping.allow_off_hint': 'Un punto della curva a 0 % può fermare la ventola. I minimi delle attività e le emergenze la tengono comunque in moto.',
     'shaping.allow_off_warn': 'Una ventola ferma non raffredda nulla. Usalo solo se i dischi restano freddi.',
     'shaping.overrides': '{fans} hanno valori propri che prevalgono su questi.',
     'shaping.invalid': 'Questi valori verrebbero rifiutati. Controlla le impostazioni.',

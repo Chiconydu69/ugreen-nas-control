@@ -18,6 +18,7 @@ Each file is a flat object of `'key': 'text'`. `index.ts` registers all language
 - Key names: `area.item` as in the existing files (`nav.overview`, `led.fx_rainbow`). Add new keys at the end of their block, not in the middle, so parallel PRs do not collide.
 - The Spanish texts of the LED part come from ivolution's work in UGREEN LED Control. French, Italian, Dutch and Simplified Chinese were translated with machine help and would like a native speaker's review; so would the rest of the Spanish. Corrections are welcome as a PR.
 - Language codes follow Unraid's language packs (`fr_FR`, `it_IT`, `nl_NL`, `zh_CN`): the plugin uses the part before the underscore. `zh_TW` (traditional Chinese) is not covered and shows English under "Same as Unraid".
+- Other languages also take Unraid concepts from the matching unraid/lang-xx_XX pack (es_ES, fr_FR, it_IT, nl_NL, zh_CN), terminology only.
 
 ## Add a language
 
@@ -28,7 +29,7 @@ Each file is a flat object of `'key': 'text'`. `index.ts` registers all language
 
 ## German
 
-Unraid concepts follow the official German pack unraid/lang-de_DE (other languages use the matching unraid/lang-xx_XX pack), so the texts match the rest of the Unraid UI; where a pack term is stilted, the natural word wins, but menu and page names stay as Unraid shows them. Drives stay "Laufwerk" (hardware), where Unraid says "Datenträger".
+Unraid concepts follow the official German pack unraid/lang-de_DE, so the texts match the rest of the Unraid UI; where a pack term is stilted, the natural word wins, but menu and page names stay as Unraid shows them. Drives stay "Laufwerk" (hardware), where Unraid says "Datenträger".
 
 Address: informal "du" throughout, imperative for instructions ("Prüfe …", "Wähle …"). `web/src/features/nas/i18n/de-style.test.ts` fails on calques and stilted phrases (Dienst, erfolgt, mittels, bezüglich, seitens, basierend auf, macht Sinn, bitte beachten Sie, …).
 
