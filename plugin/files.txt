@@ -17,6 +17,8 @@ web/plugin/UGREENNASDashboard.page               UGREENNASDashboard.page        
 .build/plugin/images/ugreen-nas-control.png         images/ugreen-nas-control.png              644
 .build/plugin/icons/ugreen-nas-control.png          icons/ugreen-nas-control.png               644
 web/plugin/README.md                             README.md                                  644
+LICENSE                                          LICENSE                                    644
+docs/third-party.md                              third-party.md                             644
 web/plugin/include/lang.php                      include/lang.php                           644
 web/plugin/include/fan_v2.php                    include/fan_v2.php                         644
 web/plugin/include/fan_schedule.php              include/fan_schedule.php                   644
