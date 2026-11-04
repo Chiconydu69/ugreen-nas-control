@@ -2,6 +2,38 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.0.0
+
+- DXP2800 GT: fan control, confirmed on hardware by a community tester; it stays off until you run `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm`, runs at 25 % minimum and puts the fans back to their start speed when the plugin stops. Probe by Alexander Schubert (issue 95).
+- DXP2800 GT: LED support for power, network and both disks, off until you set `cs201x_leds="1"` in `leds.cfg`; the LEDs go back as found when the daemon stops (not yet confirmed on hardware). DXP6800 and DXP6800S use the same LED frames.
+- Fans: new History page with the speed, rpm and temperatures of every fan over the last hour or 24 hours, and which input drove the speed at each moment (CPU, hottest drive, quiet hours cap, mover or parity check, emergency). Kept in the fan daemon's memory only, nothing is written to the flash drive.
+- Fans: a SAS or RAID controller (HBA) can be the temperature source of a fan group, read from the mpt3sas sensor or from storcli, and a FanCtrl Plus 2 storcli sensor is imported as such.
+- Fans: choose where each fan group reads its temperature (CPU, drives, NVMe, GPU, network chip or your own script), and export, import or take over the fan settings of FanCtrl Plus, FanCtrl Plus 2, Dynamix Auto Fan Control and IT-Kuny.
+- The fan daemon can shape its output (dead zone, kick-start, minimum running speed, up and down ramps) and follow a schedule: quiet hours cap the speed (never below the minimum, never during an emergency), and a running mover or parity check/rebuild can raise the case fans. Both are off by default; the defaults decide exactly as before.
+- About: a link to help the project with test hardware or a test on your model.
+- The interface is also available in French, Italian, Dutch and Simplified Chinese (machine-assisted, native review welcome).
+- MQTT: a display or Home Assistant can update Docker containers, one or all at once, with progress reported back, once you set `mqtt_control_containers="1"` (off by default, separate from `mqtt_control_updates`).
+- MQTT: an optional publisher sends temperatures, fans, drives (including each array disk), free space of the array and pools, parity check, rebuild and clear progress, network rates and IP addresses, alarms, notifications and available updates (plugins, containers, Unraid OS) to a broker for displays and Home Assistant; restart, shutdown and plugin updates by command are off unless switched on.
+- Front panel: `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas panel buttons [--watch]` reads the power and reset button (read only) and `panel beep` sounds the beeper, from UGREEN's open-source drivers (not yet confirmed on hardware).
+- Other fan and LED tools (FanCtrl Plus, Dynamix Auto Fan Control, UGREEN LED drivers, ...) are detected; while one controls the fans, UGREEN NAS Control only reads them and shows a banner with a choice.
+- IT8613E models: the fan daemon feeds the watchdog the BIOS armed once it has seen it count (never arms it, yields to `it87_wdt`); new `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan power-on-ac` reads and sets power-on after AC loss.
+- Case view (front and rear) for the DXP2800 GT; the DXP4800 GT rear is closer to the real device (ribbed bezel, dotted lettering, light grille in the light theme); fan speed is written under the rear fans; LAN sockets flicker with traffic; the dashboard tile has a background of its own for the colour schemes Dark and Light.
+- Web UI for the new features: a Front panel page (button state, test beep), a DXP2800 GT fan card (diagnostics, confirm fans, forget), read-only fan readings for the plain iDX6011/iDX6012, a power-on-after-AC-loss card, the new watchdog states, a backlight value of "default", and the second LAN LED (`netdev2`) of the iDX6011 Pro on the LED pages.
+- DXP480T Plus: the power LED lights steady white again instead of flashing.
+- LEDs: the DXP2800 falls back to the frame UGREEN's own driver uses when the controller does not acknowledge the usual one (boards from December 2025); breath times stay at UGREEN's minimums (on 1000 ms, off 500 ms).
+- Script inputs work on Unraid: `/boot` is vfat and files there can never be executable, so the script now runs through the interpreter named in its shebang (`bash`, `sh`, `php`, also via `env`). A missing shebang or another interpreter is reported in the input test.
+- Sensors: on a model without fan control the fan controller shows "No fan control for this model" in a neutral style instead of a red "Not found". Reported with the DXP2800 GT (issue 95).
+- Fans: stopping or restoring now waits for a busy tool instead of giving up, and a slow controller, a hung helper or a broker restart no longer leaves fans, LEDs, MQTT status or state files in a bad state.
+- IT8613E: the watchdog survives a restart of the fan service; `power-on-ac set` from an unrecognised value needs `--force`.
+- Fan control for more models: a fan probe finds which output drives which fan on the DXP2800, DXP4800 (base, Plus, Pro) and DXP8800 Plus, checked against UGREEN's own drivers (the DXP4800 has no CPU fan output, the DXP8800 Plus a second case fan; fan control waits for your confirmation); the iDX6011 Pro gets its four fans, a 25 % floor and the LCD backlight setting (unconfirmed on a device); the plugin feeds the BIOS watchdog while the BIOS has it armed and never arms it.
+- iDX6011 Pro and DXP4800 GT: fan, watchdog and backlight now follow UGREEN's published drivers; on the Pro the fourth fan shows the third fan's speed while it reads 0, the backlight accepts 0 (default), the bays follow the Pro wiring, the power LED lights when the status daemon starts, and iDX6012 is recognised; the plain iDX6011/6012 shows fan and watchdog readings only (community reports, not yet checked on a device).
+- New models from UGREEN's product list: DXP6800 and Plus, DXP6800S, DXP8800 and Pro, DXP2800S and DH2600 (nobody has tested them yet).
+- Questions, ideas and showcases now go to GitHub Discussions (forms, links in README, website and the plugin's About page); issues stay for bugs and model reports.
+- Fan settings: new options (inputs, per-fan tuning, quiet hours, job rules) work with your existing settings; the first save of a new option keeps a backup of the old settings file as `fan.cfg.bak`.
+- Next channel: every push to `next` publishes a rolling test build `X.(Y+1).0-next.NNNNNN` (install URL `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`), replacing the beta channel; it installs over stable in place, going back to a lower version needs `plugin install <url> forced`.
+- The plugin is one program now, with fewer helper scripts and sturdier start and stop: stale pid files no longer stop foreign processes and settings are checked before they reach the LED chip; `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report` prints an anonymised JSON for model reports.
+- Plugin versions always have three parts, `X.Y.Z`; this release is `5.0.0`.
+
 ## 4.2
 
 - Sensors: on a model without fan control (every one but the DXP6800 Pro and the DXP4800 GT) the fan controller now says "No fan control for this model" instead of a red "Not found", which looked like a defect. Nothing changes in what the plugin does with the fan chip: it still does not touch it on these models.
