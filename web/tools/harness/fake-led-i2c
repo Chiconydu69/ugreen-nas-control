@@ -1,0 +1,74 @@
+#!/bin/bash
+# Stand-in for ugreen-led-i2c: keeps the LED registers in files, so the real
+# ugreen-led-ctl and api.php can be tried without hardware.
+D="${FAKE_LED_DIR:-/tmp/fakeled}"
+mkdir -p "$D"
+ALL="power netdev disk1 disk2 disk3 disk4 disk5 disk6"
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --bus | --speed) shift 2 ;;
+        --force | --reverse | --idle-only | --plain) shift ;;
+        *) break ;;
+    esac
+done
+cmd="${1:-}"
+shift || true
+
+init() { [ -f "$D/$1" ] || echo "on 255 255 255 255 0 0" >"$D/$1"; } # mode brightness R G B on off
+
+# shellcheck disable=SC2086 # ALL is a space separated list, split on purpose
+expand() { [ "$1" = all ] && echo $ALL || echo "${1//,/ }"; }
+
+case "$cmd" in
+    probe)
+        echo "{\"bus\": \"/dev/i2c-0\", \"address\": \"0x3a\", \"leds\": [\"power\",\"netdev\",\"disk1\"]}"
+        ;;
+    get)
+        for n in $(expand "$1"); do
+            init "$n"
+            read -r mode br r g b on off <"$D/$n"
+            echo "$n $mode $br $r $g $b $on $off"
+        done
+        ;;
+    set)
+        leds="$1"
+        shift
+        for n in $(expand "$leds"); do
+            init "$n"
+            read -r mode br r g b on off <"$D/$n"
+            case "$1" in
+                color)
+                    r="$2"
+                    g="$3"
+                    b="$4"
+                    ;;
+                brightness) br="$2" ;;
+                on)
+                    mode=on
+                    [ "$br" = 0 ] && br=255
+                    ;;
+                off) mode=off ;;
+                blink)
+                    mode=blink
+                    on="$2"
+                    off="$3"
+                    ;;
+                breath)
+                    mode=breath
+                    on="$2"
+                    off="$3"
+                    ;;
+            esac
+            echo "$mode $br $r $g $b $on $off" >"$D/$n"
+        done
+        ;;
+    effect)
+        trap 'exit 0' TERM INT
+        while true; do sleep 1; done
+        ;;
+    scan) echo "{}" ;;
+    *)
+        echo "fake: $cmd" >&2
+        exit 2
+        ;;
+esac

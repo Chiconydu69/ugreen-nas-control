@@ -1,0 +1,73 @@
+/* Fan modules: tools. Loaded after app.css; classes are .unc-fan-tools-*. */
+
+.unc-fan-tools-body { display: grid; gap: var(--sp-4); }
+.unc-fan-tools-body > * { margin: 0; }
+.unc-fan-tools-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
+.unc .unc-fan-tools-actions a.unc-btn { color: inherit; text-decoration: none; }
+.unc .unc-fan-tools-file { display: none !important; }
+
+.unc-fan-tools-src {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-3);
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--unc-border);
+}
+
+.unc-fan-tools-src:last-child { border-bottom: 0; }
+.unc-fan-tools-src > div:first-child { display: grid; gap: var(--sp-1); min-width: 0; }
+.unc-fan-tools-src small { color: var(--unc-muted); overflow-wrap: anywhere; }
+.unc-fan-tools-src-act { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.unc-fan-tools-src-act input[type="text"] { min-width: 260px; }
+
+.unc-fan-tools-preview {
+    display: grid;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+    border: 1px solid var(--unc-border);
+    border-radius: 10px;
+    background: var(--unc-card-2);
+}
+
+.unc-fan-tools-preview > * { margin: 0; }
+.unc-fan-tools-scroll { overflow-x: auto; }
+.unc-fan-tools-list { display: grid; gap: var(--sp-1); margin: 0; padding-left: var(--sp-5); }
+
+.unc-fan-tools-curves { display: flex; flex-wrap: wrap; gap: var(--sp-4); align-items: flex-end; }
+.unc .unc-fan-tools-curve { display: block; flex: none; width: 240px; height: 120px; max-width: 100%; }
+.unc-fan-tools-grid { stroke: var(--unc-border); stroke-width: 1; }
+.unc-fan-tools-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.unc-fan-tools-line.is-cpu { stroke: var(--unc-cpu); }
+.unc-fan-tools-line.is-case { stroke: var(--unc-accent); }
+.unc .unc-fan-tools-dot.is-cpu { fill: var(--unc-cpu); }
+.unc .unc-fan-tools-dot.is-case { fill: var(--unc-accent); }
+.unc-fan-tools-legend { display: flex; gap: var(--sp-3); color: var(--unc-muted); font-size: 12px; }
+.unc-fan-tools-legend i { display: inline-block; width: 10px; height: 10px; margin-right: var(--sp-1); border-radius: 50%; }
+.unc-fan-tools-legend i.is-cpu { background: var(--unc-cpu); }
+.unc-fan-tools-legend i.is-case { background: var(--unc-accent); }
+
+.unc-fan-tools-status { display: flex; flex-wrap: wrap; gap: var(--sp-3); align-items: center; }
+.unc-fan-tools-status > * { margin: 0; }
+.unc-fan-tools-progress { display: grid; gap: var(--sp-2); }
+.unc-fan-tools-progress .unc-meter { display: block; width: 100%; }
+.unc-fan-tools-tachs { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; }
+.unc-fan-tools-tachs .unc-pill { font-variant-numeric: tabular-nums; }
+
+.unc-fan-tools-body select,
+.unc-fan-tools-body input[type="range"] { cursor: pointer; }
+
+/* The card after a module slot keeps the card gap. */
+.unc-fanslot + .unc-card {
+    margin-top: var(--card-gap);
+}
+
+.unc-fanslot-ov:has(> .unc-fanmod:not([hidden])) { margin-top: var(--card-gap); }
+
+/* Fans page of a model with readings only (fan_caps.kind readonly): the tiles and the note, no modes, curves or limits. */
+.unc-view.is-readonly .unc-block,
+.unc-view.is-readonly .unc-savedock { display: none; }
+
+/* Front panel and CS201x cards. */
+.unc-fanmod .unc-facts { margin: 0; }

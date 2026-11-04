@@ -1,0 +1,24 @@
+{
+  "name": "alerts-disabled",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["alerts", "--force"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "alert": "none\n"
+  },
+  "calls": [],
+  "stubs": []
+}

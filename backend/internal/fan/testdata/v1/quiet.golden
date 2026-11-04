@@ -1,0 +1,3 @@
+mode=quiet min=30 crit=90/55 nvme_off=15 follows=false fan=true stall=true ignore=map[]
+cpu=50:15,65:25,75:45,85:80,92:100 case=35:20,40:25,45:40,50:70,55:100
+sha256 7377bedad8213fd65e277985f93930b38be46aa043d625410e4c44d735c37d52 lines 1667

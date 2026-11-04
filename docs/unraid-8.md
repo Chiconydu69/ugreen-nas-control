@@ -1,0 +1,73 @@
+# Unraid 8
+
+Preparation for Unraid 8, whose plugin system is not public yet. Only claims read in an official source are stated as facts; "(unverified)" marks the rest. Supported 7.x releases: [unraid.md](unraid.md).
+
+## What is known
+
+| Fact                                                                                                                                                                                                                                                                                                                                        | Source                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Base OS moves to Fedora via Universal Blue uCore; immutable; optional LTS or newer kernel; snapshot-based updates and Secure Boot planned                                                                                                                                                                                                   | [Unraid 8 Announced, 2026-08-17](https://unraid.net/blog/unraid-8-announced), [Q&A, 2026-10-15](https://unraid.net/blog/unraid-8-qa) |
+| Plugins move to "a new, more structured system": a developer describes what the plugin does (add to a page, manage a container, provide a web service); the user sees the permissions before installing; a plugin developer SDK comes with it; Unraid builds parts of itself with the same system                                           | Q&A; Announced                                                                                                                       |
+| Existing plugins "will need to be adapted"; compatibility is checked while preparing the upgrade; Limetech contacts plugin developers directly "in the coming weeks"                                                                                                                                                                        | Q&A                                                                                                                                  |
+| Private alpha "coming soon", public beta targeted for early 2027, then release candidates; stable "when it's ready"; waitlist form on the announcement page                                                                                                                                                                                 | Q&A; Announced                                                                                                                       |
+| Containers do not run as root by default; VMs run as a dedicated QEMU user; the UI helps fix permissions; Traefik becomes the reverse proxy; OIDC at launch                                                                                                                                                                                 | Q&A                                                                                                                                  |
+| More packages from uCore (Git, Python mentioned); NerdPack/NerdTools replacement undecided; containers recommended for extra tools                                                                                                                                                                                                          | Q&A                                                                                                                                  |
+| Developer docs and tooling "are on the way": none public yet. The Unraid API (GraphQL, built in since 7.2) documents no third-party plugin extension; its "API plugins" are npm packages for the Nest server (`github.com/unraid/api`, `api/docs/developer/api-plugins.md`) and are not shown to be the Unraid 8 plugin format (unverified) | [docs.unraid.net/API](https://docs.unraid.net/API/), unraid/api repo                                                                 |
+
+Not known (unverified): the plugin manifest format, whether `.plg` and `.page` files are still read, whether PHP stays in the webGUI, whether `/usr/local/emhttp/plugins`, `/boot/config/plugins` and Slackware package tools exist, how a plugin asks for device access or a long-running service, whether `/dev/port`, `/dev/mem` and `/dev/i2c-N` can be granted, how updates and Community Applications entries work. Do not design against guesses on these.
+
+## How our components map
+
+| Ours                                                                                             | Unraid 8 concept (from the Q&A)          | State                                                                                                                                                                                                                                                                                                                                |
+| ------------------------------------------------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Settings page `UGREENNASControl.page` (PHP, inline script, CSS)                                  | "adding to a page"                       | Frontend is a TypeScript bundle (`web/src`, built to `.build/plugin/js`) that only talks JSON to `api.php` through a typed client (`web/src/core/api.ts`). The PHP shell passes five `window.*` values.                                                                                                                              |
+| Dashboard tile `UGREENNASDashboard.page` (`$mytiles`, `tile-header*`)                            | "adding to a page"                       | Tile logic is `web/src/dash`; the markup is a PHP heredoc in the page (lines 18-44). Depends on `DashStats.page` internals.                                                                                                                                                                                                          |
+| `ugreen-nas-fan daemon` started by `ugreen-nas-ctl`                                              | "providing a web service" / a service    | Static Go binary, state in `/var/run/ugreen-nas-control.json`. Today `ugreen-nas-ctl` (the same binary, pidfile) starts it from the install script and from the boot-time reinstall; there is no service unit.                                                                                                                       |
+| LED backend `ugreen-led-ctl` and `ugreen-led-i2c` (Go)                                           | service                                  | `backend/internal/led/ledctl`, shipped in the one binary and checked against the recorded goldens by `just parity` (`docs/architecture.md`).                                                                                                                                                                                         |
+| Hardware access: `/dev/port` (fan chips), `/dev/mem` (DXP4800 GT LEDs), `/dev/i2c-N` (LED SMBus) | permissions the user sees before install | Three raw hardware permissions plus read access to `/boot/config/plugins`, `/var/local/emhttp/*.ini`, `/proc`, `/sys/class/hwmon`. How Unraid 8 expresses and grants them is unknown ([What is known](#what-is-known)). The Q&A names non-root defaults for containers and VMs; whether a plugin service can run as root is unknown. |
+| `plg` install and remove scripts (bash `INLINE`)                                                 | replaced by the declarative description  | Already reduced to: unpack one archive, swap, start (`plugin/ugreen-nas-control.plg.tmpl:61-143`). Logic that is not file placement lives in the binary.                                                                                                                                                                             |
+| Events (`plugin/event/stopping`)                                                                 | unknown                                  | One hook, a one-line `exec` into the binary; behaviour must move into the daemon (SIGTERM) if the event directory goes away.                                                                                                                                                                                                         |
+| Config in `/boot/config/plugins/ugreen-nas-control`                                              | unknown                                  | Plain `fan.cfg`/`leds.cfg`; paths are overridable by `UGREEN_*` environment variables (`docs/architecture.md`).                                                                                                                                                                                                                      |
+
+## What helps and what blocks
+
+Helps:
+
+- One archive with the whole install tree, with a manifest (`plugin/files.txt`) that the packer, harness and template share. A declarative description can be generated from the same list.
+- Static Go binaries with no dependencies; fan and LED code behind `backend/internal/hw` and `backend/internal/led/chip`.
+- UI is a typed API client plus a built bundle; every path and tool is overridable, so the UI can run against any server speaking the same JSON (`web/tools/harness`, `web/demo`).
+- The browser never touches Unraid internals except the CSRF token and the two `.page` shells.
+- Rival-tool detection and the lock are in Go, not in PHP.
+
+Blocks:
+
+- `web/plugin/api.php` (and `led/api.php`, `led/include/views.php`) is PHP that shells out per request (`api.php:28,437`, `led/api.php:36`). It also owns config writes, validation and the calibration job. Needs a PHP runtime and Unraid's `local_prepend.php` CSRF check.
+- `.page` files: PHP heredocs, `Menu`/`Cond` header, `$mytiles`, `<?autov?>`, `/var/local/emhttp/var.ini` for the token. All webGUI-specific.
+- `.plg` install scripts: bash `INLINE` blocks, `/usr/local/emhttp/plugins` paths, `update_cron`, `restore_favorites` (`plugin/ugreen-nas-control.plg.tmpl:142-145,205`), boot reinstall from `/boot`.
+- Backends are Go only (one binary, `ugreen-nas`). `docs/decisions.md` records the single daemon `ugreend` as next step, unverified on hardware.
+- CSS and the dashboard tile rely on Unraid's own classes and theme detection (`include/lang.php`).
+
+## Preparation we can do now
+
+Each item is useful on 7.x too. Order by value:
+
+1. **JSON API in Go.** Move the logic of `api.php` and `led/api.php` (validation, config read/write, calibration job, status assembly) into the Go daemon behind a local HTTP/JSON endpoint (unix socket or 127.0.0.1) that returns the contract the TypeScript client already uses. `api.php` shrinks to a proxy: check method, forward body and the CSRF-verified request, return the answer. The contract lives in one place (`web/src/core`, types shared with Go tests, for example generated JSON schema checked in CI). Prove it with `just harness` and `just parity`; the harness swaps the PHP fixture for the Go server.
+2. **One daemon process.** The binary already holds all tools (`backend/cmd/ugreen-nas`); merge the fan and LED daemons and the launcher logic of `ugreen-nas-ctl` into one process with one lock.
+3. **Thin `.page` files.** Reduce each page to: read the CSRF token and language, emit `window.*` values, mount the bundle. Move the dashboard tile markup into the bundle (render the `tile-header*` header in JS) so a replacement host needs only a mount point. Delete the dead `Cond` (`UGREENNASDashboard.page:3`).
+4. **Declare the plugin's needs in one file.** Add a machine-readable list (a new file next to `files.txt`, or a section in it): hardware nodes (`/dev/port`, `/dev/mem`, `/dev/i2c-*`), read paths, written paths, cron, service, page placements (Settings page, Dashboard tile), network (none). Generate the `.plg` from the same source today; generate the Unraid 8 description from it later.
+5. **No Slackware or webGUI helpers in install logic.** Install already is unpack and swap; keep it that way and keep `update_cron` and `restore_favorites` behind a feature test (`[ -x ... ]`) so their absence does not fail anything.
+6. **Test discipline on 7.x.** Add `E_ALL` + deprecation-as-failure to the PHP harness; add a headless-browser layout check at 360, 768 and 1600 px for the settings page and tile (`just shots` already renders per model and theme); keep the matrix in [the test matrix](unraid.md#matrix) current.
+7. **Ask Limetech.** Reply to the forum thread and join the waitlist (see [What is known](#what-is-known)) to be contacted as a plugin developer; ask for: manifest format, hardware permissions (`/dev/port`, `/dev/mem`, i2c), service lifecycle, SDK access. Answers update [What is known](#what-is-known).
+8. **Keep `max` unset** until an Unraid 8 build exists. A wrong `max` stops installs at boot ([What we declare](unraid.md#what-we-declare)).
+
+Declined: [the Unraid API as plugin host, guessed Unraid 8 manifest formats](decisions.md#unraid-api-or-guessed-manifest-formats-as-unraid-8-plugin-host).
+
+## Trigger to start the port
+
+Start when any of these appears, whichever is first:
+
+- Public Unraid 8 plugin documentation or SDK on `docs.unraid.net` or `github.com/unraid`.
+- The Unraid 8 beta (private alpha access for us, public beta early 2027) with an installable test image.
+- Limetech contacts us as a plugin developer.
+
+First steps then: read the permission model for hardware devices; write a minimal plugin that shows one value from `ugreen-nas-fan status` on a page; map `plugin/files.txt` and the needs file onto the manifest; run the [matrix](unraid.md#matrix) on the alpha. Watch [Unraid News](https://unraid.net/blog) and the "State of 8" series announced in the Q&A.

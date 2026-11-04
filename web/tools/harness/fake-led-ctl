@@ -1,0 +1,9 @@
+#!/bin/sh
+# Stand-in for ugreen-led-ctl in the local harness: answers from the JSON files next to it (written by serve.ts).
+# Commands that change something just succeed.
+dir="$(dirname "$0")"
+case "${1:-}" in
+    status | all | list | bays) cat "$dir/led-$1.json" ;;
+    get) cat "$dir/led-get-${2:-}.json" 2>/dev/null || exit 1 ;;
+    *) printf '{"ok":true}\n' ;;
+esac

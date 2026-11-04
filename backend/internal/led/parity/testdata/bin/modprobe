@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "modprobe $*" >>"$STUB_LOG"
+[ -e "$STUBS/modprobe.fail" ] && exit 1
+exit 0

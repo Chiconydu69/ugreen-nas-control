@@ -1,0 +1,44 @@
+name: Model report
+description: Tell us what works on your UGREEN model.
+labels: [model-report]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model (DMI product name)
+      description: cat /sys/class/dmi/id/product_name
+      placeholder: DXP4800 Plus
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Unraid and plugin version
+    validations:
+      required: true
+  - type: checkboxes
+    id: works
+    attributes:
+      label: What works
+      description: Each line is checked on its own and shown on the site per model. Tick only what you saw.
+      options:
+        - label: LEDs switch on and show colours
+        - label: The right bay blinks with Identify (bay order)
+        - label: Case view matches my device (front, rear)
+        - label: Fan control works
+        - label: Temperatures and the dashboard tile are shown
+  - type: textarea
+    id: report
+    attributes:
+      label: Output of ugreen-nas-ctl report
+      description: Run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report on the Unraid box and paste the JSON. It holds the model, the chips found, the bus probe, the LED and fan self-test results and the plugin version; no serial numbers, IP addresses or drive names.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: What does not work, anything else
+  - type: markdown
+    attributes:
+      value: Remove serial numbers and IP addresses from anything you paste.

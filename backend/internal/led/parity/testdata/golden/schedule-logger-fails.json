@@ -1,0 +1,43 @@
+{
+  "name": "schedule-logger-fails",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["schedule"],
+      "rc": 0,
+      "stdout": "night mode: night\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "on 20 255 255 255 0 0\n",
+    "disk2": "on 20 9 9 9 0 0\n",
+    "disk3": "on 20 255 255 255 0 0\n",
+    "disk4": "on 20 255 255 255 0 0\n",
+    "disk5": "on 20 255 255 255 0 0\n",
+    "disk6": "on 20 255 255 255 0 0\n",
+    "netdev": "on 20 255 255 255 0 0\n",
+    "power": "on 20 255 255 255 0 0\n"
+  },
+  "state": {
+    "schedule": "night\n"
+  },
+  "calls": [
+    "set power brightness 200",
+    "--plain get power",
+    "set netdev brightness 255",
+    "--plain get netdev",
+    "set disk1 brightness 100",
+    "--plain get disk1",
+    "set disk2 color 9 9 9",
+    "set power brightness 20",
+    "set netdev brightness 20",
+    "set disk1 brightness 20",
+    "set disk2 brightness 20",
+    "set disk3 brightness 20",
+    "set disk4 brightness 20",
+    "set disk5 brightness 20",
+    "set disk6 brightness 20"
+  ],
+  "stubs": ["logger -t ugreen-led-control night mode: night"]
+}

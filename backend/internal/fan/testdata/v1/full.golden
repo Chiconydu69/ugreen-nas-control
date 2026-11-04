@@ -1,0 +1,3 @@
+mode=full min=25 crit=90/55 nvme_off=15 follows=false fan=true stall=true ignore=map[]
+cpu=0:100 case=0:100
+sha256 706e06da968a28a51ce8cde9f9073f60873c16c52ac05848427ac962b3ab5eee lines 1667

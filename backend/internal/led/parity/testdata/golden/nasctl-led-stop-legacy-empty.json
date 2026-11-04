@@ -1,0 +1,18 @@
+{
+  "name": "nasctl-led-stop-legacy-empty",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-stop"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/legacy.pid": "\u003cPID\u003e\n"
+  },
+  "calls": ["ctl fx stop", "ctl daemon stop"],
+  "stubs": []
+}

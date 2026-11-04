@@ -1,0 +1,27 @@
+{
+  "name": "shutdown-breath-night",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"20\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 140 0\",\n  \"effect\": \"breath\",\n  \"on_ms\": \"1200\",\n  \"off_ms\": \"1200\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "breath 20 255 140 0 1200 1200\n"
+  },
+  "state": {
+    "phase-power": "\u003cMS\u003e 1200 1200\n",
+    "shutdown": ""
+  },
+  "calls": ["set power color 255 140 0", "set power brightness 20", "set power breath 1200 1200", "--plain get power"],
+  "stubs": ["runlevel", "logger -t ugreen-led-control Shutting down or rebooting: power LED signals it"]
+}

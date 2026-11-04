@@ -1,0 +1,23 @@
+{
+  "name": "daemon-run-foreign-monitor",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["daemon", "run"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": [
+    "ip route show default",
+    "ip route show default",
+    "logger -t ugreen-led-control status daemon started (bays: 6, network: eth0)",
+    "logger -t ugreen-led-control ugreenleds-driver monitor is running, status daemon exits",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ping -c 1 -W 2 192.168.1.1"
+  ]
+}

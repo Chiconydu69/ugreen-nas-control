@@ -1,0 +1,67 @@
+{
+  "name": "nasctl-start-stop",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    },
+    {
+      "args": ["start"],
+      "rc": 0,
+      "stdout": "Fan daemon started.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "running (pid \u003cPID\u003e)\n",
+      "stderr": ""
+    },
+    {
+      "args": ["start"],
+      "rc": 0,
+      "stdout": "Fan daemon is already running.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["restart"],
+      "rc": 0,
+      "stdout": "Fan daemon started.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "running (pid \u003cPID\u003e)\n",
+      "stderr": ""
+    },
+    {
+      "args": ["stop"],
+      "rc": 0,
+      "stdout": "Fan daemon stopped.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    },
+    {
+      "args": ["stop"],
+      "rc": 0,
+      "stdout": "Fan daemon stopped.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/fan.cfg": "fan_control=\"1\"\n",
+    "run/fan.err": ""
+  },
+  "calls": ["fan probe", "fan daemon", "fan probe", "fan daemon"],
+  "stubs": []
+}

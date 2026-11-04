@@ -1,0 +1,59 @@
+{
+  "name": "daemon-run-sync",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["daemon", "run"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "on 76 255 140 0 0 0\n",
+    "disk2": "on 255 255 59 48 0 0\n",
+    "disk3": "breath 255 0 50 255 1500 1500\n",
+    "disk4": "on 255 255 160 0 0 0\n",
+    "disk5": "breath 255 0 50 255 1500 1500\n",
+    "disk6": "breath 255 0 50 255 1500 1500\n",
+    "netdev": "on 255 0 200 83 0 0\n"
+  },
+  "state": {
+    "phase-disk3": "\u003cMS\u003e 1500 1500\n",
+    "phase-disk5": "\u003cMS\u003e 1500 1500\n",
+    "phase-disk6": "\u003cMS\u003e 1500 1500\n"
+  },
+  "calls": [
+    "set disk1 brightness 76",
+    "set disk1 color 255 140 0",
+    "set disk1 on",
+    "set disk2 brightness 255",
+    "set disk2 color 255 59 48",
+    "set disk2 on",
+    "set disk3 breath 1500 1500",
+    "set disk3 brightness 255",
+    "set disk3 color 0 50 255",
+    "set disk4 brightness 255",
+    "set disk4 color 255 160 0",
+    "set disk4 on",
+    "set disk5 breath 1500 1500",
+    "set disk5 brightness 255",
+    "set disk5 color 0 50 255",
+    "set disk6 breath 1500 1500",
+    "set disk6 brightness 255",
+    "set disk6 color 0 50 255",
+    "set netdev brightness 255",
+    "set netdev color 0 200 83",
+    "set netdev on"
+  ],
+  "stubs": [
+    "ip route show default",
+    "ip route show default",
+    "ip route show default",
+    "logger -t ugreen-led-control status daemon started (bays: 6, network: eth0)",
+    "logger -t ugreen-led-control status daemon stopped",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ping -c 1 -W 2 192.168.1.1",
+    "ping -c 1 -W 2 192.168.1.1"
+  ]
+}

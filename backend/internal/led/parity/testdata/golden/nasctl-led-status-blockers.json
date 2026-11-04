@@ -1,0 +1,66 @@
+{
+  "name": "nasctl-led-status-blockers",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"standalone\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"standalone\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"driver\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"driver\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"driver\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"module\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"module\", \"warning\": \"standalone\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/ugreen-led-control.plg": ""
+  },
+  "calls": [],
+  "stubs": []
+}

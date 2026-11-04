@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "pgrep $*" >>"$STUB_LOG"
+[ -e "$STUBS/pgrep.found" ] && exit 0
+exit 1

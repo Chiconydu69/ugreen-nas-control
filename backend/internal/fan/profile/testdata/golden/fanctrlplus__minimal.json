@@ -1,0 +1,38 @@
+{
+  "source": "fanctrlplus",
+  "title": "FanCtrl Plus: Case",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "40:40,60:100",
+      "case_input": "disk_max:disk1+disk2",
+      "min_pct": "40",
+      "mode": "custom"
+    }
+  },
+  "warnings": [],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus_Case.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus_Case.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus_Case.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "fanctrlplus_Case.cfg: low, high, pwm, max",
+    "case_input": "fanctrlplus_Case.cfg: disks",
+    "min_pct": "pwm of the imported blocks",
+    "mode": "imported curves need the custom mode"
+  }
+}

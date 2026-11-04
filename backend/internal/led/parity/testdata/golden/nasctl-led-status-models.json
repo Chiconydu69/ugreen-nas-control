@@ -1,0 +1,112 @@
+{
+  "name": "nasctl-led-status-models",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP8800 Plus\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DX4600 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DX4700+\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP4800 GT\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP480T Plus\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP2800\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"DXP9999 Future\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"DX9 Mystery\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"iDX6011 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"iDX6012\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": false, \"blocker\": \"model\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"PRIME Z790-P\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": false, \"blocker\": \"model\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"UGREEN NAS\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"DXP quoted Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": false, \"blocker\": \"model\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": false, \"blocker\": \"model\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

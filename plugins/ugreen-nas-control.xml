@@ -3,12 +3,17 @@
   <Name>UGREEN NAS Control</Name>
   <PluginURL>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugin/ugreen-nas-control.plg</PluginURL>
   <TemplateURL>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugins/ugreen-nas-control.xml</TemplateURL>
-  <PluginAuthor>Alexander Schubert</PluginAuthor>
-  <Overview>LED control for UGREEN DX/DXP/iDX NAS (every model UGREEN LED Control knew) and, for the UGREEN DXP6800 Pro and DXP4800 GT, system info, temperatures and fan control like the fan settings of UGOS. It succeeds UGREEN LED Control. Shows model, BIOS, CPU, memory and uptime, the CPU, mainboard, NVMe and disk temperatures (read from Unraid, so sleeping disks are never woken up), and a case view with the bays, LAN ports, RAM, M.2 and PCIe slots. Fan modes: BIOS, Quiet, Standard, Performance, Full speed or your own curves; the CPU fan follows the CPU, the case fans the hottest disk or NVMe. Safety: minimum speed, all fans at 100 % when something gets too hot or a temperature can't be read, a notification when a fan stops, and the BIOS values back when the plugin stops. No kernel module. LED control: colours, effects, status mode for disks and network, night mode, shown live in the case picture and the dashboard tile; off until switched on, takes over the settings of UGREEN LED Control, and models nobody has confirmed are marked untested. It does not run next to ugreenleds-driver or led_ugreen; next to the standalone UGREEN LED Control it only warns.</Overview>
   <Category>Tools:Utilities</Category>
+  <Overview>LED, fan and system control for UGREEN NAS (DX, DXP, iDX series) under Unraid. LEDs: colours, effects, disk and network status, night mode, Unraid alerts. Case view of your NAS with its bays, ports and drives. Temperatures read from Unraid, so sleeping disks stay asleep. On the DXP6800 Pro and DXP4800 GT: fan control with Quiet, Standard, Performance or custom curves, fan measuring, and all fans at 100 % when a temperature is too high or unreadable. No kernel module. Replaces UGREEN LED Control.</Overview>
   <Project>https://github.com/ugreen-nas-control/ugreen-nas-control</Project>
   <Support>https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/</Support>
   <ReadMe>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/README.md</ReadMe>
-  <Icon>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/src/web/images/ugreen-nas-control.png</Icon>
+  <Icon>https://ugreen-nas-control.github.io/ugreen-nas-control/icon.png</Icon>
+  <ExtraSearchTerms>ugreen nas dxp dx idx dxp6800 dxp4800 led fan fan-control temperature case-view</ExtraSearchTerms>
+  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/overview-dark.png</Screenshot>
+  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/fans-dark.png</Screenshot>
+  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/case-dark.png</Screenshot>
+  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/leds-dark.png</Screenshot>
   <License>MIT</License>
+  <MinVer>7.2.0</MinVer>
 </Plugin>

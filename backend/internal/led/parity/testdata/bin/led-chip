@@ -1,0 +1,37 @@
+#!/bin/bash
+# Fake LED chip for the parity suite: logs every call, then lets web/tools/harness/fake-led-i2c
+# keep the registers in $FAKE_LED_DIR. Switches: $STUBS/chip.fail, probe.out, fx.fail.
+echo "$*" >>"${CALL_LOG:?}"
+if [ -e "${STUBS:-/nonexistent}/chip.fail" ]; then
+    echo "chip: no answer" >&2
+    exit 1
+fi
+if [ "${1:-}" = set ] && { [ "${3:-}" = blink ] || [ "${3:-}" = breath ]; }; then
+    # the real tool rejects timings that are not numbers
+    if ! [[ ${4:-} =~ ^[0-9]+$ && ${5:-} =~ ^[0-9]+$ ]]; then
+        echo "ERROR: invalid duration" >&2
+        exit 1
+    fi
+fi
+args=("$@")
+for a in "${args[@]}"; do
+    case "$a" in
+        probe)
+            if [ -e "$STUBS/probe.out" ]; then
+                cat "$STUBS/probe.out"
+                exit 0
+            fi
+            break
+            ;;
+        effect)
+            if [ -e "$STUBS/fx.fail" ]; then
+                echo "no temperature sensor" >&2
+                exit 1
+            fi
+            break
+            ;;
+        get | set | scan | dxp480t) break ;;
+    esac
+done
+# Under the tool name, so that the controller accepts the process as its own effect.
+exec -a ugreen-led-i2c bash "${FAKE_CHIP:?}" "$@"

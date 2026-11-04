@@ -1,0 +1,16 @@
+{
+  "name": "nasctl-start-probe-fail-plain",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["start"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: permission denied\nsecond line\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["fan probe"],
+  "stubs": []
+}

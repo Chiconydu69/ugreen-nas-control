@@ -1,0 +1,48 @@
+{
+  "source": "itkuny",
+  "title": "IT-Kuny fan control, mode normal",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "36:27,46:47,56:75,61:100",
+      "cpu_curve": "38:24,52:43,66:75,76:100",
+      "min_pct": "24",
+      "mode": "custom"
+    }
+  },
+  "warnings": [],
+  "not_imported": [
+    {
+      "key": "CPU_TEMP_PATH",
+      "reason": "the CPU sensor is chosen by the NAS model",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "FAILSAFE_PWM",
+      "reason": "the emergency speed is fixed at 100 %",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "FAN_PWM_PATH",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "MAX_PWM",
+      "reason": "this plugin has no speed cap",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "POLL_INTERVAL",
+      "reason": "the fan check interval is fixed",
+      "file": "ugreen-fan-control.env"
+    }
+  ],
+  "provenance": {
+    "case_curve": "the normal disk curve",
+    "cpu_curve": "the normal CPU curve",
+    "min_pct": "MIN_PWM",
+    "mode": "FAN_MODE=normal"
+  }
+}

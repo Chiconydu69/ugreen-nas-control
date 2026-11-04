@@ -1,0 +1,203 @@
+{
+  "name": "write-basic",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["on", "power"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["off", "disk1"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk1"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk1\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["brightness", "disk1", "128"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk1"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk1\",\n  \"brightness\": \"128\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["brightness", "disk1", "0"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["brightness", "disk1", "300"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Brightness must be between 0 and 255.\n"
+    },
+    {
+      "args": ["brightness", "disk1", "abc"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Brightness must be between 0 and 255.\n"
+    },
+    {
+      "args": ["brightness", "disk1", "-5"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Brightness must be between 0 and 255.\n"
+    },
+    {
+      "args": ["brightness", "nope", "5"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    },
+    {
+      "args": ["color", "disk2", "1", "2", "3"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["color", "disk2", "256", "0", "0"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: RGB values must be between 0 and 255.\n"
+    },
+    {
+      "args": ["color", "disk2", "a", "b", "c"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: RGB values must be between 0 and 255.\n"
+    },
+    {
+      "args": ["color", "nope", "1", "2", "3"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    },
+    {
+      "args": ["on", "nope"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    },
+    {
+      "args": ["off", "nope"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    },
+    {
+      "args": ["get", "disk2"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk2\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"1 2 3\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "disk2"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["blink", "disk2", "100", "100"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "disk2"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk2"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk2\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"1 2 3\",\n  \"effect\": \"none\",\n  \"on_ms\": \"100\",\n  \"off_ms\": \"100\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["breath", "netdev", "1000", "1000"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "netdev"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "netdev"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"netdev\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"1000\",\n  \"off_ms\": \"1000\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["off", "disk5"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "disk5"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "nope"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    }
+  ],
+  "registers": {
+    "disk1": "off 128 255 255 255 0 0\n",
+    "disk2": "on 255 1 2 3 100 100\n",
+    "disk5": "off 255 255 255 255 0 0\n",
+    "netdev": "on 255 255 255 255 1000 1000\n",
+    "power": "on 255 255 255 255 0 0\n"
+  },
+  "state": {
+    "phase-netdev": "\u003cMS\u003e 1000 1000\n"
+  },
+  "calls": [
+    "set power brightness 255",
+    "set power on",
+    "set disk1 off",
+    "--plain get disk1",
+    "set disk1 brightness 128",
+    "--plain get disk1",
+    "set disk1 on",
+    "--plain get disk1",
+    "set disk1 off",
+    "set disk2 color 1 2 3",
+    "--plain get disk2",
+    "--plain get disk2",
+    "set disk2 blink 100 100",
+    "--plain get disk2",
+    "set disk2 on",
+    "--plain get disk2",
+    "set netdev breath 1000 1000",
+    "--plain get netdev",
+    "set netdev on",
+    "--plain get netdev",
+    "set disk5 off",
+    "--plain get disk5"
+  ],
+  "stubs": []
+}

@@ -1,0 +1,3 @@
+#!/bin/bash
+echo "runlevel" >>"$STUB_LOG"
+cat "$STUBS/runlevel" 2>/dev/null || echo "N 5"

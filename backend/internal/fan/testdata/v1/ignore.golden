@@ -1,0 +1,3 @@
+mode=performance min=25 crit=95/50 nvme_off=20 follows=false fan=true stall=false ignore=map[cache:true nvme1:true]
+cpu=40:35,55:50,65:70,75:90,85:100 case=30:35,36:45,42:65,48:90,52:100
+sha256 ecedc702b564cd5b28dbb81a07b21de0c6ba62c9990c2ee0e7c6671c803e99ed lines 1667

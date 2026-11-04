@@ -1,0 +1,66 @@
+{
+  "name": "shutdown",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"180\",\n  \"max_brightness\": \"255\",\n  \"color\": \"200 10 10\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"500\",\n  \"off_ms\": \"500\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["schedule"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "blink 180 200 10 10 500 500\n"
+  },
+  "state": {
+    "phase-power": "\u003cMS\u003e 500 500\n",
+    "shutdown": ""
+  },
+  "calls": [
+    "--plain get power",
+    "set power color 200 10 10",
+    "set power brightness 180",
+    "set power blink 500 500",
+    "--plain get power",
+    "set power color 200 10 10",
+    "set power brightness 180",
+    "set power blink 500 500"
+  ],
+  "stubs": [
+    "runlevel",
+    "runlevel",
+    "logger -t ugreen-led-control Shutting down or rebooting: power LED signals it",
+    "runlevel",
+    "logger -t ugreen-led-control Shutting down or rebooting: power LED signals it"
+  ]
+}

@@ -1,0 +1,55 @@
+Menu="Dashboard:0"
+Icon="ugreen-nas-control.png"
+---
+<?php
+// Dashboard tile: Unraid's dashboard (6.12+) shows every $mytiles entry as a
+// movable tile; each tile is a <tbody>, its title is the name in the content manager.
+// The header follows Unraid's own tiles (DashStats.page), which also makes the
+// dashboard add its collapse button to .tile-header-right-controls.
+require_once '/usr/local/emhttp/plugins/ugreen-nas-control/include/lang.php';
+[$unc_lang] = unc_language();
+$unc_theme = unc_theme();
+$unc_solid = $unc_theme === "auto" ? "" : " unc-dash-solid";
+$unc_data_theme = $unc_theme === "auto" ? "" : " data-theme=\"{$unc_theme}\"";
+
+// LED colours in the tile, when the built-in LED part is on.
+$unc_led_on = is_file('/boot/config/plugins/ugreen-nas-control/led.enabled')
+    && is_file('/usr/local/emhttp/plugins/ugreen-nas-control/led/api.php');
+$unc_led_api = $unc_led_on ? '/plugins/ugreen-nas-control/led/api.php' : '';
+
+$mytiles['ugreen-nas-control']['column2'] = <<<EOT
+<tbody id="unc-dash-tile" title="UGREEN NAS Control">
+<tr><td>
+<span class="tile-header">
+<span class="tile-header-left">
+<img src="/plugins/ugreen-nas-control/images/ugreen-nas-control.png" class="unc-dash-icon" alt="">
+<div class="section"><h3 class="tile-header-main">UGREEN NAS Control</h3><span id="unc-dash-state"></span></div>
+</span>
+<span class="tile-header-right">
+<span class="tile-header-right-controls">
+<a href="/Settings/UGREENNASControl" id="unc-dash-settings"><i class="fa fa-fw fa-cog control"></i></a>
+</span>
+</span>
+</span>
+</td></tr>
+<tr><td>
+<div class="unc unc-dash{$unc_solid}"{$unc_data_theme} id="unc-dash" data-led-api="{$unc_led_api}">
+<div class="unc-note is-bad is-box is-icon" data-alert hidden></div>
+<a class="unc-dash-front" href="/Settings/UGREENNASControl" data-nav="case" data-front hidden></a>
+<div class="unc-fantiles" data-fans hidden></div>
+<div class="unc-heat" data-temps></div>
+<div class="unc-m2" data-nvme hidden></div>
+<nav class="unc-dash-links" data-links></nav>
+</div>
+</td></tr>
+</tbody>
+EOT;
+?>
+<link rel="stylesheet" href="<?autov('/plugins/ugreen-nas-control/css/app.css')?>">
+<script>
+window.UGREEN_NAS_LANG = <?= json_encode($unc_lang) ?>;
+window.UGREEN_NAS_THEME = <?= json_encode($unc_theme) ?>;
+</script>
+<script src="<?autov('/plugins/ugreen-nas-control/js/i18n.js')?>"></script>
+<script src="<?autov('/plugins/ugreen-nas-control/js/ledfx.js')?>"></script>
+<script src="<?autov('/plugins/ugreen-nas-control/js/dash.js')?>"></script>

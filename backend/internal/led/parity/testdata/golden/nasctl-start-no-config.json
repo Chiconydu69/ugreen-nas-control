@@ -1,0 +1,24 @@
+{
+  "name": "nasctl-start-no-config",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["start"],
+      "rc": 0,
+      "stdout": "Fan daemon started.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["stop"],
+      "rc": 0,
+      "stdout": "Fan daemon stopped.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/fan.err": ""
+  },
+  "calls": ["fan probe", "fan daemon"],
+  "stubs": []
+}

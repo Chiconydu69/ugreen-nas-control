@@ -1,0 +1,46 @@
+{
+  "name": "daemon-start-foreign",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["daemon", "start"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: The LED monitor of ugreenleds-driver is running; uninstall that plugin first.\n"
+    },
+    {
+      "args": ["daemon", "restart"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: The LED monitor of ugreenleds-driver is running; uninstall that plugin first.\n"
+    },
+    {
+      "args": ["daemon", "status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    },
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"foreign_monitor\": true,\n  \"model\": \"DXP6800 Pro\",\n  \"bays\": 6,\n  \"kernel\": \"\",\n  \"mapping\": \"tested\",\n  \"mode\": \"manual\",\n  \"daemon\": false,\n  \"fx\": \"\",\n  \"fx_leds\": \"\",\n  \"identify\": [],\n  \"sync_action\": \"\",\n  \"sync_percent\": 0,\n  \"sync_enabled\": true,\n  \"sync_color\": \"0 120 255\",\n  \"standby_mode\": \"dim\",\n  \"standby_level\": 30,\n  \"smart_enabled\": true,\n  \"error_enabled\": true,\n  \"activity_enabled\": true,\n  \"smart_color\": \"255 140 0\",\n  \"disk_color_mode\": \"own\",\n  \"netdev_status\": \"activity\",\n  \"alert_enabled\": false,\n  \"alert_level\": \"warning\",\n  \"alert_color\": \"255 59 48\",\n  \"shutdown_blink\": false,\n  \"shutdown_color\": \"255 140 0\",\n  \"shutdown_effect\": \"blink\",\n  \"alert_count\": 0,\n  \"alert_active\": false,\n  \"fx_speed\": 2,\n  \"fx_reverse\": false,\n  \"fx_idle\": false,\n  \"night\": false,\n  \"disk_error_color\": \"255 59 48\",\n  \"saved_brightness\": {},\n  \"network_device\": \"eth0\",\n  \"netdev_speed\": 1000,\n  \"network_ports\": [{\"name\": \"eth0\", \"link\": true, \"speed\": 1000, \"max\": 2500}, {\"name\": \"eth1\", \"link\": false, \"speed\": 0, \"max\": 0}],\n  \"netdev_speed_enabled\": false,\n  \"netdev_speed_colors\": {\"10\": \"255 59 48\", \"100\": \"255 140 0\", \"1000\": \"255 214 10\", \"2500\": \"0 200 83\", \"5000\": \"0 200 200\", \"10000\": \"0 120 255\"},\n  \"controller\": \"ugreen-led-i2c\",\n  \"i2c_bus\": 0,\n  \"i2c_address\": \"0x3a\",\n  \"i2c_probe\": \"ok\",\n  \"leds\": [\"power\", \"netdev\", \"disk1\", \"disk2\", \"disk3\", \"disk4\", \"disk5\", \"disk6\"]\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "on 255 255 255 255 0 0\n"
+  },
+  "state": {
+    "bus": "0\n",
+    "maxspeed": "eth0 2500\n"
+  },
+  "calls": ["probe", "--plain get power"],
+  "stubs": [
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ip route show default",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ethtool eth0",
+    "ethtool eth1"
+  ]
+}

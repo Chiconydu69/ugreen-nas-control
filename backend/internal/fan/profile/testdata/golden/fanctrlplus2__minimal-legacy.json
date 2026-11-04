@@ -1,0 +1,48 @@
+{
+  "source": "fanctrlplus2",
+  "title": "FanCtrl Plus 2: Case",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "40:40,60:100",
+      "case_input": "disk_max:disk1+disk2",
+      "min_pct": "40",
+      "mode": "custom"
+    }
+  },
+  "warnings": [],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_Case.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus2_Case.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_Case.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus2_Case.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus2_Case.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "fanctrlplus2_Case.cfg: low, high, pwm, max",
+    "case_input": "fanctrlplus2_Case.cfg: disks",
+    "min_pct": "pwm of the imported blocks",
+    "mode": "imported curves need the custom mode"
+  }
+}

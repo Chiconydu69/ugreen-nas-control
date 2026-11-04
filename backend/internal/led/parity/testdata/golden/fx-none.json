@@ -1,0 +1,34 @@
+{
+  "name": "fx-none",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["fx", "start"],
+      "rc": 0,
+      "stdout": "No effect configured.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "restart"],
+      "rc": 0,
+      "stdout": "No effect configured.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

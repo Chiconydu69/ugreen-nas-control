@@ -1,0 +1,30 @@
+{
+  "name": "nasctl-led-boot-conflict",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-boot"],
+      "rc": 1,
+      "stdout": "LEDs not started: driver\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-boot"],
+      "rc": 1,
+      "stdout": "LEDs not started: module\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-boot"],
+      "rc": 1,
+      "stdout": "LEDs not started: model\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/led.enabled": ""
+  },
+  "calls": [],
+  "stubs": []
+}

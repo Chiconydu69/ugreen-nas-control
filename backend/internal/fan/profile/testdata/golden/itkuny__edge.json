@@ -1,0 +1,37 @@
+{
+  "source": "itkuny",
+  "title": "IT-Kuny fan control, mode powerful",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "30:47,40:71,50:86,55:100",
+      "cpu_curve": "30:47,65:100",
+      "min_pct": "10",
+      "mode": "custom"
+    }
+  },
+  "warnings": [
+    "POWERFUL_CPU_FAN_CURVE: the pair \"garbage\" is not temp:value, skipped",
+    "MAX_PWM=200 caps the speed in IT-Kuny's daemon; this plugin has no cap",
+    "min_pct: 0 is below the minimum, set to 10"
+  ],
+  "not_imported": [
+    {
+      "key": "MAX_PWM",
+      "reason": "this plugin has no speed cap",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "POLL_INTERVAL",
+      "reason": "the fan check interval is fixed",
+      "file": "ugreen-fan-control.env"
+    }
+  ],
+  "provenance": {
+    "case_curve": "the powerful disk curve",
+    "cpu_curve": "the powerful CPU curve",
+    "min_pct": "MIN_PWM",
+    "mode": "FAN_MODE=powerful"
+  }
+}

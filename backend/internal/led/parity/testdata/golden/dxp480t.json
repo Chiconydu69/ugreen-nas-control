@@ -1,0 +1,16 @@
+{
+  "name": "dxp480t",
+  "product": "DXP480T Plus",
+  "commands": [
+    {
+      "args": ["dxp480t"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "fake: dxp480t\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["dxp480t white"],
+  "stubs": []
+}

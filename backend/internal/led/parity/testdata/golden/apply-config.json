@@ -1,0 +1,59 @@
+{
+  "name": "apply-config",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["blink", "disk2", "100", "100"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["apply"],
+      "rc": 0,
+      "stdout": "Saved settings applied.\n",
+      "stderr": "ERROR: RGB values must be between 0 and 255.\n"
+    },
+    {
+      "args": ["all"],
+      "rc": 0,
+      "stdout": "{\n\"power\": {\n  \"name\": \"power\",\n  \"brightness\": \"128\",\n  \"max_brightness\": \"255\",\n  \"color\": \"10 20 30\",\n  \"effect\": \"breath\",\n  \"on_ms\": \"1500\",\n  \"off_ms\": \"1000\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n,\n\"netdev\": {\n  \"name\": \"netdev\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"9 9 9\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"450\",\n  \"off_ms\": \"450\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n,\n\"disk1\": {\n  \"name\": \"disk1\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"1 2 3\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk2\": {\n  \"name\": \"disk2\",\n  \"brightness\": \"200\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"100\",\n  \"off_ms\": \"100\"\n}\n,\n\"disk3\": {\n  \"name\": \"disk3\",\n  \"brightness\": \"77\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk4\": {\n  \"name\": \"disk4\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"800\",\n  \"off_ms\": \"300\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n,\n\"disk5\": {\n  \"name\": \"disk5\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk6\": {\n  \"name\": \"disk6\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "off 255 1 2 3 0 0\n",
+    "disk2": "on 200 255 255 255 100 100\n",
+    "disk3": "on 77 255 255 255 0 0\n",
+    "disk4": "blink 255 255 255 255 800 300\n",
+    "disk5": "on 255 255 255 255 0 0\n",
+    "disk6": "on 255 255 255 255 0 0\n",
+    "netdev": "blink 255 9 9 9 450 450\n",
+    "power": "breath 128 10 20 30 1500 1000\n"
+  },
+  "state": {
+    "phase-disk4": "\u003cMS\u003e 800 300\n",
+    "phase-netdev": "\u003cMS\u003e 450 450\n",
+    "phase-power": "\u003cMS\u003e 1500 1000\n"
+  },
+  "calls": [
+    "set disk2 blink 100 100",
+    "set power color 10 20 30",
+    "set power brightness 128",
+    "--plain get power",
+    "set power breath 1500 1000",
+    "set netdev color 9 9 9",
+    "set netdev blink 450 450",
+    "set disk1 color 1 2 3",
+    "set disk1 off",
+    "set disk2 brightness 200",
+    "--plain get disk2",
+    "--plain get disk2",
+    "set disk2 on",
+    "set disk3 brightness 77",
+    "--plain get disk3",
+    "set disk4 blink 800 300",
+    "--plain get all"
+  ],
+  "stubs": []
+}

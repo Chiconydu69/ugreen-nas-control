@@ -1,0 +1,49 @@
+/* Fan modules: schedule. Loaded after app.css; classes are .unc-fan-schedule-*. */
+
+.unc-fan-schedule-body {
+    display: grid;
+    gap: var(--sp-7);
+}
+
+.unc-fan-schedule-sec {
+    display: grid;
+    gap: var(--sp-4);
+}
+
+.unc-fan-schedule-sec > * { margin: 0; }
+
+.unc-fan-schedule-live {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+    margin-top: calc(var(--sp-2) - var(--sp-4));
+}
+
+.unc-fan-schedule-live:empty { display: none; }
+
+.unc .unc-fan-schedule-time {
+    display: flex;
+    gap: var(--sp-2);
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.unc .unc-fan-schedule-time select {
+    width: auto;
+    min-width: 84px;
+}
+
+.unc-fan-schedule-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+}
+
+.unc-fan-schedule-days .unc-chipcheck { padding: 8px 12px; border-radius: 10px; }
+
+.unc-fan-schedule-job {
+    display: grid;
+    gap: var(--sp-2);
+}
+
+.unc-fan-schedule-job > small { line-height: 1.4; }

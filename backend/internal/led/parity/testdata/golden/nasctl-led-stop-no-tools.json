@@ -1,0 +1,22 @@
+{
+  "name": "nasctl-led-stop-no-tools",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-stop"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["led-disable"],
+      "rc": 0,
+      "stdout": "update_cron-out \nLEDs switched off; they keep their last state until the next power cycle.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["update_cron "],
+  "stubs": []
+}

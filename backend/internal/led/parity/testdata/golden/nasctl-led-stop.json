@@ -1,0 +1,16 @@
+{
+  "name": "nasctl-led-stop",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-stop"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["ctl fx stop", "ctl daemon stop"],
+  "stubs": []
+}

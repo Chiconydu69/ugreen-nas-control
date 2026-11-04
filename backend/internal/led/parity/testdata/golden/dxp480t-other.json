@@ -1,0 +1,16 @@
+{
+  "name": "dxp480t-other",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["dxp480t"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

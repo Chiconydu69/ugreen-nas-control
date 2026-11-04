@@ -1,0 +1,16 @@
+{
+  "name": "nasctl-start-probe-fail-oneline",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["start"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: model \\\"X\\\" is not supported\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["fan probe"],
+  "stubs": []
+}

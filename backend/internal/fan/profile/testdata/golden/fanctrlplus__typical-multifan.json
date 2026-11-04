@@ -1,0 +1,85 @@
+{
+  "source": "fanctrlplus",
+  "title": "FanCtrl Plus: CPU_Fan, Front_Intake",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "35:40,50:90",
+      "case_input": "disk_max:disk1+disk2+nvme0",
+      "cpu_curve": "45:30,75:100",
+      "min_pct": "30",
+      "mode": "custom"
+    }
+  },
+  "warnings": [],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus_CPU_Fan.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus_CPU_Fan.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus_CPU_Fan.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus_CPU_Fan.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus_CPU_Fan.cfg"
+    },
+    {
+      "key": "Front_Intake",
+      "reason": "another block was imported for the cpu fans (CPU_Fan)",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus_Front_Intake.cfg"
+    },
+    {
+      "key": "Rear_Exhaust",
+      "reason": "another block was imported for the case fans (Front_Intake)",
+      "file": "fanctrlplus_Rear_Exhaust.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "fanctrlplus_Front_Intake.cfg: low, high, pwm, max",
+    "case_input": "fanctrlplus_Front_Intake.cfg: disks",
+    "cpu_curve": "fanctrlplus_CPU_Fan.cfg: cpu_min_temp, cpu_max_temp, pwm, max",
+    "min_pct": "pwm of the imported blocks",
+    "mode": "imported curves need the custom mode"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "name": "nasctl-usage",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": [],
+      "rc": 2,
+      "stdout": "Usage:\n  ugreen-nas-ctl start|stop|restart|status   fan daemon (also runs in mode \"bios\",\n                                             where it only watches)\n  ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict\n  ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off\n  ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control\n  ugreen-nas-ctl led-boot                    bring the LEDs up (install, boot), if enabled\n",
+      "stderr": ""
+    },
+    {
+      "args": ["bogus"],
+      "rc": 2,
+      "stdout": "Usage:\n  ugreen-nas-ctl start|stop|restart|status   fan daemon (also runs in mode \"bios\",\n                                             where it only watches)\n  ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict\n  ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off\n  ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control\n  ugreen-nas-ctl led-boot                    bring the LEDs up (install, boot), if enabled\n",
+      "stderr": ""
+    },
+    {
+      "args": ["help"],
+      "rc": 2,
+      "stdout": "Usage:\n  ugreen-nas-ctl start|stop|restart|status   fan daemon (also runs in mode \"bios\",\n                                             where it only watches)\n  ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict\n  ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off\n  ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control\n  ugreen-nas-ctl led-boot                    bring the LEDs up (install, boot), if enabled\n",
+      "stderr": ""
+    },
+    {
+      "args": ["-h"],
+      "rc": 2,
+      "stdout": "Usage:\n  ugreen-nas-ctl start|stop|restart|status   fan daemon (also runs in mode \"bios\",\n                                             where it only watches)\n  ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict\n  ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off\n  ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control\n  ugreen-nas-ctl led-boot                    bring the LEDs up (install, boot), if enabled\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

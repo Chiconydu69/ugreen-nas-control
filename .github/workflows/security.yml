@@ -1,0 +1,71 @@
+name: 'Security scan'
+
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  govulncheck:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: next
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#go -c bash -c 'cd backend && govulncheck ./...'
+
+  zizmor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: next
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#lint -c zizmor .github/workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  flake-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: next
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Update flake.lock and open a PR
+        env:
+          # PRs from GITHUB_TOKEN do not start CI; RELEASE_PR_TOKEN (optional) does. See release.yml.
+          GH_TOKEN: ${{ secrets.RELEASE_PR_TOKEN || github.token }}
+          PUSH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          nix flake update
+          if git diff --quiet flake.lock; then echo "flake.lock is current."; exit 0; fi
+          branch="chore/flake-update"
+          mkdir -p .changes
+          printf 'Updated the pinned development tools (flake.lock).\n' > .changes/flake-update.md
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$branch"
+          git add flake.lock .changes/flake-update.md
+          git commit -q -m "chore: update flake.lock"
+          git push --force "https://x-access-token:${PUSH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$branch"
+          if [ -z "$(gh pr list --head "$branch" --base next --state open --json number --jq '.[].number')" ]; then
+            gh pr create --base next --head "$branch" --title "chore: update flake.lock" --body "Weekly \`nix flake update\`."
+          fi

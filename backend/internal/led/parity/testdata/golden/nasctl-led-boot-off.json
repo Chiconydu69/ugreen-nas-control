@@ -1,0 +1,16 @@
+{
+  "name": "nasctl-led-boot-off",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-boot"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

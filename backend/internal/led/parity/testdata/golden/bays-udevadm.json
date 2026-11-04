@@ -1,0 +1,23 @@
+{
+  "name": "bays-udevadm",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["bays"],
+      "rc": 0,
+      "stdout": "[{\"bay\":1,\"led\":\"disk1\",\"device\":\"sdc\",\"serial\":\"FROMUDEVADM\",\"slot\":\"disk2\",\"status\":\"DISK_OK\",\"error\":false,\"standby\":true,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"5=8 187=0 197=0 198=0 failed=0 errors=0\",\"smart_key\":\"smart_ack_ST4000_SN3\",\"smart_warnings\":\"5=8\"},{\"bay\":2,\"led\":\"disk2\",\"device\":\"sdd\",\"serial\":\"\",\"slot\":\"disk3\",\"status\":\"DISK_DSBL\",\"error\":true,\"standby\":false,\"temp\":44,\"errors\":3,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"5=0 187=0 197=0 198=0 failed=0 errors=3\",\"smart_key\":\"smart_ack_ST4000_SN4\",\"smart_warnings\":\"errors=3\"},{\"bay\":3,\"led\":\"disk3\",\"device\":\"sde\",\"serial\":\"\",\"slot\":\"cache\",\"status\":\"DISK_OK\",\"error\":false,\"standby\":false,\"temp\":50,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"5=0 187=0 197=0 198=0 failed=0 errors=0\",\"smart_key\":\"smart_ack_ST4000_SN5\",\"smart_warnings\":\"\"},{\"bay\":4,\"led\":\"disk4\",\"device\":\"sdf\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":5,\"led\":\"disk5\",\"device\":\"sdc\",\"serial\":\"FROMUDEVADM\",\"slot\":\"disk2\",\"status\":\"DISK_OK\",\"error\":false,\"standby\":true,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"5=8 187=0 197=0 198=0 failed=0 errors=0\",\"smart_key\":\"smart_ack_ST4000_SN3\",\"smart_warnings\":\"5=8\"},{\"bay\":6,\"led\":\"disk6\",\"device\":\"sdb\",\"serial\":\"\",\"slot\":\"disk1\",\"status\":\"DISK_OK\",\"error\":false,\"standby\":false,\"temp\":41,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"5=0 187=0 197=0 198=0 failed=0 errors=0\",\"smart_key\":\"smart_ack_ST4000_SN2\",\"smart_warnings\":\"\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": [
+    "udevadm info -q property -n /dev/sdc",
+    "udevadm info -q property -n /dev/sdd",
+    "udevadm info -q property -n /dev/sde",
+    "udevadm info -q property -n /dev/sdf",
+    "udevadm info -q property -n /dev/sda",
+    "udevadm info -q property -n /dev/sdb"
+  ]
+}

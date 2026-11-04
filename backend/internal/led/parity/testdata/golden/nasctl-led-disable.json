@@ -1,0 +1,39 @@
+{
+  "name": "nasctl-led-disable",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-enable"],
+      "rc": 0,
+      "stdout": "ctl-out apply\nctl-out schedule --force\nupdate_cron-out \n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-disable"],
+      "rc": 0,
+      "stdout": "update_cron-out \nLEDs switched off; they keep their last state until the next power cycle.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-disable"],
+      "rc": 0,
+      "stdout": "update_cron-out \nLEDs switched off; they keep their last state until the next power cycle.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [
+    "i2c probe",
+    "ctl apply",
+    "ctl schedule --force",
+    "update_cron ",
+    "ctl fx stop",
+    "ctl daemon stop",
+    "update_cron ",
+    "ctl fx stop",
+    "ctl daemon stop",
+    "update_cron "
+  ],
+  "stubs": ["modprobe i2c_i801", "modprobe i2c-dev"]
+}

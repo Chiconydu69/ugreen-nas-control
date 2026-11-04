@@ -1,0 +1,97 @@
+# Area labels for PRs. A path can belong to one component only: `area: ui` lists the others as exclusions
+# (all-globs-to-any-file: some changed file matches every glob, negations included).
+'area: fans':
+  - changed-files:
+      - any-glob-to-any-file:
+          - backend/internal/hw/**
+          - web/plugin/include/fan_*.php
+          - web/plugin/css/fan-*.css
+          - web/src/features/nas/i18n/parts/{history,inputs,schedule,tools}.*.ts
+          - web/src/core/*fan*
+          - docs/fan.md
+          - docs/watchdog.md
+          - docs/conflicts.md
+      - all-globs-to-any-file:
+          - web/src/features/nas/fan/**
+          - '!web/src/features/nas/fan/panel*'
+          - '!web/src/features/nas/fan/power-ac.ts'
+      - all-globs-to-any-file:
+          - backend/internal/fan/**
+          - '!backend/internal/fan/acloss*'
+'area: leds':
+  - changed-files:
+      - any-glob-to-any-file:
+          - backend/internal/led/**
+          - web/plugin/led/**
+          - web/plugin/css/led-embed.css
+          - web/src/features/led/**
+          - web/src/features/nas/ledfx.ts
+          - web/src/core/ledfx/**
+          - docs/led.md
+'area: panel':
+  - changed-files:
+      - any-glob-to-any-file:
+          - backend/internal/panel/**
+          - backend/internal/fan/acloss*
+          - web/plugin/include/panel.php
+          - web/plugin/include/power_ac.php
+          - web/src/features/nas/fan/panel*
+          - web/src/features/nas/fan/power-ac.ts
+          - web/src/features/nas/panel-models*
+          - web/src/features/nas/power-ac-models*
+          - web/src/features/nas/i18n/parts/{panel,power}.*.ts
+          - web/src/core/panel-php.test.ts
+          - docs/panel.md
+          - docs/power-on-ac.md
+'area: widget':
+  - changed-files:
+      - any-glob-to-any-file:
+          - web/plugin/UGREENNASDashboard.page
+          - web/src/dash/**
+'area: mqtt':
+  - changed-files:
+      - any-glob-to-any-file:
+          - backend/internal/mqtt/**
+          - docs/mqtt.md
+'area: install':
+  - changed-files:
+      - any-glob-to-any-file:
+          - backend/internal/nasctl/**
+          - backend/cmd/**
+          - docs/unraid*.md
+      - all-globs-to-any-file:
+          - plugin/**
+          - '!plugin/tools/**'
+'area: ui':
+  - changed-files:
+      - any-glob-to-any-file: [web/demo/**]
+      - all-globs-to-any-file:
+          - web/plugin/**
+          - '!web/plugin/UGREENNASDashboard.page'
+          - '!web/plugin/led/**'
+          - '!web/plugin/css/fan-*.css'
+          - '!web/plugin/css/led-embed.css'
+          - '!web/plugin/include/fan_*.php'
+          - '!web/plugin/include/panel.php'
+          - '!web/plugin/include/power_ac.php'
+      - all-globs-to-any-file:
+          - web/src/**
+          - '!web/src/dash/**'
+          - '!web/src/features/led/**'
+          - '!web/src/core/ledfx/**'
+          - '!web/src/features/nas/ledfx.ts'
+          - '!web/src/features/nas/fan/**'
+          - '!web/src/features/nas/i18n/parts/{history,inputs,schedule,tools,panel,power}.*.ts'
+          - '!web/src/features/nas/panel-models*'
+          - '!web/src/features/nas/power-ac-models*'
+          - '!web/src/core/*fan*'
+          - '!web/src/core/panel-php.test.ts'
+'area: site':
+  - changed-files:
+      - any-glob-to-any-file: [docs/site/**, README.md]
+'area: tooling':
+  - changed-files:
+      - any-glob-to-any-file: [.github/**, plugin/tools/**, scripts/**, web/tools/**, docs/tools/**, justfile, flake.*]
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ['docs/*.md', docs/ca/**]

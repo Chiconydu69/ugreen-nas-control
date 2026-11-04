@@ -1,0 +1,139 @@
+name: 'Website (GitHub Pages)'
+
+# Builds the project site (docs/site/: landing page, one page per model in web/models/, the live demo at /demo/) and
+# publishes one GitHub Pages deployment with three streams:
+#   /       branch main (released); while main has no docs/site/build.ts it shows next, marked as preview, linking the repo for the released plugin
+#   /next/  branch next (development)
+#   /lab/   branch site (design playground, docs/site/ only)
+# A branch that does not exist or has no docs/site/build.ts is skipped. Needs Pages enabled with Source = "GitHub Actions".
+#
+# Runs on every push to the three branches and on demand. A release calls this workflow (release.yml, job `pages`) with
+# `ref` = the release commit, which replaces main in the root stream. The demo shows each stream's own plugin.
+on:
+  push:
+    branches: [main, next, site]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit to build the root stream from (default is the head of main)
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to build the root stream from
+        required: true
+        type: string
+
+permissions: {}
+
+# Queued, not cancelled: a release waits on its call of this workflow, cancelling it would leave the release a draft
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    env:
+      MAIN_REF: ${{ inputs.ref }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Check out the streams
+        run: |
+          set -euo pipefail
+          fetch() { git fetch --quiet --depth=1 origin "$1" 2>/dev/null && git worktree add --quiet --detach "$RUNNER_TEMP/wt/$2" FETCH_HEAD && [ -f "$RUNNER_TEMP/wt/$2/docs/site/build.ts" ]; }
+          fetch "${MAIN_REF:-main}" main || rm -rf "$RUNNER_TEMP/wt/main"
+          fetch next next || rm -rf "$RUNNER_TEMP/wt/next"
+          fetch site site || rm -rf "$RUNNER_TEMP/wt/site"
+          ls "$RUNNER_TEMP/wt"
+      # No magic-nix-cache: its post step spent 2m26s uploading store paths; the lean shell downloads from cache.nixos.org in seconds
+      - name: Build the streams
+        run: |
+          # shellcheck disable=SC2016
+          nix develop .#site -c bash -euo pipefail -c '
+            owner=${REPO%%/*}
+            base="https://${owner,,}.github.io/${REPO#*/}/"
+            wt=$RUNNER_TEMP/wt
+            out=$RUNNER_TEMP/pages
+            mkdir -p "$out"
+            build() { # worktree, stream, subdir, [released-site link; default the root]
+              (cd "$wt/$1" && SITE_STREAM=$2 SITE_URL="$base$3" ROOT_URL="${4:-$base}" just site)
+              mkdir -p "$out/$3"
+              cp -R "$wt/$1/.build/site/." "$out/$3"
+            }
+            if [ -d "$wt/main" ]; then build main main ""; elif [ -d "$wt/next" ]; then build next next "" "https://github.com/$REPO"; else echo "no stream has docs/site/build.ts"; exit 1; fi
+            [ ! -d "$wt/next" ] || build next next next/
+            [ ! -d "$wt/site" ] || build site site lab/
+          '
+      # Next channel: the plg, its archive and checksums go into /next/ of this deployment (only the current build is hosted).
+      # Off unless the repository variable NEXT_CHANNEL_ENABLED is "true". Version X.(Y+1).0-next.<run number>: Unraid compares as text, so run numbers only go up.
+      - name: Build the next channel
+        if: vars.NEXT_CHANNEL_ENABLED == 'true'
+        run: |
+          # shellcheck disable=SC2016
+          nix develop .#release -c bash -euo pipefail -c '
+            [ -d "$RUNNER_TEMP/wt/next" ] || { echo "no next stream, no next channel"; exit 0; }
+            cd "$RUNNER_TEMP/wt/next"
+            just go-build
+            bun plugin/tools/plg.ts pack --next --run "$GITHUB_RUN_NUMBER"
+            bun plugin/tools/plg.ts render --next --run "$GITHUB_RUN_NUMBER"
+            dest=$RUNNER_TEMP/pages/next
+            mkdir -p "$dest"
+            cp .build/dist/ugreen-nas-control-*.tar.xz .build/dist/ugreen-nas-control.plg "$dest/"
+            (cd "$dest" && sha256sum -- ugreen-nas-control-*.tar.xz ugreen-nas-control.plg > SHA256SUMS)
+          '
+      # An attestation hiccup must not block the site deploy
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        if: vars.NEXT_CHANNEL_ENABLED == 'true'
+        continue-on-error: true
+        with:
+          subject-path: |
+            ${{ runner.temp }}/pages/next/ugreen-nas-control-*.tar.xz
+            ${{ runner.temp }}/pages/next/ugreen-nas-control.plg
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ${{ runner.temp }}/pages
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+  # One environment per stream, so the Environments page links each one; the deployment itself is the single github-pages one above.
+  streams:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    strategy:
+      matrix:
+        include:
+          - { name: 'Website: released', path: '' }
+          - { name: 'Website: next', path: 'next/' }
+          - { name: 'Website: lab', path: 'lab/' }
+    environment:
+      name: ${{ matrix.name }}
+      url: ${{ needs.deploy.outputs.page_url }}${{ matrix.path }}
+    steps:
+      - run: echo "${{ matrix.name }}"

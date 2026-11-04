@@ -1,0 +1,259 @@
+name: 'Release (manual)'
+
+# Order of events (nothing public exists before the release PR is merged):
+# 1. workflow_dispatch on next (input version): folds .changes/ fragments, builds, renders the plg, attests the
+#    build output, pushes
+#    release/X.Y.Z, creates the DRAFT release vX.Y.Z (archive, plg, SHA256SUMS, SBOM; no tag yet) and opens the PR
+#    release/X.Y.Z -> main. Checks job `release` (checks.yml) rebuilds from the branch and compares with the draft, so a bad
+#    build blocks the merge.
+# 2. Push to main that changes the plg version (the merge of that PR): verifies the draft's assets against the plg
+#    on main, deploys the Pages site (website.yml), then creates the tag vX.Y.Z at the merge commit and
+#    publishes the draft. A failed deploy keeps the release a draft. Safe to re-run.
+# 3. Opens a main -> next PR (a fast-forward unless next moved on).
+#
+# PRs created with GITHUB_TOKEN do not start workflows. Optional secret RELEASE_PR_TOKEN (GitHub App installation
+# token or fine-grained PAT with contents + pull-requests write) opens the PRs, so CI starts by itself. Without it
+# `prepare` starts checks.yml on release/X.Y.Z with workflow_dispatch (the checks attach to the same commit).
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version, X.Y.Z (for example 5.0.1; scheme in docs/releasing.md)
+        required: true
+        type: string
+  push:
+    branches: [main]
+    paths: [plugin/ugreen-nas-control.plg]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Holds write and OIDC tokens: no nix cache in this job.
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+      id-token: write
+      attestations: write
+    steps:
+      - name: Require next and a valid version
+        env:
+          REF: ${{ github.ref }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          [ "$REF" = refs/heads/next ] || { echo "::error::Run this workflow on next."; exit 1; }
+          printf '%s' "$VERSION" | grep -Eq '^[1-9]\.[0-9]\.[0-9]$' || { echo "::error::Version must be X.Y.Z, one digit each."; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Refuse an existing tag, published release or branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "::error::Tag v${VERSION} already exists."; exit 1
+          fi
+          if git ls-remote --exit-code --heads origin "release/${VERSION}" >/dev/null 2>&1; then
+            echo "::error::Branch release/${VERSION} already exists (close its PR and delete the branch and the draft release first)."; exit 1
+          fi
+          state="$(nix develop .#release -c bun plugin/tools/release.ts state "v${VERSION}")"
+          case "$state" in
+            none) ;;
+            draft|incomplete)
+              echo "::warning::Replacing the leftover release v${VERSION} (${state})."
+              gh release delete "v${VERSION}" --yes ;;
+            *) echo "::error::Release v${VERSION} is already published."; exit 1 ;;
+          esac
+      - name: Fold changes, build, render
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          nix develop .#release -c bun plugin/tools/changes.ts release --version "$VERSION"
+          nix develop .#release -c just go-build
+          nix develop .#release -c bun plugin/tools/plg.ts pack --version "$VERSION"
+          nix develop .#release -c bun plugin/tools/plg.ts render --version "$VERSION"
+          cp .build/dist/ugreen-nas-control.plg plugin/ugreen-nas-control.plg
+          mkdir -p .build/assets
+          cp ".build/dist/ugreen-nas-control-${VERSION}.tar.xz" plugin/ugreen-nas-control.plg .build/assets/
+          (cd .build/assets && sha256sum -- * > SHA256SUMS)
+      - name: SBOM (CycloneDX)
+        uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: .build/assets/sbom.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            .build/assets/ugreen-nas-control-*.tar.xz
+            .build/assets/ugreen-nas-control.plg
+      - name: Push the branch, create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "release/${VERSION}"
+          git add -A -- plugin CHANGELOG.md .changes
+          git commit -q -m "release: version ${VERSION}"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "release/${VERSION}"
+          # A draft has no tag and no public URL; the tag is created when it is published.
+          gh release create "v${VERSION}" .build/assets/* --draft --target "$GITHUB_SHA" \
+            --title "UGREEN NAS Control ${VERSION}" --generate-notes \
+            --notes "Install: https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/plugin/ugreen-nas-control.plg"
+      - name: Open the release PR
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PR_TOKEN || github.token }}
+          HAVE_TOKEN: ${{ secrets.RELEASE_PR_TOKEN != '' }}
+          WORKFLOW_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          set -euo pipefail
+          gh pr create --base main --head "release/${VERSION}" \
+            --title "release: version ${VERSION}" \
+            --body "Release ${VERSION}: changelog folded from .changes/, plg rendered with the hashes of the draft release v${VERSION}. Use a merge commit. Merging publishes the draft and tags v${VERSION} at the merge commit."
+          if [ "$HAVE_TOKEN" != true ]; then
+            # Events from GITHUB_TOKEN do not start CI on the PR; workflow_dispatch is the exception.
+            GH_TOKEN="$WORKFLOW_TOKEN" gh workflow run checks.yml --ref "release/${VERSION}"
+          fi
+
+  check:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      changed: ${{ steps.v.outputs.changed }}
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - id: v
+        env:
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          ver() { sed -n 's/^<!ENTITY version *"\([^"]*\)">.*/\1/p'; }
+          new="$(ver < plugin/ugreen-nas-control.plg)"
+          [ -n "$new" ] || { echo "::error::No version entity in the plg."; exit 1; }
+          old=""
+          if git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            old="$(git show "${BEFORE}:plugin/ugreen-nas-control.plg" 2>/dev/null | ver || true)"
+          fi
+          echo "version=${new}" >> "$GITHUB_OUTPUT"
+          if [ "$old" = "$new" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
+
+  # Re-runnable: a finished release is skipped, a draft is verified and attested.
+  verify:
+    needs: check
+    if: needs.check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    outputs:
+      state: ${{ steps.state.outputs.state }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Release state
+        id: state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ needs.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          state="$(nix develop .#release -c bun plugin/tools/release.ts state "$TAG")"
+          echo "state=${state}" >> "$GITHUB_OUTPUT"
+          case "$state" in
+            draft) ;;
+            published) echo "::notice::${TAG} is already published with its archive; nothing to do." ;;
+            none) echo "::error::No draft release ${TAG}. Releases start with the Release workflow on next."; exit 1 ;;
+            *) echo "::error::Release ${TAG} lacks the archive or the plg. Delete it and run the Release workflow again."; exit 1 ;;
+          esac
+      - name: Draft assets must match the plg on main
+        if: steps.state.outputs.state == 'draft'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ needs.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          nix develop .#release -c bun plugin/tools/release.ts fetch "$TAG" .build/assets
+          nix develop .#release -c bun plugin/tools/release.ts verify .build/assets
+
+  # Site deploy of the merge commit (website.yml). The release stays a draft until it succeeded; a re-run retries it.
+  pages:
+    needs: verify
+    if: needs.verify.outputs.state == 'draft'
+    uses: ./.github/workflows/website.yml # zizmor: ignore[self-repository] actionlint rejects the $/ form
+    with:
+      ref: ${{ github.sha }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+      attestations: write
+
+  publish:
+    needs: [check, verify, pages]
+    if: needs.verify.outputs.state == 'draft'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Tag at the merge commit and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ needs.check.outputs.version }}
+          SHA: ${{ github.sha }}
+        run: nix develop .#release -c bun plugin/tools/release.ts publish "$TAG" "$SHA"
+
+  backmerge:
+    needs: [check, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Open main -> next PR
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_PR_TOKEN || github.token }}
+          VERSION: ${{ needs.check.outputs.version }}
+        run: |
+          set -euo pipefail
+          ahead="$(gh api "repos/${GITHUB_REPOSITORY}/compare/next...main" --jq .ahead_by)"
+          if [ "$ahead" = 0 ]; then echo "next already contains main."; exit 0; fi
+          if [ -n "$(gh pr list --base next --head main --state open --json number --jq '.[].number')" ]; then
+            echo "Back-merge PR already open."; exit 0
+          fi
+          gh pr create --base next --head main \
+            --title "chore: merge main (v${VERSION}) back into next" \
+            --body "Brings the release commit of v${VERSION} (rendered plg, CHANGELOG) into next. Use a merge commit; GitHub offers no fast-forward, so it is a trivial merge."

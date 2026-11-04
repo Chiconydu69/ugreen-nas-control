@@ -1,0 +1,42 @@
+{
+  "name": "alerts-via-schedule",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["schedule"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["schedule"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 59 48\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"500\",\n  \"off_ms\": \"500\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "blink 255 255 59 48 500 500\n"
+  },
+  "state": {
+    "alert": "alert\n",
+    "phase-power": "\u003cMS\u003e 500 500\n",
+    "schedule": "day\n"
+  },
+  "calls": [
+    "set power color 255 59 48",
+    "set power brightness 255",
+    "set power blink 500 500",
+    "set power color 255 59 48",
+    "set power brightness 255",
+    "set power blink 500 500",
+    "--plain get power"
+  ],
+  "stubs": ["logger -t ugreen-led-control night mode: day", "logger -t ugreen-led-control Unraid alert: power LED signals 1 unread notification(s)"]
+}

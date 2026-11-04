@@ -1,0 +1,20 @@
+{
+  "name": "nasctl-led-boot-fx-mode-lookalikes",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-boot"],
+      "rc": 0,
+      "stdout": "ctl-out apply\nctl-out schedule --force\nupdate_cron-out \n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/led.enabled": "",
+    "boot/leds.cfg": " mode=\"status\"\nmode='status'\nxmode=\"status\"\nfx_name=\"Rainbow\"\nfx_name=\"1\"\n",
+    "boot/x.cron": "* * * * * \u003cROOT\u003e/led/ugreen-led-ctl schedule \u003e/dev/null 2\u003e\u00261\n"
+  },
+  "calls": ["i2c probe", "ctl apply", "ctl schedule --force", "update_cron "],
+  "stubs": ["modprobe i2c_i801", "modprobe i2c-dev"]
+}

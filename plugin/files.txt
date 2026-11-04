@@ -1,0 +1,46 @@
+# Every file the plugin installs: <source> <path under /usr/local/emhttp/plugins/ugreen-nas-control> <mode>
+# source = path in the repo, or release:<name> for a binary built by `just go-build` (.build/bin/<name>).
+# `release:<tool> <path> -> <target>` installs a symbolic link (target relative to the link's folder). The four tools are
+# names of the one multicall binary backend/ugreen-nas (it runs as the tool its name says).
+# Sources under .build/plugin (the JS bundles, the PNG icons) are written by `just web-build`
+# (scripts/generated.ts). `bun plugin/tools/plg.ts pack` puts all of it into one archive at the install-relative paths
+# and the .plg downloads that archive. `bun plugin/tools/plg.ts check` fails when a shipped file under web/plugin or
+# plugin/event is missing here.
+release:ugreen-nas                               backend/ugreen-nas                         755
+release:ugreen-nas-ctl                           backend/ugreen-nas-ctl                     -> ugreen-nas
+release:ugreen-nas-fan                           backend/ugreen-nas-fan                     -> ugreen-nas
+release:ugreen-led-ctl                           led/backend/ugreen-led-ctl                 -> ../../backend/ugreen-nas
+release:ugreen-led-i2c                           led/backend/ugreen-led-i2c                 -> ../../backend/ugreen-nas
+web/plugin/api.php                               api.php                                    644
+web/plugin/UGREENNASControl.page                 UGREENNASControl.page                      644
+web/plugin/UGREENNASDashboard.page               UGREENNASDashboard.page                    644
+.build/plugin/images/ugreen-nas-control.png         images/ugreen-nas-control.png              644
+.build/plugin/icons/ugreen-nas-control.png          icons/ugreen-nas-control.png               644
+web/plugin/README.md                             README.md                                  644
+web/plugin/include/lang.php                      include/lang.php                           644
+web/plugin/include/fan_v2.php                    include/fan_v2.php                         644
+web/plugin/include/fan_schedule.php              include/fan_schedule.php                   644
+web/plugin/include/fan_history.php               include/fan_history.php                    644
+web/plugin/include/fan_inputs.php                include/fan_inputs.php                     644
+web/plugin/include/fan_profile.php               include/fan_profile.php                    644
+web/plugin/include/fan_probe.php                 include/fan_probe.php                      644
+web/plugin/include/fan_backlight.php             include/fan_backlight.php                  644
+web/plugin/include/panel.php                     include/panel.php                          644
+web/plugin/include/power_ac.php                  include/power_ac.php                       644
+web/plugin/css/app.css                           css/app.css                                644
+web/plugin/css/fan-inputs.css                    css/fan-inputs.css                         644
+web/plugin/css/fan-schedule.css                  css/fan-schedule.css                       644
+web/plugin/css/fan-history.css                   css/fan-history.css                        644
+web/plugin/css/fan-tools.css                     css/fan-tools.css                          644
+.build/plugin/js/i18n.js                            js/i18n.js                                 644
+.build/plugin/js/app.js                             js/app.js                                  644
+.build/plugin/js/ledfx.js                           js/ledfx.js                                644
+.build/plugin/js/dash.js                            js/dash.js                                 644
+web/plugin/led/api.php                           led/api.php                                644
+web/plugin/led/css/app.css                       led/css/app.css                            644
+.build/plugin/led/js/app.js                         led/js/app.js                              644
+.build/plugin/led/js/i18n.js                        led/js/i18n.js                             644
+web/plugin/led/include/views.php                 led/include/views.php                      644
+web/plugin/css/led-embed.css                     css/led-embed.css                          644
+web/plugin/led/images/ugreen-led-control.png     led/images/ugreen-led-control.png          644
+plugin/event/stopping                            event/stopping                             755

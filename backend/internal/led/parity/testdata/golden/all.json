@@ -1,0 +1,72 @@
+{
+  "name": "all",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["all"],
+      "rc": 0,
+      "stdout": "{\n\"power\": {\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"netdev\": {\n  \"name\": \"netdev\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk1\": {\n  \"name\": \"disk1\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk2\": {\n  \"name\": \"disk2\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk3\": {\n  \"name\": \"disk3\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk4\": {\n  \"name\": \"disk4\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk5\": {\n  \"name\": \"disk5\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk6\": {\n  \"name\": \"disk6\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["blink", "disk1", "600", "600"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["breath", "disk2", "700", "700"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["color", "disk3", "5", "6", "7"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["off", "disk4"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["all"],
+      "rc": 0,
+      "stdout": "{\n\"power\": {\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"netdev\": {\n  \"name\": \"netdev\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk1\": {\n  \"name\": \"disk1\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"600\",\n  \"off_ms\": \"600\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n,\n\"disk2\": {\n  \"name\": \"disk2\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"breath\",\n  \"on_ms\": \"700\",\n  \"off_ms\": \"700\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n,\n\"disk3\": {\n  \"name\": \"disk3\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"5 6 7\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk4\": {\n  \"name\": \"disk4\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk5\": {\n  \"name\": \"disk5\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n,\n\"disk6\": {\n  \"name\": \"disk6\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["all"],
+      "rc": 0,
+      "stdout": "{\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "blink 255 255 255 255 600 600\n",
+    "disk2": "breath 255 255 255 255 700 700\n",
+    "disk3": "on 255 5 6 7 0 0\n",
+    "disk4": "off 255 255 255 255 0 0\n",
+    "disk5": "on 255 255 255 255 0 0\n",
+    "disk6": "on 255 255 255 255 0 0\n",
+    "netdev": "on 255 255 255 255 0 0\n",
+    "power": "on 255 255 255 255 0 0\n"
+  },
+  "state": {
+    "phase-disk1": "\u003cMS\u003e 600 600\n",
+    "phase-disk2": "\u003cMS\u003e 700 700\n"
+  },
+  "calls": [
+    "--plain get all",
+    "set disk1 blink 600 600",
+    "set disk2 breath 700 700",
+    "set disk3 color 5 6 7",
+    "set disk4 off",
+    "--plain get all",
+    "--plain get all"
+  ],
+  "stubs": []
+}

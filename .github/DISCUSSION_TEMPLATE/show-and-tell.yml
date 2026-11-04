@@ -1,0 +1,9 @@
+title: '[Show] '
+body:
+  - type: textarea
+    id: setup
+    attributes:
+      label: Your setup
+      description: Model, what you use the plugin for, a screenshot if you like.
+    validations:
+      required: true

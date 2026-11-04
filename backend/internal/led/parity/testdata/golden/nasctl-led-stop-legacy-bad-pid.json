@@ -1,0 +1,24 @@
+{
+  "name": "nasctl-led-stop-legacy-bad-pid",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-stop"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "\u003cROOT\u003e/ctl/ugreen-nas-ctl: line 114: /proc/999999/cmdline: No such file or directory\n"
+    },
+    {
+      "args": ["led-stop"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "\u003cROOT\u003e/ctl/ugreen-nas-ctl: line 114: /proc/abc/cmdline: No such file or directory\n"
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/legacy.pid": "\u003cPID\u003e\n"
+  },
+  "calls": ["ctl fx stop", "ctl daemon stop", "ctl fx stop", "ctl daemon stop"],
+  "stubs": []
+}

@@ -1,0 +1,16 @@
+{
+  "name": "shutdown-off",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

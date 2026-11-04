@@ -1,0 +1,30 @@
+{
+  "name": "nasctl-start-extra-args",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["start", "extra"],
+      "rc": 0,
+      "stdout": "Fan daemon started.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "running (pid \u003cPID\u003e)\n",
+      "stderr": ""
+    },
+    {
+      "args": ["stop", "extra"],
+      "rc": 0,
+      "stdout": "Fan daemon stopped.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/fan.err": ""
+  },
+  "calls": ["fan probe", "fan daemon"],
+  "stubs": []
+}

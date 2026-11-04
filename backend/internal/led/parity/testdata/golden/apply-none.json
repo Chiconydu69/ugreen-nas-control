@@ -1,0 +1,16 @@
+{
+  "name": "apply-none",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["apply"],
+      "rc": 0,
+      "stdout": "No saved settings (\u003cROOT\u003e/boot/leds.cfg).\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

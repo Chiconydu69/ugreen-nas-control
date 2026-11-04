@@ -1,0 +1,118 @@
+{
+  "source": "fanctrlplus2",
+  "title": "FanCtrl Plus 2: CPU_Fan, USB_Hub_Fan",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "40:25,60:100",
+      "case_input": "disk_max:disk1",
+      "cpu_curve": "45:30,75:100",
+      "min_pct": "25",
+      "mode": "custom"
+    }
+  },
+  "warnings": [
+    "fanctrlplus2_Front_Intake.cfg: the script ambient is not copied; put it into the sensors folder of this plugin",
+    "fanctrlplus2_Front_Intake.cfg: the auxiliary sensors use 30-55 °C, the drives 45-70 °C; one curve serves both"
+  ],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "controller_identity",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "interval_sec",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus2_CPU_Fan.cfg"
+    },
+    {
+      "key": "Front_Intake",
+      "reason": "another block was imported for the case fans (USB_Hub_Fan)",
+      "file": "fanctrlplus2_Front_Intake.cfg"
+    },
+    {
+      "key": "aux_sensor",
+      "reason": "\"mlx:0000:03:00.0\" has no input here",
+      "file": "fanctrlplus2_Front_Intake.cfg"
+    },
+    {
+      "key": "aux_sensor",
+      "reason": "\"/sys/devices/pci0000:00/0000:00:1f.3/hwmon/hwmon5/temp1_input\" has no input here",
+      "file": "fanctrlplus2_Front_Intake.cfg"
+    },
+    {
+      "key": "disk_group_0",
+      "reason": "only one drive group is imported (the one with the highest top temperature)",
+      "file": "fanctrlplus2_Front_Intake.cfg"
+    },
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "controller_identity",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "interval_sec",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus2_USB_Hub_Fan.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "fanctrlplus2_USB_Hub_Fan.cfg: disk_group_0_low, disk_group_0_high, pwm, max",
+    "case_input": "fanctrlplus2_USB_Hub_Fan.cfg: disks",
+    "cpu_curve": "fanctrlplus2_CPU_Fan.cfg: cpu_min_temp, cpu_max_temp, pwm, max",
+    "min_pct": "pwm of the imported blocks",
+    "mode": "imported curves need the custom mode"
+  }
+}

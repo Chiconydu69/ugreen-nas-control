@@ -1,0 +1,5 @@
+#!/bin/bash
+# logger -t TAG MESSAGE
+echo "logger $*" >>"$STUB_LOG"
+[ -e "$STUBS/logger.fail" ] && exit 1
+exit 0

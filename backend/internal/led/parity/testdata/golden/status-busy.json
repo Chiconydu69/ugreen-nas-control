@@ -1,0 +1,38 @@
+{
+  "name": "status-busy",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"foreign_monitor\": true,\n  \"model\": \"DXP6800 Pro\",\n  \"bays\": 6,\n  \"kernel\": \"\",\n  \"mapping\": \"tested\",\n  \"mode\": \"status\",\n  \"daemon\": true,\n  \"fx\": \"rainbow\",\n  \"fx_leds\": \"power,disk1\",\n  \"identify\": [\"disk2\", \"disk4\"],\n  \"sync_action\": \"recon\",\n  \"sync_percent\": 50,\n  \"sync_enabled\": false,\n  \"sync_color\": \"9 8 7\",\n  \"standby_mode\": \"pulse\",\n  \"standby_level\": 40,\n  \"smart_enabled\": false,\n  \"error_enabled\": false,\n  \"activity_enabled\": false,\n  \"smart_color\": \"1 1 1\",\n  \"disk_color_mode\": \"temperature\",\n  \"netdev_status\": \"link\",\n  \"alert_enabled\": true,\n  \"alert_level\": \"alert\",\n  \"alert_color\": \"5 5 5\",\n  \"shutdown_blink\": true,\n  \"shutdown_color\": \"4 4 4\",\n  \"shutdown_effect\": \"breath\",\n  \"alert_count\": 1,\n  \"alert_active\": true,\n  \"fx_speed\": 4,\n  \"fx_reverse\": true,\n  \"fx_idle\": true,\n  \"night\": false,\n  \"disk_error_color\": \"6 6 6\",\n  \"saved_brightness\": {\"power\": 180, \"disk1\": 30},\n  \"network_device\": \"eth0\",\n  \"netdev_speed\": 1000,\n  \"network_ports\": [{\"name\": \"eth0\", \"link\": true, \"speed\": 1000, \"max\": 2500}, {\"name\": \"eth1\", \"link\": false, \"speed\": 0, \"max\": 0}],\n  \"netdev_speed_enabled\": true,\n  \"netdev_speed_colors\": {\"10\": \"255 59 48\", \"100\": \"255 140 0\", \"1000\": \"1 2 3\", \"2500\": \"0 200 83\", \"5000\": \"0 200 200\", \"10000\": \"0 120 255\"},\n  \"controller\": \"ugreen-led-i2c\",\n  \"i2c_bus\": 0,\n  \"i2c_address\": \"0x3a\",\n  \"i2c_probe\": \"ok\",\n  \"leds\": [\"power\", \"netdev\", \"disk1\", \"disk2\", \"disk3\", \"disk4\", \"disk5\", \"disk6\"]\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["daemon", "status"],
+      "rc": 0,
+      "stdout": "running (pid \u003cPID\u003e)\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "status"],
+      "rc": 0,
+      "stdout": "running: rainbow on power,disk1\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "on 255 255 255 255 0 0\n"
+  },
+  "state": {
+    "alert": "alert\n",
+    "bus": "0\n",
+    "fx.pid": "\u003cPID\u003e\n",
+    "identify-disk2": "\u003cTOKEN\u003e\nx\n",
+    "identify-disk4": "\u003cTOKEN\u003e\nx\n",
+    "led.pid": "\u003cPID\u003e\n",
+    "maxspeed": "eth0 2500\n"
+  },
+  "calls": ["probe", "--plain get power"],
+  "stubs": ["ip route show default", "pgrep -f ^/bin/bash /usr/bin/ugreen-leds", "ethtool eth0", "ethtool eth1"]
+}

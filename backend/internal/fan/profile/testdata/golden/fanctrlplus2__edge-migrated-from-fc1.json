@@ -1,0 +1,94 @@
+{
+  "source": "fanctrlplus2",
+  "title": "FanCtrl Plus 2: Old_Block, Mixed_Groups",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "50:35,75:100",
+      "case_input": "disk_max:cache",
+      "cpu_curve": "40:50,70:100",
+      "min_pct": "35",
+      "mode": "custom"
+    }
+  },
+  "warnings": [
+    "fanctrlplus2_Mixed_Groups.cfg: the script no_such_script is not copied; put it into the sensors folder of this plugin",
+    "fanctrlplus2_Mixed_Groups.cfg: the auxiliary sensors have no usable temperature range, not imported",
+    "fanctrlplus2_Old_Block.cfg: the drive \"ata-EXAMPLE_REMOVED_DISK_SN9999\" was not found on this NAS"
+  ],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "controller_identity",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "disk_group_0",
+      "reason": "only one drive group is imported (the one with the highest top temperature)",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "idle",
+      "reason": "the speed when no sensor works: use \"when the input is missing\" instead",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "interval_sec",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus2_Mixed_Groups.cfg"
+    },
+    {
+      "key": "Old_Block",
+      "reason": "another block was imported for the case fans (Mixed_Groups)",
+      "file": "fanctrlplus2_Old_Block.cfg"
+    },
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "fanctrlplus2_Old_Block.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "fanctrlplus2_Old_Block.cfg"
+    },
+    {
+      "key": "service",
+      "reason": "a per-block switch; fan control is one switch here",
+      "file": "fanctrlplus2_Old_Block.cfg"
+    },
+    {
+      "key": "syslog",
+      "reason": "no per-fan logging",
+      "file": "fanctrlplus2_Old_Block.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "fanctrlplus2_Mixed_Groups.cfg: disk_group_2_low, disk_group_2_high, pwm, max",
+    "case_input": "fanctrlplus2_Mixed_Groups.cfg: disks",
+    "cpu_curve": "fanctrlplus2_Old_Block.cfg: cpu_min_temp, cpu_max_temp, pwm, max",
+    "min_pct": "pwm of the imported blocks",
+    "mode": "imported curves need the custom mode"
+  }
+}

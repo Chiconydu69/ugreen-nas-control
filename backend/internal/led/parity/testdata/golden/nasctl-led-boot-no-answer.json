@@ -1,0 +1,19 @@
+{
+  "name": "nasctl-led-boot-no-answer",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-boot"],
+      "rc": 0,
+      "stdout": "WARNING: The LED controller does not answer on the SMBus; no LEDs available.\nctl-out smbus\nupdate_cron-out \n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/led.enabled": "",
+    "boot/x.cron": "* * * * * \u003cROOT\u003e/led/ugreen-led-ctl schedule \u003e/dev/null 2\u003e\u00261\n"
+  },
+  "calls": ["i2c probe", "ctl smbus", "update_cron "],
+  "stubs": ["modprobe i2c_i801", "modprobe i2c-dev"]
+}

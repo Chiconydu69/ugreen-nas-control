@@ -1,0 +1,18 @@
+{
+  "name": "nasctl-status-running",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["status"],
+      "rc": 0,
+      "stdout": "running (pid \u003cPID\u003e)\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/fan.pid": "\u003cPID\u003e\n"
+  },
+  "calls": [],
+  "stubs": []
+}

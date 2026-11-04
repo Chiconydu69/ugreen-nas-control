@@ -1,0 +1,42 @@
+version: '2'
+
+linters:
+  default: none
+  enable:
+    - govet
+    - staticcheck
+    - errcheck
+    - gosec
+    - revive
+  settings:
+    gosec:
+      excludes:
+        # int->byte/uint conversions on register and port values are range-checked
+        # by the protocol code; the narrowing is intentional.
+        - G115
+        # State, lock and calibration files are read by the web UI (PHP, other user)
+        # and by the shell tools, so 0644/0755 is required, not an oversight.
+        - G301
+        - G302
+        - G306
+        # Paths and commands are fixed constants or sysfs/config locations of this
+        # plugin (tests override them), never untrusted input.
+        - G304
+        - G204
+  exclusions:
+    rules:
+      # The Go code lives in internal/ packages that only the cmd/ mains import; exported names there are not an API
+      # that needs doc comments on each.
+      - linters:
+          - revive
+        text: 'exported:'
+      # Test fixtures: unchecked setup calls and permissive temp files are fine.
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+
+formatters:
+  enable:
+    - gofmt
+    - goimports

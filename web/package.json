@@ -1,0 +1,15 @@
+{
+  "name": "ugreen-nas-control-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun tools/build.ts",
+    "test": "bun test src demo tools/api-oracle",
+    "lint": "bun tools/lint.ts",
+    "i18n": "bun tools/check-i18n.ts",
+    "check": "bun run lint && bun check --no-script && bun run test && bun run i18n && bun tools/build.ts --verify"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.4"
+  }
+}

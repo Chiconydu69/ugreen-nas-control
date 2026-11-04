@@ -1,0 +1,100 @@
+{
+  "name": "usage-errors",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["get"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl get \u003cled\u003e\n"
+    },
+    {
+      "args": ["get", "a", "b"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl get \u003cled\u003e\n"
+    },
+    {
+      "args": ["on"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl on \u003cled\u003e\n"
+    },
+    {
+      "args": ["off"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl off \u003cled\u003e\n"
+    },
+    {
+      "args": ["stop"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl stop \u003cled\u003e\n"
+    },
+    {
+      "args": ["brightness", "x"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl brightness \u003cled\u003e \u003c0-255\u003e\n"
+    },
+    {
+      "args": ["color", "x", "y"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl color \u003cled\u003e \u003cR\u003e \u003cG\u003e \u003cB\u003e\n"
+    },
+    {
+      "args": ["color", "power", "1", "2"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl color \u003cled\u003e \u003cR\u003e \u003cG\u003e \u003cB\u003e\n"
+    },
+    {
+      "args": ["blink", "power", "1"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl blink \u003cled\u003e \u003con_ms\u003e \u003coff_ms\u003e\n"
+    },
+    {
+      "args": ["breath", "power"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl breath \u003cled\u003e \u003con_ms\u003e \u003coff_ms\u003e\n"
+    },
+    {
+      "args": ["identify"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl identify \u003cdiskN\u003e [seconds]\n"
+    },
+    {
+      "args": ["identify-stop"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl identify-stop \u003cdiskN\u003e\n"
+    },
+    {
+      "args": ["daemon", "bogus"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl daemon start|stop|restart|status|run\n"
+    },
+    {
+      "args": ["fx", "bogus"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl fx start|stop|restart|status\n"
+    },
+    {
+      "args": ["on", "power", "extra"],
+      "rc": 2,
+      "stdout": "",
+      "stderr": "Usage: \u003cROOT\u003e/ctl/ugreen-led-ctl on \u003cled\u003e\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

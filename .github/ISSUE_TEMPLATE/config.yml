@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or help (Discussions, Q&A)
+    url: https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/new?category=q-a
+    about: Usage questions and setup help.
+  - name: Feature idea (Discussions, Ideas)
+    url: https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/new?category=ideas
+    about: Start wishes and proposals here; an issue follows once the change is agreed.
+  - name: Question or help (Unraid forum)
+    url: https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/
+    about: The plugin thread in the Unraid forum.
+  - name: Security problem
+    url: https://github.com/ugreen-nas-control/ugreen-nas-control/security/advisories/new
+    about: Report privately, not as a public issue.

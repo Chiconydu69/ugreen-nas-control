@@ -1,0 +1,1880 @@
+{
+  "base": {
+    "nas": {
+      "files": {
+        "/boot/config/plugins/ugreen-nas-control.plg": "<!ENTITY version \"2026.10.30\">\n"
+      },
+      "fan": [
+        {
+          "args": ["status"],
+          "out": {
+            "ok": true,
+            "model": "DXP6800 Pro",
+            "daemon": {
+              "time": 1759999995,
+              "quiet_active": false,
+              "job": "",
+              "cap": null
+            },
+            "conflicts": [],
+            "fan_config": {
+              "mode": "standard",
+              "version": 2
+            },
+            "fans": [
+              {
+                "id": "fan1",
+                "rpm": 1200,
+                "pct": 35
+              },
+              {
+                "id": "fan2",
+                "rpm": 0,
+                "pct": 0
+              }
+            ],
+            "temps": {
+              "cpu": 41.5,
+              "case": 33
+            },
+            "fan_control": true
+          }
+        },
+        {
+          "args": ["hardware"],
+          "out": {
+            "model": "DXP6800 Pro",
+            "bays": 6,
+            "pwm": ["pwm1", "pwm2"],
+            "backlight": false
+          }
+        },
+        {
+          "args": ["inputs"],
+          "out": {
+            "ok": true,
+            "inputs": [
+              {
+                "spec": "cpu",
+                "label": "CPU",
+                "value": 41
+              },
+              {
+                "spec": "nvme",
+                "label": "NVMe",
+                "value": 38
+              }
+            ]
+          }
+        },
+        {
+          "args": ["profile", "export"],
+          "out": {
+            "ok": true,
+            "format": 1,
+            "settings": {
+              "mode": "custom",
+              "cpu_curve": "40:30,60:50"
+            }
+          }
+        },
+        {
+          "args": ["profile", "sources"],
+          "out": {
+            "ok": true,
+            "sources": [
+              {
+                "id": "fanctrlplus",
+                "found": true
+              },
+              {
+                "id": "itkuny",
+                "found": false
+              }
+            ]
+          }
+        },
+        {
+          "args": ["profile", "preview"],
+          "out": {
+            "ok": true,
+            "token": "0000000000000000000000000000000000000000000000000000000000000000",
+            "diff": []
+          }
+        },
+        {
+          "args": ["profile", "apply"],
+          "out": {
+            "ok": true,
+            "values": {
+              "mode": "custom"
+            }
+          }
+        },
+        {
+          "args": ["probe-fans", "status"],
+          "out": {
+            "ok": true,
+            "state": "idle"
+          }
+        },
+        {
+          "args": ["probe-fans", "tachs"],
+          "out": {
+            "ok": true,
+            "tachs": {
+              "pwm1": 1200,
+              "pwm2": 0
+            }
+          }
+        },
+        {
+          "args": ["probe-fans", "confirm"],
+          "out": {
+            "ok": true,
+            "map": {
+              "pwm1": "cpu"
+            }
+          }
+        },
+        {
+          "args": ["probe-fans", "forget"]
+        },
+        {
+          "args": ["probe-fans", "run"],
+          "sleep": 3000
+        },
+        {
+          "args": ["calibrate"],
+          "sleep": 3000
+        },
+        {
+          "args": ["backlight", "set"]
+        },
+        {
+          "args": ["backlight"],
+          "out": {
+            "ok": true,
+            "pct": 40
+          }
+        },
+        {
+          "args": ["power-on-ac", "set"],
+          "out": {
+            "ok": true,
+            "model": "DXP4800 Plus",
+            "set": "last",
+            "mode": "last",
+            "readable": true,
+            "raw": { "f2": 244, "f4": 230 },
+            "settable": ["on", "off", "last"],
+            "source": "it8613",
+            "verified": true,
+            "last_set": { "mode": "last", "time": 1759999000 }
+          }
+        },
+        {
+          "args": ["power-on-ac"],
+          "out": {
+            "ok": true,
+            "model": "DXP4800 Plus",
+            "mode": "off",
+            "readable": true,
+            "raw": { "f2": 208, "f4": 96 },
+            "settable": ["on", "off", "last"],
+            "source": "it8613",
+            "last_set": null
+          }
+        },
+        {
+          "args": ["cs201x", "forget"],
+          "out": { "ok": true }
+        },
+        {
+          "args": ["cs201x", "confirm"],
+          "out": {
+            "ok": true,
+            "map": {
+              "version": 1,
+              "model": "DXP2800 GT",
+              "chip": "CS201x"
+            }
+          }
+        },
+        {
+          "args": ["cs201x"],
+          "out": {
+            "ok": true,
+            "read": {
+              "model": "DXP2800 GT",
+              "chip_id": "0x2011",
+              "host_ec": "active"
+            }
+          }
+        },
+        {
+          "args": ["input-test"],
+          "out": {
+            "ok": true,
+            "value": 42
+          }
+        }
+      ],
+      "ctl": [
+        {
+          "args": ["status"]
+        },
+        {
+          "args": ["led-status"],
+          "out": {
+            "enabled": true,
+            "supported": true,
+            "blocker": ""
+          }
+        },
+        {
+          "args": ["start"]
+        },
+        {
+          "args": ["stop"]
+        },
+        {
+          "args": ["led-enable"]
+        },
+        {
+          "args": ["led-disable"]
+        },
+        {
+          "args": ["led-import"]
+        }
+      ],
+      "nas": [
+        {
+          "args": ["panel", "buttons"],
+          "out": "model: DXP4800 Plus (vendor source, not yet confirmed on hardware)\npower released, reset held\n"
+        },
+        {
+          "args": ["panel", "beep"]
+        }
+      ]
+    },
+    "led": {
+      "led": [
+        {
+          "args": ["status"],
+          "out": {
+            "ok": true,
+            "mode": "manual",
+            "daemon": false,
+            "bays": 2,
+            "netdev_status": "activity"
+          }
+        },
+        {
+          "args": ["list"],
+          "out": ["power", "netdev", "disk1", "disk2"]
+        },
+        {
+          "args": ["all"],
+          "out": {
+            "power": {
+              "color": "255 255 255",
+              "brightness": "255",
+              "effect": "none"
+            },
+            "netdev": {
+              "color": "0 160 255",
+              "brightness": "200",
+              "effect": "none"
+            },
+            "disk1": {
+              "color": "255 255 255",
+              "brightness": "180",
+              "effect": "none"
+            },
+            "disk2": {
+              "color": "255 160 0",
+              "brightness": "60",
+              "effect": "blink"
+            }
+          }
+        },
+        {
+          "args": ["bays"],
+          "out": [
+            {
+              "led": "disk1",
+              "smart_key": "smart_disk1",
+              "smart_now": "5/0/0"
+            },
+            {
+              "led": "disk2",
+              "smart_key": "",
+              "smart_now": ""
+            },
+            {
+              "led": "disk3",
+              "smart_key": "smart_disk3",
+              "smart_now": ""
+            }
+          ]
+        },
+        {
+          "args": ["get", "power"],
+          "out": {
+            "name": "power",
+            "color": "255 255 255",
+            "brightness": "255",
+            "effect": "none"
+          }
+        },
+        {
+          "args": ["get", "disk1"],
+          "out": {
+            "name": "disk1",
+            "color": "255 255 255",
+            "brightness": "180",
+            "effect": "none"
+          }
+        },
+        {
+          "args": []
+        }
+      ]
+    }
+  },
+  "cases": [
+    { "id": "nas.gate.fan-missing", "api": "nas", "missing": ["ugreen-nas-fan"] },
+    { "id": "nas.gate.ctl-missing", "api": "nas", "missing": ["ugreen-nas-ctl"], "query": { "action": "hardware" } },
+    { "id": "nas.gate.fan-not-executable", "api": "nas", "nonexec": ["ugreen-nas-fan"] },
+    { "id": "nas.gate.before-post", "api": "nas", "missing": ["ugreen-nas-ctl"], "body": { "action": "mode", "value": "quiet" } },
+    { "id": "nas.method.put", "api": "nas", "method": "PUT", "body": { "action": "mode", "value": "quiet" } },
+    { "id": "nas.method.delete", "api": "nas", "method": "DELETE" },
+    { "id": "nas.get.unknown", "api": "nas", "query": { "action": "nope" } },
+    { "id": "nas.get.action-array", "api": "nas", "query": "action[]=status" },
+    { "id": "nas.post.unknown", "api": "nas", "body": { "action": "nope" } },
+    { "id": "nas.post.no-action", "api": "nas", "body": {} },
+    { "id": "nas.post.action-array", "api": "nas", "body": "action[]=mode&value=quiet" },
+    { "id": "nas.status.defaults", "api": "nas" },
+    { "id": "nas.status.explicit", "api": "nas", "query": { "action": "status" } },
+    {
+      "id": "nas.status.floats-unicode",
+      "api": "nas",
+      "fan": [
+        {
+          "args": ["status"],
+          "out": "{\"ok\":true,\"model\":\"Café ☕ a/b\",\"temps\":{\"cpu\":41.5,\"case\":33.0},\"empty_list\":[],\"empty_map\":{},\"big\":10000000000,\"conflicts\":[]}\n"
+        }
+      ]
+    },
+    {
+      "id": "nas.status.plg-next",
+      "api": "nas",
+      "files": {
+        "/boot/config/plugins/ugreen-nas-control.plg": "<!ENTITY version \"4.3-next.000005\">"
+      }
+    },
+    { "id": "nas.status.plg-none", "api": "nas", "files": { "/boot/config/plugins/ugreen-nas-control.plg": null } },
+    { "id": "nas.status.plg-without-entity", "api": "nas", "files": { "/boot/config/plugins/ugreen-nas-control.plg": "<PLUGIN/>" } },
+    {
+      "id": "nas.status.cfg-v1-full",
+      "api": "nas",
+      "files": {
+        "fan.cfg": "mode=\"custom\"\ncpu_curve=\"40:30,60:50\"\ncase_curve=\"40:20,70:60\"\nmin_pct=\"30\"\ncpu_crit=\"95\"\ndisk_crit=\"60\"\nnvme_offset=\"10\"\nstall_notify=\"0\"\nfan_control=\"1\"\ncase_follows_cpu=\"1\"\nignore_drives=\"sda,sdb\"\nui_lang=\"fr\"\nui_theme=\"light\"\n"
+      }
+    },
+    {
+      "id": "nas.status.cfg-v2-keys-ignored",
+      "api": "nas",
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\nfan.fan1.deadband=\"3\"\nmode=\"quiet\"\n" }
+    },
+    { "id": "nas.status.cfg-bad-mode", "api": "nas", "files": { "fan.cfg": "mode=\"turbo\"\n" } },
+    {
+      "id": "nas.status.cfg-flags-off",
+      "api": "nas",
+      "files": { "fan.cfg": "fan_control=\"0\"\nstall_notify=\"2\"\ncase_follows_cpu=\"true\"\nignore_drives=\" sda, ,sdb ,\"\n" }
+    },
+    { "id": "nas.status.cfg-garbage-numbers", "api": "nas", "files": { "fan.cfg": "min_pct=\"abc\"\ncpu_crit=\"99x\"\ndisk_crit=\"\"\nnvme_offset=\"-5\"\n" } },
+    { "id": "nas.status.running-false", "api": "nas", "ctl": [{ "args": ["status"], "code": 3 }] },
+    { "id": "nas.status.led-garbage", "api": "nas", "ctl": [{ "args": ["led-status"], "out": "not json" }] },
+    { "id": "nas.status.led-empty-object", "api": "nas", "ctl": [{ "args": ["led-status"], "out": "{}" }] },
+    { "id": "nas.status.led-tool-fails", "api": "nas", "ctl": [{ "args": ["led-status"], "code": 1, "err": "no led\n" }] },
+    {
+      "id": "nas.status.rival-blocks-led",
+      "api": "nas",
+      "ctl": [{ "args": ["led-status"], "out": { "enabled": false, "supported": true, "blocker": "" } }],
+      "fan": [{ "args": ["status"], "out": { "ok": true, "conflicts": [{ "id": "unraid-led", "severity": "block", "controls": ["led", "fan"] }] } }]
+    },
+    {
+      "id": "nas.status.rival-led-enabled",
+      "api": "nas",
+      "fan": [{ "args": ["status"], "out": { "ok": true, "conflicts": [{ "id": "unraid-led", "severity": "block", "controls": ["led"] }] } }]
+    },
+    {
+      "id": "nas.status.rival-blocker-kept",
+      "api": "nas",
+      "ctl": [{ "args": ["led-status"], "out": { "enabled": false, "supported": false, "blocker": "model" } }],
+      "fan": [{ "args": ["status"], "out": { "ok": true, "conflicts": [{ "id": "x", "severity": "block", "controls": ["led"] }] } }]
+    },
+    {
+      "id": "nas.status.rival-not-led-or-not-block",
+      "api": "nas",
+      "ctl": [{ "args": ["led-status"], "out": { "enabled": false, "supported": true, "blocker": "" } }],
+      "fan": [
+        {
+          "args": ["status"],
+          "out": {
+            "ok": true,
+            "conflicts": [{ "id": "a", "severity": "block", "controls": ["fan"] }, { "id": "b", "severity": "warn", "controls": ["led"] }, { "id": "c" }]
+          }
+        }
+      ]
+    },
+    { "id": "nas.status.conflicts-not-array", "api": "nas", "fan": [{ "args": ["status"], "out": { "ok": true, "conflicts": "none" } }] },
+    { "id": "nas.status.no-fan-config", "api": "nas", "fan": [{ "args": ["status"], "out": { "ok": true, "model": "x" } }] },
+    { "id": "nas.status.tool-fails-stderr", "api": "nas", "fan": [{ "args": ["status"], "code": 1, "err": "fan chip busy\n" }] },
+    { "id": "nas.status.tool-garbage-stdout", "api": "nas", "fan": [{ "args": ["status"], "out": "oops\n" }] },
+    { "id": "nas.status.tool-silent", "api": "nas", "fan": [{ "args": ["status"], "code": 1 }] },
+    { "id": "nas.status.tool-scalar", "api": "nas", "fan": [{ "args": ["status"], "out": "123" }] },
+    { "id": "nas.status.tool-empty-list", "api": "nas", "fan": [{ "args": ["status"], "out": "[]" }] },
+    { "id": "nas.hardware.ok", "api": "nas", "query": { "action": "hardware" } },
+    {
+      "id": "nas.hardware.garbage",
+      "api": "nas",
+      "query": { "action": "hardware" },
+      "fan": [{ "args": ["hardware"], "out": "nope", "err": "ignored on stdout parse\n" }]
+    },
+    { "id": "nas.hardware.scalar", "api": "nas", "query": { "action": "hardware" }, "fan": [{ "args": ["hardware"], "out": "42" }] },
+    {
+      "id": "nas.hardware.ok-false-overridden",
+      "api": "nas",
+      "query": { "action": "hardware" },
+      "fan": [{ "args": ["hardware"], "out": { "ok": false, "error": "x", "model": "m" } }]
+    },
+    {
+      "id": "nas.hardware.fails-stderr",
+      "api": "nas",
+      "query": { "action": "hardware" },
+      "fan": [{ "args": ["hardware"], "code": 2, "err": "dmi unreadable\n" }]
+    },
+    { "id": "nas.fan_inputs.ok", "api": "nas", "query": { "action": "fan_inputs" } },
+    {
+      "id": "nas.fan_inputs.ok-false",
+      "api": "nas",
+      "query": { "action": "fan_inputs" },
+      "fan": [{ "args": ["inputs"], "out": { "ok": false, "error": "no sensors" } }]
+    },
+    { "id": "nas.fan_inputs.ok-missing", "api": "nas", "query": { "action": "fan_inputs" }, "fan": [{ "args": ["inputs"], "out": { "inputs": [] } }] },
+    { "id": "nas.fan_inputs.garbage", "api": "nas", "query": { "action": "fan_inputs" }, "fan": [{ "args": ["inputs"], "out": "x", "err": "inputs broke\n" }] },
+    {
+      "id": "nas.fan_profile_export.ok-pretty",
+      "api": "nas",
+      "query": { "action": "fan_profile_export" },
+      "fan": [{ "args": ["profile", "export"], "out": { "ok": true, "name": "Größe a/b", "settings": { "mode": "custom" }, "empty": [] } }]
+    },
+    {
+      "id": "nas.fan_profile_export.ok-false",
+      "api": "nas",
+      "query": { "action": "fan_profile_export" },
+      "fan": [{ "args": ["profile", "export"], "out": { "ok": false, "error": "nothing to export" } }]
+    },
+    {
+      "id": "nas.fan_profile_export.no-answer-stderr",
+      "api": "nas",
+      "query": { "action": "fan_profile_export" },
+      "fan": [{ "args": ["profile", "export"], "code": 1, "err": "cannot read cfg\n" }]
+    },
+    {
+      "id": "nas.fan_profile_export.no-answer-silent",
+      "api": "nas",
+      "query": { "action": "fan_profile_export" },
+      "fan": [{ "args": ["profile", "export"], "code": 1 }]
+    },
+    { "id": "nas.fan_profile_sources.ok", "api": "nas", "query": { "action": "fan_profile_sources" } },
+    {
+      "id": "nas.fan_profile_sources.ok-false-no-error",
+      "api": "nas",
+      "query": { "action": "fan_profile_sources" },
+      "fan": [{ "args": ["profile", "sources"], "out": { "ok": false } }]
+    },
+    {
+      "id": "nas.fan_schedule.v1-ignores-v2",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "files": { "fan.cfg": "quiet_enabled=\"1\"\nquiet_from=\"20:00\"\n" }
+    },
+    { "id": "nas.fan_schedule.v2-defaults", "api": "nas", "query": { "action": "fan_schedule" }, "files": { "fan.cfg": "cfg_version=\"2\"\n" } },
+    {
+      "id": "nas.fan_schedule.quiet-active",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "files": {
+        "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\nquiet_from=\"22:00\"\nquiet_to=\"06:30\"\nquiet_days=\"mon,tue\"\nquiet_cap=\"50\"\nquiet_scope=\"all\"\n"
+      },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": { "time": 1759999997, "quiet_active": true, "cap": 45, "job": "" } } }]
+    },
+    {
+      "id": "nas.fan_schedule.daemon-stale",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\n" },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": { "time": 1759999989, "quiet_active": true, "cap": 45, "job": "mover" } } }]
+    },
+    {
+      "id": "nas.fan_schedule.daemon-fresh-edge",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\n" },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": { "time": 1759999990, "quiet_active": true, "cap": 45, "job": "parity" } } }]
+    },
+    {
+      "id": "nas.fan_schedule.job-mover-no-quiet",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": { "time": 1759999999, "quiet_active": false, "cap": 60, "job": "mover" } } }]
+    },
+    {
+      "id": "nas.fan_schedule.job-unknown-cap-string",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": { "time": 1759999999, "quiet_active": true, "cap": "45", "job": "scrub" } } }]
+    },
+    {
+      "id": "nas.fan_schedule.from-equals-to",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\nquiet_from=\"07:00\"\nquiet_to=\"07:00\"\n" }
+    },
+    {
+      "id": "nas.fan_schedule.no-daemon",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "fan": [{ "args": ["status"], "out": { "ok": true, "daemon": "stopped" } }]
+    },
+    {
+      "id": "nas.fan_schedule.tool-garbage",
+      "api": "nas",
+      "query": { "action": "fan_schedule" },
+      "fan": [{ "args": ["status"], "code": 1, "err": "no status\n" }]
+    },
+    {
+      "id": "nas.fan_history.default-1h",
+      "api": "nas",
+      "query": { "action": "fan_history" },
+      "fan": [{ "args": ["history", "1h"], "out": { "ok": true, "running": true, "range": "1h", "step": 10, "t": [1759999990, 1760000000] } }]
+    },
+    {
+      "id": "nas.fan_history.range-24h",
+      "api": "nas",
+      "query": { "action": "fan_history", "range": "24h" },
+      "fan": [{ "args": ["history", "24h"], "out": { "ok": true, "running": true, "range": "24h", "step": 60 } }]
+    },
+    {
+      "id": "nas.fan_history.range-invalid-400",
+      "api": "nas",
+      "query": { "action": "fan_history", "range": "7d" }
+    },
+    {
+      "id": "nas.fan_history.range-array-400",
+      "api": "nas",
+      "query": "action=fan_history&range[]=1h"
+    },
+    {
+      "id": "nas.fan_history.daemon-stopped",
+      "api": "nas",
+      "query": { "action": "fan_history" },
+      "fan": [{ "args": ["history"], "out": { "ok": true, "running": false } }]
+    },
+    {
+      "id": "nas.fan_history.tool-garbage",
+      "api": "nas",
+      "query": { "action": "fan_history" },
+      "fan": [{ "args": ["history"], "code": 1, "err": "no history\n" }]
+    },
+    { "id": "nas.fan_probe_status.ok", "api": "nas", "query": { "action": "fan_probe_status" } },
+    {
+      "id": "nas.fan_probe_status.ok-false",
+      "api": "nas",
+      "query": { "action": "fan_probe_status" },
+      "fan": [{ "args": ["probe-fans", "status"], "out": { "ok": false, "error": "wrong model" } }]
+    },
+    {
+      "id": "nas.fan_probe_status.refused-409",
+      "api": "nas",
+      "query": { "action": "fan_probe_status" },
+      "fan": [{ "args": ["probe-fans", "status"], "code": 1, "err": "ERROR: another fan tool runs\n" }]
+    },
+    {
+      "id": "nas.fan_probe_status.refused-silent-409",
+      "api": "nas",
+      "query": { "action": "fan_probe_status" },
+      "fan": [{ "args": ["probe-fans", "status"], "code": 1 }]
+    },
+    {
+      "id": "nas.fan_probe_status.garbage-code0",
+      "api": "nas",
+      "query": { "action": "fan_probe_status" },
+      "fan": [{ "args": ["probe-fans", "status"], "out": "garbage\n" }]
+    },
+    {
+      "id": "nas.fan_probe_status.json-code1-no-error",
+      "api": "nas",
+      "query": { "action": "fan_probe_status" },
+      "fan": [{ "args": ["probe-fans", "status"], "code": 1, "out": { "state": "x" } }]
+    },
+    { "id": "nas.fan_probe_tachs.ok", "api": "nas", "query": { "action": "fan_probe_tachs" } },
+    {
+      "id": "nas.fan_probe_tachs.refused-409",
+      "api": "nas",
+      "query": { "action": "fan_probe_tachs" },
+      "fan": [{ "args": ["probe-fans", "tachs"], "code": 1, "err": "ERROR: probe not running\n" }]
+    },
+    { "id": "nas.fan_backlight.get-ok", "api": "nas", "query": { "action": "fan_backlight" } },
+    {
+      "id": "nas.fan_backlight.get-refused-409",
+      "api": "nas",
+      "query": { "action": "fan_backlight" },
+      "fan": [{ "args": ["backlight"], "code": 1, "err": "ERROR: model has no backlight\n" }]
+    },
+    {
+      "id": "nas.fan_backlight.get-ok-false",
+      "api": "nas",
+      "query": { "action": "fan_backlight" },
+      "fan": [{ "args": ["backlight"], "out": { "ok": false, "error": "i2c failed" } }]
+    },
+    { "id": "nas.cs201x_read.ok", "api": "nas", "query": { "action": "cs201x_read" } },
+    {
+      "id": "nas.cs201x_read.refused-json-409",
+      "api": "nas",
+      "query": { "action": "cs201x_read" },
+      "fan": [{ "args": ["cs201x"], "code": 1, "out": { "ok": false, "error": "\"DXP4800 Plus\" is not a DXP2800 GT" } }]
+    },
+    {
+      "id": "nas.cs201x_read.refused-plain-409",
+      "api": "nas",
+      "query": { "action": "cs201x_read" },
+      "fan": [{ "args": ["cs201x"], "code": 1, "err": "ERROR: cannot open /dev/port\n" }]
+    },
+    { "id": "nas.cs201x_confirm.default-both", "api": "nas", "body": { "action": "cs201x_confirm" } },
+    { "id": "nas.cs201x_confirm.one-fan", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "fan3" } },
+    { "id": "nas.cs201x_confirm.two-fans", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "fan1,fan3" } },
+    { "id": "nas.cs201x_confirm.empty-is-default", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "" } },
+    { "id": "nas.cs201x_confirm.bad-fan", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "fan2" } },
+    { "id": "nas.cs201x_confirm.duplicate", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "fan1,fan1" } },
+    { "id": "nas.cs201x_confirm.injection", "api": "nas", "body": { "action": "cs201x_confirm", "fans": "fan1;reboot" } },
+    { "id": "nas.cs201x_confirm.array", "api": "nas", "body": { "action": "cs201x_confirm", "fans[]": "fan1" } },
+    {
+      "id": "nas.cs201x_confirm.refused-409",
+      "api": "nas",
+      "body": { "action": "cs201x_confirm", "fans": "fan1" },
+      "fan": [
+        {
+          "args": ["cs201x", "confirm"],
+          "code": 1,
+          "out": { "ok": false, "map": null, "error": "fan1 reads no rpm: nothing connected, or the fan is stopped" }
+        }
+      ]
+    },
+    { "id": "nas.cs201x_forget.ok", "api": "nas", "body": { "action": "cs201x_forget" } },
+    {
+      "id": "nas.cs201x_forget.refused-409",
+      "api": "nas",
+      "body": { "action": "cs201x_forget" },
+      "fan": [{ "args": ["cs201x", "forget"], "code": 1, "err": "ERROR: \"DXP4800 Plus\" is not a DXP2800 GT\n" }]
+    },
+    { "id": "nas.power_ac_get.ok", "api": "nas", "query": { "action": "power_ac_get" } },
+    {
+      "id": "nas.power_ac_get.refused-json-409",
+      "api": "nas",
+      "query": { "action": "power_ac_get" },
+      "fan": [{ "args": ["power-on-ac"], "code": 1, "out": { "ok": false, "error": "this model has no power-on setting this tool can reach" } }]
+    },
+    {
+      "id": "nas.power_ac_get.refused-plain-409",
+      "api": "nas",
+      "query": { "action": "power_ac_get" },
+      "fan": [{ "args": ["power-on-ac"], "code": 1, "err": "ERROR: open /dev/mem: permission denied\n" }]
+    },
+    { "id": "nas.power_ac_set.on", "api": "nas", "body": { "action": "power_ac_set", "mode": "on" } },
+    { "id": "nas.power_ac_set.off", "api": "nas", "body": { "action": "power_ac_set", "mode": "off" } },
+    { "id": "nas.power_ac_set.last", "api": "nas", "body": { "action": "power_ac_set", "mode": "last" } },
+    { "id": "nas.power_ac_set.missing-mode", "api": "nas", "body": { "action": "power_ac_set" } },
+    { "id": "nas.power_ac_set.bad-mode", "api": "nas", "body": { "action": "power_ac_set", "mode": "unknown" } },
+    { "id": "nas.power_ac_set.upper-case", "api": "nas", "body": { "action": "power_ac_set", "mode": "ON" } },
+    { "id": "nas.power_ac_set.injection", "api": "nas", "body": { "action": "power_ac_set", "mode": "on;reboot" } },
+    { "id": "nas.power_ac_set.array", "api": "nas", "body": { "action": "power_ac_set", "mode[]": "on" } },
+    {
+      "id": "nas.power_ac_set.rival-409",
+      "api": "nas",
+      "body": { "action": "power_ac_set", "mode": "on" },
+      "fan": [
+        {
+          "args": ["power-on-ac", "set", "on"],
+          "code": 1,
+          "out": { "ok": false, "error": "FanCtrl Plus controls the fans too; switch one of the two off first" }
+        }
+      ]
+    },
+    { "id": "nas.panel_buttons.ok", "api": "nas", "query": { "action": "panel_buttons" } },
+    {
+      "id": "nas.panel_buttons.power-not-readable",
+      "api": "nas",
+      "query": { "action": "panel_buttons" },
+      "nas": [
+        {
+          "args": ["panel", "buttons"],
+          "out": "model: iDX6011 (vendor source, not yet confirmed on hardware)\npower: not readable by address\npower released, reset released\n"
+        }
+      ]
+    },
+    {
+      "id": "nas.panel_buttons.refused-409",
+      "api": "nas",
+      "query": { "action": "panel_buttons" },
+      "nas": [{ "args": ["panel", "buttons"], "code": 1, "err": "ERROR: no button map for model \"DXP6800 Ultra\"\n" }]
+    },
+    {
+      "id": "nas.panel_buttons.no-state-500",
+      "api": "nas",
+      "query": { "action": "panel_buttons" },
+      "nas": [{ "args": ["panel", "buttons"], "out": "model: DXP4800 Plus (x)\n" }]
+    },
+    { "id": "nas.panel_buttons.tool-missing-500", "api": "nas", "query": { "action": "panel_buttons" }, "missing": ["ugreen-nas"] },
+    { "id": "nas.panel_beep.default", "api": "nas", "body": { "action": "panel_beep" } },
+    { "id": "nas.panel_beep.ms", "api": "nas", "body": { "action": "panel_beep", "ms": "2000" } },
+    { "id": "nas.panel_beep.min", "api": "nas", "body": { "action": "panel_beep", "ms": "20" } },
+    { "id": "nas.panel_beep.too-short", "api": "nas", "body": { "action": "panel_beep", "ms": "19" } },
+    { "id": "nas.panel_beep.too-long", "api": "nas", "body": { "action": "panel_beep", "ms": "2001" } },
+    { "id": "nas.panel_beep.leading-zero", "api": "nas", "body": { "action": "panel_beep", "ms": "0200" } },
+    { "id": "nas.panel_beep.text", "api": "nas", "body": { "action": "panel_beep", "ms": "long" } },
+    {
+      "id": "nas.panel_beep.refused-409",
+      "api": "nas",
+      "body": { "action": "panel_beep" },
+      "nas": [{ "args": ["panel", "beep"], "code": 1, "err": "ERROR: no beeper known for model \"DXP4800 GT\"\n" }]
+    },
+    { "id": "nas.mode.quiet-new-file", "api": "nas", "body": { "action": "mode", "value": "quiet" } },
+    {
+      "id": "nas.mode.keeps-others-sorted",
+      "api": "nas",
+      "body": { "action": "mode", "value": "performance" },
+      "files": { "fan.cfg": "ui_theme=\"light\"\nmin_pct=\"30\"\nmode=\"quiet\"\n" }
+    },
+    { "id": "nas.mode.bios", "api": "nas", "body": { "action": "mode", "value": "bios" }, "files": { "fan.cfg": "mode=\"full\"\ncfg_version=\"2\"\n" } },
+    { "id": "nas.mode.invalid", "api": "nas", "body": { "action": "mode", "value": "turbo" } },
+    { "id": "nas.mode.missing-value", "api": "nas", "body": { "action": "mode" } },
+    { "id": "nas.mode.value-array", "api": "nas", "body": "action=mode&value[]=quiet" },
+    {
+      "id": "nas.mode.start-fails-500",
+      "api": "nas",
+      "body": { "action": "mode", "value": "full" },
+      "ctl": [{ "args": ["start"], "code": 1, "err": "daemon refused\n" }]
+    },
+    {
+      "id": "nas.mode.start-fails-stdout-message",
+      "api": "nas",
+      "body": { "action": "mode", "value": "full" },
+      "ctl": [{ "args": ["start"], "code": 1, "out": "no stderr here\n" }]
+    },
+    { "id": "nas.mode.unwritable-500", "api": "nas", "body": { "action": "mode", "value": "quiet" }, "blockConfig": true },
+    {
+      "id": "nas.curves.ok",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50,80:100", "case_curve": "40:20,70:60" },
+      "files": { "fan.cfg": "mode=\"quiet\"\nui_lang=\"de\"\n" }
+    },
+    {
+      "id": "nas.curves.with-min-and-follow",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "40:20,70:60", "min_pct": "35", "case_follows_cpu": "1" }
+    },
+    {
+      "id": "nas.curves.follow-other-value-is-0",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "40:20,70:60", "case_follows_cpu": "yes" },
+      "files": { "fan.cfg": "case_follows_cpu=\"1\"\n" }
+    },
+    { "id": "nas.curves.min-invalid", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "40:20,70:60", "min_pct": "9" } },
+    { "id": "nas.curves.cpu-one-point", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30", "case_curve": "40:20,70:60" } },
+    { "id": "nas.curves.case-not-rising", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "60:20,40:60" } },
+    {
+      "id": "nas.curves.nine-points",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "10:10,20:10,30:10,40:10,50:10,60:10,70:10,80:10,90:10", "case_curve": "40:20,70:60" }
+    },
+    {
+      "id": "nas.curves.eight-points-ok",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "10:10,20:10,30:10,40:10,50:10,60:10,70:10,120:100", "case_curve": "040:020,070:060" }
+    },
+    { "id": "nas.curves.temp-121", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30,121:50", "case_curve": "40:20,70:60" } },
+    { "id": "nas.curves.pct-101", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30,60:101", "case_curve": "40:20,70:60" } },
+    { "id": "nas.curves.missing-case-curve", "api": "nas", "body": { "action": "curves", "cpu_curve": "40:30,60:50" } },
+    {
+      "id": "nas.curves.start-fails-ignored",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "40:20,70:60" },
+      "ctl": [{ "args": ["start"], "code": 1, "err": "x\n" }]
+    },
+    {
+      "id": "nas.curves.unwritable-500",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50", "case_curve": "40:20,70:60" },
+      "blockConfig": true
+    },
+    { "id": "nas.curves.curve-array", "api": "nas", "body": "action=curves&cpu_curve[]=40:30&case_curve=40:20,70:60" },
+    { "id": "nas.min.ok", "api": "nas", "body": { "action": "min", "min_pct": "30" }, "files": { "fan.cfg": "mode=\"quiet\"\n" } },
+    { "id": "nas.min.with-follow", "api": "nas", "body": { "action": "min", "min_pct": "60", "case_follows_cpu": "1" } },
+    { "id": "nas.min.whitespace-and-plus", "api": "nas", "body": { "action": "min", "min_pct": " +25 " } },
+    { "id": "nas.min.too-low", "api": "nas", "body": { "action": "min", "min_pct": "9" } },
+    { "id": "nas.min.too-high", "api": "nas", "body": { "action": "min", "min_pct": "61" } },
+    { "id": "nas.min.missing", "api": "nas", "body": { "action": "min" } },
+    { "id": "nas.min.leading-zero", "api": "nas", "body": { "action": "min", "min_pct": "030" } },
+    { "id": "nas.min.unwritable-500", "api": "nas", "body": { "action": "min", "min_pct": "30" }, "blockConfig": true },
+    {
+      "id": "nas.safety.ok",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "95", "disk_crit": "55", "nvme_offset": "15", "stall_notify": "1", "ignore_drives": "sda,sdb" },
+      "files": { "fan.cfg": "mode=\"quiet\"\n" }
+    },
+    { "id": "nas.safety.limits-low-ok", "api": "nas", "body": { "action": "safety", "cpu_crit": "70", "disk_crit": "40", "nvme_offset": "0" } },
+    {
+      "id": "nas.safety.limits-high-ok",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "105", "disk_crit": "70", "nvme_offset": "40", "stall_notify": "0" }
+    },
+    { "id": "nas.safety.cpu-crit-106", "api": "nas", "body": { "action": "safety", "cpu_crit": "106", "disk_crit": "55", "nvme_offset": "15" } },
+    { "id": "nas.safety.disk-crit-39", "api": "nas", "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "39", "nvme_offset": "15" } },
+    { "id": "nas.safety.nvme-offset-41", "api": "nas", "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "41" } },
+    { "id": "nas.safety.cpu-crit-missing", "api": "nas", "body": { "action": "safety", "disk_crit": "55", "nvme_offset": "15" } },
+    {
+      "id": "nas.safety.drives-trimmed-deduped",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "15", "ignore_drives": " sda, sdb,sda,,nvme0n1 ," }
+    },
+    {
+      "id": "nas.safety.drive-name-with-space",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "15", "ignore_drives": "sd a" }
+    },
+    {
+      "id": "nas.safety.drive-name-41-chars",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "15", "ignore_drives": "@repeat:a:41" }
+    },
+    {
+      "id": "nas.safety.drive-name-trailing-newline",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "15", "ignore_drives": "sda\n" }
+    },
+    {
+      "id": "nas.safety.33-drives",
+      "api": "nas",
+      "body": {
+        "action": "safety",
+        "cpu_crit": "90",
+        "disk_crit": "55",
+        "nvme_offset": "15",
+        "ignore_drives": "d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31,d32,d33"
+      }
+    },
+    {
+      "id": "nas.safety.32-drives-ok",
+      "api": "nas",
+      "body": {
+        "action": "safety",
+        "cpu_crit": "90",
+        "disk_crit": "55",
+        "nvme_offset": "15",
+        "ignore_drives": "d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11,d12,d13,d14,d15,d16,d17,d18,d19,d20,d21,d22,d23,d24,d25,d26,d27,d28,d29,d30,d31,d32"
+      }
+    },
+    {
+      "id": "nas.safety.unwritable-500",
+      "api": "nas",
+      "body": { "action": "safety", "cpu_crit": "90", "disk_crit": "55", "nvme_offset": "15" },
+      "blockConfig": true
+    },
+    {
+      "id": "nas.fan_v2.v1-file-gets-backup",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_enabled]": "1", "values[quiet_from]": "22:00", "values[quiet_to]": "06:00" },
+      "files": { "fan.cfg": "mode=\"standard\"\nmin_pct=\"25\"\n" }
+    },
+    { "id": "nas.fan_v2.no-file-no-backup", "api": "nas", "body": { "action": "fan_v2", "values[quiet_cap]": "40" } },
+    {
+      "id": "nas.fan_v2.v2-file-no-backup",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[job_mover]": "floor", "values[job_mover_pct]": "50" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nmode=\"quiet\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.existing-backup-kept",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_cap]": "40" },
+      "files": { "fan.cfg": "mode=\"standard\"\n", "fan.cfg.bak": "mode=\"older\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.reset-and-set",
+      "api": "nas",
+      "body": { "action": "fan_v2", "reset": "quiet_cap,job_mover", "values[quiet_scope]": "all" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_cap=\"30\"\njob_mover=\"boost\"\nmode=\"quiet\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.reset-only-empty-items",
+      "api": "nas",
+      "body": { "action": "fan_v2", "reset": "quiet_cap,," },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_cap=\"30\"\n" }
+    },
+    { "id": "nas.fan_v2.reset-unknown", "api": "nas", "body": { "action": "fan_v2", "reset": "mode", "values[quiet_cap]": "40" } },
+    { "id": "nas.fan_v2.bad-key", "api": "nas", "body": { "action": "fan_v2", "values[bogus]": "1" } },
+    { "id": "nas.fan_v2.v1-key-refused", "api": "nas", "body": { "action": "fan_v2", "values[mode]": "custom" } },
+    { "id": "nas.fan_v2.bad-value", "api": "nas", "body": { "action": "fan_v2", "values[quiet_cap]": "5" } },
+    { "id": "nas.fan_v2.values-missing", "api": "nas", "body": { "action": "fan_v2" } },
+    {
+      "id": "nas.fan_v2.values-missing-v1-file-untouched",
+      "api": "nas",
+      "body": { "action": "fan_v2" },
+      "files": { "fan.cfg": "mode=\"standard\"\nmin_pct=\"25\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.values-empty-reset-empty",
+      "api": "nas",
+      "body": "action=fan_v2&reset=,",
+      "files": { "fan.cfg": "mode=\"standard\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.reset-only-v1-file",
+      "api": "nas",
+      "body": { "action": "fan_v2", "reset": "quiet_cap" },
+      "files": { "fan.cfg": "mode=\"standard\"\n" }
+    },
+    { "id": "nas.fan_v2.values-scalar", "api": "nas", "body": "action=fan_v2&values=x" },
+    { "id": "nas.fan_v2.value-nested", "api": "nas", "body": "action=fan_v2&values[quiet_cap][]=50" },
+    {
+      "id": "nas.fan_v2.quiet-same-time",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_enabled]": "1", "values[quiet_from]": "08:00", "values[quiet_to]": "08:00" }
+    },
+    {
+      "id": "nas.fan_v2.quiet-merged-with-saved",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_to]": "22:00" },
+      "files": { "fan.cfg": "cfg_version=\"2\"\nquiet_enabled=\"1\"\nquiet_from=\"22:00\"\nquiet_to=\"07:00\"\n" }
+    },
+    {
+      "id": "nas.fan_v2.quiet-default-to-equals-from",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_enabled]": "1", "values[quiet_from]": "07:00" }
+    },
+    {
+      "id": "nas.fan_v2.groups-and-channels",
+      "api": "nas",
+      "body": {
+        "action": "fan_v2",
+        "values[fan.fan1.curve]": "40:30,60:50",
+        "values[case_input]": "max:cpu|nvme",
+        "values[fan.fan1.input]": "disk_max:sda+sdb",
+        "values[fan.fan2.curve]": "30:20,50:60",
+        "values[case_deadband]": "3",
+        "values[cpu_on_missing]": "hold",
+        "values[fan.fan3.allow_off]": "1"
+      }
+    },
+    { "id": "nas.fan_v2.bad-channel", "api": "nas", "body": { "action": "fan_v2", "values[fan.fan9.input]": "cpu" } },
+    { "id": "nas.fan_v2.bad-input-spec", "api": "nas", "body": { "action": "fan_v2", "values[cpu_input]": "script:Bad Name" } },
+    { "id": "nas.fan_v2.input-too-long", "api": "nas", "body": { "action": "fan_v2", "values[cpu_input]": "@repeat:disk_max:sda:40" } },
+    { "id": "nas.fan_v2.unwritable-500", "api": "nas", "body": { "action": "fan_v2", "values[quiet_cap]": "40" }, "blockConfig": true },
+    { "id": "nas.lang.ok", "api": "nas", "body": { "action": "lang", "value": "fr" }, "files": { "fan.cfg": "ui_theme=\"dark\"\n" } },
+    { "id": "nas.lang.auto", "api": "nas", "body": { "action": "lang", "value": "auto" } },
+    { "id": "nas.lang.invalid", "api": "nas", "body": { "action": "lang", "value": "xx" } },
+    { "id": "nas.lang.missing", "api": "nas", "body": { "action": "lang" } },
+    { "id": "nas.lang.unwritable-500", "api": "nas", "body": { "action": "lang", "value": "de" }, "blockConfig": true },
+    { "id": "nas.theme.light", "api": "nas", "body": { "action": "theme", "value": "light" } },
+    { "id": "nas.theme.auto", "api": "nas", "body": { "action": "theme", "value": "auto" } },
+    { "id": "nas.theme.invalid", "api": "nas", "body": { "action": "theme", "value": "blue" } },
+    { "id": "nas.theme.unwritable-500", "api": "nas", "body": { "action": "theme", "value": "dark" }, "blockConfig": true },
+    { "id": "nas.fan_control.on", "api": "nas", "body": { "action": "fan_control", "value": "on" } },
+    { "id": "nas.fan_control.off", "api": "nas", "body": { "action": "fan_control", "value": "off" } },
+    {
+      "id": "nas.fan_control.on-start-fails-409",
+      "api": "nas",
+      "body": { "action": "fan_control", "value": "on" },
+      "ctl": [{ "args": ["start"], "code": 1, "err": "fan chip claimed\n" }]
+    },
+    {
+      "id": "nas.fan_control.off-stop-fails-ignored",
+      "api": "nas",
+      "body": { "action": "fan_control", "value": "off" },
+      "ctl": [{ "args": ["stop"], "code": 1, "err": "not running\n" }]
+    },
+    { "id": "nas.fan_control.invalid", "api": "nas", "body": { "action": "fan_control", "value": "maybe" } },
+    { "id": "nas.fan_control.unwritable-500", "api": "nas", "body": { "action": "fan_control", "value": "on" }, "blockConfig": true },
+    { "id": "nas.led.on", "api": "nas", "body": { "action": "led", "value": "on" } },
+    { "id": "nas.led.off", "api": "nas", "body": { "action": "led", "value": "off" } },
+    {
+      "id": "nas.led.fails-409",
+      "api": "nas",
+      "body": { "action": "led", "value": "on" },
+      "ctl": [{ "args": ["led-enable"], "code": 1, "err": "rival LED tool running\n" }]
+    },
+    { "id": "nas.led.invalid", "api": "nas", "body": { "action": "led", "value": "dim" } },
+    { "id": "nas.led_import.ok", "api": "nas", "body": { "action": "led_import" } },
+    {
+      "id": "nas.led_import.fails-409",
+      "api": "nas",
+      "body": { "action": "led_import" },
+      "ctl": [{ "args": ["led-import"], "code": 1, "out": "nothing to import\n" }]
+    },
+    { "id": "nas.calibrate.started", "api": "nas", "body": { "action": "calibrate" } },
+    {
+      "id": "nas.calibrate.refused-409",
+      "api": "nas",
+      "body": { "action": "calibrate" },
+      "fan": [{ "args": ["calibrate"], "code": 1, "err": "ERROR: daemon not running\n" }]
+    },
+    { "id": "nas.calibrate.ended-silent-409", "api": "nas", "body": { "action": "calibrate" }, "fan": [{ "args": ["calibrate"], "code": 0 }] },
+    { "id": "nas.fan_probe_run.started", "api": "nas", "body": { "action": "fan_probe_run" } },
+    {
+      "id": "nas.fan_probe_run.refused-409",
+      "api": "nas",
+      "body": { "action": "fan_probe_run" },
+      "fan": [{ "args": ["probe-fans", "run"], "code": 1, "err": "ERROR: fan control is off\nsecond line\n" }]
+    },
+    { "id": "nas.fan_probe_run.ended-silent-409", "api": "nas", "body": { "action": "fan_probe_run" }, "fan": [{ "args": ["probe-fans", "run"] }] },
+    { "id": "nas.fan_input_test.ok", "api": "nas", "body": { "action": "fan_input_test", "spec": "cpu" } },
+    { "id": "nas.fan_input_test.max-spec", "api": "nas", "body": { "action": "fan_input_test", "spec": "max:cpu|disk_avg:sda+sdb|nic:eth0" } },
+    { "id": "nas.fan_input_test.auto", "api": "nas", "body": { "action": "fan_input_test", "spec": "auto" } },
+    { "id": "nas.fan_input_test.empty", "api": "nas", "body": { "action": "fan_input_test", "spec": "" } },
+    { "id": "nas.fan_input_test.invalid", "api": "nas", "body": { "action": "fan_input_test", "spec": "bogus" } },
+    { "id": "nas.fan_input_test.max-one-part", "api": "nas", "body": { "action": "fan_input_test", "spec": "max:cpu" } },
+    { "id": "nas.fan_input_test.too-long", "api": "nas", "body": { "action": "fan_input_test", "spec": "@repeat:a:257" } },
+    {
+      "id": "nas.fan_input_test.refused-429",
+      "api": "nas",
+      "body": { "action": "fan_input_test", "spec": "script:fan_x" },
+      "fan": [{ "args": ["input-test"], "code": 1, "out": { "ok": false, "error": "too soon" } }]
+    },
+    {
+      "id": "nas.fan_input_test.garbage-500",
+      "api": "nas",
+      "body": { "action": "fan_input_test", "spec": "cpu" },
+      "fan": [{ "args": ["input-test"], "code": 1, "err": "sandbox failed\n" }]
+    },
+    { "id": "nas.fan_probe_confirm.ok", "api": "nas", "body": { "action": "fan_probe_confirm", "map[pwm2]": "cpu", "map[pwm3]": "case" } },
+    { "id": "nas.fan_probe_confirm.missing-map", "api": "nas", "body": { "action": "fan_probe_confirm" } },
+    { "id": "nas.fan_probe_confirm.map-scalar", "api": "nas", "body": { "action": "fan_probe_confirm", "map": "pwm2=cpu" } },
+    { "id": "nas.fan_probe_confirm.bad-key", "api": "nas", "body": { "action": "fan_probe_confirm", "map[fan2]": "cpu" } },
+    { "id": "nas.fan_probe_confirm.pwm0", "api": "nas", "body": { "action": "fan_probe_confirm", "map[pwm0]": "cpu" } },
+    { "id": "nas.fan_probe_confirm.bad-role", "api": "nas", "body": { "action": "fan_probe_confirm", "map[pwm2]": "off" } },
+    {
+      "id": "nas.fan_probe_confirm.tool-ok-false-500",
+      "api": "nas",
+      "body": { "action": "fan_probe_confirm", "map[pwm2]": "cpu" },
+      "fan": [{ "args": ["probe-fans", "confirm"], "out": { "ok": false, "error": "outputs without a fan" } }]
+    },
+    {
+      "id": "nas.fan_probe_confirm.tool-refused-409",
+      "api": "nas",
+      "body": { "action": "fan_probe_confirm", "map[pwm2]": "cpu" },
+      "fan": [{ "args": ["probe-fans", "confirm"], "code": 1, "err": "ERROR: no probe result\n" }]
+    },
+    { "id": "nas.fan_probe_forget.ok", "api": "nas", "body": { "action": "fan_probe_forget" } },
+    {
+      "id": "nas.fan_probe_forget.fails-409",
+      "api": "nas",
+      "body": { "action": "fan_probe_forget" },
+      "fan": [{ "args": ["probe-fans", "forget"], "code": 1, "err": "ERROR: no map\n" }]
+    },
+    { "id": "nas.fan_backlight.set-55", "api": "nas", "body": { "action": "fan_backlight", "pct": "55" } },
+    { "id": "nas.fan_backlight.set-0", "api": "nas", "body": { "action": "fan_backlight", "pct": "0" } },
+    { "id": "nas.fan_backlight.set-100", "api": "nas", "body": { "action": "fan_backlight", "pct": "100" } },
+    { "id": "nas.fan_backlight.set-101", "api": "nas", "body": { "action": "fan_backlight", "pct": "101" } },
+    { "id": "nas.fan_backlight.set-leading-zero", "api": "nas", "body": { "action": "fan_backlight", "pct": "05" } },
+    { "id": "nas.fan_backlight.set-space", "api": "nas", "body": { "action": "fan_backlight", "pct": " 5" } },
+    { "id": "nas.fan_backlight.set-missing", "api": "nas", "body": { "action": "fan_backlight" } },
+    {
+      "id": "nas.fan_backlight.set-refused-409",
+      "api": "nas",
+      "body": { "action": "fan_backlight", "pct": "50" },
+      "fan": [{ "args": ["backlight", "set"], "code": 1, "err": "ERROR: model has no backlight\n" }]
+    },
+    { "id": "nas.fan_profile_preview.source", "api": "nas", "body": { "action": "fan_profile_preview", "source": "fanctrlplus" } },
+    {
+      "id": "nas.fan_profile_preview.source-with-path",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "itkuny", "path": "/mnt/user/appdata/itkuny/config.json" }
+    },
+    { "id": "nas.fan_profile_preview.unknown-source", "api": "nas", "body": { "action": "fan_profile_preview", "source": "other" } },
+    { "id": "nas.fan_profile_preview.path-too-long", "api": "nas", "body": { "action": "fan_profile_preview", "source": "itkuny", "path": "@repeat:a:301" } },
+    { "id": "nas.fan_profile_preview.path-nul", "api": "nas", "body": { "action": "fan_profile_preview", "source": "itkuny", "path": "/a\u0000b" } },
+    {
+      "id": "nas.fan_profile_preview.content",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "content": "{\"mode\":\"quiet\"}" },
+      "fan": [
+        {
+          "args": ["profile", "preview", "--stdin"],
+          "stdin": "{\"mode\":\"quiet\"}",
+          "out": { "ok": true, "token": "1111111111111111111111111111111111111111111111111111111111111111", "diff": [{ "key": "mode", "to": "quiet" }] }
+        }
+      ]
+    },
+    { "id": "nas.fan_profile_preview.content-empty", "api": "nas", "body": { "action": "fan_profile_preview", "content": "" } },
+    { "id": "nas.fan_profile_preview.nothing-given", "api": "nas", "body": { "action": "fan_profile_preview" } },
+    { "id": "nas.fan_profile_preview.content-array", "api": "nas", "body": "action=fan_profile_preview&content[]=x" },
+    { "id": "nas.fan_profile_preview.content-nul", "api": "nas", "body": { "action": "fan_profile_preview", "content": "a\u0000b" } },
+    { "id": "nas.fan_profile_preview.content-too-large", "api": "nas", "body": { "action": "fan_profile_preview", "content": "@repeat:a:262145" } },
+    { "id": "nas.fan_profile_preview.content-max-size", "api": "nas", "body": { "action": "fan_profile_preview", "content": "@repeat:a:262144" } },
+    {
+      "id": "nas.fan_profile_preview.upload",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview" },
+      "upload": { "content": "{\"mode\":\"full\"}" },
+      "fan": [
+        {
+          "args": ["profile", "preview", "--stdin"],
+          "stdin": "{\"mode\":\"full\"}",
+          "out": { "ok": true, "token": "2222222222222222222222222222222222222222222222222222222222222222", "diff": [] }
+        }
+      ]
+    },
+    {
+      "id": "nas.fan_profile_preview.upload-too-large",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview" },
+      "upload": { "repeat": "a", "count": 262145 }
+    },
+    {
+      "id": "nas.fan_profile_preview.upload-over-php-limit",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview" },
+      "upload": { "repeat": "a", "count": 3000000 }
+    },
+    { "id": "nas.fan_profile_preview.upload-empty", "api": "nas", "body": { "action": "fan_profile_preview" }, "upload": { "content": "" } },
+    { "id": "nas.fan_profile_preview.file-field-not-a-file", "api": "nas", "body": "action=fan_profile_preview&file=text" },
+    {
+      "id": "nas.fan_profile_preview.source-wins-over-upload",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "dynamix" },
+      "upload": { "content": "{}" }
+    },
+    {
+      "id": "nas.fan_profile_preview.tool-ok-false-400",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "dynamix" },
+      "fan": [{ "args": ["profile", "preview"], "out": { "ok": false, "error": "source not found" } }]
+    },
+    {
+      "id": "nas.fan_profile_preview.tool-ok-false-no-error",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "dynamix" },
+      "fan": [{ "args": ["profile", "preview"], "out": { "ok": false } }]
+    },
+    {
+      "id": "nas.fan_profile_preview.tool-no-answer-stderr",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "dynamix" },
+      "fan": [{ "args": ["profile", "preview"], "code": 1, "err": "cannot parse\n" }]
+    },
+    {
+      "id": "nas.fan_profile_preview.tool-no-answer-silent",
+      "api": "nas",
+      "body": { "action": "fan_profile_preview", "source": "dynamix" },
+      "fan": [{ "args": ["profile", "preview"], "code": 1 }]
+    },
+    {
+      "id": "nas.fan_profile_apply.mode-and-v1-keys",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "fanctrlplus", "token": "@repeat:a:64" },
+      "fan": [
+        {
+          "args": ["profile", "apply", "--source", "fanctrlplus", "--token"],
+          "out": {
+            "ok": true,
+            "values": {
+              "mode": "custom",
+              "cpu_curve": "40:30,60:50",
+              "case_curve": "40:20,70:60",
+              "min_pct": "30",
+              "cpu_crit": "95",
+              "disk_crit": "55",
+              "nvme_offset": "10",
+              "case_follows_cpu": "1",
+              "stall_notify": "0",
+              "ignore_drives": "sda,sdb"
+            }
+          }
+        }
+      ],
+      "files": { "fan.cfg": "mode=\"standard\"\n" }
+    },
+    {
+      "id": "nas.fan_profile_apply.v2-keys-backup",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:0:64" },
+      "fan": [
+        {
+          "args": ["profile", "apply"],
+          "out": { "ok": true, "values": { "quiet_enabled": "1", "quiet_from": "22:00", "quiet_to": "06:00", "fan.fan1.input": "cpu", "cpu_deadband": "2" } }
+        }
+      ],
+      "files": { "fan.cfg": "mode=\"standard\"\n" }
+    },
+    {
+      "id": "nas.fan_profile_apply.v1-only-no-mode-no-start",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:f:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "min_pct": "40" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.content-via-stdin",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "content": "{\"x\":1}", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply", "--stdin", "--token"], "stdin": "{\"x\":1}", "out": { "ok": true, "values": { "mode": "quiet" } } }]
+    },
+    { "id": "nas.fan_profile_apply.token-missing", "api": "nas", "body": { "action": "fan_profile_apply", "source": "dynamix" } },
+    { "id": "nas.fan_profile_apply.token-short", "api": "nas", "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "abc" } },
+    { "id": "nas.fan_profile_apply.token-uppercase", "api": "nas", "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:A:64" } },
+    {
+      "id": "nas.fan_profile_apply.token-trailing-newline",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n" }
+    },
+    { "id": "nas.fan_profile_apply.no-source", "api": "nas", "body": { "action": "fan_profile_apply", "token": "@repeat:a:64" } },
+    {
+      "id": "nas.fan_profile_apply.values-empty",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": {} } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.values-missing",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.value-not-string",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "min_pct": 40 } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.unknown-key",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "bogus": "1" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-mode",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "mode": "turbo" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-curve",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "cpu_curve": "40:30" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-cpu-crit",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "cpu_crit": "200" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-flag",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "stall_notify": "2" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-drive-list",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "ignore_drives": "sda,s d" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.empty-drive-list-ok",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "ignore_drives": "" } } }],
+      "files": { "fan.cfg": "ignore_drives=\"sda\"\n" }
+    },
+    {
+      "id": "nas.fan_profile_apply.bad-v2-value",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "quiet_cap": "5" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.quiet-same-time",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": true, "values": { "quiet_enabled": "1", "quiet_from": "09:00", "quiet_to": "09:00" } } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.tool-refuses-400",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "fan": [{ "args": ["profile", "apply"], "out": { "ok": false, "error": "the source changed since the preview" } }]
+    },
+    {
+      "id": "nas.fan_profile_apply.unwritable-500",
+      "api": "nas",
+      "body": { "action": "fan_profile_apply", "source": "dynamix", "token": "@repeat:a:64" },
+      "blockConfig": true
+    },
+    {
+      "id": "nas.curves.trailing-newline",
+      "api": "nas",
+      "body": { "action": "curves", "cpu_curve": "40:30,60:50\n", "case_curve": "40:20,70:60" }
+    },
+    {
+      "id": "nas.fan_v2.int-trailing-newline",
+      "api": "nas",
+      "body": { "action": "fan_v2", "values[quiet_cap]": "50\n" }
+    },
+    {
+      "id": "nas.fan_probe_confirm.key-trailing-newline",
+      "api": "nas",
+      "body": { "action": "fan_probe_confirm", "map[pwm2\n]": "cpu" }
+    },
+    { "id": "led.gate.missing", "api": "led", "missing": ["ugreen-led-ctl"] },
+    { "id": "led.gate.not-executable", "api": "led", "nonexec": ["ugreen-led-ctl"], "body": { "action": "on", "led": "power" } },
+    { "id": "led.method.put", "api": "led", "method": "PUT", "body": { "action": "on", "led": "power" } },
+    { "id": "led.method.delete", "api": "led", "method": "DELETE" },
+    { "id": "led.get.unknown", "api": "led", "query": { "action": "nope" } },
+    { "id": "led.get.action-array", "api": "led", "query": "action[]=status" },
+    { "id": "led.status.default", "api": "led" },
+    { "id": "led.status.settings-saved", "api": "led", "query": { "action": "status" }, "files": { "leds.cfg": "mode=\"status\"\n" } },
+    { "id": "led.status.tool-fails-500", "api": "led", "led": [{ "args": ["status"], "code": 1, "out": "daemon check failed\n" }] },
+    { "id": "led.status.garbage-500", "api": "led", "led": [{ "args": ["status"], "out": "garbage\n" }] },
+    { "id": "led.list.ok", "api": "led", "query": { "action": "list" } },
+    { "id": "led.list.tool-fails", "api": "led", "query": { "action": "list" }, "led": [{ "args": ["list"], "code": 1, "out": "no leds\n" }] },
+    { "id": "led.list.garbage-ok-true", "api": "led", "query": { "action": "list" }, "led": [{ "args": ["list"], "out": "x" }] },
+    { "id": "led.all.ok", "api": "led", "query": { "action": "all" } },
+    { "id": "led.all.tool-fails-500", "api": "led", "query": { "action": "all" }, "led": [{ "args": ["all"], "code": 1, "out": "i2c error\n" }] },
+    { "id": "led.all.garbage-500", "api": "led", "query": { "action": "all" }, "led": [{ "args": ["all"], "out": "garbage" }] },
+    { "id": "led.bays.ok", "api": "led", "query": { "action": "bays" } },
+    { "id": "led.bays.tool-fails-500", "api": "led", "query": { "action": "bays" }, "led": [{ "args": ["bays"], "code": 1, "out": "no bays\n" }] },
+    { "id": "led.bays.garbage-500", "api": "led", "query": { "action": "bays" }, "led": [{ "args": ["bays"], "out": "garbage" }] },
+    { "id": "led.schedule.defaults", "api": "led", "query": { "action": "schedule" } },
+    {
+      "id": "led.schedule.saved",
+      "api": "led",
+      "query": { "action": "schedule" },
+      "files": { "leds.cfg": "night_enabled=\"1\"\nnight_start=\"23:30\"\nnight_end=\"06:15\"\nnight_action=\"off\"\nnight_brightness=\"35\"\n" }
+    },
+    {
+      "id": "led.schedule.garbage-brightness",
+      "api": "led",
+      "query": { "action": "schedule" },
+      "files": { "leds.cfg": "night_enabled=\"yes\"\nnight_brightness=\"abc\"\n" }
+    },
+    { "id": "led.led.power", "api": "led", "query": { "action": "led", "led": "power" } },
+    { "id": "led.led.disk1", "api": "led", "query": { "action": "led", "led": "disk1" } },
+    { "id": "led.led.invalid-disk9", "api": "led", "query": { "action": "led", "led": "disk9" } },
+    { "id": "led.led.missing", "api": "led", "query": { "action": "led" } },
+    {
+      "id": "led.led.trailing-newline",
+      "api": "led",
+      "query": { "action": "led", "led": "disk1\n" }
+    },
+    {
+      "id": "led.led.tool-fails-500",
+      "api": "led",
+      "query": { "action": "led", "led": "disk2" },
+      "led": [{ "args": ["get", "disk2"], "code": 1, "out": "unknown led\n" }]
+    },
+    { "id": "led.led.garbage-500", "api": "led", "query": { "action": "led", "led": "disk2" }, "led": [{ "args": ["get", "disk2"], "out": "garbage" }] },
+    {
+      "id": "led.led.array-param",
+      "api": "led",
+      "query": "action=led&led[]=power"
+    },
+    { "id": "led.mode.status", "api": "led", "body": { "action": "mode", "value": "status" } },
+    { "id": "led.mode.manual", "api": "led", "body": { "action": "mode", "value": "manual" }, "files": { "leds.cfg": "mode=\"status\"\n" } },
+    { "id": "led.mode.invalid", "api": "led", "body": { "action": "mode", "value": "auto" } },
+    { "id": "led.mode.missing", "api": "led", "body": { "action": "mode" } },
+    {
+      "id": "led.mode.daemon-fails-not-saved",
+      "api": "led",
+      "body": { "action": "mode", "value": "status" },
+      "led": [{ "args": ["daemon", "restart"], "code": 1, "out": "cannot start daemon\n" }]
+    },
+    {
+      "id": "led.mode.status-stops-fx-on-daemon-leds",
+      "api": "led",
+      "body": { "action": "mode", "value": "status" },
+      "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"power,disk1\"\n" }
+    },
+    {
+      "id": "led.mode.status-keeps-fx-on-power-only",
+      "api": "led",
+      "body": { "action": "mode", "value": "status" },
+      "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"power\"\n" }
+    },
+    {
+      "id": "led.mode.status-manual-netdev-keeps-netdev-fx",
+      "api": "led",
+      "body": { "action": "mode", "value": "status" },
+      "files": { "leds.cfg": "fx_name=\"temperature\"\nfx_leds=\"netdev\"\nnetdev_status=\"manual\"\n" }
+    },
+    { "id": "led.shutdown.ok", "api": "led", "body": { "action": "shutdown", "r": "255", "g": "0", "b": "0", "effect": "blink", "enabled": "1" } },
+    {
+      "id": "led.shutdown.disabled-breath",
+      "api": "led",
+      "body": { "action": "shutdown", "r": "0", "g": "10", "b": "20", "effect": "breath" },
+      "files": { "leds.cfg": "shutdown_blink=\"1\"\n" }
+    },
+    { "id": "led.shutdown.r-missing", "api": "led", "body": { "action": "shutdown", "g": "0", "b": "0", "effect": "blink" } },
+    { "id": "led.shutdown.r-256", "api": "led", "body": { "action": "shutdown", "r": "256", "g": "0", "b": "0", "effect": "blink" } },
+    { "id": "led.shutdown.g-negative", "api": "led", "body": { "action": "shutdown", "r": "0", "g": "-1", "b": "0", "effect": "blink" } },
+    { "id": "led.shutdown.b-float", "api": "led", "body": { "action": "shutdown", "r": "0", "g": "0", "b": "12.5", "effect": "blink" } },
+    { "id": "led.shutdown.effect-invalid", "api": "led", "body": { "action": "shutdown", "r": "0", "g": "0", "b": "0", "effect": "strobe" } },
+    {
+      "id": "led.shutdown.unwritable-500",
+      "api": "led",
+      "body": { "action": "shutdown", "r": "0", "g": "0", "b": "0", "effect": "blink" },
+      "blockConfig": true
+    },
+    { "id": "led.shutdown_test.ok", "api": "led", "body": { "action": "shutdown_test" } },
+    {
+      "id": "led.shutdown_test.fails-500",
+      "api": "led",
+      "body": { "action": "shutdown_test" },
+      "led": [{ "args": ["shutdown", "--test"], "code": 1, "out": "power led busy\n" }]
+    },
+    {
+      "id": "led.netdev_speed.ok",
+      "api": "led",
+      "body": {
+        "action": "netdev_speed",
+        "speed_enabled": "1",
+        "speed_10": "255 0 0",
+        "speed_100": "255 128 0",
+        "speed_1000": "0 255 0",
+        "speed_2500": "0 255 255",
+        "speed_5000": "0 0 255",
+        "speed_10000": "255 0 255"
+      }
+    },
+    { "id": "led.netdev_speed.only-flag", "api": "led", "body": { "action": "netdev_speed" }, "files": { "leds.cfg": "netdev_speed_1000=\"1 2 3\"\n" } },
+    { "id": "led.netdev_speed.leading-zeros-kept", "api": "led", "body": { "action": "netdev_speed", "speed_enabled": "1", "speed_1000": "001 002 003" } },
+    { "id": "led.netdev_speed.two-numbers", "api": "led", "body": { "action": "netdev_speed", "speed_1000": "1 2" } },
+    { "id": "led.netdev_speed.over-255", "api": "led", "body": { "action": "netdev_speed", "speed_100": "0 300 0" } },
+    { "id": "led.netdev_speed.unwritable-500", "api": "led", "body": { "action": "netdev_speed", "speed_enabled": "1" }, "blockConfig": true },
+    {
+      "id": "led.status_display.ok",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "255",
+        "g": "165",
+        "b": "0",
+        "smart_r": "255",
+        "smart_g": "200",
+        "smart_b": "0",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "30",
+        "sync_enabled": "1",
+        "smart_enabled": "1",
+        "error_enabled": "0",
+        "activity_enabled": "0"
+      }
+    },
+    {
+      "id": "led.status_display.defaults-on",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "temperature",
+        "standby_mode": "pulse",
+        "standby_level": "100"
+      }
+    },
+    {
+      "id": "led.status_display.r-missing",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "30"
+      }
+    },
+    {
+      "id": "led.status_display.smart-g-256",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "256",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "30"
+      }
+    },
+    {
+      "id": "led.status_display.color-mode-invalid",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "rainbow",
+        "standby_mode": "dim",
+        "standby_level": "30"
+      }
+    },
+    {
+      "id": "led.status_display.standby-mode-invalid",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "sleep",
+        "standby_level": "30"
+      }
+    },
+    {
+      "id": "led.status_display.standby-level-0",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "0"
+      }
+    },
+    {
+      "id": "led.status_display.standby-level-101",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "101"
+      }
+    },
+    {
+      "id": "led.status_display.standby-level-text",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "low"
+      }
+    },
+    {
+      "id": "led.status_display.unwritable-500",
+      "api": "led",
+      "body": {
+        "action": "status_display",
+        "r": "0",
+        "g": "0",
+        "b": "0",
+        "smart_r": "1",
+        "smart_g": "2",
+        "smart_b": "3",
+        "disk_color_mode": "own",
+        "standby_mode": "dim",
+        "standby_level": "30"
+      },
+      "blockConfig": true
+    },
+    { "id": "led.netdev_status.activity", "api": "led", "body": { "action": "netdev_status", "value": "activity" } },
+    { "id": "led.netdev_status.link", "api": "led", "body": { "action": "netdev_status", "value": "link" } },
+    { "id": "led.netdev_status.manual", "api": "led", "body": { "action": "netdev_status", "value": "manual" } },
+    { "id": "led.netdev_status.invalid", "api": "led", "body": { "action": "netdev_status", "value": "blink" } },
+    {
+      "id": "led.netdev_status.status-mode-stops-netdev-fx",
+      "api": "led",
+      "body": { "action": "netdev_status", "value": "link" },
+      "files": { "leds.cfg": "mode=\"status\"\nfx_name=\"rainbow\"\nfx_leds=\"netdev\"\nnetdev_status=\"manual\"\n" }
+    },
+    {
+      "id": "led.netdev_status.manual-mode-leaves-fx",
+      "api": "led",
+      "body": { "action": "netdev_status", "value": "link" },
+      "files": { "leds.cfg": "mode=\"manual\"\nfx_name=\"rainbow\"\nfx_leds=\"netdev\"\n" }
+    },
+    { "id": "led.netdev_status.unwritable-500", "api": "led", "body": { "action": "netdev_status", "value": "link" }, "blockConfig": true },
+    { "id": "led.smart_ack.ok", "api": "led", "body": { "action": "smart_ack", "led": "disk1" } },
+    { "id": "led.smart_ack.unknown-led", "api": "led", "body": { "action": "smart_ack", "led": "disk8" } },
+    { "id": "led.smart_ack.no-key", "api": "led", "body": { "action": "smart_ack", "led": "disk2" } },
+    { "id": "led.smart_ack.no-values", "api": "led", "body": { "action": "smart_ack", "led": "disk3" } },
+    { "id": "led.smart_ack.missing-led", "api": "led", "body": { "action": "smart_ack" } },
+    { "id": "led.smart_ack.bays-garbage", "api": "led", "body": { "action": "smart_ack", "led": "disk1" }, "led": [{ "args": ["bays"], "out": "garbage" }] },
+    { "id": "led.smart_ack.unwritable-500", "api": "led", "body": { "action": "smart_ack", "led": "disk1" }, "blockConfig": true },
+    { "id": "led.alerts.ok", "api": "led", "body": { "action": "alerts", "level": "alert", "r": "255", "g": "0", "b": "0", "enabled": "1" } },
+    {
+      "id": "led.alerts.disabled",
+      "api": "led",
+      "body": { "action": "alerts", "level": "warning", "r": "255", "g": "200", "b": "0" },
+      "files": { "leds.cfg": "alert_enabled=\"1\"\n" }
+    },
+    { "id": "led.alerts.bad-rgb", "api": "led", "body": { "action": "alerts", "level": "alert", "r": "256", "g": "0", "b": "0" } },
+    { "id": "led.alerts.bad-level", "api": "led", "body": { "action": "alerts", "level": "critical", "r": "255", "g": "0", "b": "0" } },
+    { "id": "led.alerts.unwritable-500", "api": "led", "body": { "action": "alerts", "level": "alert", "r": "255", "g": "0", "b": "0" }, "blockConfig": true },
+    { "id": "led.identify.start", "api": "led", "body": { "action": "identify", "led": "disk3" } },
+    { "id": "led.identify.stop", "api": "led", "body": { "action": "identify", "led": "disk3", "value": "stop" } },
+    { "id": "led.identify.power-invalid", "api": "led", "body": { "action": "identify", "led": "power" } },
+    { "id": "led.identify.missing-led", "api": "led", "body": { "action": "identify" } },
+    {
+      "id": "led.identify.fails-500",
+      "api": "led",
+      "body": { "action": "identify", "led": "disk1" },
+      "led": [{ "args": ["identify", "disk1"], "code": 1, "out": "bay empty\n" }]
+    },
+    { "id": "led.fx.none", "api": "led", "body": { "action": "fx", "value": "none" }, "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"power\"\n" } },
+    { "id": "led.fx.rainbow-power", "api": "led", "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "2" } },
+    {
+      "id": "led.fx.temperature-multi-flags",
+      "api": "led",
+      "body": { "action": "fx", "value": "temperature", "led": "disk1,disk2,netdev", "speed": "4", "reverse": "1", "idle": "1" }
+    },
+    { "id": "led.fx.speed-0-ok", "api": "led", "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "0" } },
+    { "id": "led.fx.speed-5", "api": "led", "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "5" } },
+    { "id": "led.fx.speed-missing", "api": "led", "body": { "action": "fx", "value": "rainbow", "led": "power" } },
+    { "id": "led.fx.name-invalid", "api": "led", "body": { "action": "fx", "value": "fire", "led": "power", "speed": "1" } },
+    { "id": "led.fx.name-missing", "api": "led", "body": { "action": "fx", "led": "power", "speed": "1" } },
+    { "id": "led.fx.led-invalid-in-list", "api": "led", "body": { "action": "fx", "value": "rainbow", "led": "power,disk9", "speed": "1" } },
+    { "id": "led.fx.led-missing", "api": "led", "body": { "action": "fx", "value": "rainbow", "speed": "1" } },
+    {
+      "id": "led.fx.status-mode-refuses-bays",
+      "api": "led",
+      "body": { "action": "fx", "value": "rainbow", "led": "disk1", "speed": "1" },
+      "files": { "leds.cfg": "mode=\"status\"\n" }
+    },
+    {
+      "id": "led.fx.status-mode-refuses-netdev",
+      "api": "led",
+      "body": { "action": "fx", "value": "rainbow", "led": "power,netdev", "speed": "1" },
+      "files": { "leds.cfg": "mode=\"status\"\n" }
+    },
+    {
+      "id": "led.fx.status-mode-power-ok",
+      "api": "led",
+      "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "1" },
+      "files": { "leds.cfg": "mode=\"status\"\n" }
+    },
+    {
+      "id": "led.fx.status-mode-manual-netdev-ok",
+      "api": "led",
+      "body": { "action": "fx", "value": "temperature", "led": "netdev", "speed": "1" },
+      "files": { "leds.cfg": "mode=\"status\"\nnetdev_status=\"manual\"\n" }
+    },
+    {
+      "id": "led.fx.restart-fails-clears-name",
+      "api": "led",
+      "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "1" },
+      "led": [{ "args": ["fx", "restart"], "code": 1, "out": "fx daemon failed\n" }]
+    },
+    {
+      "id": "led.fx.unwritable-then-restart",
+      "api": "led",
+      "body": { "action": "fx", "value": "rainbow", "led": "power", "speed": "1" },
+      "blockConfig": true
+    },
+    {
+      "id": "led.schedule.ok",
+      "api": "led",
+      "body": { "action": "schedule", "enabled": "1", "start": "22:00", "end": "07:00", "night_action": "dim", "brightness": "20" }
+    },
+    {
+      "id": "led.schedule.disabled-off",
+      "api": "led",
+      "body": { "action": "schedule", "start": "00:00", "end": "23:59", "night_action": "off", "brightness": "0" },
+      "files": { "leds.cfg": "night_enabled=\"1\"\n" }
+    },
+    {
+      "id": "led.schedule.bad-start",
+      "api": "led",
+      "body": { "action": "schedule", "start": "24:00", "end": "07:00", "night_action": "dim", "brightness": "20" }
+    },
+    {
+      "id": "led.schedule.bad-end",
+      "api": "led",
+      "body": { "action": "schedule", "start": "22:00", "end": "7:00", "night_action": "dim", "brightness": "20" }
+    },
+    {
+      "id": "led.schedule.bad-action",
+      "api": "led",
+      "body": { "action": "schedule", "start": "22:00", "end": "07:00", "night_action": "blink", "brightness": "20" }
+    },
+    {
+      "id": "led.schedule.bad-brightness",
+      "api": "led",
+      "body": { "action": "schedule", "start": "22:00", "end": "07:00", "night_action": "dim", "brightness": "256" }
+    },
+    { "id": "led.schedule.missing-brightness", "api": "led", "body": { "action": "schedule", "start": "22:00", "end": "07:00", "night_action": "dim" } },
+    {
+      "id": "led.schedule.unwritable-500",
+      "api": "led",
+      "body": { "action": "schedule", "start": "22:00", "end": "07:00", "night_action": "dim", "brightness": "20" },
+      "blockConfig": true
+    },
+    { "id": "led.error_color.ok", "api": "led", "body": { "action": "error_color", "r": "255", "g": "0", "b": "0" } },
+    { "id": "led.error_color.bad", "api": "led", "body": { "action": "error_color", "r": "255", "g": "0" } },
+    { "id": "led.error_color.unwritable-500", "api": "led", "body": { "action": "error_color", "r": "255", "g": "0", "b": "0" }, "blockConfig": true },
+    { "id": "led.write.on-single", "api": "led", "body": { "action": "on", "led": "disk1" } },
+    { "id": "led.write.on-multi", "api": "led", "body": { "action": "on", "led": "disk1,disk2,power" } },
+    { "id": "led.write.off-netdev", "api": "led", "body": { "action": "off", "led": "netdev" } },
+    { "id": "led.write.brightness-ok", "api": "led", "body": { "action": "brightness", "led": "disk2", "value": "128" } },
+    { "id": "led.write.brightness-256", "api": "led", "body": { "action": "brightness", "led": "disk2", "value": "256" } },
+    { "id": "led.write.brightness-missing", "api": "led", "body": { "action": "brightness", "led": "disk2" } },
+    {
+      "id": "led.write.brightness-keeps-fx",
+      "api": "led",
+      "body": { "action": "brightness", "led": "disk1", "value": "90" },
+      "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"disk1\"\n" }
+    },
+    { "id": "led.write.color-ok", "api": "led", "body": { "action": "color", "led": "power", "r": "0", "g": "128", "b": "255" } },
+    { "id": "led.write.color-bad", "api": "led", "body": { "action": "color", "led": "power", "r": "0", "g": "128", "b": "256" } },
+    {
+      "id": "led.write.color-stops-fx-on-same-led",
+      "api": "led",
+      "body": { "action": "color", "led": "disk1", "r": "1", "g": "2", "b": "3" },
+      "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"power,disk1\"\n" }
+    },
+    {
+      "id": "led.write.color-leaves-fx-on-other-led",
+      "api": "led",
+      "body": { "action": "color", "led": "disk2", "r": "1", "g": "2", "b": "3" },
+      "files": { "leds.cfg": "fx_name=\"rainbow\"\nfx_leds=\"power\"\n" }
+    },
+    { "id": "led.write.blink-ok", "api": "led", "body": { "action": "blink", "led": "disk1", "on": "500", "off": "1000" } },
+    { "id": "led.write.blink-49", "api": "led", "body": { "action": "blink", "led": "disk1", "on": "49", "off": "1000" } },
+    { "id": "led.write.blink-10001", "api": "led", "body": { "action": "blink", "led": "disk1", "on": "500", "off": "10001" } },
+    { "id": "led.write.breath-ok", "api": "led", "body": { "action": "breath", "led": "netdev", "on": "100", "off": "10000" } },
+    { "id": "led.write.breath-99", "api": "led", "body": { "action": "breath", "led": "netdev", "on": "99", "off": "1000" } },
+    { "id": "led.write.stop", "api": "led", "body": { "action": "stop", "led": "disk2" } },
+    { "id": "led.write.led-invalid-in-list", "api": "led", "body": { "action": "on", "led": "disk1,disk9" } },
+    { "id": "led.write.led-missing", "api": "led", "body": { "action": "on" } },
+    { "id": "led.write.led-array", "api": "led", "body": "action=on&led[]=disk1" },
+    {
+      "id": "led.write.led-trailing-newline",
+      "api": "led",
+      "body": { "action": "on", "led": "disk1\n" }
+    },
+    { "id": "led.write.unknown-command", "api": "led", "body": { "action": "spin", "led": "disk1" } },
+    { "id": "led.write.no-action-with-led", "api": "led", "body": { "led": "disk1" } },
+    { "id": "led.write.unknown-action-no-led", "api": "led", "body": { "action": "nope" } },
+    {
+      "id": "led.write.existing-config-not-overwritten",
+      "api": "led",
+      "body": { "action": "brightness", "led": "disk1", "value": "40" },
+      "files": { "leds.cfg": "disk1_color=\"9 9 9\"\ndisk1_effect=\"breath\"\nmode=\"manual\"\n" }
+    },
+    {
+      "id": "led.write.all-garbage-saves-only-change",
+      "api": "led",
+      "body": { "action": "color", "led": "disk1", "r": "1", "g": "2", "b": "3" },
+      "led": [{ "args": ["all"], "out": "garbage" }]
+    },
+    {
+      "id": "led.write.partial-failure-500",
+      "api": "led",
+      "body": { "action": "off", "led": "disk1,disk2,power" },
+      "led": [{ "args": ["off", "disk2"], "code": 1, "out": "no such led\n" }]
+    },
+    {
+      "id": "led.write.all-fail-lines-500",
+      "api": "led",
+      "body": { "action": "color", "led": "disk1,disk2", "r": "1", "g": "2", "b": "3" },
+      "led": [{ "args": ["color"], "code": 2, "out": "i2c timeout\nretry later\n" }]
+    },
+    {
+      "id": "led.write.night-reapplies-after-brightness",
+      "api": "led",
+      "body": { "action": "brightness", "led": "disk1", "value": "200" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "night\n" }
+    },
+    {
+      "id": "led.write.night-reapplies-after-on",
+      "api": "led",
+      "body": { "action": "on", "led": "disk1" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "night" }
+    },
+    {
+      "id": "led.write.night-reapplies-after-off",
+      "api": "led",
+      "body": { "action": "off", "led": "disk1" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "night" }
+    },
+    {
+      "id": "led.write.night-ignored-for-color",
+      "api": "led",
+      "body": { "action": "color", "led": "disk1", "r": "1", "g": "2", "b": "3" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "night" }
+    },
+    {
+      "id": "led.write.day-state-no-reapply",
+      "api": "led",
+      "body": { "action": "brightness", "led": "disk1", "value": "200" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "day" }
+    },
+    {
+      "id": "led.write.night-reapply-even-when-led-failed",
+      "api": "led",
+      "body": { "action": "off", "led": "disk1" },
+      "files": { "/var/run/ugreen-nas-control.led.schedule": "night" },
+      "led": [{ "args": ["off", "disk1"], "code": 1, "out": "failed\n" }]
+    },
+    { "id": "led.write.unwritable-500", "api": "led", "body": { "action": "on", "led": "disk1" }, "blockConfig": true },
+    {
+      "id": "led.schedule.trailing-newline",
+      "api": "led",
+      "body": { "action": "schedule", "start": "22:00\n", "end": "07:00", "night_action": "dim", "brightness": "20" }
+    }
+  ]
+}

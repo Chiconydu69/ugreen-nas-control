@@ -1,0 +1,64 @@
+{
+  "name": "identify-errors",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["identify", "power"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Only bay LEDs (disk1..diskN) can be identified.\n"
+    },
+    {
+      "args": ["identify", "netdev", "5"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Only bay LEDs (disk1..diskN) can be identified.\n"
+    },
+    {
+      "args": ["identify", "disk9"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Only bay LEDs (disk1..diskN) can be identified.\n"
+    },
+    {
+      "args": ["identify", "nope"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Only bay LEDs (disk1..diskN) can be identified.\n"
+    },
+    {
+      "args": ["identify", "disk1", "abc"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Seconds must be a number.\n"
+    },
+    {
+      "args": ["identify", "disk1", "-3"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Seconds must be a number.\n"
+    },
+    {
+      "args": ["identify", "disk7", "5"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'disk7' not found.\n"
+    },
+    {
+      "args": ["identify", "disk1", "''"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Seconds must be a number.\n"
+    },
+    {
+      "args": ["identify", "disk1"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "chip: no answer\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": ["--plain get disk1"],
+  "stubs": []
+}

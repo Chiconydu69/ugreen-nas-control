@@ -1,0 +1,24 @@
+{
+  "name": "list",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["list"],
+      "rc": 0,
+      "stdout": "[\"power\", \"netdev\", \"disk1\", \"disk2\", \"disk3\", \"disk4\", \"disk5\", \"disk6\"]\n",
+      "stderr": ""
+    },
+    {
+      "args": ["list"],
+      "rc": 0,
+      "stdout": "[]\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "on 255 255 255 255 0 0\n"
+  },
+  "state": {},
+  "calls": ["--plain get power", "--plain get power"],
+  "stubs": []
+}

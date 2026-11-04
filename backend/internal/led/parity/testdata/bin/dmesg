@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "dmesg" >>"$STUB_LOG"
+cat "$STUBS/dmesg" 2>/dev/null
+exit 0

@@ -1,0 +1,36 @@
+title: '[Q&A] '
+body:
+  - type: markdown
+    attributes:
+      value: A bug? Open an [issue](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new/choose) instead.
+  - type: input
+    id: model
+    attributes:
+      label: NAS model
+      description: cat /sys/class/dmi/id/product_name
+      placeholder: DXP4800 Plus
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Unraid version, plugin version and channel
+      placeholder: Unraid 7.1.4, plugin 1.3 (main)
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: What do you want to do, and what happens instead
+    validations:
+      required: true
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you tried
+  - type: textarea
+    id: report
+    attributes:
+      label: Output of ugreen-nas-ctl report (optional)
+      description: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report
+      render: json

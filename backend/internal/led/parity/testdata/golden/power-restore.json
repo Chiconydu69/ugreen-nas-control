@@ -1,0 +1,34 @@
+{
+  "name": "power-restore",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["power-restore"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"7 8 9\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "status"],
+      "rc": 0,
+      "stdout": "running: temperature on power\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "on 255 7 8 9 0 0\n"
+  },
+  "state": {
+    "alert": "none\n",
+    "fx.log": "",
+    "fx.pid": "\u003cPID\u003e\n"
+  },
+  "calls": ["set power color 7 8 9", "--speed 2 effect temperature power", "set power color 7 8 9", "--plain get power"],
+  "stubs": ["logger -t ugreen-led-control Unraid alerts read: power LED back to normal"]
+}

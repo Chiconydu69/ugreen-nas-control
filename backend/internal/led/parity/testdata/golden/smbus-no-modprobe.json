@@ -1,0 +1,16 @@
+{
+  "name": "smbus-no-modprobe",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["smbus"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: No SMBus I801 / DesignWare adapter after loading its driver. Kernel messages:\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": ["modprobe -q i2c-dev", "modprobe -q i2c_i801", "modprobe -q i2c-dev", "modprobe -q i2c_i801", "dmesg"]
+}

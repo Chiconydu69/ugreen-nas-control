@@ -1,0 +1,24 @@
+{
+  "name": "fx-defaults",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["fx", "start"],
+      "rc": 0,
+      "stdout": "Effect temperature started on power.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "stop"],
+      "rc": 0,
+      "stdout": "Effect stopped.\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "fx.log": ""
+  },
+  "calls": ["--speed 2 effect temperature power"],
+  "stubs": []
+}

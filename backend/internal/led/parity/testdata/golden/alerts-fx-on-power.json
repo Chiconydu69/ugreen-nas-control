@@ -1,0 +1,38 @@
+{
+  "name": "alerts-fx-on-power",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["fx", "status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    },
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "blink 255 255 59 48 500 500\n"
+  },
+  "state": {
+    "alert": "none\n",
+    "fx.log": "",
+    "fx.pid": "\u003cPID\u003e\n",
+    "phase-power": "\u003cMS\u003e 500 500\n"
+  },
+  "calls": ["set power color 255 59 48", "set power brightness 255", "set power blink 500 500", "--speed 2 effect rainbow power,disk1"],
+  "stubs": [
+    "logger -t ugreen-led-control Unraid alert: power LED signals 1 unread notification(s)",
+    "logger -t ugreen-led-control Unraid alerts read: power LED back to normal"
+  ]
+}

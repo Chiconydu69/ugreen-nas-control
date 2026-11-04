@@ -1,0 +1,36 @@
+{
+  "name": "schedule-shutdown-mark",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["schedule"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["alerts", "--force"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["schedule", "--force"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "shutdown": ""
+  },
+  "calls": [],
+  "stubs": []
+}

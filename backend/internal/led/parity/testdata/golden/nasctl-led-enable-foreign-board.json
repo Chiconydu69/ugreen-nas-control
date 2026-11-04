@@ -1,0 +1,28 @@
+{
+  "name": "nasctl-led-enable-foreign-board",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-enable"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: The LEDs cannot be switched on: model\n"
+    },
+    {
+      "args": ["led-boot"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": false, \"blocker\": \"model\", \"warning\": \"\", \"untested\": true, \"import_available\": false, \"model\": \"PRIME Z790-P\"}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

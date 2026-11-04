@@ -1,0 +1,3 @@
+#!/bin/sh
+# emhttp calls this at the start of every array stop. The work is done by the plugin binary.
+exec /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl event stopping

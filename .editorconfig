@@ -1,0 +1,52 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# bun fmt (bunfig.toml): TS, JS, CSS, HTML, JSON, YAML, Markdown
+[*.{ts,js,css,html,toml}]
+indent_size = 4
+max_line_length = 160
+
+# YAML, JSON, Markdown: 2 spaces, the convention for these formats
+[*.{json,yml,yaml,md}]
+indent_size = 2
+max_line_length = 160
+
+[*.go]
+indent_style = tab
+
+[*.{php,page,plg}]
+indent_size = 4
+
+# xmllint --format
+[*.{xml,svg}]
+indent_size = 2
+
+# nixfmt
+[*.nix]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
+
+[justfile]
+indent_size = 4
+
+# shfmt: -i 4 -ci
+[*.sh]
+indent_size = 4
+switch_case_indent = true
+
+[{fake-led-i2c,fake-led-ctl,pre-commit}]
+indent_size = 4
+switch_case_indent = true
+
+[backend/internal/led/parity/testdata/bin/*]
+indent_size = 4
+switch_case_indent = true

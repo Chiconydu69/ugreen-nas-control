@@ -1,0 +1,42 @@
+{
+  "name": "shutdown-test",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["shutdown", "--test"],
+      "rc": 0,
+      "stdout": "Power LED signals shutdown for 6 s.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"90\",\n  \"max_brightness\": \"255\",\n  \"color\": \"20 30 40\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"500\",\n  \"off_ms\": \"500\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"90\",\n  \"max_brightness\": \"255\",\n  \"color\": \"7 8 9\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"500\",\n  \"off_ms\": \"500\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "blink 90 7 8 9 500 500\n"
+  },
+  "state": {
+    "alert": "none\n",
+    "phase-power": "\u003cMS\u003e 500 500\n"
+  },
+  "calls": [
+    "set power color 20 30 40",
+    "set power brightness 90",
+    "set power blink 500 500",
+    "--plain get power",
+    "set power color 7 8 9",
+    "set power brightness 90",
+    "--plain get power",
+    "--plain get power"
+  ],
+  "stubs": []
+}

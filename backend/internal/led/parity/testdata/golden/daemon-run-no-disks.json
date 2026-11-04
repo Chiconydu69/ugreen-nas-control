@@ -1,0 +1,43 @@
+{
+  "name": "daemon-run-no-disks",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["daemon", "run"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "off 255 255 255 255 0 0\n",
+    "disk2": "off 255 255 255 255 0 0\n",
+    "disk3": "off 255 255 255 255 0 0\n",
+    "disk4": "off 255 255 255 255 0 0\n",
+    "disk5": "off 255 255 255 255 0 0\n",
+    "disk6": "off 255 255 255 255 0 0\n",
+    "netdev": "on 255 0 200 83 0 0\n"
+  },
+  "state": {},
+  "calls": [
+    "set disk1 off",
+    "set disk2 off",
+    "set disk3 off",
+    "set disk4 off",
+    "set disk5 off",
+    "set disk6 off",
+    "set netdev brightness 255",
+    "set netdev color 0 200 83",
+    "set netdev on"
+  ],
+  "stubs": [
+    "ip route show default",
+    "ip route show default",
+    "ip route show default",
+    "logger -t ugreen-led-control status daemon started (bays: 6, network: eth0)",
+    "logger -t ugreen-led-control status daemon stopped",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ping -c 1 -W 2 192.168.1.1",
+    "ping -c 1 -W 2 192.168.1.1"
+  ]
+}

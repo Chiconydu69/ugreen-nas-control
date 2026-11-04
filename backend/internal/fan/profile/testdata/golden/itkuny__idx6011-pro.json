@@ -1,0 +1,42 @@
+{
+  "source": "itkuny",
+  "title": "IT-Kuny fan control, mode quiet",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "0:30,42:30,50:55,56:82,62:100",
+      "cpu_crit": "86",
+      "cpu_curve": "0:30,55:30,68:55,78:80,86:100",
+      "disk_crit": "58",
+      "min_pct": "30",
+      "mode": "custom"
+    }
+  },
+  "warnings": [],
+  "not_imported": [
+    {
+      "key": "FAILSAFE_PWM",
+      "reason": "the emergency speed is fixed at 100 %",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "MAX_PWM",
+      "reason": "this plugin has no speed cap",
+      "file": "ugreen-fan-control.env"
+    },
+    {
+      "key": "POLL_INTERVAL",
+      "reason": "the fan check interval is fixed",
+      "file": "ugreen-fan-control.env"
+    }
+  ],
+  "provenance": {
+    "case_curve": "the quiet disk curve",
+    "cpu_crit": "IDX6011_CPU_CRITICAL",
+    "cpu_curve": "the quiet CPU curve",
+    "disk_crit": "IDX6011_DISK_CRITICAL",
+    "min_pct": "IDX6011_FAN_FLOOR",
+    "mode": "FAN_MODE=quiet"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "bays-no-disks",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["bays"],
+      "rc": 0,
+      "stdout": "[{\"bay\":1,\"led\":\"disk1\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":2,\"led\":\"disk2\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":3,\"led\":\"disk3\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":4,\"led\":\"disk4\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":5,\"led\":\"disk5\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"},{\"bay\":6,\"led\":\"disk6\",\"device\":\"\",\"serial\":\"\",\"slot\":\"\",\"status\":\"\",\"error\":false,\"standby\":false,\"temp\":null,\"errors\":0,\"temp_hot\":45,\"temp_max\":55,\"smart_now\":\"\",\"smart_key\":\"\",\"smart_warnings\":\"\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

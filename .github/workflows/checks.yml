@@ -1,0 +1,237 @@
+name: 'Checks (lint, tests, build)'
+
+# Every job runs the same `just` recipes as local development, inside the flake's devShell. The `check` job is
+# `just check` itself (everything: format, lint, tests, docs, models, generated files); the other jobs split parts
+# of it for speed and add the build artifacts, the guard and the release verification.
+# Nix installer: DeterminateSystems/nix-installer-action. It enables flakes by default and is quick on ephemeral
+# runners. No Nix cache action: the GHA cache throttles it (HTTP 418) and its post step is slow; devShells download from cache.nixos.org.
+# Required status check for branch protection: `ci-ok`.
+on:
+  pull_request:
+    branches: [main, next]
+  push:
+    branches: [main, next]
+  merge_group:
+  # Started by the release workflow on release/X.Y.Z when no RELEASE_PR_TOKEN is set (PRs from GITHUB_TOKEN start no CI).
+  workflow_dispatch:
+    inputs:
+      e2e:
+        description: Run the Linux e2e job (hangs in Chrome/dbus so far)
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop -c just check
+
+  go:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#go -c just go-lint
+      - run: nix develop .#go -c just go-test
+      - run: nix develop .#go -c just parity
+      - run: nix develop .#go -c just go-build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build
+          path: .build/bin/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  shell:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#lint -c just sh-lint
+
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#web -c just web-check
+
+  # Hangs on Linux so far (Chrome logs dbus errors until the timeout); manual only (workflow_dispatch input e2e), not in ci-ok.
+  e2e:
+    if: ${{ inputs.e2e }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#e2e -c just e2e --jobs 1 --out .build/e2e
+      - run: nix develop .#e2e -c just shots dxp4800-gt
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: ui-shots
+          path: |
+            .build/shots/
+            .build/e2e/
+          include-hidden-files: true
+          if-no-files-found: warn
+
+  plugin:
+    needs: go
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build
+          path: .build/bin
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#plugin -c just plg-check
+      - run: nix develop .#plugin -c just changes-check
+      - run: nix develop .#plugin -c just generated-check
+      # Archive and next plg of this commit (version scheme owned by plugin/tools/plg.ts).
+      - run: nix develop .#plugin -c bun plugin/tools/plg.ts pack --next --run "$GITHUB_RUN_NUMBER"
+      - run: nix develop .#plugin -c bun plugin/tools/plg.ts render --next --run "$GITHUB_RUN_NUMBER"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: plg-next
+          path: .build/dist/
+          include-hidden-files: true
+          if-no-files-found: error
+
+  # Feature PRs into next must not touch the released plg or CHANGELOG, and must add a fragment.
+  guard:
+    if: github.event_name == 'pull_request' && github.base_ref == 'next'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Check changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+          files="$(gh api --paginate "repos/${REPO}/pulls/${PR}/files" --jq '.[] | "\(.status) \(.filename)"')"
+          # Live labels, not the event payload: `gh pr create --label` adds them after the opened event, and a re-run sees labels set later.
+          LABELS="$(gh api "repos/${REPO}/pulls/${PR}" --jq '[.labels[].name] | join(",")')"
+          fail=0
+          case "$HEAD_REF" in
+            release/*) echo "Release branch: guard skipped."; exit 0 ;;
+          esac
+          if printf '%s\n' "$files" | grep -Eq '^[a-z_]+ (plugin/ugreen-nas-control\.plg|CHANGELOG\.md)$'; then
+            echo "::error::plugin/ugreen-nas-control.plg and CHANGELOG.md are only changed by the release workflow (branch release/X.Y.Z). Remove them from this PR and add a fragment .changes/<slug>.md instead."
+            fail=1
+          fi
+          case ",${LABELS}," in
+            *,no-changelog,*) echo "Label no-changelog: fragment not required." ;;
+            *)
+              if ! printf '%s\n' "$files" | grep -Eq '^added \.changes/[^/]+\.md$'; then
+                echo "::error::No changelog fragment. Add .changes/<slug>.md, or label the PR no-changelog."
+                fail=1
+              fi ;;
+          esac
+          exit "$fail"
+
+  workflows:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - run: nix develop .#lint -c actionlint
+      - run: nix develop .#lint -c zizmor --offline .github/workflows
+
+  # The release PR (release/X.Y.Z -> main): rebuild from the branch and compare with the draft release the
+  # Release workflow created. The archive is reproducible, so any difference is a bad or tampered build.
+  release:
+    if: >-
+      (github.event_name == 'pull_request' && github.base_ref == 'main' && startsWith(github.head_ref, 'release/')
+      && github.event.pull_request.head.repo.full_name == github.repository)
+      || (github.event_name == 'workflow_dispatch' && startsWith(github.ref_name, 'release/'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write # drafts are only listed for tokens with push access
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Rebuild and compare with the draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^<!ENTITY version *"\([^"]*\)">.*/\1/p' plugin/ugreen-nas-control.plg)"
+          [ -n "$version" ] || { echo "::error::No version entity in the plg."; exit 1; }
+          nix develop .#release -c just _deps
+          nix develop .#release -c just go-build
+          nix develop .#release -c bun plugin/tools/plg.ts pack --version "$version"
+          nix develop .#release -c bun plugin/tools/plg.ts render --version "$version"
+          diff -u plugin/ugreen-nas-control.plg .build/dist/ugreen-nas-control.plg
+          [ "$(nix develop .#release -c bun plugin/tools/release.ts state "v$version")" = draft ] || { echo "::error::No complete draft release v$version."; exit 1; }
+          nix develop .#release -c bun plugin/tools/release.ts fetch "v$version" .build/draft
+          nix develop .#release -c bun plugin/tools/release.ts verify .build/draft
+          cmp ".build/dist/ugreen-nas-control-$version.tar.xz" ".build/draft/ugreen-nas-control-$version.tar.xz"
+
+  # Single required check. Skipped guard and release (other events and branches) count as ok; everything else must succeed.
+  ci-ok:
+    if: always()
+    needs: [check, go, shell, web, plugin, guard, release, workflows]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions: {}
+    steps:
+      - name: Check results
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$NEEDS" | jq -e '[to_entries[] | select(.value.result != "success" and ((.key != "guard" and .key != "release") or .value.result != "skipped"))] | length == 0' >/dev/null

@@ -1,0 +1,22 @@
+{
+  "name": "nasctl-led-enable-blocked",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-enable"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: The LEDs cannot be switched on: driver\n"
+    },
+    {
+      "args": ["led-enable"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: The LEDs cannot be switched on: module\n"
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

@@ -1,0 +1,21 @@
+# Generated files that stay tracked. linguist-generated collapses them in PR diffs.
+# Everything else a generator writes is gitignored (scripts/generated.ts); `just generated-check` enforces this.
+
+# Rendered by plugin/tools/plg.ts at release; installed systems read it from main (pluginURL).
+plugin/ugreen-nas-control.plg linguist-generated=true
+# Model tables rendered from web/models/ by docs/tools/gen-docs.ts; GitHub shows the README, `just docs-check` keeps it current.
+README.md linguist-generated=true
+docs/hardware.md linguist-generated=true
+# Release history, written by plugin/tools/changes.ts at release.
+CHANGELOG.md linguist-generated=true
+# Recorded UI test snapshot, rewritten by `just e2e --update`.
+web/tools/e2e/golden.json linguist-generated=true
+# Replies of the real api.php / led/api.php to the case table, re-recorded by `bun web/tools/api-oracle/oracle.ts --update`.
+web/tools/api-oracle/golden.json linguist-generated=true
+# Community Applications store screenshots, rendered by `just ca-shots`; the store loads them from main (plugins/ugreen-nas-control.xml).
+docs/ca/overview-dark.png linguist-generated=true
+docs/ca/fans-dark.png linguist-generated=true
+docs/ca/case-dark.png linguist-generated=true
+docs/ca/leds-dark.png linguist-generated=true
+# Light variant of the overview for the README hero (<picture>), rendered by the same recipe.
+docs/ca/overview-light.png linguist-generated=true

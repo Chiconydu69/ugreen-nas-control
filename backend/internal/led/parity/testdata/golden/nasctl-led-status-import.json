@@ -1,0 +1,49 @@
+{
+  "name": "nasctl-led-status-import",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": true, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": false, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": false, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": true, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["led-status"],
+      "rc": 0,
+      "stdout": "{\"enabled\": true, \"supported\": true, \"blocker\": \"\", \"warning\": \"\", \"untested\": false, \"import_available\": true, \"model\": \"DXP6800 Pro\"}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "boot/led.enabled": "",
+    "boot/leds.cfg": "brightness=\"10\"\n"
+  },
+  "calls": [],
+  "stubs": []
+}

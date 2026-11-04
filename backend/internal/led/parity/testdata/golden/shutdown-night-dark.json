@@ -1,0 +1,26 @@
+{
+  "name": "shutdown-night-dark",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["shutdown"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "off 255 255 255 255 0 0\n"
+  },
+  "state": {
+    "shutdown": ""
+  },
+  "calls": ["set power off", "--plain get power"],
+  "stubs": ["runlevel"]
+}

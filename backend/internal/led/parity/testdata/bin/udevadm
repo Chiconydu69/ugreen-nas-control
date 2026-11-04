@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "udevadm $*" >>"$STUB_LOG"
+dev="${*: -1}"
+cat "$STUBS/udevadm.${dev##*/}" 2>/dev/null
+exit 0

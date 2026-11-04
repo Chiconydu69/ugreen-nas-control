@@ -1,0 +1,46 @@
+{
+  "keys": {
+    "calibration": ["object"],
+    "chip": ["string"],
+    "chip_error": ["string"],
+    "chip_temps": ["array"],
+    "conflict": ["boolean"],
+    "conflicts": ["array"],
+    "daemon": ["object"],
+    "fan_caps": ["object"],
+    "fan_config": ["object"],
+    "fan_control": ["boolean"],
+    "fans": ["array"],
+    "info": ["object"],
+    "net_io": ["array"],
+    "ok": ["boolean"],
+    "presets": ["object"],
+    "sensors": ["object"],
+    "watchdog": ["null"]
+  },
+  "always": ["calibration", "conflict", "conflicts", "fan_control", "info", "net_io", "ok", "presets", "sensors", "watchdog"],
+  "nested": {
+    "calibration": ["progress", "table"],
+    "daemon": [
+      "cap",
+      "case_driver",
+      "case_from",
+      "case_temp",
+      "chip_temps",
+      "cpu_temp",
+      "failsafe",
+      "job",
+      "mode",
+      "quiet_active",
+      "stalled",
+      "targets",
+      "time"
+    ],
+    "fan_caps": ["backlight", "channels", "kind", "min_pct_floor", "watchdog"],
+    "fan_config": ["case", "channels", "cpu", "mover", "parity", "quiet", "version"],
+    "fans[]": ["auto", "id", "pct", "role", "rpm"],
+    "info": ["bios", "bios_date", "cpu", "kernel", "memory_kb", "model", "threads", "unraid", "uptime"],
+    "presets": ["full", "performance", "quiet", "standard"],
+    "sensors": ["board", "cpu", "cpu_cores", "disks", "gpu", "nic", "nvme", "nvme_extra"]
+  }
+}

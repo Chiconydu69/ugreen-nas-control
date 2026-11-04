@@ -1,0 +1,24 @@
+{
+  "name": "nasctl-start-daemon-dies",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["start"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Fan daemon did not start: no BIOS snapshot\n"
+    },
+    {
+      "args": ["status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "run/fan.err": "no BIOS snapshot\n"
+  },
+  "calls": ["fan probe", "fan daemon"],
+  "stubs": []
+}

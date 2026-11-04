@@ -1,0 +1,24 @@
+{
+  "name": "fx-fails",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["fx", "start"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: Effect 'temperature' did not start: no temperature sensor\n"
+    },
+    {
+      "args": ["fx", "status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {
+    "fx.log": "no temperature sensor\n"
+  },
+  "calls": ["--speed 2 effect temperature power"],
+  "stubs": []
+}

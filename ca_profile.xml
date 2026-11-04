@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <CommunityApplications>
-  <Profile>Unraid plugins by Alexander Schubert. UGREEN NAS Control brings LED control to UGREEN DX/DXP/iDX NAS (it succeeds UGREEN LED Control) and system info, temperatures, a case view and fan control with curves to the UGREEN DXP6800 Pro and DXP4800 GT. Support is in the Unraid forum thread and the GitHub issues of each plugin.</Profile>
-  <Icon>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/src/web/images/ugreen-nas-control.png</Icon>
-  <WebPage>https://github.com/alexanderschubert</WebPage>
+  <Profile>Unraid plugins by Alexander Schubert. UGREEN NAS Control brings LED control to UGREEN DX/DXP/iDX NAS (it succeeds UGREEN LED Control) and system info, temperatures, a case view and fan control with curves to the UGREEN DXP6800 Pro and DXP4800 GT. Questions and ideas go to the Unraid forum thread or GitHub Discussions, bugs to the GitHub issues of each plugin.</Profile>
+  <Icon>https://ugreen-nas-control.github.io/ugreen-nas-control/icon.png</Icon>
+  <WebPage>https://github.com/ugreen-nas-control/ugreen-nas-control</WebPage>
+  <Forum>https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/</Forum>
 </CommunityApplications>

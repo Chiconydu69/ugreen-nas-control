@@ -1,0 +1,16 @@
+{
+  "name": "nasctl-status-stopped",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["status"],
+      "rc": 3,
+      "stdout": "stopped\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {},
+  "state": {},
+  "calls": [],
+  "stubs": []
+}

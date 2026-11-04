@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "ip $*" >>"$STUB_LOG"
+cat "$STUBS/ip.out" 2>/dev/null
+exit 0

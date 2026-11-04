@@ -1,0 +1,115 @@
+{
+  "name": "get",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk1"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk1\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk9"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'disk9' not found.\n"
+    },
+    {
+      "args": ["get", "nope"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "ERROR: LED 'nope' not found.\n"
+    },
+    {
+      "args": ["blink", "disk1", "600", "600"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk1"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk1\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"600\",\n  \"off_ms\": \"600\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["blink", "disk2", "100", "100"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk2"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk2\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"100\",\n  \"off_ms\": \"100\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["breath", "power", "1200", "900"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"power\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"breath\",\n  \"on_ms\": \"1200\",\n  \"off_ms\": \"900\",\n  \"sent_ms\": \u003cMS\u003e,\n  \"now_ms\": \u003cMS\u003e\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["off", "disk3"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk3"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk3\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"0\",\n  \"off_ms\": \"0\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk1"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk1\",\n  \"brightness\": \"255\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"blink\",\n  \"on_ms\": \"600\",\n  \"off_ms\": \"600\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "power"],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "chip: no answer\n"
+    }
+  ],
+  "registers": {
+    "disk1": "blink 255 255 255 255 600 600\n",
+    "disk2": "blink 255 255 255 255 100 100\n",
+    "disk3": "off 255 255 255 255 0 0\n",
+    "power": "breath 255 255 255 255 1200 900\n"
+  },
+  "state": {
+    "phase-disk1": "\u003cMS\u003e 1 1\n",
+    "phase-power": "\u003cMS\u003e 1200 900\n"
+  },
+  "calls": [
+    "--plain get power",
+    "--plain get disk1",
+    "set disk1 blink 600 600",
+    "--plain get disk1",
+    "set disk2 blink 100 100",
+    "--plain get disk2",
+    "set power breath 1200 900",
+    "--plain get power",
+    "set disk3 off",
+    "--plain get disk3",
+    "--plain get disk1",
+    "--plain get power"
+  ],
+  "stubs": []
+}

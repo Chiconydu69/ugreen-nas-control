@@ -1,0 +1,69 @@
+{
+  "name": "identify-off-led",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["off", "disk2"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["identify", "disk2", "1"],
+      "rc": 0,
+      "stdout": "Identifying disk2 for 1 s.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk2"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk2\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"100\",\n  \"off_ms\": \"100\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "args": ["identify", "disk2", "2"],
+      "rc": 0,
+      "stdout": "Identifying disk2 for 2 s.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["identify", "disk2", "1"],
+      "rc": 0,
+      "stdout": "Identifying disk2 for 1 s.\n",
+      "stderr": ""
+    },
+    {
+      "args": ["get", "disk2"],
+      "rc": 0,
+      "stdout": "{\n  \"name\": \"disk2\",\n  \"brightness\": \"0\",\n  \"max_brightness\": \"255\",\n  \"color\": \"255 255 255\",\n  \"effect\": \"none\",\n  \"on_ms\": \"100\",\n  \"off_ms\": \"100\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk2": "off 255 255 255 255 100 100\n"
+  },
+  "state": {},
+  "calls": [
+    "set disk2 off",
+    "--plain get disk2",
+    "set disk2 color 255 255 255",
+    "set disk2 brightness 255",
+    "set disk2 blink 100 100",
+    "set disk2 color 255 255 255",
+    "set disk2 brightness 255",
+    "set disk2 off",
+    "--plain get disk2",
+    "--plain get disk2",
+    "set disk2 color 255 255 255",
+    "set disk2 brightness 255",
+    "set disk2 blink 100 100",
+    "set disk2 color 255 255 255",
+    "set disk2 brightness 255",
+    "set disk2 blink 100 100",
+    "set disk2 color 255 255 255",
+    "set disk2 brightness 255",
+    "set disk2 off",
+    "--plain get disk2"
+  ],
+  "stubs": []
+}

@@ -1,0 +1,17 @@
+# Formatter for TS, JS, CSS, HTML, JSON, YAML and Markdown: `just fmt` / `just fmt-check` (docs/development.md, "Code style").
+# Indent per file type comes from .editorconfig (4 for TS/JS/CSS/HTML, 2 for YAML/JSON/Markdown).
+[fmt]
+printWidth = 160
+singleQuote = true
+trailingComma = "none"
+arrowParens = "avoid"
+endOfLine = "lf"
+proseWrap = "preserve"
+ignorePatterns = [
+    "node_modules/",
+    "bun.lock",
+    # Unraid .plg: XML with entities and inline scripts; rendered by plugin/tools/plg.ts, never formatted
+    "plugin/",
+    # vendored Claude Code skills (upstream copy, Apache-2.0), kept byte-identical
+    ".claude/skills/"
+]

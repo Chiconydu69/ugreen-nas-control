@@ -1,0 +1,19 @@
+title: '[Idea] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What do you want to do that you cannot do now
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you change
+    validations:
+      required: true
+  - type: input
+    id: models
+    attributes:
+      label: Which models does it concern
+      placeholder: All, or DXP4800 Plus

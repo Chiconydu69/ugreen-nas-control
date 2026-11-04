@@ -1,0 +1,54 @@
+name: 'Labels (area)'
+
+# Type labels come from the issue forms. Area labels are added here and never removed: issues from the form's
+# "Area" field, PRs from the changed paths (.github/labeler.yml). Labels set by a human stay.
+on:
+  issues:
+    types: [opened, edited]
+  # pull_request_target runs with write access for fork PRs too. Safe here: no checkout, no PR code runs; the
+  # labeler reads only the list of changed paths from the API and the config from the base branch.
+  pull_request_target: # zizmor: ignore[dangerous-triggers] no checkout, no PR code, see above
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  issue:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - name: Add the area label from the form
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+        run: |
+          area=$(printf '%s\n' "$BODY" | tr -d '\r' | awk '/^### Area[[:space:]]*$/ {f=1; next} f && NF {print; exit}')
+          case "$area" in
+            "Fans") label='area: fans' ;;
+            "LEDs") label='area: leds' ;;
+            "Front panel and power-on (buttons, beeper, power-on after power loss)") label='area: panel' ;;
+            "Dashboard widget") label='area: widget' ;;
+            "Plugin page") label='area: ui' ;;
+            "MQTT / Home Assistant") label='area: mqtt' ;;
+            "Install and update") label='area: install' ;;
+            "Website") label='area: site' ;;
+            *) exit 0 ;;
+          esac
+          gh issue edit "$NUMBER" --add-label "$label"
+
+  pull-request:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
+        with:
+          sync-labels: false

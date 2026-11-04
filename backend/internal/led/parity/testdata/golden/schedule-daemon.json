@@ -1,0 +1,71 @@
+{
+  "name": "schedule-daemon",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["schedule", "--force"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "disk1": "on 6 255 140 0 0 0\n",
+    "disk2": "on 20 255 59 48 0 0\n",
+    "disk3": "on 20 255 160 0 0 0\n",
+    "disk4": "on 20 255 160 0 0 0\n",
+    "disk5": "on 20 255 160 0 0 0\n",
+    "disk6": "on 20 255 160 0 0 0\n",
+    "netdev": "on 20 1 2 3 0 0\n",
+    "power": "on 20 255 255 255 0 0\n"
+  },
+  "state": {
+    "led.pid": "\u003cPID\u003e\n",
+    "schedule": "night\n"
+  },
+  "calls": [
+    "--plain get disk1",
+    "--plain get netdev",
+    "--plain get netdev",
+    "--plain get power",
+    "set disk1 brightness 100",
+    "set disk1 brightness 6",
+    "set disk1 color 255 140 0",
+    "set disk1 on",
+    "set disk2 brightness 20",
+    "set disk2 color 255 59 48",
+    "set disk2 color 9 9 9",
+    "set disk2 on",
+    "set disk3 brightness 20",
+    "set disk3 color 255 160 0",
+    "set disk3 on",
+    "set disk4 brightness 20",
+    "set disk4 color 255 160 0",
+    "set disk4 on",
+    "set disk5 brightness 20",
+    "set disk5 color 255 160 0",
+    "set disk5 on",
+    "set disk6 brightness 20",
+    "set disk6 color 255 160 0",
+    "set disk6 on",
+    "set netdev brightness 20",
+    "set netdev brightness 20",
+    "set netdev brightness 255",
+    "set netdev brightness 255",
+    "set netdev color 1 2 3",
+    "set netdev color 1 2 3",
+    "set power brightness 20",
+    "set power brightness 200"
+  ],
+  "stubs": [
+    "ip route show default",
+    "ip route show default",
+    "ip route show default",
+    "logger -t ugreen-led-control night mode: night",
+    "logger -t ugreen-led-control status daemon started (bays: 6, network: eth0)",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "pgrep -f ^/bin/bash /usr/bin/ugreen-leds",
+    "ping -c 1 -W 2 192.168.1.1",
+    "ping -c 1 -W 2 192.168.1.1"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "alerts-night-off",
+  "product": "DXP6800 Pro",
+  "commands": [
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "args": ["alerts"],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "registers": {
+    "power": "blink 200 255 59 48 500 500\n"
+  },
+  "state": {
+    "alert": "alert\n",
+    "phase-power": "\u003cMS\u003e 500 500\n"
+  },
+  "calls": ["set power off", "set power color 255 59 48", "set power brightness 200", "set power blink 500 500"],
+  "stubs": ["logger -t ugreen-led-control Unraid alert: power LED signals 1 unread notification(s)"]
+}

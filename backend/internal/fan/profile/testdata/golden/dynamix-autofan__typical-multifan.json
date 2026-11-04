@@ -1,0 +1,56 @@
+{
+  "source": "dynamix",
+  "title": "Dynamix Auto Fan Control: autofan",
+  "profile": {
+    "schema": 1,
+    "kind": "ugreen-nas-fan-profile",
+    "fan": {
+      "case_curve": "36:22,46:100",
+      "ignore_drives": "disk3,nvme0",
+      "min_pct": "22",
+      "mode": "custom"
+    }
+  },
+  "warnings": [
+    "dynamix.system.autofan.cfg: below 36 °C Autofan drops 30 PWM lower (off step); this plugin keeps the curve's first speed",
+    "dynamix.system.autofan.cfg: excluded drives apply to all fans here, not only this one"
+  ],
+  "not_imported": [
+    {
+      "key": "controller",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "dynamix.system.autofan.cfg"
+    },
+    {
+      "key": "fan",
+      "reason": "the fan output is fixed by the NAS model",
+      "file": "dynamix.system.autofan.cfg"
+    },
+    {
+      "key": "interval",
+      "reason": "the fan check interval is fixed",
+      "file": "dynamix.system.autofan.cfg"
+    },
+    {
+      "key": "options",
+      "reason": "built from the other settings",
+      "file": "dynamix.system.autofan.cfg"
+    },
+    {
+      "key": "(whole block)",
+      "reason": "another block was imported for the case fans",
+      "file": "dynamix.system.autofan1.cfg"
+    },
+    {
+      "key": "(empty block)",
+      "reason": "the fan is set to None",
+      "file": "dynamix.system.autofan2.cfg"
+    }
+  ],
+  "provenance": {
+    "case_curve": "dynamix.system.autofan.cfg: low, high, pwm",
+    "ignore_drives": "dynamix.system.autofan.cfg: exclude",
+    "min_pct": "dynamix.system.autofan.cfg: pwm",
+    "mode": "imported curves need the custom mode"
+  }
+}

@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "ping $*" >>"$STUB_LOG"
+[ -e "$STUBS/ping.fail" ] && exit 1
+exit 0

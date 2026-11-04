@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "ethtool $*" >>"$STUB_LOG"
+cat "$STUBS/ethtool.$1" 2>/dev/null
+exit 0
