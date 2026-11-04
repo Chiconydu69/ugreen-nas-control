@@ -10,7 +10,7 @@ export const powerDe: Record<keyof typeof powerEn, string> = {
         'Was das NAS tut, wenn nach einem Stromausfall wieder Netzspannung anliegt. Die Einstellung steckt im Mainboard, nicht im Plugin; nur die Schaltflächen unten ändern sie.',
     'power_ac.current': 'Aktuelle Einstellung',
     'power_ac.on': 'Einschalten',
-    'power_ac.off': 'Aus bleiben',
+    'power_ac.off': 'Ausgeschaltet bleiben',
     'power_ac.last': 'Vorherigen Zustand herstellen',
     'power_ac.unknown': 'Unbekannt',
     'power_ac.unreadable': 'Dieses Modell kann die Einstellung nicht melden.',
