@@ -4,12 +4,12 @@
   <PluginURL>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugin/ugreen-nas-control.plg</PluginURL>
   <TemplateURL>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugins/ugreen-nas-control.xml</TemplateURL>
   <Category>Tools:Utilities</Category>
-  <Overview>LED, fan and system control for UGREEN NAS (DX, DXP, iDX series) under Unraid. LEDs: colours, effects, disk and network status, night mode, Unraid alerts. Case view of your NAS with its bays, ports and drives. Temperatures read from Unraid, so sleeping disks stay asleep. On the DXP6800 Pro and DXP4800 GT: fan control with Quiet, Standard, Performance or custom curves, fan measuring, and all fans at 100 % when a temperature is too high or unreadable. No kernel module. Replaces UGREEN LED Control.</Overview>
+  <Overview>Front LEDs, fan control and a live view of your UGREEN NAS (DX, DXP and iDX series) in Unraid. LEDs: colours, effects, drive and network status, night mode, Unraid alerts. Fans: Quiet, Standard, Performance or your own curves, with safety limits and a history graph; on the DXP6800 Pro, DXP4800 GT and DXP2800 GT, and after a guided fan detection on the DXP2800, DXP4800 / Plus / Pro and DXP8800 Plus. Case view with bays, ports and drives; temperatures read from Unraid, so sleeping disks stay asleep. MQTT for Home Assistant and displays. No kernel module. Replaces UGREEN LED Control.</Overview>
   <Project>https://github.com/ugreen-nas-control/ugreen-nas-control</Project>
   <Support>https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/</Support>
   <ReadMe>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/README.md</ReadMe>
   <Icon>https://ugreen-nas-control.github.io/ugreen-nas-control/icon.png</Icon>
-  <ExtraSearchTerms>ugreen nas dxp dx idx dxp6800 dxp4800 led fan fan-control temperature case-view</ExtraSearchTerms>
+  <ExtraSearchTerms>ugreen nas dxp dx idx dxp6800 dxp4800 dxp2800 dxp8800 idx6011 led fan fan-control temperature case-view mqtt home-assistant</ExtraSearchTerms>
   <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/overview-dark.png</Screenshot>
   <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/fans-dark.png</Screenshot>
   <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/case-dark.png</Screenshot>
