@@ -192,8 +192,8 @@ func TestReadWindowLeavesAfterKeyError(t *testing.T) {
 }
 
 func TestReadWindowHoldsSignal(t *testing.T) {
-	got := make(chan os.Signal, 1)
-	signal.Notify(got, syscall.SIGHUP) // a handler, so the re-sent signal does not end the test
+	got := make(chan os.Signal, 2)
+	signal.Notify(got, syscall.SIGHUP) // a handler; it stays until the re-sent signal arrived, else the default action ends the test binary
 	defer signal.Stop(got)
 	l := &idxLog{fakeChip: newChip()}
 	l.onWrite = func(n int) {
@@ -208,9 +208,11 @@ func TestReadWindowHoldsSignal(t *testing.T) {
 	if !hasSuffix(l.idxOut, exitKey) {
 		t.Fatalf("window not closed: % x", l.idxOut)
 	}
-	select {
-	case <-got:
-	case <-time.After(2 * time.Second):
-		t.Fatal("signal not handed back after the window closed")
+	for i := 0; i < 2; i++ { // the original (also seen by the test handler) and the one handed back
+		select {
+		case <-got:
+		case <-time.After(2 * time.Second):
+			t.Fatal("signal not handed back after the window closed")
+		}
 	}
 }
