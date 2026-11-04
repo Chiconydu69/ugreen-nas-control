@@ -104,8 +104,11 @@ func EnvFromGetenv(get func(string) string, self string) Env {
 	return e
 }
 
-// bayCount: DXP6800 Pro -> 6, DX4600 Pro -> 4, DXP8800 Plus -> 8.
+// bayCount: DXP6800 Pro -> 6, DX4600 Pro -> 4, DXP8800 Plus -> 8, DXP480T Plus -> 0.
 func bayCount(product string) int {
+	if strings.HasPrefix(product, "DXP480T") {
+		return 0 // power LED only
+	}
 	if globMatch("iDX601[12]*", product) {
 		return 6
 	}

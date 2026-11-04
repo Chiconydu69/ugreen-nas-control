@@ -22,6 +22,9 @@ func more() []scenario {
 		if p == "iDX6011 Pro" {
 			s.intended = "the Pro lists netdev2, its second LAN LED (register 2, leds-mcu.c:104-108@c75c5ab); the shell has no such LED"
 		}
+		if p == "DXP480T Plus" {
+			s.intended = "the model has no bays; the shell listed 8"
+		}
 		list = append(list, s)
 	}
 

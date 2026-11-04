@@ -312,3 +312,54 @@ func TestStopKillsADaemonThatIgnoresSIGTERM(t *testing.T) {
 		t.Error("the pidfile stays after the kill")
 	}
 }
+
+// ledBootCalls runs ledBoot with a fake LED tool pair that logs every call, and returns the log.
+func ledBootCalls(t *testing.T, f *fixture, product string, enabled bool) string {
+	t.Helper()
+	log := filepath.Join(f.dir, "calls")
+	script := "#!/bin/sh\necho \"$(basename $0) $@\" >>" + log + "\n"
+	write(t, f.c.Env.LEDCtl, script)
+	write(t, f.c.Env.LEDI2C, script)
+	write(t, f.c.Env.UpdateCron, script)
+	for _, p := range []string{f.c.Env.LEDCtl, f.c.Env.LEDI2C, f.c.Env.UpdateCron} {
+		if err := os.Chmod(p, 0o755); err != nil {
+			t.Fatal(err)
+		}
+	}
+	f.c.Env.LEDCron = filepath.Join(f.dir, "cron.d", "x.cron")
+	write(t, filepath.Join(f.dir, "dmi/product_name"), product+"\n")
+	if enabled {
+		write(t, f.c.Env.LEDFlag, "")
+	}
+	if rc := f.c.ledBoot(); rc != 0 {
+		t.Fatalf("rc %d", rc)
+	}
+	data, _ := os.ReadFile(log)
+	return string(data)
+}
+
+func TestLedBootDXP480TSendsTheWhiteInitWithoutProbe(t *testing.T) {
+	f := newFixture(t)
+	got := ledBootCalls(t, f, "DXP480T Plus", true)
+	if !strings.Contains(got, "ugreen-led-ctl dxp480t\n") {
+		t.Errorf("no steady-white init: %q", got)
+	}
+	if strings.Contains(got, "probe") || strings.Contains(got, "apply") || strings.Contains(f.out.String(), "does not answer") {
+		t.Errorf("0x3a controller path ran on a model without it: %q / %q", got, f.out.String())
+	}
+}
+
+func TestLedBootDXP480TLeavesTheLEDAloneWhenSwitchedOff(t *testing.T) {
+	f := newFixture(t)
+	if got := ledBootCalls(t, f, "DXP480T Plus", false); got != "" {
+		t.Errorf("LED tools ran with LED control off: %q", got)
+	}
+}
+
+func TestLedBootOtherModelsStillProbe(t *testing.T) {
+	f := newFixture(t)
+	got := ledBootCalls(t, f, "DXP6800 Pro", true)
+	if !strings.Contains(got, "ugreen-led-i2c probe\n") || strings.Contains(got, "dxp480t") {
+		t.Errorf("calls %q", got)
+	}
+}

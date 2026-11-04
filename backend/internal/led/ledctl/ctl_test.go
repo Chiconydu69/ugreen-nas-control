@@ -14,7 +14,7 @@ import (
 func TestBayCount(t *testing.T) {
 	for product, want := range map[string]int{
 		"DXP6800 Pro": 6, "DX4600 Pro": 4, "DXP8800 Plus": 8, "DXP2800": 2, "DXP4800 GT": 4,
-		"iDX6011 Pro": 6, "iDX6012B": 6, "UGREEN NAS": 8, "DXP480T Plus": 8, "DX1": 8, "DXP9000": 8, "": 8,
+		"iDX6011 Pro": 6, "iDX6012B": 6, "UGREEN NAS": 8, "DXP480T Plus": 0, "DX1": 8, "DXP9000": 8, "": 8,
 	} {
 		if got := bayCount(product); got != want {
 			t.Errorf("bayCount(%q) = %d, want %d", product, got, want)

@@ -518,7 +518,13 @@ func (c *Ctl) ledBoot() int {
 	run("modprobe", c.Out, nil, "i2c-dev")
 
 	ctl := c.Env.LEDCtl
-	if run(c.Env.LEDI2C, nil, nil, "probe") {
+	if strings.HasPrefix(c.ledModel(), "DXP480T") {
+		// No controller at 0x3a: the power LED sits on its own chip, which stays in its flashing power-on state until
+		// it gets the steady-white init.
+		if !run(ctl, c.Out, c.Err, "dxp480t") {
+			c.out("WARNING: The power LED did not accept the steady-white init.\n")
+		}
+	} else if run(c.Env.LEDI2C, nil, nil, "probe") {
 		run(ctl, c.Out, c.Err, "apply")
 
 		cfg, _ := os.ReadFile(c.Env.LEDCfg)
