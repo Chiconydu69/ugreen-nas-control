@@ -36,6 +36,11 @@ body:
     validations:
       required: true
   - type: textarea
+    id: diag
+    attributes:
+      label: Output of ugreen-nas-ctl diag
+      description: Optional, helps when something does not work, and the machine-readable block at its end is evidence for the model (the visual checks below still need this form). Run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag as root and paste the output. It is anonymised and read only ([what it collects](https://github.com/ugreen-nas-control/ugreen-nas-control/blob/next/docs/cli.md#diagnostics)).
+  - type: textarea
     id: notes
     attributes:
       label: What does not work, anything else

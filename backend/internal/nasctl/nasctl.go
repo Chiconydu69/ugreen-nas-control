@@ -30,6 +30,8 @@ const usageText = `Usage:
   ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control
   ugreen-nas-ctl led-boot                    bring the LEDs up (install, boot), if enabled
   ugreen-nas-ctl report                      anonymised JSON for a model report
+  ugreen-nas-ctl diag                        anonymised read-only diagnostics as Markdown for a bug report
+                                             (no hardware writes; the only system change is modprobe i2c-dev, if missing)
   ugreen-nas-ctl event stopping              array stop hook: signals shutdown on the power LED
 `
 
@@ -121,6 +123,8 @@ func (c *Ctl) Main(args []string) int {
 		return 0
 	case "report":
 		return c.report()
+	case "diag":
+		return c.diag()
 	case "event":
 		if len(args) > 1 && args[1] == "stopping" {
 			c.eventStopping()
@@ -149,22 +153,22 @@ func (c *Ctl) running(pidFile string) bool {
 }
 
 func isFile(p string) bool {
-	st, err := os.Stat(p)
+	st, err := os.Stat(p) //nolint:gosec // p is a fixed plugin path or a test override from the environment
 	return err == nil && st.Mode().IsRegular()
 }
 
 func isDir(p string) bool {
-	st, err := os.Stat(p)
+	st, err := os.Stat(p) //nolint:gosec // same
 	return err == nil && st.IsDir()
 }
 
 func nonEmpty(p string) bool {
-	st, err := os.Stat(p)
+	st, err := os.Stat(p) //nolint:gosec // same
 	return err == nil && st.Size() > 0
 }
 
 func executable(p string) bool {
-	st, err := os.Stat(p)
+	st, err := os.Stat(p) //nolint:gosec // same
 	return err == nil && !st.IsDir() && st.Mode()&0o111 != 0
 }
 

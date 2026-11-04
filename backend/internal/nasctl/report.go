@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
@@ -99,7 +100,7 @@ type Inputs struct {
 
 var (
 	macRe  = regexp.MustCompile(`(?i)\b[0-9a-f]{2}(?::[0-9a-f]{2}){5}\b`)
-	ipv4Re = regexp.MustCompile(`\b\d{1,3}(?:\.\d{1,3}){3}\b`)
+	ipv4Re = regexp.MustCompile(`[0-9A-Za-z.]*\d{1,3}(?:\.\d{1,3}){3}[0-9A-Za-z.]*`)
 	ipv6Re = regexp.MustCompile(`(?i)\b(?:[0-9a-f]{1,4}:){3,7}[0-9a-f]{1,4}\b`)
 )
 
@@ -107,7 +108,7 @@ var (
 func scrub(s string) string {
 	s = macRe.ReplaceAllString(s, "<removed>")
 	s = ipv6Re.ReplaceAllString(s, "<removed>")
-	s = ipv4Re.ReplaceAllString(s, "<removed>")
+	s = scrubIPv4(s)
 	return strings.TrimSpace(s)
 }
 
@@ -264,4 +265,30 @@ func (c *Ctl) report() int {
 		return 1
 	}
 	return 0
+}
+
+// scrubIPv4 replaces IPv4 addresses: four dotted numbers of 0-255 without leading zeros, standing alone (not part
+// of a longer dotted or alphanumeric token), so versions such as 1.00.00.05 and V1.0.0.12 stay.
+func scrubIPv4(s string) string {
+	return ipv4Re.ReplaceAllStringFunc(s, func(tok string) string {
+		core := strings.Trim(tok, ".")
+		if isIPv4(core) {
+			return strings.Replace(tok, core, "<removed>", 1)
+		}
+		return tok
+	})
+}
+
+func isIPv4(tok string) bool {
+	parts := strings.Split(tok, ".")
+	if len(parts) != 4 {
+		return false
+	}
+	for _, p := range parts {
+		n, err := strconv.Atoi(p)
+		if err != nil || n > 255 || len(p) > 3 || (len(p) > 1 && p[0] == '0') {
+			return false
+		}
+	}
+	return true
 }

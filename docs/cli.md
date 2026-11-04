@@ -37,6 +37,7 @@ Without the map the daemon does not start on this model.
 - `mqtt-start`, `mqtt-stop`, `mqtt-status`: the MQTT publisher.
 - `led-status`, `led-enable`, `led-disable`, `led-import`, `led-boot`, `led-stop`: the LED switch ([led.md](led.md)).
 - `report`: anonymised JSON for a model report (below).
+- `diag`: one anonymised, read-only diagnostics block for a bug report ([Diagnostics](#diagnostics)).
 - `event stopping`: called by the Unraid event script at shutdown.
 
 ```
@@ -52,7 +53,25 @@ Front-panel buttons and beeper, from UGREEN's driver facts, not yet confirmed on
 
 ## Support requests
 
-Include the output of both `status` commands, the NAS model and the Unraid and plugin versions.
+Paste the output of [`diag`](#diagnostics), plus the NAS model and what you expected. It replaces the `status` commands and every other command we used to ask for.
+
+## Diagnostics
+
+Run it as root on the Unraid box and paste the whole output into the bug report or the forum thread:
+
+```
+/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag
+```
+
+The output is Markdown: a header (versions, kernel, model, BIOS), a _Checks_ list with one line per problem found (a rival fan or LED tool that is running comes first as `CONFLICT: ...`), then collapsed sections. Every section has its own time limit; a section that fails prints its error and the rest continues.
+
+Collected: DMI model strings, the report summary, LED state (settings, per-LED state, bay to SATA port to slot name, an I2C scan of all buses, the CS201x registers on the DXP2800 GT, `ugreen-led-ctl status`), fan state (chip, speeds, source temperatures, failsafe, watchdog, fan caps and map, calibration, tach inputs), other fan and LED tools (installed, running with pid and uptime, cron entries and User Scripts that write fans or LEDs, kernel modules, hwmon outputs in manual mode, whether the plugin yields), drives by slot name (type, spin state, temperature), settings with secret-looking values redacted, plugin state, loaded modules, hwmon entries, I/O port ranges, PCI IDs of SMBus, storage and network controllers, matching `dmesg` lines and the last 50 `ugreen-*` syslog lines.
+
+Never collected: serial numbers, UUIDs, asset tags, MAC and IP addresses, the host name, drive serials, ids, models and labels, pool, share and user names, MQTT host, user, password and topics. Addresses, the host name, `serial=`/`user=`/`share=` values, `/mnt` paths and serial-looking tokens in log lines are cut out of the whole text. Settings whose key contains `pass`, `token`, `secret`, `host`, `user`, `ip`, `mac`, `topic`, `key`, `url`, `addr`, `serial`, `ignore`, `script`, `path` or `drive`, and every `mqtt_` value except the switch, show `<redacted>`. Read the output before you paste it.
+
+The _Model_ section compares what was detected with the model registry (`web/models/`): per area the registry state and what is still open, and expected against detected for bays, M.2 slots, LAN ports, fan chip and headers, LED controller and watchdog; a difference shows in _Checks_ as `MISMATCH`. The last block is the same result as JSON (`"schema": "diag/1"`) and can be attached as evidence for a model; the visual checks (Identify blinks the right bay, the case view matches) still come from the _Confirm my device_ form.
+
+No hardware writes: no LED, fan, EC or Super-I/O register is written. The only system change is `modprobe i2c-dev` when the module is missing, because the I2C scan needs `/dev/i2c-*`; the tools it runs keep their own lock and cache files as in normal use. The output says so (`loaded i2c-dev for the scan`). `diag` does not load `i2c_i801`: without the SMBus adapter it skips `ugreen-led-ctl status` and says why.
 
 ## Report a model
 

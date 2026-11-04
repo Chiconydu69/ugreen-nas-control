@@ -41,7 +41,7 @@ The browser code is TypeScript in `web/src/` (`features/nas`, `features/led`, `d
 
 ## Generated files
 
-Generated files are never committed. Generators write only to gitignored paths (`scripts/generated.ts`); the few tracked generated files are marked `linguist-generated` in `.gitattributes` with the reason. `just generated-check` (part of `just check`) enforces it. The model tables of `README.md` and `docs/hardware.md` come from `web/models/` by `just docs`; edit the model files, not the tables. `plugin/ugreen-nas-control.plg` and `CHANGELOG.md` are rendered at release only.
+Generated files are never committed. Generators write only to gitignored paths (`scripts/generated.ts`); the few tracked generated files are marked `linguist-generated` in `.gitattributes` with the reason. `just generated-check` (part of `just check`) enforces it. The model tables of `README.md` and `docs/hardware.md` and the registry copy `backend/internal/nasctl/models.json` (embedded in `ugreen-nas-ctl diag`, which compares a box with its model) come from `web/models/` by `just docs`; edit the model files, not the generated files. `plugin/ugreen-nas-control.plg` and `CHANGELOG.md` are rendered at release only.
 
 ## Code style
 

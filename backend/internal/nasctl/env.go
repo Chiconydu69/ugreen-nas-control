@@ -28,6 +28,13 @@ type Env struct {
 	LegacyPids   []string
 	Proc         string // UGREEN_PROC
 	UnraidFile   string // UGREEN_UNRAID_VERSION
+	Syslog       string // UGREEN_SYSLOG
+	Hwmon        string // UGREEN_SYS_HWMON
+	Dev          string // UGREEN_DEV
+	LEDPidFile   string // UGREEN_PIDFILE
+	DisksINI     string // UGREEN_DISKS_INI
+	CronD        string // UGREEN_CROND
+	SysI2C       string // UGREEN_SYS_I2C
 }
 
 func orDefault(get func(string) string, key, def string) string {
@@ -63,5 +70,12 @@ func EnvFromGetenv(get func(string) string, here string) Env {
 		LegacyPids:   strings.Fields(orDefault(get, "UGREEN_LED_LEGACY_PIDS", "/var/run/ugreen-led-control.pid /var/run/ugreen-led-control-fx.pid")),
 		Proc:         orDefault(get, "UGREEN_PROC", "/proc"),
 		UnraidFile:   orDefault(get, "UGREEN_UNRAID_VERSION", "/etc/unraid-version"),
+		Syslog:       orDefault(get, "UGREEN_SYSLOG", "/var/log/syslog"),
+		Hwmon:        orDefault(get, "UGREEN_SYS_HWMON", "/sys/class/hwmon"),
+		Dev:          orDefault(get, "UGREEN_DEV", "/dev"),
+		LEDPidFile:   orDefault(get, "UGREEN_PIDFILE", "/var/run/ugreen-nas-control.led.pid"),
+		DisksINI:     orDefault(get, "UGREEN_DISKS_INI", "/var/local/emhttp/disks.ini"),
+		CronD:        orDefault(get, "UGREEN_CROND", "/etc/cron.d"),
+		SysI2C:       orDefault(get, "UGREEN_SYS_I2C", "/sys/bus/i2c/devices"),
 	}
 }

@@ -452,3 +452,17 @@ func (c Config) View() ConfigView {
 	}
 	return v
 }
+
+// KnownSetting says whether key is a setting of fan.cfg (v1, v2 or per-fan override); the value is not checked.
+func KnownSetting(key string) bool {
+	switch key {
+	case "mode", "cpu_curve", "case_curve", "min_pct", "cpu_crit", "disk_crit", "nvme_offset", "stall_notify",
+		"ignore_drives", "fan_control", "case_follows_cpu", "cfg_version":
+		return true
+	}
+	var c Config
+	c.MinPct = 10
+	c.CPUCurve, c.CaseCurve = Curve{{0, 0}}, Curve{{0, 0}}
+	c.deriveGroups()
+	return c.setV2(key, "", true) != errUnknownKey
+}

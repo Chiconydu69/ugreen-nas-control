@@ -43,17 +43,10 @@ body:
     attributes:
       label: Steps to reproduce
   - type: textarea
-    id: fan
+    id: diag
     attributes:
-      label: Output of ugreen-nas-fan status
-      description: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan status
-      render: json
-  - type: textarea
-    id: ctl
-    attributes:
-      label: Output of ugreen-nas-ctl status
-      description: /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl status
-      render: shell
+      label: Output of ugreen-nas-ctl diag
+      description: Run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag as root on the Unraid box and paste the output. It is anonymised and read only ([what it collects](https://github.com/ugreen-nas-control/ugreen-nas-control/blob/next/docs/cli.md#diagnostics)); it replaces the other commands.
   - type: markdown
     attributes:
       value: Remove serial numbers and IP addresses from anything you paste.
