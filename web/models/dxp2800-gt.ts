@@ -18,7 +18,7 @@ export default {
     verified: {
         leds: {
             status: 'expected',
-            note: "AMD DesignWare I2C controller like the DXP4800 GT, no Intel SMBus; miskcoo's driver for it is work in progress (issues 122, 123). Bay order guessed."
+            note: "AMD DesignWare I2C controller like the DXP4800 GT, no Intel SMBus; miskcoo's driver for it is work in progress (issues 122, 123). Other tools control all LEDs after the boot-finish write of 1 to 0x20005440 (issue 123), a user reports a month on TrueNAS; our CS201x path does the same write but nobody has run it. Bay order guessed."
         },
         fans: {
             status: 'community',
