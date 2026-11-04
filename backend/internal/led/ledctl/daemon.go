@@ -7,6 +7,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/chip"
 )
 
 // Hardware blink while a disk or the network is busy.
@@ -185,7 +187,52 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 	ticker := time.NewTicker(c.Tick)
 	defer ticker.Stop()
 
+	// waitTick sleeps one tick; false when the daemon was told to stop, after it handed the LEDs back.
+	waitTick := func() bool {
+		select {
+		case <-ctx.Done():
+			c.log("status daemon stopped")
+			c.releaseActivity(blinking, netBlinking)
+			c.cs201xRestore()
+			return false
+		case <-ticker.C:
+			return true
+		}
+	}
+
+	// A controller that rejects every command (miskcoo#133): say so once, write nothing, ask again at growing intervals.
+	rejectedSince := time.Time{}
+	var retryAt time.Time
+	retryIn := c.rejectBackoff()
+
 	for tick := 0; ; tick++ {
+		if c.rejected.Load() && rejectedSince.IsZero() {
+			rejectedSince, retryAt = c.Now(), c.Now().Add(retryIn)
+			c.log(chip.RejectedMessage + "; the status daemon asks again in " + retryIn.String())
+		}
+		if !rejectedSince.IsZero() {
+			if c.Now().Before(retryAt) {
+				if !waitTick() {
+					return 0
+				}
+				continue
+			}
+			c.rejected.Store(false)
+			if _, rc := c.toolOut(false, "probe"); rc == chip.ExitRejected {
+				retryIn = min(2*retryIn, c.rejectBackoffMax())
+				retryAt = c.Now().Add(retryIn)
+				c.rejected.Store(true)
+				continue
+			}
+			// Answers again: start over as after a fresh start.
+			c.log("the LED controller answers again, status daemon resumes")
+			rejectedSince, retryIn = time.Time{}, c.rejectBackoff()
+			applied = make([]string, bays+1)
+			blinking = make([]bool, bays+1)
+			netWanted, netBlinking = "", false
+			tick = -1
+		}
+
 		if tick%25 == 0 {
 			// Two monitors would overwrite each other forever; leave the LEDs to the other one.
 			if tick%150 == 0 && c.foreignMonitorRunning() {
@@ -403,12 +450,39 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 			}
 		}
 
-		select {
-		case <-ctx.Done():
-			c.log("status daemon stopped")
-			c.cs201xRestore()
+		if !waitTick() {
 			return 0
-		case <-ticker.C:
 		}
 	}
+}
+
+func (c *Ctl) rejectBackoff() time.Duration {
+	if c.RejectBackoff > 0 {
+		return c.RejectBackoff
+	}
+
+	return 30 * time.Second
+}
+
+func (c *Ctl) rejectBackoffMax() time.Duration {
+	if c.RejectBackoffMax > 0 {
+		return c.RejectBackoffMax
+	}
+
+	return 10 * time.Minute
+}
+
+// releaseActivity ends the activity blink of the bays and the network LED when the daemon stops, so none is left
+// blinking at a moment of traffic; the steady look stays until the saved settings are applied (daemon stop).
+func (c *Ctl) releaseActivity(blinking []bool, netBlinking bool) {
+	c.quiet(func() {
+		for bay, on := range blinking {
+			if on {
+				c.tool("set", "disk"+strconv.Itoa(bay), "on")
+			}
+		}
+		if netBlinking {
+			c.tool("set", "netdev", "on")
+		}
+	})
 }

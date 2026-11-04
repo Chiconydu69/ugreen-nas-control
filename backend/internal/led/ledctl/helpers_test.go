@@ -18,6 +18,7 @@ type memChip struct {
 	state map[string][7]string // mode brightness R G B on off
 	calls []string
 	fail  bool
+	rc    int // when set, every command exits with it (4 = the controller rejects everything)
 }
 
 var allLEDs = []string{"power", "netdev", "disk1", "disk2", "disk3", "disk4", "disk5", "disk6"}
@@ -37,6 +38,9 @@ func (m *memChip) Exec(args []string, stdout, _ io.Writer) int {
 	m.calls = append(m.calls, strings.Join(args, " "))
 	if m.fail {
 		return 1
+	}
+	if m.rc != 0 {
+		return m.rc
 	}
 	for len(args) > 0 && strings.HasPrefix(args[0], "--") {
 		args = args[1:]
@@ -77,6 +81,12 @@ func (m *memChip) Exec(args []string, stdout, _ io.Writer) int {
 		m.state[args[1]] = s
 	}
 	return 0
+}
+
+func (m *memChip) setRC(rc int) {
+	m.mu.Lock()
+	m.rc = rc
+	m.mu.Unlock()
 }
 
 func (m *memChip) callList() []string {

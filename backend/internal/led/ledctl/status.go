@@ -9,6 +9,7 @@ import (
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan/conflict"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fsx"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/chip"
 )
 
 var (
@@ -272,12 +273,14 @@ func (c *Ctl) dxp480tApply() int {
 
 func (c *Ctl) status() int {
 	bus, found := "", "failed"
+	rejected := false
 
 	// One failed probe (the controller did not answer while the daemon or an effect was
 	// writing) is not "no controller": ask up to three times, then fall back to the bus
 	// that answered within the last 10 minutes.
 	for range 3 {
-		if probe, rc := c.toolOut(false, "probe"); rc == 0 {
+		probe, rc := c.toolOut(false, "probe")
+		if rc == 0 {
 			if m := busI2CRe.FindStringSubmatch(probe); m != nil {
 				bus = m[1]
 			} else if m := busMemRe.FindStringSubmatch(probe); m != nil {
@@ -287,12 +290,16 @@ func (c *Ctl) status() int {
 		if bus != "" {
 			break
 		}
+		if rc == chip.ExitRejected {
+			rejected = true // asking again changes nothing
+			break
+		}
 		c.Sleep(300 * time.Millisecond)
 	}
 	if bus != "" {
 		found = "ok"
 		_ = fsx.WriteFile(c.Env.BusCache, []byte(bus+"\n"), 0o644)
-	} else if st, err := os.Stat(c.Env.BusCache); err == nil && c.Now().Sub(st.ModTime()) < 10*time.Minute {
+	} else if st, err := os.Stat(c.Env.BusCache); !rejected && err == nil && c.Now().Sub(st.ModTime()) < 10*time.Minute {
 		bus, _ = readLine(c.Env.BusCache)
 		if bus != "" {
 			found = "cached"
@@ -382,7 +389,12 @@ func (c *Ctl) status() int {
 	} else {
 		p("  \"i2c_bus\": null,\n")
 		p("  \"i2c_address\": null,\n")
-		p("  \"i2c_probe\": \"failed\",\n")
+		if rejected {
+			p("  \"i2c_probe\": \"rejected\",\n")
+			p("  \"i2c_error\": \"%s\",\n", chip.RejectedMessage)
+		} else {
+			p("  \"i2c_probe\": \"failed\",\n")
+		}
 	}
 	p("  \"leds\": ")
 	sb.WriteString(c.listJSON())
