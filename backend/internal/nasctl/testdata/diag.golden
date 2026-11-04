@@ -63,7 +63,6 @@ open points in the registry: -
 enabled: true  supported: true  untested model: false  daemon running: true
 blocker: -  warning: -
 i2c adapters: -
-leds.cfg: mode=status
 bay 1: ata1  hdd  slot parity
 bay 2: ata2  empty  slot -
 loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)
@@ -73,6 +72,54 @@ per-LED state (name mode brightness R G B on_ms off_ms):
 i2c scan all:
   /dev/i2c-4: 0x3a
 ugreen-led-ctl status:
+```
+
+</details>
+
+<details><summary>Features (state and effective settings)</summary>
+
+```
+led.control: enabled true, supported true, blocker -, untested model false, warning -
+led.daemon: running true, mode status, mapping dmi, foreign_monitor false
+led.live: 2 LEDs read (name mode/brightness/R,G,B): power on/255/255,255,255; disk1 on/255/0,255,0
+led.status_mode: mode status, disk_color_mode own
+led.disk_activity: disk activity: activity_enabled true
+led.smart: smart_enabled true, smart_color 255 140 0
+led.disk_errors: error_enabled true, disk_error_color 255 59 48
+led.standby: standby_mode pulse, standby_level 15
+led.netdev: netdev_status link, netdev_speed_enabled true, network_device eth0, netdev_speed 2500, netdev_speed_colors {"2500":"0 200 83"}
+led.night: schedule: night_enabled=1 night_start=22:00 night_end=07:00 night_action=dim night_brightness=20; current phase: night (dimmed or off)
+led.alerts: alert_enabled true, alert_level warning, alert_color 255 59 48, alert_count 0, alert_active false
+led.sync: sync_enabled true, sync_color 0 120 255, sync_action check, sync_percent 42
+led.shutdown: shutdown_blink true, shutdown_effect blink, shutdown_color 255 140 0
+led.effects: fx -, fx_leds disk1,disk2, fx_speed 2, fx_reverse false, fx_idle false
+led.identify: identify []
+led.import: leds.cfg of the UGREEN LED Control plugin available to import: false
+fan.control: on true (setting true), kind probe, 0 channels, chip it8613, min speed floor 0%
+fan.daemon: running true, mode auto, job mover, yielding to -
+fan.mode: custom (config version 2), case fans follow the CPU curve too: false, warnings: -
+fan.curves: cpu 40:30,60:50,80:100; case 35:40,55:100
+fan.inputs: cpu auto, case script, fan3 nic; inputs missing now: -
+fan.excluded_drives: 2 drives excluded (names hidden)
+fan.limits: min speed 20%, cpu critical 90 C, disk critical 55 C, nvme offset 15 C, notify on stalled fan true
+fan.failsafe: active: -, stalled fans: -, unapplied: -
+fan.quiet: enabled true, 23:00 to 07:00, days mon,tue,wed,thu,fri,sat,sun, cap 40%, scope case, active now true
+fan.jobs: mover floor 50%, parity check off 40%
+fan.shaping: cpu: dead zone 3%, kick-start 0% for 0 ms, min run 20%, ramp up 100 down 2 per tick, may stop false, input missing -> fallback; case: dead zone 0%, kick-start 0% for 0 ms, min run 20%, ramp up 100 down 2 per tick, may stop false, input missing -> fallback; fans with their own settings: 1
+fan.calibration: never run
+fan.history: daemon buffer answers true, 3 points in the last hour (10 s steps, RAM only)
+fan.map: map confirmed false, proposal waiting false, probe none, fan control possible false, map error -
+fan.profiles: importable settings of other tools: fanctrlplus (running false)
+fan.scripts: script inputs: set, 2 files, interpreters: bash, php (names hidden)
+watchdog: armed, armed true, timeout 60 s, feed interval 20 s, last feed 10s before the sample, counter 7
+power_on_ac: mode on, readable true, settable true, source ite-sio
+panel.buttons: readable: DXP4800 Plus (vendor source) power: up, reset: up
+panel.beeper: present, backend PC speaker (never sounded by diag)
+lcd.backlight: n/a for this model
+mqtt: enabled true, publisher running true, host set (hidden), login set (hidden), tls false, port 1883, interval 5s, control true, control updates false, control containers false, connection: failing: connection refused
+conflicts: detected: module:it87 (warn); fan daemon yields to: -; LED takeover blocked by: -; rival processes running: 0
+ui.dashboard: dashboard tile installed: true
+ui.language_theme: language de, theme auto
 ```
 
 </details>
@@ -130,11 +177,18 @@ Unassigned Devices plugin installed: false
 
 </details>
 
-<details><summary>Settings (known keys only, other values hidden)</summary>
+<details><summary>Settings (every known key; credentials, drive names and unknown keys hidden)</summary>
 
 ```
 fan.cfg:
+  foo: <hidden>
+  mode=auto
+  mqtt_enabled=1
+  mqtt_host: <hidden> (set)
 leds.cfg:
+  bay1_serial: <hidden> (set)
+  disk1_color=255 160 0
+  mode=status
 MQTT publisher running: false
 ```
 

@@ -13,10 +13,15 @@ import (
 	"unicode/utf8"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/ledctl"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
 )
 
 // Result is the answer of one read-only tool call.
-type Result struct{ Title, Out, Err string }
+type Result struct {
+	Title, Out, Err string
+	Key             string // what the Features section looks it up by
+}
 
 func short(s string, n int) string { return cut(strings.Join(strings.Fields(s), " "), n) }
 
@@ -206,37 +211,77 @@ func drivesSection(data []byte, readErr error, unassigned bool) Section {
 	return Section{Title: "Drives (no serials, ids, models or labels)", Body: strings.Join(l, "\n")}
 }
 
-// fanCfgShown are the fan.cfg keys whose value is printed. fan.KnownSetting is the allow-list of what the fan
-// daemon reads; ignore_drives names the owner's drives and stays hidden. Any other key prints as "<key>: <hidden>".
-func fanCfgShown(k string) bool {
-	return k == "mqtt_enabled" || (k != "ignore_drives" && fan.KnownSetting(k))
+// privateKeyRe: a key whose name says it holds a credential or an address; its value is never printed, whatever the
+// key tables say.
+var privateKeyRe = regexp.MustCompile(`(?i)pass|token|secret|user|host`)
+
+// keyClass says for one settings key whether it is known (a key the code reads, from the parsers' own tables) and
+// whether its value is private.
+type keyClass func(key string) (known, private bool)
+
+// fanCfgKey: the keys of fan.cfg are fan.KnownSetting (what the fan daemon reads), mqtt.Keys and fan.UISettings.
+// ignore_drives names the owner's drives and stays private.
+func fanCfgKey(k string) (known, private bool) {
+	switch {
+	case k == "ignore_drives":
+		return true, true
+	case slices.Contains(fan.UISettings, k):
+		return true, false
+	}
+	if known, private := mqtt.KnownKey(k); known {
+		return true, private
+	}
+	return fan.KnownSetting(k), false
 }
 
-// redactCfg lists the key="value" lines of a settings file. Only keys that pass shown print their value; the last
-// line of a key wins. A fan input prints its kind only (script and NIC inputs carry a name).
-func redactCfg(data []byte, limit int, shown func(string) bool) []string {
+// ledCfgKey: the keys of leds.cfg are ledctl.KnownKey (what the LED daemon reads) and fan.UISettings.
+func ledCfgKey(k string) (known, private bool) {
+	if slices.Contains(fan.UISettings, k) {
+		return true, false
+	}
+	return ledctl.KnownKey(k)
+}
+
+// cfgValues is the last value of each key of a key="value" file.
+func cfgValues(data []byte) map[string]string {
 	last := map[string]string{}
-	var order []string
 	for _, line := range strings.Split(string(data), "\n") {
-		m := cfgLineRe.FindStringSubmatch(strings.TrimSpace(line))
-		if m == nil {
-			continue
+		if m := cfgLineRe.FindStringSubmatch(strings.TrimSpace(line)); m != nil {
+			last[m[1]] = m[2]
 		}
-		if _, seen := last[m[1]]; !seen {
-			order = append(order, m[1])
-		}
-		last[m[1]] = m[2]
+	}
+	return last
+}
+
+var cfgLineRe = regexp.MustCompile(`^([A-Za-z0-9_.]+)="(.*)"$`)
+
+// redactCfg lists the key="value" lines of a settings file, sorted; the last line of a key wins. A known key prints
+// its value. A private key prints only whether it is set, an unknown key prints "<hidden>". A fan input prints its
+// kind only (script and NIC inputs carry a name).
+func redactCfg(data []byte, limit int, class keyClass) []string {
+	last := cfgValues(data)
+	order := make([]string, 0, len(last))
+	for k := range last {
+		order = append(order, k)
 	}
 	sort.Strings(order)
 	var out []string
 	for _, k := range order {
 		v := last[k]
+		known, private := class(k)
 		switch {
-		case !shown(k):
+		case !known:
 			out = append(out, k+": <hidden>")
 			continue
+		case private || privateKeyRe.MatchString(k):
+			set := "(set)"
+			if v == "" {
+				set = "(empty)"
+			}
+			out = append(out, k+": <hidden> "+set)
+			continue
 		case k == "input" || strings.HasSuffix(k, "_input") || strings.HasSuffix(k, ".input"):
-			v, _, _ = strings.Cut(v, ":")
+			v = inputKinds(v)
 		}
 		out = append(out, k+"="+short(v, 200))
 	}
@@ -246,22 +291,38 @@ func redactCfg(data []byte, limit int, shown func(string) bool) []string {
 	return out
 }
 
+// inputKinds keeps the kinds of an input spec: "nic:eth0" -> "nic", "max:cpu|script:x" -> "max:cpu|script".
+func inputKinds(spec string) string {
+	kind, rest, ok := strings.Cut(spec, ":")
+	if !ok {
+		return kind
+	}
+	if kind == "max" {
+		parts := strings.Split(rest, "|")
+		for i, p := range parts {
+			parts[i], _, _ = strings.Cut(p, ":")
+		}
+		return "max:" + strings.Join(parts, "|")
+	}
+	return kind
+}
+
 func settingsSection(fanCfg, ledCfg []byte, fanErr, ledErr error, mqttRunning bool) Section {
 	var l []string
-	add := func(title string, data []byte, err error, shown func(string) bool) {
+	add := func(title string, data []byte, err error, class keyClass) {
 		l = append(l, title+":")
 		if err != nil {
 			l = append(l, "  not readable: "+err.Error())
 			return
 		}
-		for _, line := range redactCfg(data, 120, shown) {
+		for _, line := range redactCfg(data, 400, class) {
 			l = append(l, "  "+line)
 		}
 	}
-	add("fan.cfg", fanCfg, fanErr, fanCfgShown)
-	add("leds.cfg", ledCfg, ledErr, func(k string) bool { return slices.Contains(ledCfgKeys, k) })
+	add("fan.cfg", fanCfg, fanErr, fanCfgKey)
+	add("leds.cfg", ledCfg, ledErr, ledCfgKey)
 	l = append(l, fmt.Sprintf("MQTT publisher running: %t", mqttRunning))
-	return Section{Title: "Settings (known keys only, other values hidden)", Body: strings.Join(l, "\n")}
+	return Section{Title: "Settings (every known key; credentials, drive names and unknown keys hidden)", Body: strings.Join(l, "\n")}
 }
 
 // procUptime is how long a process has run: its start time in clock ticks (100 per second) against the uptime.

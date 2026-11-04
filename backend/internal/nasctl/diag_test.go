@@ -3,6 +3,7 @@ package nasctl
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -10,6 +11,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
 )
 
 func TestAnonRemovesWhatIdentifies(t *testing.T) {
@@ -56,10 +58,20 @@ func TestSlotNamesNeverShowAPoolName(t *testing.T) {
 	}
 }
 
-func TestLedConfigIsAllowListed(t *testing.T) {
-	got := ledConfig([]byte("mode=\"status\"\nmode=\"fx\"\nmqtt_pass=\"hunter2\"\nnight_enabled=\"1\"\nbogus line\n"))
-	if strings.Join(got, " ") != `mode=fx night_enabled=1` {
-		t.Error(got)
+func TestLedSettingsShowEveryKnownKey(t *testing.T) {
+	cfg := "mode=\"status\"\nmode=\"fx\"\ndisk1_color=\"255 160 0\"\ndisk8_effect=\"blink\"\nnetdev_speed_2500=\"0 200 83\"\nnight_start=\"22:00\"\n" +
+		"bay1_serial=\"WD-WCC4N1234567\"\nsmart_ack_WD_X=\"123\"\nmqtt_pass=\"hunter2\"\nbogus=\"x\"\nui_theme=\"auto\"\n"
+	got := strings.Join(redactCfg([]byte(cfg), 100, ledCfgKey), "\n")
+	for _, want := range []string{"mode=fx", "disk1_color=255 160 0", "disk8_effect=blink", "netdev_speed_2500=0 200 83", "night_start=22:00", "ui_theme=auto",
+		"bay1_serial: <hidden> (set)", "smart_ack_WD_X: <hidden> (set)", "mqtt_pass: <hidden>", "bogus: <hidden>"} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q:\n%s", want, got)
+		}
+	}
+	for _, no := range []string{"WD-WCC4N1234567", "hunter2", "=123", "=x"} {
+		if strings.Contains(got, no) {
+			t.Errorf("leak %q:\n%s", no, got)
+		}
 	}
 }
 
@@ -129,7 +141,7 @@ func goldenDiag(t *testing.T) string {
 	status := `{"fan_control": true, "chip": "it8613", "fans": [{"id":"cpu","role":"cpu","rpm":1200,"pct":40,"auto":false},{"id":"case","role":"case","rpm":900,"pct":null,"auto":true}],
 	 "sensors": {"cpu": 45, "board": 38}, "daemon": {"mode": "auto", "failsafe": "", "cpu_temp": 45, "case_temp": 38, "case_from": "nvme", "case_driver": "case", "targets": {"cpu": 40, "case": 30}},
 	 "watchdog": {"armed": true, "timeout": 60, "interval": 20, "last_pet": 990, "time": 1000, "state": "armed"}, "conflicts": [{"kind":"module","id":"it87","severity":"warn"}]}`
-	led := LEDDiag{Enabled: true, Supported: true, DaemonRunning: true, Config: []string{"mode=status"}, Bays: rep.Bays, Slots: slotNames(h),
+	led := LEDDiag{Enabled: true, Supported: true, DaemonRunning: true, Bays: rep.Bays, Slots: slotNames(h),
 		Modprobe: "loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)",
 		Get:      "power on 255 255 255 255 0 0\ndisk1 on 255 0 255 0 0 0\n", Scan: "/dev/i2c-4: 0x3a\n"}
 	ev, reg := evidenceFixture(t)
@@ -140,11 +152,12 @@ func goldenDiag(t *testing.T) string {
 	secs := []Section{
 		modelSec,
 		ledSection(led),
+		featuresSection(featureFixture(t, "DXP4800 Plus")),
 		rivalSection(RivalDiag{Procs: []RivalProc{{Name: "FanCtrl Plus", Program: "fanctrlplus_loop.sh", PID: 7, Up: "1h0m0s", Controls: "fan"}}, FanOn: true}),
 		fanSection(FanDiag{Status: []byte(status), DaemonRunning: true}),
 		dmiSection(goldenDMI(t)),
 		drivesSection([]byte(disksINI), nil, false),
-		settingsSection([]byte(`mode="auto"\nmqtt_host="broker.lan"\n`), []byte(`mode="status"\n`), nil, nil, false),
+		settingsSection([]byte("mode=\"auto\"\nmqtt_host=\"broker.lan\"\nmqtt_enabled=\"1\"\nfoo=\"bar\"\n"), []byte("mode=\"status\"\ndisk1_color=\"255 160 0\"\nbay1_serial=\"X\"\n"), nil, nil, false),
 		envSection(EnvDiag{Plugins: []string{"ugreen-nas-control/", "ugreenleds-driver/"}, OwnFiles: []string{"fan.cfg", "leds.cfg"}, Modules: []string{"it87", "i2c_dev"}, Hwmon: []string{"hwmon1=it8613"}, DevI2C: []string{"i2c-4"}}),
 		logSection([]string{"Nov  4 10:00:00 <host> ugreen-nas-ctl[1]: fan daemon started"}, ""),
 		js,
@@ -227,7 +240,7 @@ ignore_drives="WDC_WD80_SECRET"
 notify_email_addr="me@example.org"
 min_pct="10"
 `
-	got := strings.Join(redactCfg([]byte(cfg), 100, fanCfgShown), "\n")
+	got := strings.Join(redactCfg([]byte(cfg), 100, fanCfgKey), "\n")
 	for _, no := range []string{"broker.lan", "jens", "hunter2", "home/nas", "abc", "WDC_WD80_SECRET", "me@example.org"} {
 		if strings.Contains(got, no) {
 			t.Errorf("settings leak %q:\n%s", no, got)
@@ -472,7 +485,7 @@ func TestEvidenceSectionIsValidJSON(t *testing.T) {
 
 func TestSettingsAllowListHidesUnknownKeysAndInputNames(t *testing.T) {
 	cfg := "mode=\"custom\"\ncase_input=\"script:mysecretscript\"\nfan.fan1.input=\"nic:eth0\"\nfan.fan1.deadband=\"3\"\nfoo_bar=\"x\"\nignore_drives=\"disk1\"\n"
-	got := strings.Join(redactCfg([]byte(cfg), 100, fanCfgShown), "\n")
+	got := strings.Join(redactCfg([]byte(cfg), 100, fanCfgKey), "\n")
 	for _, no := range []string{"mysecretscript", "eth0", "=x", "disk1"} {
 		if strings.Contains(got, no) {
 			t.Errorf("leak %q:\n%s", no, got)
@@ -563,3 +576,157 @@ func TestOwnFilesKeepKnownNames(t *testing.T) {
 
 // secretKeyRe: JSON field names of the evidence must not look like they hold a credential, host or drive.
 var secretKeyRe = regexp.MustCompile(`(?i)pass|token|secret|host|user|ip|mac|topic|key|url|addr|serial|ignore|script|path|drive`)
+
+const fixtureFanCfg = `cfg_version="2"
+mode="custom"
+cpu_curve="40:30,60:50,80:100"
+case_curve="35:40,55:100"
+min_pct="20"
+ignore_drives="disk3,cache"
+case_input="script:mysecretscript"
+cpu_deadband="3"
+fan.fan3.input="nic:eth0"
+quiet_enabled="1"
+quiet_from="23:00"
+quiet_to="07:00"
+quiet_cap="40"
+job_mover="floor"
+job_mover_pct="50"
+mqtt_enabled="1"
+mqtt_host="broker.lan"
+mqtt_user="jens"
+mqtt_pass="hunter2"
+mqtt_control="1"
+ui_lang="de"
+ui_theme="auto"
+`
+
+const fixtureLEDStatus = `{"ok": true, "foreign_monitor": false, "mapping": "dmi", "mode": "status", "daemon": true, "fx": "", "fx_leds": "disk1,disk2", "identify": [],
+ "sync_action": "check", "sync_percent": 42, "sync_enabled": true, "sync_color": "0 120 255", "standby_mode": "pulse", "standby_level": 15,
+ "smart_enabled": true, "error_enabled": true, "activity_enabled": true, "smart_color": "255 140 0", "disk_color_mode": "own", "netdev_status": "link",
+ "alert_enabled": true, "alert_level": "warning", "alert_color": "255 59 48", "shutdown_blink": true, "shutdown_color": "255 140 0", "shutdown_effect": "blink",
+ "alert_count": 0, "alert_active": false, "fx_speed": 2, "fx_reverse": false, "fx_idle": false, "night": true, "disk_error_color": "255 59 48",
+ "network_device": "eth0", "netdev_speed": 2500, "netdev_speed_enabled": true, "netdev_speed_colors": {"2500": "0 200 83"}}`
+
+// featureFixture is the fake input of the Features section for one model.
+func featureFixture(t *testing.T, model string) FeatureInputs {
+	path := filepath.Join(t.TempDir(), "fan.cfg")
+	if err := os.WriteFile(path, []byte(fixtureFanCfg), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	two := 40
+	var st fanStatus
+	if err := json.Unmarshal([]byte(`{"fan_control": true, "chip": "it8613", "daemon": {"mode": "auto", "quiet_active": true, "job": "mover", "conflict": []},
+	 "watchdog": {"armed": true, "timeout": 60, "interval": 20, "last_pet": 990, "time": 1000, "state": "armed", "counter": 7},
+	 "conflicts": [{"kind":"module","id":"it87","severity":"warn"}]}`), &st); err != nil {
+		t.Fatal(err)
+	}
+	_ = two
+	return FeatureInputs{
+		Model: model, FanSt: &st, FanCfg: fan.LoadConfig(path), FanCfgRaw: cfgValues([]byte(fixtureFanCfg)), FanCfgPresent: true, MQTT: mqtt.LoadConfig(path),
+		Fan: FanDiag{DaemonRunning: true,
+			Extra: []Result{
+				{Key: "power-on-ac", Out: `{"ok":true,"mode":"on","readable":true,"settable":true,"source":"ite-sio"}`},
+				{Key: "backlight", Out: `{"ok":true,"pct":60,"raw":153}`},
+				{Key: "probe", Out: `{"ok":true,"kind":"probe","map":null,"proposal":null,"progress":null,"fan_control_possible":false}`},
+				{Key: "panel-buttons", Out: "model: " + model + " (vendor source)\npower: up, reset: up"},
+			},
+			Aux: []Result{
+				{Key: "history", Out: `{"ok":true,"running":true,"t":[1,2,3]}`},
+				{Key: "profiles", Out: `{"ok":true,"sources":[{"id":"fanctrlplus","running":false}]}`},
+			}},
+		LED:   LEDDiag{Enabled: true, Supported: true, DaemonRunning: true, Get: "power on 255 255 255 255 0 0\ndisk1 on 255 0 255 0 0 0\n"},
+		LEDSt: parseKV(fixtureLEDStatus), LEDEnabled: true, LEDCfgRaw: map[string]string{"night_enabled": "1", "night_start": "22:00", "night_end": "07:00", "night_action": "dim", "night_brightness": "20"},
+		Rivals: RivalDiag{LEDBlock: ""}, MQTTRunning: true, MQTTLog: "mqtt: dial tcp broker.lan:1883: connection refused; retrying in 5s",
+		Scripts: []string{"bash", "php"}, Dashboard: true,
+	}
+}
+
+// documentedFeatures is every feature docs/ describes, with what its line must say for the fixture. Adding a feature
+// to the docs means adding it here and to featureTable (diag_features.go) and docs/cli.md.
+var documentedFeatures = map[string]string{
+	"led.control": "enabled true", "led.daemon": "running true", "led.live": "2 LEDs read", "led.status_mode": "mode status",
+	"led.disk_activity": "activity_enabled true", "led.smart": "smart_enabled true", "led.disk_errors": "error_enabled true", "led.standby": "standby_mode pulse",
+	"led.netdev": "netdev_speed_enabled true", "led.night": "current phase: night", "led.alerts": "alert_level warning", "led.sync": "sync_percent 42",
+	"led.shutdown": "shutdown_effect blink", "led.effects": "fx_leds disk1,disk2", "led.identify": "identify", "led.import": "available to import: false",
+	"fan.control": "kind probe", "fan.daemon": "mode auto", "fan.mode": "custom", "fan.curves": "cpu 40:30,60:50,80:100", "fan.inputs": "case script",
+	"fan.excluded_drives": "2 drives excluded", "fan.limits": "min speed 20%", "fan.failsafe": "active: -", "fan.quiet": "23:00 to 07:00",
+	"fan.jobs": "mover floor 50%", "fan.shaping": "dead zone 3%", "fan.calibration": "never run", "fan.history": "3 points", "fan.map": "map confirmed false",
+	"fan.profiles": "fanctrlplus", "fan.scripts": "interpreters: bash, php", "watchdog": "armed true", "power_on_ac": "mode on",
+	"panel.buttons": "readable", "panel.beeper": "present", "lcd.backlight": "pct 60", "mqtt": "control true", "conflicts": "module:it87",
+	"ui.dashboard": "installed: true", "ui.language_theme": "language de",
+}
+
+func featureLines(t *testing.T, model string) map[string]string {
+	lines := map[string]string{}
+	for _, l := range strings.Split(featuresSection(featureFixture(t, model)).Body, "\n") {
+		id, text, _ := strings.Cut(l, ": ")
+		lines[id] = text
+	}
+	return lines
+}
+
+func TestEveryFeatureHasADiagLine(t *testing.T) {
+	// No model has every feature: the DXP4800 Plus has the probe map, watchdog, buttons and beeper, the iDX6011 Pro the
+	// LCD backlight. Each documented feature must show real values on at least one of them.
+	plus, pro := featureLines(t, "DXP4800 Plus"), featureLines(t, "iDX6011 Pro")
+	for id, want := range documentedFeatures {
+		ok := false
+		for _, lines := range []map[string]string{plus, pro} {
+			text, found := lines[id]
+			if !found {
+				t.Errorf("feature %s has no line in the Features section", id)
+				break
+			}
+			if strings.Contains(text, "ERROR") {
+				t.Errorf("%s: %q", id, text)
+			}
+			if strings.Contains(text, want) && !strings.Contains(text, "n/a for this model") {
+				ok = true
+			}
+		}
+		if !ok {
+			t.Errorf("%s: no model shows %q (DXP4800 Plus: %q, iDX6011 Pro: %q)", id, want, plus[id], pro[id])
+		}
+	}
+	for id := range plus {
+		if _, ok := documentedFeatures[id]; !ok {
+			t.Errorf("feature %s is in featureTable but not in documentedFeatures (and docs/cli.md)", id)
+		}
+	}
+	body := featuresSection(featureFixture(t, "DXP4800 Plus")).Body
+	for _, no := range []string{"broker.lan", "jens", "hunter2", "mysecretscript", "disk3", "cache"} {
+		if strings.Contains(body, no) {
+			t.Errorf("features leak %q:\n%s", no, body)
+		}
+	}
+}
+
+func TestFeaturesMarkWhatTheModelLacks(t *testing.T) {
+	in := featureFixture(t, "DX4600 Pro")
+	in.FanSt = nil
+	in.LED.Blocker = "model"
+	lines := map[string]string{}
+	for _, l := range strings.Split(featuresSection(in).Body, "\n") {
+		id, text, _ := strings.Cut(l, ": ")
+		lines[id] = text
+	}
+	for id, text := range lines {
+		na := strings.HasPrefix(id, "led.") && id != "led.import" || strings.HasPrefix(id, "fan.") || id == "watchdog" || id == "lcd.backlight" || id == "panel.beeper"
+		if na && !strings.Contains(text, "n/a for this model") {
+			t.Errorf("%s should be n/a: %q", id, text)
+		}
+	}
+}
+
+func TestCLIDocListsEveryFeature(t *testing.T) {
+	doc, err := os.ReadFile("../../../docs/cli.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for id := range documentedFeatures {
+		if !strings.Contains(string(doc), "`"+id+"`") {
+			t.Errorf("docs/cli.md does not list feature %s", id)
+		}
+	}
+}

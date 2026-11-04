@@ -17,6 +17,8 @@ import (
 	"time"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 )
 
 // Anon removes what identifies the NAS or its owner from free text: MAC and IP addresses, the host name, values
@@ -203,7 +205,6 @@ func slotNames(h fan.Hardware) []string {
 type LEDDiag struct {
 	Enabled, Supported, Untested, DaemonRunning bool
 	Blocker, Warning                            string
-	Config                                      []string // allow-listed leds.cfg lines
 	Bays                                        []BayReport
 	Slots                                       []string
 	Modprobe                                    string // what was done to i2c-dev, if anything
@@ -222,9 +223,6 @@ func ledSection(d LEDDiag) Section {
 	l = append(l, fmt.Sprintf("enabled: %t  supported: %t  untested model: %t  daemon running: %t", d.Enabled, d.Supported, d.Untested, d.DaemonRunning))
 	l = append(l, fmt.Sprintf("blocker: %s  warning: %s", orDash(d.Blocker), orDash(d.Warning)))
 	l = append(l, "i2c adapters: "+orDash(strings.Join(d.Adapters, "; ")))
-	if len(d.Config) > 0 {
-		l = append(l, "leds.cfg: "+strings.Join(d.Config, " "))
-	}
 	for i, b := range d.Bays {
 		slot := "-"
 		if i < len(d.Slots) {
@@ -322,30 +320,10 @@ func compactJSON(s string) string {
 	return strings.Join(out, "\n")
 }
 
-var ledCfgKeys = []string{"mode", "status", "netdev_status", "netdev_speed_enabled", "alert_enabled", "sync_enabled", "night_enabled", "night_action", "fx_name", "fx_leds", "cs201x_leds", "shutdown_effect", "shutdown_blink"}
-
-var cfgLineRe = regexp.MustCompile(`^([a-z0-9_.]+)="(.*)"$`)
-
-// ledConfig keeps the allow-listed settings of leds.cfg (the last line of a key wins); nothing else is read out.
-func ledConfig(data []byte) []string {
-	last := map[string]string{}
-	for _, line := range strings.Split(string(data), "\n") {
-		if m := cfgLineRe.FindStringSubmatch(strings.TrimSpace(line)); m != nil && slices.Contains(ledCfgKeys, m[1]) {
-			last[m[1]] = m[2]
-		}
-	}
-	var out []string
-	for _, k := range ledCfgKeys {
-		if v, ok := last[k]; ok {
-			out = append(out, k+"="+v)
-		}
-	}
-	return out
-}
-
 // FanDiag is the answer of `ugreen-nas-fan status` and whether the daemon runs.
 type FanDiag struct {
-	Extra         []Result // read-only answers of the fan tool: probe-fans status/tachs, power-on-ac, cs201x, backlight
+	Extra         []Result // read-only answers of the fan tool: probe-fans status/tachs, power-on-ac, cs201x, backlight; shown
+	Aux           []Result // answers only the Features section uses (history, profile sources)
 	Status        []byte
 	Err           string
 	DaemonRunning bool
@@ -762,9 +740,6 @@ func (c *Ctl) ledDiag(r Report, h fan.Hardware) LEDDiag {
 	d := LEDDiag{Enabled: c.ledEnabled(), Supported: r.LED.Supported, Untested: ledUntested(model),
 		DaemonRunning: c.running(c.Env.LEDPidFile), Blocker: c.ledBlocker(), Warning: c.ledWarning(),
 		Bays: r.Bays, Slots: slotNames(h), GT: strings.HasPrefix(model, "DXP2800 GT"), Adapters: c.i2cAdapters()}
-	if data, err := os.ReadFile(c.Env.LEDCfg); err == nil {
-		d.Config = ledConfig(data)
-	}
 	if d.Blocker == "model" {
 		d.Skipped = "not a UGREEN model"
 		d.StatusSkipped = d.Skipped
@@ -806,24 +781,31 @@ func (c *Ctl) fanDiag(model string) FanDiag {
 	if err != nil && out == "" {
 		d.Err = err.Error()
 	}
-	extra := func(title string, args ...string) {
-		out, err := runTimeout(scanTimeout, c.Env.FanTool, args...)
-		r := Result{Title: title, Out: out}
+	run := func(tool, title, key string, args ...string) Result {
+		out, err := runTimeout(scanTimeout, tool, args...)
+		r := Result{Title: title, Out: out, Key: key}
 		if err != nil {
 			r.Err = err.Error()
 		}
-		d.Extra = append(d.Extra, r)
+		return r
 	}
-	extra("probe-fans status (kind, map, proposal)", "probe-fans", "status")
+	extra := func(title, key string, args ...string) {
+		d.Extra = append(d.Extra, run(c.Env.FanTool, title, key, args...))
+	}
+	extra("probe-fans status (kind, map, proposal)", "probe", "probe-fans", "status")
 	switch {
 	case strings.HasPrefix(model, "DXP2800 GT"):
-		extra("cs201x read (fan chip, read only)", "cs201x")
+		extra("cs201x read (fan chip, read only)", "cs201x", "cs201x")
 	case strings.HasPrefix(model, "iDX6011 Pro"):
-		extra("backlight (read)", "backlight")
+		extra("backlight (read)", "backlight", "backlight")
 	case fan.FanKind(model) == fan.KindProbe:
-		extra("probe-fans tachs (every tach input, read only)", "probe-fans", "tachs")
+		extra("probe-fans tachs (every tach input, read only)", "tachs", "probe-fans", "tachs")
 	}
-	extra("power-on-ac (read)", "power-on-ac")
+	extra("power-on-ac (read)", "power-on-ac", "power-on-ac")
+	d.Aux = append(d.Aux, run(c.Env.FanTool, "history", "history", "history", "1h"), run(c.Env.FanTool, "profile sources", "profiles", "profile", "sources"))
+	if panel.ButtonsFor(model) != nil && c.Env.Panel != "" {
+		d.Extra = append(d.Extra, run(c.Env.Panel, "front panel buttons (read only)", "panel-buttons", "panel", "buttons"))
+	}
 	return d
 }
 
@@ -895,6 +877,9 @@ func (c *Ctl) diag() int {
 	secs.add("Other fan and LED tools", func() Section {
 		facts.Rivals = c.rivalDiag(facts.FanSt)
 		return rivalSection(facts.Rivals)
+	})
+	secs.add("Features", func() Section {
+		return featuresSection(c.featureInputs(model, facts))
 	})
 	secs.add("Drives", func() Section {
 		data, err := os.ReadFile(c.Env.DisksINI)
@@ -998,4 +983,24 @@ func i2cDevices(dev string) []string {
 		m[i] = filepath.Base(m[i])
 	}
 	return m
+}
+
+// featureInputs gathers what the Features section needs besides the facts the other sections collected.
+func (c *Ctl) featureInputs(model string, f Facts) FeatureInputs {
+	in := FeatureInputs{Model: model, Fan: f.Fan, FanSt: f.FanSt, LED: f.LED, Rivals: f.Rivals, LEDEnabled: f.LED.Enabled,
+		LEDImport: isFile(c.Env.LEDImportSrc), MQTTRunning: c.running(c.Env.PubPidFile),
+		Dashboard: isFile(filepath.Join(c.Env.PluginsWeb, "ugreen-nas-control", "UGREENNASDashboard.page"))}
+	in.FanCfg, in.MQTT = fan.LoadConfig(c.Env.FanCfg), mqtt.LoadConfig(c.Env.FanCfg)
+	if data, err := os.ReadFile(c.Env.FanCfg); err == nil {
+		in.FanCfgRaw, in.FanCfgPresent = cfgValues(data), true
+	}
+	if data, err := os.ReadFile(c.Env.LEDCfg); err == nil {
+		in.LEDCfgRaw = cfgValues(data)
+	}
+	if f.LED.Status != "" {
+		in.LEDSt = parseKV(f.LED.Status)
+	}
+	in.MQTTLog = tail(c.Env.PubLog, 4096)
+	in.Scripts = scriptInterpreters(c.Env.SensorsDir)
+	return in
 }
