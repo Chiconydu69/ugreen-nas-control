@@ -246,6 +246,7 @@ jobs:
       - name: Open main -> next PR
         env:
           GH_TOKEN: ${{ secrets.RELEASE_PR_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.check.outputs.version }}
         run: |
           set -euo pipefail

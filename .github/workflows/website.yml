@@ -2,7 +2,7 @@ name: 'Website (GitHub Pages)'
 
 # Builds the project site (docs/site/: landing page, one page per model in web/models/, the live demo at /demo/) and
 # publishes one GitHub Pages deployment with three streams:
-#   /       branch main (released); while main has no docs/site/build.ts it shows next, marked as preview, linking the repo for the released plugin
+#   /       branch main (released)
 #   /next/  branch next (development)
 #   /lab/   branch site (design playground, docs/site/ only)
 # A branch that does not exist or has no docs/site/build.ts is skipped. Needs Pages enabled with Source = "GitHub Actions".

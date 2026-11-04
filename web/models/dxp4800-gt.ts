@@ -23,29 +23,29 @@ export default {
         leds: {
             status: 'verified',
             by: 'maintainer (tower)',
-            version: '3.6',
-            date: '2026-10-29',
+            version: '5.0.0',
+            date: '2026-11-02',
             note: 'Through /dev/mem on the AMD DesignWare I2C controller.'
         },
         fans: {
             status: 'verified',
             by: 'maintainer (tower)',
-            version: '3.6',
-            date: '2026-10-29',
+            version: '5.0.0',
+            date: '2026-11-02',
             note: 'CPU fan and case fan measured; the roles are not swapped.'
         },
         case: {
             status: 'verified',
             by: 'maintainer (tower)',
-            version: '3.6',
-            date: '2026-10-29',
+            version: '5.0.0',
+            date: '2026-11-02',
             note: 'Inside view drawn from the service panel; RAM/M.2 slot numbering assumed, open an issue if your box differs.'
         },
         sensors: {
             status: 'verified',
             by: 'maintainer (tower)',
-            version: '3.6',
-            date: '2026-10-29',
+            version: '5.0.0',
+            date: '2026-11-02',
             note: 'CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.'
         }
     },

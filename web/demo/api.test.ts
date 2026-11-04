@@ -13,8 +13,10 @@ const memory = (): Store => {
 };
 
 // PHP turns an empty JSON object into an empty array; both mean "nothing" to the page.
-// The NIC counters grow with the clock: only their names are compared.
+// The NIC counters grow with the clock: only their names are compared. `time` is the wall clock in seconds; the two
+// calls can straddle a second.
 const norm = (v: unknown, key = ''): unknown => {
+    if (key === 'time' && typeof v === 'number') return 'time';
     if (key === 'net_io' && Array.isArray(v)) return v.map(n => (n as { name: string }).name);
     if (Array.isArray(v)) return v.length ? v.map(x => norm(x)) : {};
     if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, norm(x, k)]));
