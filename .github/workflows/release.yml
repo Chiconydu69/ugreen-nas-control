@@ -62,10 +62,10 @@ jobs:
           VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
-          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/next/null; then
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
             echo "::error::Tag v${VERSION} already exists."; exit 1
           fi
-          if git ls-remote --exit-code --heads origin "release/${VERSION}" >/next/null 2>&1; then
+          if git ls-remote --exit-code --heads origin "release/${VERSION}" >/dev/null 2>&1; then
             echo "::error::Branch release/${VERSION} already exists (close its PR and delete the branch and the draft release first)."; exit 1
           fi
           state="$(nix develop .#release -c bun plugin/tools/release.ts state "v${VERSION}")"
@@ -157,8 +157,8 @@ jobs:
           new="$(ver < plugin/ugreen-nas-control.plg)"
           [ -n "$new" ] || { echo "::error::No version entity in the plg."; exit 1; }
           old=""
-          if git cat-file -e "${BEFORE}^{commit}" 2>/next/null; then
-            old="$(git show "${BEFORE}:plugin/ugreen-nas-control.plg" 2>/next/null | ver || true)"
+          if git cat-file -e "${BEFORE}^{commit}" 2>/dev/null; then
+            old="$(git show "${BEFORE}:plugin/ugreen-nas-control.plg" 2>/dev/null | ver || true)"
           fi
           echo "version=${new}" >> "$GITHUB_OUTPUT"
           if [ "$old" = "$new" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; else echo "changed=true" >> "$GITHUB_OUTPUT"; fi
@@ -214,6 +214,7 @@ jobs:
       contents: read
       pages: write
       id-token: write
+      attestations: write
 
   publish:
     needs: [check, verify, pages]
