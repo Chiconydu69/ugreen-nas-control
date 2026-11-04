@@ -265,7 +265,7 @@ func runDaemon(chip Fans) (runErr error) {
 	zero := map[string]int{}
 	notified := map[string]bool{}
 	var calibCache tableCache
-	lastMode, lastFailsafe := "", ""
+	lastMode, lastFailsafe, lastMissing := "", "", ""
 	var y yielding
 	k := newController()
 	pet := &Petter{}
@@ -386,6 +386,7 @@ func runDaemon(chip Fans) (runErr error) {
 			drives = plan.Drive
 			st.Failsafe, st.CaseTemp, st.CaseFrom, st.CaseDriver = d.Failsafe, d.CaseTemp, d.CaseFrom, d.CaseDriver
 			st.InputsMissing, st.QuietActive, st.Job, st.Cap = plan.Missing, plan.QuietActive, plan.Job, plan.Cap
+			lastMissing = reportMissingInputs(lastMissing, plan.Missing, logf)
 			if d.Failsafe != lastFailsafe {
 				if d.Failsafe != "" {
 					logf("emergency: %s, all fans at 100%%", d.Failsafe)
@@ -743,4 +744,22 @@ func runWatchdogOnly(chip Fans) error {
 		case <-ticker.C:
 		}
 	}
+}
+
+// reportMissingInputs logs and notifies when the set of unreadable inputs changes (once per change, not per tick) and
+// says when they are back. The affected groups already follow their on_missing rule; this makes it visible.
+func reportMissingInputs(last string, missing []string, logf func(string, ...any)) string {
+	now := strings.Join(missing, ", ")
+	if now == last {
+		return last
+	}
+	if now == "" {
+		logf("fan inputs readable again (%s)", last)
+		return ""
+	}
+	logf("fan input unreadable: %s (on_missing rule applies)", now)
+	notifications.send("input-missing", "-e", "UGREEN NAS Control", "-s", "Fan input unreadable",
+		"-d", fmt.Sprintf("No temperature from %s. The fans follow the on_missing rule of their group. Check the sensor, script or tool.", now),
+		"-i", "warning")
+	return now
 }

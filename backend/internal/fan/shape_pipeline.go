@@ -144,13 +144,16 @@ func (k *controller) curveTarget(ctx context.Context, t tickIn, d Decision, id, 
 		} else {
 			*missing = append(*missing, g.Input.String())
 			drive.Mods |= ModMissing
-			switch g.OnMissing {
-			case "hold":
+			rule := g.OnMissing
+			if rule == "hold" {
 				if h, ok := k.held[id]; ok {
 					drive.Source = SrcHold
 					return curveResult{h, drive}
 				}
-				fallthrough
+				// Nothing held yet (input missing since the daemon started): the default input, never the idle point.
+				rule = "fallback"
+			}
+			switch rule {
 			case "curve_low":
 				temp = -1
 				drive.Source = SrcMissing
