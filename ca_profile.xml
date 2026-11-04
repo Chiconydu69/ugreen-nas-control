@@ -2,6 +2,6 @@
 <CommunityApplications>
   <Profile>By the UGREEN NAS Control team. Our plugin makes UGREEN DX, DXP and iDX hardware fully usable under Unraid: front LEDs, fan control, temperatures and a live view of the case. Successor of UGREEN LED Control. Questions and ideas: the Unraid forum thread or GitHub Discussions; bugs: GitHub issues.</Profile>
   <Icon>https://ugreen-nas-control.github.io/ugreen-nas-control/icon.png</Icon>
-  <WebPage>https://github.com/ugreen-nas-control/ugreen-nas-control</WebPage>
+  <WebPage>https://ugreen-nas-control.github.io/ugreen-nas-control/</WebPage>
   <Forum>https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/</Forum>
 </CommunityApplications>
