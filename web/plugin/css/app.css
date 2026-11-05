@@ -2719,6 +2719,8 @@
 .unc-rear8800 .r-lan svg { width: 6cqi; }
 .unc-rear8800 .r-reset svg { width: 1.6cqi; }
 .unc-rear8800 .r-ac svg { width: 8cqi; }
+.unc-rear8800 .r-psufan svg { width: 10.5cqi; }
+.unc-rear8800 .r-kens svg { width: 1.7cqi; }
 
 /* The back of the DXP4800 family, measured on the product photo (housing 1:1, grille frame 83.5 % wide, ports in one row
    under it, screws in the housing corners). The housing look comes from the front view (--unc-case-*). */

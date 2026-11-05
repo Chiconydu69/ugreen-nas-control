@@ -258,6 +258,8 @@ export const en = {
         'The underside service panel, front at the left. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.',
     'case.inside_hint_8800':
         "The bottom service panel after UGREEN's manual: two RAM sockets, M.2 below and beside them; the PCIe slot sits inside the frame. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
+    'case.inside_hint_like_8800plus':
+        'The inside is drawn after the DXP8800 Plus: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
     'case.inside_hint_4800':
         "The underside service panel, after UGREEN's manual. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
     'in.slot_empty': '{label} · empty',

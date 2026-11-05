@@ -261,6 +261,8 @@ export const de: Record<Key, string> = {
         'Die Wartungsklappe an der Unterseite, vorne links. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'case.inside_hint_8800':
         'Die Wartungsklappe an der Unterseite nach dem UGREEN-Handbuch: zwei RAM-Sockel, M.2 darunter und daneben; der PCIe-Slot sitzt im Rahmen. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_like_8800plus':
+        'Das Innere ist nach dem DXP8800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
     'case.inside_hint_4800':
         'Die Wartungsklappe an der Unterseite, nach dem Handbuch von UGREEN. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'in.slot_empty': '{label} · leer',

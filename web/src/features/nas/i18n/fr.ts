@@ -262,6 +262,8 @@ export const fr: Record<Key, string> = {
         'La trappe de service sous le boîtier, avant à gauche. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.',
     'case.inside_hint_8800':
         "La trappe de service sous le boîtier, d'après le manuel UGREEN : deux supports de RAM, M.2 en dessous et à côté ; le slot PCIe se trouve dans le châssis. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
+    'case.inside_hint_like_8800plus':
+        "L'intérieur est dessiné d'après le DXP8800 Plus : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     'case.inside_hint_4800':
         "La trappe de service sous le boîtier, d'après le manuel d'UGREEN. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
     'in.slot_empty': '{label} · vide',

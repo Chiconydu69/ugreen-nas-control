@@ -2105,6 +2105,24 @@ function main(root: HTMLElement): void {
             </div>`;
     }
 
+    // The PSU's round fan grille and the Kensington lock slot beside the power inlet of the DXP8800 family (UGREEN's manual and renders).
+    const PSU_FAN_RINGS: [number, number][] = [
+        [0, 1],
+        [4.5, 6],
+        [9, 12],
+        [13.5, 18],
+        [17, 24]
+    ];
+    const PSU_FAN_SVG = `<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18.5" class="shell"/>${PSU_FAN_RINGS.flatMap(([r, n]) =>
+        Array.from({ length: n }, (_, i) => {
+            const a = (2 * Math.PI * i) / n;
+
+            return `<circle cx="${(20 + r * Math.cos(a)).toFixed(2)}" cy="${(20 + r * Math.sin(a)).toFixed(2)}" r="1.05" class="tongue"/>`;
+        })
+    ).join('')}</svg>`;
+    const KENSINGTON_SVG =
+        '<svg viewBox="0 0 10 24"><rect x="1" y="1" width="8" height="22" rx="4" class="shell"/><circle cx="5" cy="9" r="1.7" class="tongue"/><rect x="3.2" y="11.2" width="3.6" height="4.4" rx=".7" class="tongue"/></svg>';
+
     // After a photo of the DXP8800 Plus.
     function rear8800Html(hw: Hardware): string {
         const k = rearKit(hw);
@@ -2125,6 +2143,8 @@ function main(root: HTMLElement): void {
                 ${k.lan(0, 33.1, 80, 'LAN 1')}${k.lan(1, 40.4, 80, 'LAN 2')}
                 ${k.port(46.2, 80, 'reset', 'RESET')}
                 <div class="r-abs r-ac" style="left:68.5%;top:80%">${SOCKET.ac}<b>POWER</b></div>
+                <div class="r-abs r-psufan" style="left:82%;top:80%">${PSU_FAN_SVG}</div>
+                <div class="r-abs r-kens" style="left:96%;top:80%">${KENSINGTON_SVG}</div>
             </div>`;
     }
 
