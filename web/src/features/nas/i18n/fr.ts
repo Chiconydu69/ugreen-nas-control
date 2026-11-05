@@ -508,8 +508,10 @@ export const fr: Record<Key, string> = {
     'in.dh_board': 'Carte mère · dessous',
     'case.inside_hint_dx':
         "L'intérieur n'apparaît pas dans la documentation d'UGREEN ; les emplacements sont dessinés comme le panneau du dessous du DXP4800. RAM 1 / RAM 2 et M.2-1 / M.2-2 sont numérotés par hypothèse ; ouvrez un ticket si votre boîtier diffère.",
+    'case.inside_hint_dx4700':
+        "Toute la vue du boîtier est dessinée d'après le DX4600 Pro : la carte de ce modèle n'est pas connue. Les emplacements sont dessinés comme le panneau inférieur du DXP4800 ; la numérotation de la RAM et des M.2 est supposée ; ouvrez un ticket si votre boîtier diffère.",
     'case.inside_hint_dh':
-        "L'intérieur d'après les rendus produit d'UGREEN : les deux emplacements M.2 sur le côté de la cage à disques, les deux supports RAM sur la carte mère en dessous. La numérotation des deux paires est supposée ; ouvrez un ticket si votre boîtier diffère.",
+        "L'intérieur d'après les rendus produit d'UGREEN : les deux emplacements M.2 sur le côté de la cage à disques, les deux supports RAM sur la carte mère en dessous. La numérotation des deux paires est supposée ; ouvrez un ticket si votre boîtier diffère. Le second support RAM vient du texte de spécifications d'UGREEN ; les photos montrent un SO-DIMM.",
     ...panelFr,
     ...powerFr
 };

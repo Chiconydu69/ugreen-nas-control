@@ -488,8 +488,10 @@ export const zh: Record<Key, string> = {
     'in.dh_board': '主板 · 底部',
     'case.inside_hint_dx':
         'UGREEN 的资料没有展示内部结构，插槽按 DXP4800 的底部面板绘制。RAM 1 / RAM 2 和 M.2-1 / M.2-2 的编号为假设；如与实机不符，请提交 issue。',
+    'case.inside_hint_dx4700':
+        '整个机箱视图按 DX4600 Pro 绘制：本型号自身的主板尚不清楚。插槽按 DXP4800 底部面板绘制；RAM 与 M.2 的编号为假设；如与实机不符，请提交 issue。',
     'case.inside_hint_dh':
-        '内部结构依据 UGREEN 的产品渲染图：两个 M.2 插槽在硬盘笼侧面，两个内存插槽在下方的主板上。两组编号均为假设；如与实机不符，请提交 issue。',
+        '内部结构依据 UGREEN 的产品渲染图：两个 M.2 插槽在硬盘笼侧面，两个内存插槽在下方的主板上。两组编号均为假设；如与实机不符，请提交 issue。 第二个内存插槽依据 UGREEN 的规格说明，照片中只能看到一条 SO-DIMM。',
     ...panelZh,
     ...powerZh
 };

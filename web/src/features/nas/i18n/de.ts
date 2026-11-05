@@ -507,8 +507,10 @@ export const de: Record<Key, string> = {
     'in.dh_board': 'Mainboard · unten',
     'case.inside_hint_dx':
         'Das Innere zeigt UGREENs Material nicht; die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet. RAM 1 / RAM 2 und M.2-1 / M.2-2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dx4700':
+        'Die ganze Gehäuseansicht ist nach dem DX4600 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet; RAM und M.2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
     'case.inside_hint_dh':
-        'Das Innere nach UGREENs Produktrenderings: die beiden M.2-Steckplätze an der Seite des Laufwerkskäfigs, die beiden RAM-Sockel auf dem Mainboard darunter. Die Nummerierung beider Paare ist angenommen; bei Abweichung bitte ein Issue öffnen.',
+        'Das Innere nach UGREENs Produktrenderings: die beiden M.2-Steckplätze an der Seite des Laufwerkskäfigs, die beiden RAM-Sockel auf dem Mainboard darunter. Die Nummerierung beider Paare ist angenommen; bei Abweichung bitte ein Issue öffnen. Der zweite RAM-Sockel stammt aus UGREENs Spezifikationstext, die Fotos zeigen ein SO-DIMM.',
     ...panelDe,
     ...powerDe
 };

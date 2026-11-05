@@ -495,8 +495,10 @@ export const es: Record<Key, string> = {
     'in.dh_board': 'Placa base · abajo',
     'case.inside_hint_dx':
         'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dx4700':
+        'Toda la vista de la caja está dibujada según el DX4600 Pro: la placa de este modelo no se conoce. Las ranuras se dibujan como el panel inferior del DXP4800; la numeración de RAM y M.2 es supuesta; abre un issue si tu equipo es distinto.',
     'case.inside_hint_dh':
-        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
+        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto. El segundo zócalo de RAM sale del texto de especificaciones de UGREEN; las fotos muestran un SO-DIMM.',
     ...panelEs,
     ...powerEs
 };
