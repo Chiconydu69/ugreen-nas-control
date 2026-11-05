@@ -2,6 +2,11 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.1.2
+
+- About: the supported models table comes from the model list and shows the new case views.
+- About and README name both maintainers and thank the testers with their GitHub profiles.
+
 ## 5.1.1
 
 - Sensors: an unconnected temperature input (for example "Motherboard -21 °C" on the DXP8800 Plus) is shown as not connected and no longer used.
