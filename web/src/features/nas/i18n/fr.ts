@@ -504,6 +504,12 @@ export const fr: Record<Key, string> = {
         "L'intérieur est dessiné d'après le DXP2800 : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     'case.inside_hint_like_6800pro':
         "L'intérieur est dessiné d'après le DXP6800 Pro : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'in.dh_cage': 'Cage à disques · paroi latérale',
+    'in.dh_board': 'Carte mère · dessous',
+    'case.inside_hint_dx':
+        "L'intérieur n'apparaît pas dans la documentation d'UGREEN ; les emplacements sont dessinés comme le panneau du dessous du DXP4800. RAM 1 / RAM 2 et M.2-1 / M.2-2 sont numérotés par hypothèse ; ouvrez un ticket si votre boîtier diffère.",
+    'case.inside_hint_dh':
+        "L'intérieur d'après les rendus produit d'UGREEN : les deux emplacements M.2 sur le côté de la cage à disques, les deux supports RAM sur la carte mère en dessous. La numérotation des deux paires est supposée ; ouvrez un ticket si votre boîtier diffère.",
     ...panelFr,
     ...powerFr
 };

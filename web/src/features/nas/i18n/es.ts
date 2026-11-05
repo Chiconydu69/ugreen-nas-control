@@ -491,6 +491,12 @@ export const es: Record<Key, string> = {
         'El interior está dibujado según el DXP2800: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
     'case.inside_hint_like_6800pro':
         'El interior está dibujado según el DXP6800 Pro: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'in.dh_cage': 'Jaula de discos · pared lateral',
+    'in.dh_board': 'Placa base · abajo',
+    'case.inside_hint_dx':
+        'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dh':
+        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
     ...panelEs,
     ...powerEs
 };

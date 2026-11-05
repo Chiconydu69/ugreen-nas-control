@@ -15,6 +15,7 @@ export const SOCKET = {
     dc: '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" class="shell"/><circle cx="16" cy="16" r="5" class="tongue"/><circle cx="16" cy="16" r="1.6" class="pins"/></svg>',
     reset: '<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" class="shell"/><circle cx="10" cy="10" r="2" class="tongue"/></svg>',
     jack: '<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" class="shell"/><circle cx="16" cy="16" r="6" class="tongue"/></svg>',
+    power: '<svg viewBox="0 0 28 28"><circle cx="14" cy="14" r="11" class="shell"/><path d="M14 7v7M9.8 9.6a6 6 0 1 0 8.4 0" fill="none" stroke="#8f99a4" stroke-width="2" stroke-linecap="round"/></svg>',
     ac: '<svg viewBox="0 0 56 34"><rect x="2" y="2" width="52" height="30" rx="3" class="shell"/><rect x="14" y="8" width="8" height="12" rx="1" class="tongue"/><rect x="34" y="8" width="8" height="12" rx="1" class="tongue"/><rect x="24" y="22" width="8" height="6" rx="1" class="tongue"/></svg>'
 };
 
@@ -62,6 +63,12 @@ export interface CaseModel {
     rear480?: boolean;
     // Hint under the inside view when it differs from `hint` (which an m2Bays model shows under its drive cards).
     hint2?: Key;
+    // DX4600 / DX4700 and DH2600: their own backs (rear4600, rear2600); strip without a LAN LED (noLan);
+    // insideTitles: the two panel titles of inside2800gt.
+    rear4600?: boolean;
+    rear2600?: boolean;
+    noLan?: boolean;
+    insideTitles?: [Key, Key];
 }
 export const CASE_DEFAULT: CaseModel = {
     front: [
@@ -79,6 +86,37 @@ export const CASE_DEFAULT: CaseModel = {
 };
 
 export const CASE_MODELS: [RegExp, CaseModel][] = [
+    // DX4600 Pro and DX4700+: four bays behind a door, a strip of LEDs (power, LAN, DISK1-4) and nothing else at the
+    // front, a big fan and the ports in one row at the back; both after the DX4600 Pro's shop renders. The DX4700+
+    // is drawn after it (no photos of its own found). Inside: the board is not shown anywhere, drawn like the DXP4800's.
+    [
+        /^DX4[67]00/,
+        {
+            front: [],
+            strip: true,
+            rear4600: true,
+            rear: [],
+            inside4800: true,
+            hint: 'case.inside_hint_dx'
+        }
+    ],
+    // DH2600: two bays, rounded case with a door; LEDs power / DISK1 / DISK2 at the front, USB-C, two USB-A and one
+    // 2.5G LAN port at the bottom of the back. Inside after the shop renders: two M.2 on the side of the drive cage, RAM on the
+    // mainboard below.
+    [
+        /^DH2600/,
+        {
+            front: [],
+            strip: true,
+            noLan: true,
+            rear2600: true,
+            rear: [],
+            inside2800gt: true,
+            insideTitles: ['in.dh_cage', 'in.dh_board'],
+            pcie: false,
+            hint: 'case.inside_hint_dh'
+        }
+    ],
     // DXP480T Plus: a flat mini box, drawn after UGREEN's manual (front with the power button, back with the ports,
     // the four M.2 slots and two SO-DIMM sockets on the underside). Only a power LED, one 10G LAN port, no bays.
     [
@@ -371,7 +409,7 @@ export function frontHtml(hw: Hardware): string {
         ? `
             <div class="unc-nas-front">
                 <span class="unc-pbtn"><span class="unc-pled power"></span></span>
-                <span class="unc-leds">${led('LAN', lan, 'netdev')}${(hw.bays || []).map(b => led(`DISK${b.bay}`, b.present, `disk${b.bay}`)).join('')}</span>
+                <span class="unc-leds">${model.noLan ? '' : led('LAN', lan, 'netdev')}${(hw.bays || []).map(b => led(`DISK${b.bay}`, b.present, `disk${b.bay}`)).join('')}</span>
                 <span class="spacer"></span>
                 ${ports}
             </div>

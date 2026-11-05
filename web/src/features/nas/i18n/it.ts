@@ -502,6 +502,12 @@ export const it: Record<Key, string> = {
         "L'interno è disegnato sul DXP2800: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
     'case.inside_hint_like_6800pro':
         "L'interno è disegnato sul DXP6800 Pro: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'in.dh_cage': 'Gabbia dei dischi · parete laterale',
+    'in.dh_board': 'Scheda madre · sotto',
+    'case.inside_hint_dx':
+        "L'interno non compare nel materiale di UGREEN; gli slot sono disegnati come il pannello inferiore del DXP4800. RAM 1 / RAM 2 e M.2-1 / M.2-2 sono numerati per ipotesi; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_dh':
+        "L'interno secondo i render del prodotto UGREEN: i due slot M.2 sul lato della gabbia dei dischi, i due zoccoli RAM sulla scheda madre sotto. La numerazione di entrambe le coppie è ipotizzata; apri una issue se il tuo box è diverso.",
     ...panelIt,
     ...powerIt
 };

@@ -497,6 +497,12 @@ export const en = {
         'The inside is drawn after the DXP2800: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
     'case.inside_hint_like_6800pro':
         'The inside is drawn after the DXP6800 Pro: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'in.dh_cage': 'Drive cage · side wall',
+    'in.dh_board': 'Mainboard · bottom',
+    'case.inside_hint_dx':
+        "The inside is not shown in UGREEN's material; the slots are drawn like the DXP4800's underside panel. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
+    'case.inside_hint_dh':
+        "The inside after UGREEN's product renders: the two M.2 slots on the side of the drive cage, the two RAM sockets on the mainboard below. The numbering of both pairs is assumed; open an issue if your box differs.",
     ...panelEn,
     ...powerEn
 } as const;

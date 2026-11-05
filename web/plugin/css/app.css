@@ -3458,3 +3458,45 @@
 .unc-rear480 .r-jack svg { width: 2.8cqi; }
 .unc-rear480 .r-lan svg { width: 5.6cqi; }
 .unc .unc-nobays { display: none !important; }
+
+/* DX4600 Pro / DX4700+: the grille body of the DXP4800 back with its own row of ports. */
+.unc-rear4600 .r-usbc svg { width: 5.6cqi; }
+.unc-rear4600 .r-usba svg, .unc-rear4600 .r-usba2 svg { width: 7.4cqi; }
+.unc-rear4600 .r-power svg { width: 4.6cqi; }
+
+/* DH2600: a small rounded back, vent slots over the type label, the ports in one row at the foot. */
+.unc-rear6800.unc-rear2600 {
+    max-width: 300px;
+    aspect-ratio: 300 / 340;
+    font-size: clamp(6px, 2.8cqi, 11px);
+}
+.unc-rear2600 .r-body { border-radius: 9cqi; }
+.unc-rear2600 .r-slots { position: absolute; left: 12%; top: 8%; width: 76%; height: 36%; }
+.unc-rear2600 .r-slots pattern rect { fill: #05070a; }
+.unc[data-theme="light"] .unc-rear2600 .r-slots pattern rect { fill: #8f99a4; }
+.unc-rear2600 .r-label {
+    position: absolute;
+    left: 14%;
+    top: 50%;
+    width: 72%;
+    display: grid;
+    gap: .4cqi;
+    padding: 2.4cqi 3cqi;
+    border-radius: 1.4cqi;
+    background: #1a1f25;
+    color: #8f99a4;
+    box-shadow: inset 0 0 0 .3cqi #2c333b;
+}
+.unc-rear2600 .r-label b { font-size: 1.5em; letter-spacing: .08em; color: #c3cad2; }
+.unc[data-theme="light"] .unc-rear2600 .r-label { background: #cfd5dc; color: #36404a; box-shadow: inset 0 0 0 .3cqi #aab2bb; }
+.unc[data-theme="light"] .unc-rear2600 .r-label b { color: #26303a; }
+.unc-rear2600 .r-abs { transform: translate(-50%, -50%); gap: .6cqi; }
+.unc-rear2600 .r-abs b { color: #8f99a4; line-height: 1.1; }
+.unc[data-theme="light"] .unc-rear2600 .r-abs b { color: #26303a; }
+.unc-rear2600 .r-abs em { color: #6f7882; font-size: .74em; line-height: 1.1; }
+.unc-rear2600 .r-lan.up em { color: #4ade80; }
+.unc-rear2600 .r-power svg { width: 6.4cqi; }
+.unc-rear2600 .r-usbc svg { width: 7.6cqi; }
+.unc-rear2600 .r-usba svg, .unc-rear2600 .r-usba2 svg { width: 8.6cqi; }
+.unc-rear2600 .r-lan svg { width: 11cqi; }
+.unc-rear2600 .r-dc svg { width: 7cqi; }

@@ -503,6 +503,12 @@ export const de: Record<Key, string> = {
         'Das Innere ist nach dem DXP2800 gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
     'case.inside_hint_like_6800pro':
         'Das Innere ist nach dem DXP6800 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'in.dh_cage': 'Laufwerkskäfig · Seitenwand',
+    'in.dh_board': 'Mainboard · unten',
+    'case.inside_hint_dx':
+        'Das Innere zeigt UGREENs Material nicht; die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet. RAM 1 / RAM 2 und M.2-1 / M.2-2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dh':
+        'Das Innere nach UGREENs Produktrenderings: die beiden M.2-Steckplätze an der Seite des Laufwerkskäfigs, die beiden RAM-Sockel auf dem Mainboard darunter. Die Nummerierung beider Paare ist angenommen; bei Abweichung bitte ein Issue öffnen.',
     ...panelDe,
     ...powerDe
 };
