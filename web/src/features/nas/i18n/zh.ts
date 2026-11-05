@@ -349,8 +349,9 @@ export const zh: Record<Key, string> = {
     'about.help':
         '帮助本项目：<a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">征集测试设备</a>，可借用或捐赠。也可以在上方确认你的设备。',
     'about.thanks': '致谢',
+    'about.maintainers': '维护者',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> 和 <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a>（UGREEN NAS Control 的开发；j3n57h0m45 还负责 DXP4800 GT 的支持：通过 IT5571 的风扇控制、LED、机箱和系统视图，以及界面的重新设计）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及所有在自己的型号上测试过的人',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及所有在自己的型号上测试过的人',
     'language.label': '界面语言',
     'language.auto': '与 Unraid 相同',
     'theme.label': '配色方案',

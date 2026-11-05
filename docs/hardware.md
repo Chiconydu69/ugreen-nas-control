@@ -32,6 +32,7 @@ Model reports (GitHub issues with the label `model-report`):
 - One issue per report, not per model. Several reports for one model are fine (other plugin versions, other boards); `ref` points to the newest or most complete one.
 - A maintainer records the result in `web/models/<id>.ts` (status, `ref` to the issue) and closes the issue with a comment linking that change. Closed reports stay the evidence; the model tables, the website and the plugin's model list show the current state.
 - A report where something does not work becomes a bug issue (or links one) and is closed as a report.
+- When a report is recorded, add the reporter's GitHub login to `docs/tools/testers.ts` (README credits).
 
 Models that cannot run Unraid (ARM): [faq.md](faq.md#which-models-cannot-run-it).
 

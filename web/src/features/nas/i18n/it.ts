@@ -361,8 +361,9 @@ export const it: Record<Key, string> = {
     'about.help':
         'Aiuta il progetto: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">cercasi dispositivi di prova</a>, in prestito o in dono. Oppure conferma il tuo dispositivo qui sopra.',
     'about.thanks': 'Ringraziamenti',
+    'about.maintainers': 'Manutentori',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocollo e mappatura dei vani del controllo LED), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> e <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (sviluppo di UGREEN NAS Control; j3n57h0m45 anche il supporto al DXP4800 GT: ventole tramite IT5571, LED, viste del case e del sistema, e il redesign dell’interfaccia), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traduzione spagnola) e tutti coloro che hanno provato sul proprio modello',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocollo e mappatura dei vani del controllo LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traduzione spagnola) e tutti coloro che hanno provato sul proprio modello',
     'language.label': 'Lingua dell’interfaccia',
     'language.auto': 'Come Unraid',
     'theme.label': 'Combinazione di colori',

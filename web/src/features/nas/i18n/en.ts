@@ -357,8 +357,9 @@ export const en = {
     'about.help':
         'Help the project: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">test hardware wanted</a>, to lend or donate. Or confirm your device above.',
     'about.thanks': 'Thanks to',
+    'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> and <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (development of UGREEN NAS Control; j3n57h0m45 also the DXP4800 GT support: fans through the IT5571, LEDs, case and system views, and the redesign of the interface), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
     'language.label': 'Interface language',
     'language.auto': 'Same as Unraid',
     'theme.label': 'Colour scheme',
