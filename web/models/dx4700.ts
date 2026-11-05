@@ -8,12 +8,12 @@ export default {
     fixtureDmi: 'DX4700+',
     cpu: null,
     bays: 4,
-    m2Slots: null,
-    m2: null,
-    lan: null,
+    m2Slots: 2,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
+    lan: { maxMbit: [2500, 2500] },
     led: 'bays',
-    caseView: 'none',
-    caseVariant: 'none',
+    caseView: 'full',
+    caseVariant: 'rear4600',
     fan: null,
     verified: {
         leds: {
@@ -23,10 +23,13 @@ export default {
             note: "Reported working by users of miskcoo's driver."
         },
         fans: { status: 'unsupported' },
-        case: { status: 'unsupported' },
+        case: {
+            status: 'expected',
+            note: "No photos or manual of this model found: drawn after the DX4600 Pro (four bays, two 2.5G LAN ports, two M.2 slots, same back); this model's hardware is not known."
+        },
         sensors: { status: 'expected' }
     },
     sources: ['https://github.com/miskcoo/ugreen_leds_controller/issues/22'],
-    note: 'Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. No case view or fan control.',
+    note: "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control.",
     shots: true
 } satisfies Model;

@@ -184,7 +184,7 @@ func TestReadHardware(t *testing.T) {
 
 func TestReadHardwareOtherModelHasNoBays(t *testing.T) {
 	fakeSys(t)
-	os.WriteFile(filepath.Join(dmiDir, "product_name"), []byte("DX4600 Pro\n"), 0o644)
+	os.WriteFile(filepath.Join(dmiDir, "product_name"), []byte("FORT 6\n"), 0o644)
 	if hw := ReadHardware(); hw.Bays != nil {
 		t.Errorf("bays on another model: %+v", hw.Bays)
 	}
@@ -241,7 +241,20 @@ func TestLayoutFor(t *testing.T) {
 	if l := layoutFor("DXP8800 Plus"); len(l.bayPorts) != 8 || l.bayPorts[7] != 8 || l.otherSlot != "m2" {
 		t.Errorf("DXP8800 Plus: %+v", l)
 	}
-	for _, model := range []string{"DX4600 Pro", ""} {
+	if l := layoutFor("DXP480T Plus"); l.bayPorts != nil || l.otherSlot != "m2" {
+		t.Errorf("DXP480T Plus: %+v", l)
+	}
+	for _, model := range []string{"iDX6011", "iDX6011 Pro", "iDX6012"} {
+		if l := layoutFor(model); l.bayPorts != nil || l.otherSlot != "m2" {
+			t.Errorf("%s: %+v", model, l)
+		}
+	}
+	for model, want := range map[string][]int{"DXP4800S": {1, 2, 3, 4}, "DXP2800S": {1, 2}, "DXP6800S": {3, 4, 5, 6, 1, 2}, "DXP6800 Ultra": {3, 4, 5, 6, 1, 2}, "DXP8800 Ultra": {1, 2, 3, 4, 5, 6, 7, 8}, "DX4600 Pro": {1, 2, 3, 4}, "DX4700+": {1, 2, 3, 4}, "DH2600": {1, 2}} {
+		if l := layoutFor(model); !slices.Equal(l.bayPorts, want) || l.otherSlot != "m2" || l.slots != nil {
+			t.Errorf("%q: %+v", model, l)
+		}
+	}
+	for _, model := range []string{"Unknown NAS", ""} {
 		if l := layoutFor(model); l.bayPorts != nil || l.slots != nil {
 			t.Errorf("%q: %+v", model, l)
 		}

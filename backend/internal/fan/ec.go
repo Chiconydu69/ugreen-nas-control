@@ -419,6 +419,9 @@ func (c *EC) temp(reg byte) *int {
 		return nil
 	}
 	t := int(v)
+	if !plausibleTemp(t) {
+		return nil
+	}
 	return &t
 }
 

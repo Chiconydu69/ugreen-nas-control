@@ -9,10 +9,10 @@ export default {
     cpu: 'Intel N100',
     bays: 4,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
     lan: { maxMbit: [2500] },
     led: 'bays',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear4800',
     fan: {
         chip: 'ITE IT8613E',
@@ -29,7 +29,10 @@ export default {
             status: 'expected',
             note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. UGREEN's own driver drives only header 3 here, no cpu fan output."
         },
-        case: { status: 'expected', note: 'The rear is drawn after the Plus and shows two LAN ports; this model has one 2.5G port.' },
+        case: {
+            status: 'expected',
+            note: "The rear is drawn after the Plus and shows two LAN ports; this model has one 2.5G port. Inside after UGREEN's manual; slot numbering assumed."
+        },
         sensors: { status: 'expected' }
     },
     sources: ['https://nascompares.com/2025/11/14/new-ugreen-dxp4800-pro-and-dxp4800s-nas-revealed/'],

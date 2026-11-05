@@ -192,12 +192,20 @@ export const es: Record<Key, string> = {
     'leds.import_btn': 'Importar los ajustes',
     'leds.import_after': 'Después puedes desinstalar UGREEN LED Control en Plugins: el control de LED integrado lo sustituye.',
     'leds.imported': 'Ajustes importados',
-    'case.unknown':
-        'Todavía no hay vista de la caja para {model}: existe para el DXP6800 Pro, el DXP4800 GT, los DXP4800 / Plus / Pro, el DXP8800 Plus, el DXP2800 y los iDX6011 / Pro.',
-    'leds.limited':
-        'Para el {model} hay control de LED, información del sistema y temperaturas. El control de ventiladores solo está disponible para los modelos de la lista de modelos (cableado fijo, o tras una prueba o confirmación), la vista de la caja también para los DXP4800 / Plus / Pro, el DXP8800 Plus, el DXP2800 y los iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Para el {model} hay control de LED, información del sistema, temperaturas y la vista de la caja. El control de ventiladores solo está disponible para los modelos de la lista de modelos (cableado fijo, o tras una prueba o confirmación).',
+    'model.box': 'En el {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'El control de LED abarca los LED de las bahías y el LED de encendido.',
+    'model.leds.power':
+        'El control de LED abarca solo el LED de encendido (blanco fijo mientras el control de LED está activado; no admite color, brillo ni apagado).',
+    'model.leds.none': 'No hay control de LED.',
+    'model.fans.fixed': 'El control de ventiladores está disponible.',
+    'model.fans.probe': 'El control de ventiladores se inicia tras una prueba que confirmes.',
+    'model.fans.confirm': 'El control de ventiladores se inicia cuando confirmas los ventiladores.',
+    'model.fans.none': 'No hay control de ventiladores.',
+    'model.case.full': 'La vista de la caja muestra el frente, la parte trasera y el interior.',
+    'model.case.front_rear': 'La vista de la caja muestra el frente y la parte trasera.',
+    'model.case.none': 'Todavía no hay vista de la caja para este modelo.',
+    'model.unknown': 'El {model} todavía no está en la lista de modelos.',
+    'model.all': 'Todos los modelos',
     'leds.untested':
         'El control de LED para el {model} no está probado: el controlador es el mismo en todos los modelos UGREEN, pero el orden de las bahías y los números de LED son estimados para este modelo o proceden de informes de otros plugins. Comprueba con «Identificar» que se enciende el LED correcto e informa de los problemas en un issue.',
     'leds.warn_standalone':
@@ -243,6 +251,12 @@ export const es: Record<Key, string> = {
     'in.front': 'Frontal',
     'case.inside_hint_gt':
         'El panel de servicio de la parte inferior, con el frontal a la izquierda. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
+    'case.inside_hint_8800':
+        'El panel de servicio de la parte inferior según el manual de UGREEN: dos zócalos de RAM, M.2 debajo y al lado; la ranura PCIe está dentro del bastidor. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
+    'case.inside_hint_like_8800plus':
+        'El interior está dibujado según el DXP8800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_4800':
+        'El panel de servicio de la parte inferior, según el manual de UGREEN. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
     'in.slot_empty': '{label} · vacía',
     'nvme.boot': 'SSD de arranque de Unraid',
     'nvme.role': 'SSD del pool «{name}»',
@@ -252,6 +266,15 @@ export const es: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'libre',
     'case.running_at': 'funciona a {speed} MT/s (hasta {max})',
+    'case.m2_hint':
+        'Las cuatro ranuras M.2 hacen de bahías, numeradas del 01 al 04 como en el panel inferior. Qué SSD está en qué ranura se supone por el orden de las direcciones PCIe; si tu equipo difiere, abre un issue.',
+    'case.intro_noinside': 'Las unidades en detalle y la parte trasera. El frontal con las bahías está en el Resumen.',
+    'case.intro_m2': 'Las unidades M.2 en detalle y la parte trasera. El frontal está en el Resumen.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'El panel de servicio de la parte inferior. La memoria está soldada, no hay ranuras de RAM. M.2-1 / M.2-2 están numeradas por suposición; abre una incidencia si tu equipo es distinto.',
+    'in.idx6011_ram': 'RAM · {type} · soldada',
+    'in.idx6011_pcie': 'Ranura PCIe 4.0 x8',
     'safety.intro': 'Límites que siempre se imponen a las curvas (no en modo BIOS).',
     'safety.min': 'Velocidad mínima del ventilador',
     'safety.now_none_cpu': 'no se puede leer, todos al 100 %',
@@ -311,7 +334,6 @@ export const es: Record<Key, string> = {
     'models.col_fans': 'Ventiladores',
     'models.st_verified': 'verificado',
     'models.st_confirmed': 'confirmado',
-    'models.st_reported': 'informado',
     'models.st_untested': 'sin probar',
     'models.st_power': 'solo LED de encendido',
     'models.st_none': 'no ofrecido',
@@ -319,7 +341,8 @@ export const es: Record<Key, string> = {
     'models.case_fr': 'frontal, trasera',
     'models.mine': 'tu equipo',
     'models.footnote':
-        'Verificado: probado por el autor o por miskcoo. Confirmado o informado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». El control de ventiladores solo existe donde se conoce el cableado; en los demás modelos el plugin no toca el chip de los ventiladores.',
+        'Verificado: probado por el autor o por miskcoo. Confirmado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». Ventiladores: ✓ cableado conocido, control listo; «tras la prueba de ventiladores»: ejecuta primero la prueba y confirma su resultado, después arranca el control; – el plugin no toca el chip de los ventiladores.',
+    'models.fan_test': 'tras la prueba de ventiladores',
     'about.tagline': 'Control de ventiladores y LED e información del sistema para UGREEN NAS en Unraid',
     'about.license_badge': 'Licencia MIT',
     'about.github_hint': 'Código fuente, versiones y cambios',
@@ -330,8 +353,9 @@ export const es: Record<Key, string> = {
     'about.help':
         'Ayuda al proyecto: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">se buscan equipos de prueba</a>, en préstamo o donados. O confirma tu equipo arriba.',
     'about.thanks': 'Agradecimientos',
+    'about.maintainers': 'Mantenedores',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocolo y asignación de bahías del control de LED), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> y <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (desarrollo de UGREEN NAS Control; j3n57h0m45 también el soporte del DXP4800 GT: ventiladores mediante el IT5571, LED, vistas de la caja y del sistema, y el rediseño de la interfaz), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traducción al español) y todos los que probaron en su modelo',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocolo y asignación de bahías del control de LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traducción al español) y todos los que probaron en su modelo',
     'language.label': 'Idioma de la interfaz',
     'language.auto': 'Igual que Unraid',
     'theme.label': 'Esquema de colores',
@@ -456,6 +480,25 @@ export const es: Record<Key, string> = {
         'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos zócalos de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
     'in.gt_cage': 'Jaula de unidades · pared interior izquierda',
     'in.gt_panel': 'Tapa inferior',
+    'in.bottom_case': 'Carcasa inferior · cuatro ranuras M.2',
+    'case.inside_hint_2800':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y el único zócalo SO-DIMM en la tapa inferior. La numeración de las ranuras M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_480':
+        'El interior según el manual de UGREEN: cuatro ranuras M.2 de la 01 a la 04 en la carcasa inferior y dos zócalos SO-DIMM bajo la tapa inferior. Qué SSD ocupa cada ranura se supone por el orden de las direcciones PCIe; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_like_4800plus':
+        'El interior está dibujado según el DXP4800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_2800':
+        'El interior está dibujado según el DXP2800: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_6800pro':
+        'El interior está dibujado según el DXP6800 Pro: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'in.dh_cage': 'Jaula de discos · pared lateral',
+    'in.dh_board': 'Placa base · abajo',
+    'case.inside_hint_dx':
+        'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dx4700':
+        'Toda la vista de la caja está dibujada según el DX4600 Pro: la placa de este modelo no se conoce. Las ranuras se dibujan como el panel inferior del DXP4800; la numeración de RAM y M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dh':
+        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto. El segundo zócalo de RAM sale del texto de especificaciones de UGREEN; las fotos muestran un SO-DIMM.',
     ...panelEs,
     ...powerEs
 };

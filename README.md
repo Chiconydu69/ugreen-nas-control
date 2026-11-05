@@ -64,14 +64,14 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 
 | Model                                                                            | LEDs | Fan control | Case view | Sensors | Status     |
 | -------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ---------- |
-| [DH2600](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dh2600/) | –    | –           | –         | ○       | ○ Expected |
+| [DH2600](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dh2600/) | –    | –           | ○         | ○       | ○ Expected |
 
 **DX series**
 
 | Model                                                                                    | LEDs | Fan control | Case view | Sensors | Status             |
 | ---------------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ------------------ |
-| [DX4600 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4600-pro/) | ◔    | –           | –         | ○       | ◔ Community-tested |
-| [DX4700+](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4700/)        | ◔    | –           | –         | ○       | ◔ Community-tested |
+| [DX4600 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4600-pro/) | ◔    | –           | ○         | ○       | ◔ Community-tested |
+| [DX4700+](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4700/)        | ◔    | –           | ○         | ○       | ◔ Community-tested |
 
 **DXP series**
 
@@ -79,19 +79,19 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 | ------------------------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ------------------ |
 | [DXP4800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-gt/)          | ●    | ●           | ●         | ●       | ● Verified         |
 | [DXP6800 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800-pro/)        | ●    | ●           | ●         | ●       | ● Verified         |
-| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | –         | ○       | ◔ Community-tested |
+| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | ○         | ○       | ◔ Community-tested |
 | [DXP2800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800/)                | ◔    | ○           | ○         | ○       | ◔ Community-tested |
 | [DXP2800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800-gt/)          | ○    | ◔           | ○         | ○       | ◔ Community-tested |
 | [DXP4800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-base/)           | ◔    | ○           | ○         | ○       | ◔ Community-tested |
 | [DXP4800 Plus / Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800/)     | ◔    | ○           | ○         | ○       | ◔ Community-tested |
-| [DXP8800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-plus/)      | ◔    | ○           | ○         | ○       | ◔ Community-tested |
-| [DXP2800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800s/)              | ○    | –           | –         | ○       | ○ Expected         |
-| [DXP4800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800s/)              | ○    | –           | –         | ○       | ○ Expected         |
+| [DXP8800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-plus/)      | ◔    | ○           | ○         | ◔       | ◔ Community-tested |
+| [DXP2800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800s/)              | ○    | –           | ○         | ○       | ○ Expected         |
+| [DXP4800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800s/)              | ○    | –           | ○         | ○       | ○ Expected         |
 | [DXP6800 / DXP6800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800/) | ○    | ○           | ○         | ○       | ○ Expected         |
-| [DXP6800 Ultra](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800-ultra/)    | ○    | –           | –         | ○       | ○ Expected         |
-| [DXP6800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800s/)              | ○    | –           | –         | ○       | ○ Expected         |
+| [DXP6800 Ultra](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800-ultra/)    | ○    | –           | ○         | ○       | ○ Expected         |
+| [DXP6800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800s/)              | ○    | –           | ○         | ○       | ○ Expected         |
 | [DXP8800 / DXP8800 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800/)  | ○    | ○           | ○         | ○       | ○ Expected         |
-| [DXP8800 Ultra](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-ultra/)    | ○    | –           | –         | ○       | ○ Expected         |
+| [DXP8800 Ultra](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-ultra/)    | ○    | –           | ○         | ○       | ○ Expected         |
 
 **iDX series**
 
@@ -122,8 +122,20 @@ The project takes no money for now. It needs test reports and test hardware.
 
 ## Credits
 
-Maintainer: [Alexander Schubert](https://github.com/alexanderschubert). Contributor: [j3n57h0m45](https://github.com/j3n57h0m45) (DXP4800 GT support, UX overhaul, fan measuring, CI).
+Maintainers: [Alexander Schubert](https://github.com/alexanderschubert) and [Jens Thomas](https://github.com/j3n57h0m45) (DXP4800 GT support, UX overhaul, fan measuring, CI).
 Built on the work of [miskcoo](https://github.com/miskcoo/ugreen_leds_controller), [UGREEN's published driver sources](https://github.com/ugreen-opensource), [Geoff Davis's review of them](https://geoffdavis.com/posts/ugreen-gpl-sources-verified/#the-part-nobody-asked-for-oem-hardware-drivers) and others: full list and licenses in [docs/third-party.md](docs/third-party.md).
+
+<!-- testers:start -->
+<!-- Generated by docs/tools/gen-docs.ts from docs/tools/testers.ts. Do not edit; run `just docs`. -->
+
+<a href="https://github.com/321chills" title="321chills: DXP2800 GT"><img src="https://github.com/321chills.png?size=64" width="48" height="48" alt="321chills"></a>
+<a href="https://github.com/datarepos76" title="datarepos76: DXP480T Plus"><img src="https://github.com/datarepos76.png?size=64" width="48" height="48" alt="datarepos76"></a>
+<a href="https://github.com/Chiconydu69" title="Chiconydu69: DXP8800 Plus"><img src="https://github.com/Chiconydu69.png?size=64" width="48" height="48" alt="Chiconydu69"></a>
+<a href="https://github.com/ivolution" title="ivolution: Spanish translation"><img src="https://github.com/ivolution.png?size=64" width="48" height="48" alt="ivolution"></a>
+
+Thanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: fkiesler, gigios, NullNull67, cardsdoc, gonzlobo.
+
+<!-- testers:end -->
 
 ## License
 

@@ -45,7 +45,7 @@ function rules(css: string): [string, string][] {
 }
 
 const PICTURE =
-    /^(\.unc\[data-theme="light"\] |\.unc-hero )?\.(unc-nas(-bays|-front|-model)?|unc-nbay|unc-nscreen|unc-socket|unc-pled|unc-led|unc-pbtn|unc-front-ports)\b/;
+    /^(\.unc\[data-theme="light"\] |\.unc-hero )?\.(unc-nas(-bays|-front|-model)?|unc-nbay|unc-nscreen|unc-socket|unc-pled|unc-led|unc-pbtn|unc-front-ports|unc-f480)\b/;
 
 /**
  * The plugin's colour tokens (--unc-*, dark and light) retargeted to :root, and the rules that draw the front.

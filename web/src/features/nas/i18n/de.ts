@@ -199,12 +199,20 @@ export const de: Record<Key, string> = {
     'leds.import_btn': 'Einstellungen übernehmen',
     'leds.import_after': 'Danach kannst du UGREEN LED Control unter Plugins deinstallieren: die eingebaute LED-Steuerung ersetzt es.',
     'leds.imported': 'Einstellungen übernommen',
-    'case.unknown':
-        'Für die {model} gibt es noch keine Gehäuseansicht. Sie ist für folgende Modelle verfügbar: DXP6800 Pro, DXP4800 GT, DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 und iDX6011 / Pro.',
-    'leds.limited':
-        'Für die {model} stehen LED-Steuerung, Systeminfo und Temperaturen zur Verfügung. Die Lüfter steuert das Plugin nur bei Modellen aus der Modellliste, deren Verdrahtung bekannt ist oder per Test bestätigt wurde. Die Gehäuseansicht gibt es außerdem für DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 und iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Für die {model} stehen LED-Steuerung, Systeminfo, Temperaturen und Gehäuseansicht zur Verfügung. Die Lüfter steuert das Plugin nur bei Modellen aus der Modellliste, deren Verdrahtung bekannt ist oder per Test bestätigt wurde.',
+    'model.box': 'Bei der {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'Die LED-Steuerung umfasst die Schacht-LEDs und die Power-LED.',
+    'model.leds.power':
+        'Die LED-Steuerung umfasst nur die Power-LED (weiß leuchtend, solange die LED-Steuerung an ist; Farbe, Helligkeit und Ausschalten gibt es nicht).',
+    'model.leds.none': 'Es gibt keine LED-Steuerung.',
+    'model.fans.fixed': 'Die Lüftersteuerung ist verfügbar.',
+    'model.fans.probe': 'Die Lüftersteuerung startet nach einem Test, den du bestätigst.',
+    'model.fans.confirm': 'Die Lüftersteuerung startet, sobald du die Lüfter bestätigt hast.',
+    'model.fans.none': 'Es gibt keine Lüftersteuerung.',
+    'model.case.full': 'Die Gehäuseansicht zeigt Vorderseite, Rückseite und Innenraum.',
+    'model.case.front_rear': 'Die Gehäuseansicht zeigt Vorder- und Rückseite.',
+    'model.case.none': 'Für dieses Modell gibt es noch keine Gehäuseansicht.',
+    'model.unknown': 'Die {model} steht noch nicht in der Modellliste.',
+    'model.all': 'Alle Modelle',
     'leds.untested':
         'Die LED-Steuerung ist für die {model} ungetestet. Der Controller ist bei allen UGREEN-Modellen derselbe, aber die Reihenfolge der Schächte und die LED-Nummern sind für dieses Modell geraten oder stammen aus Berichten anderer Plugins. Prüfe mit „Schacht identifizieren“, ob die richtige LED leuchtet, und melde Probleme als Issue.',
     'leds.warn_standalone':
@@ -251,6 +259,12 @@ export const de: Record<Key, string> = {
     'in.front': 'Vorne',
     'case.inside_hint_gt':
         'Die Wartungsklappe an der Unterseite, vorne links. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_8800':
+        'Die Wartungsklappe an der Unterseite nach dem UGREEN-Handbuch: zwei RAM-Sockel, M.2 darunter und daneben; der PCIe-Slot sitzt im Rahmen. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_like_8800plus':
+        'Das Innere ist nach dem DXP8800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_4800':
+        'Die Wartungsklappe an der Unterseite, nach dem Handbuch von UGREEN. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'in.slot_empty': '{label} · leer',
     'nvme.boot': 'Unraid-Boot-SSD',
     'nvme.role': 'Pool-SSD „{name}“',
@@ -260,6 +274,15 @@ export const de: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'frei',
     'case.running_at': 'läuft mit {speed} MT/s (bis {max})',
+    'case.m2_hint':
+        'Die vier M.2-Plätze ersetzen die Schächte und sind wie auf der Unterseite von 01 bis 04 nummeriert. Welche SSD in welchem Platz steckt, ist aus der Reihenfolge der PCIe-Adressen angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.intro_noinside': 'Die Laufwerke im Einzelnen und die Rückseite. Die Vorderseite mit den Schächten ist auf der Übersicht.',
+    'case.intro_m2': 'Die M.2-Laufwerke im Einzelnen und die Rückseite. Die Vorderseite ist auf der Übersicht.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Das Wartungsfach an der Unterseite. Der Arbeitsspeicher ist aufgelötet, es gibt keine RAM-Steckplätze. M.2-1 / M.2-2 sind angenommen nummeriert; öffne ein Issue, falls dein Gerät abweicht.',
+    'in.idx6011_ram': 'RAM · {type} · aufgelötet',
+    'in.idx6011_pcie': 'PCIe-4.0-x8-Steckplatz',
 
     'safety.intro': 'Grenzen, die immer vor den Kurven gelten (nicht im BIOS-Modus).',
     'safety.min': 'Niedrigste Lüfterdrehzahl',
@@ -322,7 +345,6 @@ export const de: Record<Key, string> = {
     'models.col_fans': 'Lüfter',
     'models.st_verified': 'geprüft',
     'models.st_confirmed': 'bestätigt',
-    'models.st_reported': 'gemeldet',
     'models.st_untested': 'ungetestet',
     'models.st_power': 'nur Power-LED',
     'models.st_none': 'nicht angeboten',
@@ -330,7 +352,8 @@ export const de: Record<Key, string> = {
     'models.case_fr': 'vorn, hinten',
     'models.mine': 'dein Gerät',
     'models.footnote':
-        'Geprüft: vom Autor oder von miskcoo getestet. Bestätigt oder gemeldet: Nutzer haben es auf ihrem Gerät gesehen. Ungetestet: das Plugin schaltet die LEDs frei, die Schachtreihenfolge ist geraten; mit „Identifizieren“ prüfen. Lüftersteuerung gibt es nur, wo die Verdrahtung bekannt ist; bei den anderen Modellen fasst das Plugin den Lüfter-Chip nicht an.',
+        'Geprüft: vom Autor oder von miskcoo getestet. Bestätigt: Nutzer haben es auf ihrem Gerät gesehen. Ungetestet: das Plugin schaltet die LEDs frei, die Schachtreihenfolge ist geraten; mit „Identifizieren“ prüfen. Lüfter: ✓ Verdrahtung bekannt, Lüftersteuerung bereit; „nach Lüftertest“: erst den Lüftertest laufen lassen und sein Ergebnis bestätigen, dann startet die Lüftersteuerung; – das Plugin fasst den Lüfter-Chip nicht an.',
+    'models.fan_test': 'nach Lüftertest',
     'about.tagline': 'Lüfter- und LED-Steuerung und Systeminfo für UGREEN-NAS unter Unraid',
     'about.license_badge': 'MIT-Lizenz',
     'about.github_hint': 'Quellcode, Releases und Änderungen',
@@ -341,8 +364,9 @@ export const de: Record<Key, string> = {
     'about.help':
         'Hilf dem Projekt: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">Testgeräte gesucht</a>, zum Leihen oder Schenken. Oder bestätige oben dein Gerät.',
     'about.thanks': 'Dank an',
+    'about.maintainers': 'Maintainer',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> und <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (Entwicklung von UGREEN NAS Control; j3n57h0m45 auch die Unterstützung des DXP4800 GT: Lüfter über den IT5571, LEDs, Gehäuse- und Systemansicht, sowie die Überarbeitung der Oberfläche), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und alle, die auf ihrem Modell getestet haben',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und alle, die auf ihrem Modell getestet haben',
     'language.label': 'Sprache der Oberfläche',
     'language.auto': 'Wie Unraid',
     'theme.label': 'Farbschema',
@@ -468,6 +492,25 @@ export const de: Record<Key, string> = {
         'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, die zwei RAM-Sockel im Bodendeckel. Die Nummerierung beider Paare ist geraten; eröffne ein Issue, falls deine Box abweicht.',
     'in.gt_cage': 'Laufwerkskäfig · linke Innenwand',
     'in.gt_panel': 'Bodendeckel',
+    'in.bottom_case': 'Bodenwanne · vier M.2-Steckplätze',
+    'case.inside_hint_2800':
+        'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, der eine SO-DIMM-Sockel im Bodendeckel. Die Nummerierung der M.2-Steckplätze ist geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'case.inside_hint_480':
+        'Das Innere nach UGREENs Anleitung: vier M.2-Steckplätze 01 bis 04 in der Bodenwanne, zwei SO-DIMM-Sockel unter dem Bodendeckel. Welche SSD in welchem Steckplatz sitzt, ist aus der Reihenfolge der PCIe-Adressen geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'case.inside_hint_like_4800plus':
+        'Das Innere ist nach dem DXP4800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_2800':
+        'Das Innere ist nach dem DXP2800 gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_6800pro':
+        'Das Innere ist nach dem DXP6800 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'in.dh_cage': 'Laufwerkskäfig · Seitenwand',
+    'in.dh_board': 'Mainboard · unten',
+    'case.inside_hint_dx':
+        'Das Innere zeigt UGREENs Material nicht; die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet. RAM 1 / RAM 2 und M.2-1 / M.2-2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dx4700':
+        'Die ganze Gehäuseansicht ist nach dem DX4600 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet; RAM und M.2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dh':
+        'Das Innere nach UGREENs Produktrenderings: die beiden M.2-Steckplätze an der Seite des Laufwerkskäfigs, die beiden RAM-Sockel auf dem Mainboard darunter. Die Nummerierung beider Paare ist angenommen; bei Abweichung bitte ein Issue öffnen. Der zweite RAM-Sockel stammt aus UGREENs Spezifikationstext, die Fotos zeigen ein SO-DIMM.',
     ...panelDe,
     ...powerDe
 };

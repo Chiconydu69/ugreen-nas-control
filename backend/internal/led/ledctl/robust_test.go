@@ -3,7 +3,6 @@ package ledctl
 import (
 	"context"
 	"fmt"
-	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -12,10 +11,49 @@ import (
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/chip"
 )
 
+// tickClock is the daemon's clock under the test's control. It stands still until advance() and counts its reads: the
+// daemon reads it once per 5 s round (device table) and once per tick while it waits out a rejected controller, so
+// the count is the daemon's heartbeat.
+type tickClock struct {
+	mu    sync.Mutex
+	t     time.Time
+	reads int
+}
+
+func (k *tickClock) now() time.Time {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+	k.reads++
+	return k.t
+}
+
+func (k *tickClock) advance(d time.Duration) {
+	k.mu.Lock()
+	k.t = k.t.Add(d)
+	k.mu.Unlock()
+}
+
+func (k *tickClock) count() int {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+	return k.reads
+}
+
+// settle returns once the daemon has gone through a full pass that started after the call: the first heartbeat may
+// belong to a pass that read its files before the test changed them, the second starts a fresh one, the third proves
+// it ended. Replaces sleeping "long enough".
+func settle(t *testing.T, r *rig, k *tickClock) {
+	t.Helper()
+	target := k.count() + 3
+	waitFor(t, r, "daemon completes a pass", func() bool { return k.count() >= target })
+}
+
 // startDaemon runs the status daemon on a fast tick; stop() cancels it like a SIGTERM and returns its exit code.
-func startDaemon(t *testing.T, r *rig) (stop func() int) {
+func startDaemon(t *testing.T, r *rig) (stop func() int, clock *tickClock) {
 	t.Helper()
 	r.c.Tick = 2 * time.Millisecond
+	clock = &tickClock{t: time.Unix(1_700_000_000, 0)}
+	r.c.Now = clock.now
 
 	ctx, cancel := context.WithCancel(t.Context())
 	done := make(chan int, 1)
@@ -37,7 +75,7 @@ func startDaemon(t *testing.T, r *rig) (stop func() int) {
 	return func() (rc int) {
 		once.Do(func() { rc = stopFn() })
 		return rc
-	}
+	}, clock
 }
 
 func waitFor(t *testing.T, r *rig, what string, cond func() bool) {
@@ -72,32 +110,48 @@ func (f *fakeRunner) logged(substr string) (n int) {
 }
 
 // The SUB2 board: the controller answers a detect but rejects every command. The daemon says so once, stops writing
-// and asks again only at growing intervals; when the controller answers again it starts over.
+// and asks again only at growing intervals; when the controller answers again it starts over. The clock is the
+// test's: the intervals are asserted exactly, not sampled from wall time.
 func TestDaemonBacksOffWhenControllerRejects(t *testing.T) {
 	r := newRig(t, "DXP2800")
 	writeSystem(r)
 	r.chip.setRC(chip.ExitRejected)
 	r.c.RejectBackoff, r.c.RejectBackoffMax = 40*time.Millisecond, 80*time.Millisecond
-	stop := startDaemon(t, r)
+	stop, clock := startDaemon(t, r)
 
 	waitFor(t, r, "rejection logged", func() bool { return r.run.logged("rejects every read and write") == 1 })
-	time.Sleep(500 * time.Millisecond)
+	probes := func() int { return countCalls(r.chip.callList(), "probe") }
+	sets := countCalls(r.chip.callList(), "set ")
 
-	calls := r.chip.callList()
-	if sets := countCalls(calls, "set "); sets > 1 {
-		t.Errorf("%d writes after the first rejection, want 1: %v", sets, calls)
+	// Waits: 40 ms, then doubled to the 80 ms cap and held there. Each wait ends exactly at its interval: one tick
+	// short of it nothing is asked, at it exactly one probe goes out.
+	for i, wait := range []time.Duration{40, 80, 80} {
+		wait *= time.Millisecond
+		asked := probes()
+		settle(t, r, clock) // the daemon has computed the next retry time and ticks towards it
+		clock.advance(wait - time.Millisecond)
+		settle(t, r, clock)
+		if n := probes(); n != asked {
+			t.Fatalf("wait %d: asked again %v early (%d probes, had %d)", i+1, time.Millisecond, n, asked)
+		}
+		clock.advance(time.Millisecond)
+		waitFor(t, r, "asked again", func() bool { return probes() == asked+1 })
 	}
-	// 500 ms at 40, 80, 80 ... ms: a handful of probes, not one per 2 ms tick.
-	if probes := countCalls(calls, "probe"); probes < 2 || probes > 12 {
-		t.Errorf("%d probes in 500 ms with a 40..80 ms back-off", probes)
-	}
+
 	if n := r.run.logged("rejects every read and write"); n != 1 {
 		t.Errorf("message logged %d times, want once", n)
 	}
+	if n := countCalls(r.chip.callList(), "set "); n != sets {
+		t.Errorf("%d writes since the first rejection: %v", n-sets, r.chip.callList())
+	}
 
 	// The controller comes back: the LEDs are written again from scratch.
+	settle(t, r, clock)
 	r.chip.setRC(0)
-	waitFor(t, r, "resumed", func() bool { return r.chip.get("disk1")[1] == "255" && r.run.logged("answers again") == 1 })
+	clock.advance(80 * time.Millisecond)
+	waitFor(t, r, "resumed", func() bool {
+		return r.run.logged("answers again") == 1 && countCalls(r.chip.callList(), "set disk1 ") > 0
+	})
 
 	if rc := stop(); rc != 0 {
 		t.Errorf("rc = %d", rc)
@@ -138,37 +192,36 @@ func TestStandbyTransitionsAroundSmartRead(t *testing.T) {
 	r := newRig(t, "DXP2800")
 	writeSystem(r)
 	r.config("disk1_color=\"1 2 3\"\nstandby_mode=\"dim\"\nstandby_level=\"20\"\n")
-	stop := startDaemon(t, r)
+	stop, clock := startDaemon(t, r)
 
 	look := func(mode, brightness string) func() bool {
 		return func() bool { s := r.chip.get("disk1"); return s[0] == mode && s[1] == brightness && s[2] == "1" }
 	}
-	settle := func() { time.Sleep(200 * time.Millisecond) } // several 5 s rounds (50 ms each here)
 
 	waitFor(t, r, "awake", look("on", "255"))
 
 	r.write("disks.ini", diskINI("1", "*"))
 	waitFor(t, r, "standby look", look("on", "51"))
-	settle()
+	settle(t, r, clock) // the write sequence of that look is complete
 	before := countCalls(r.chip.callList(), "set ")
 
 	// Unraid reads SMART of the sleeping disk: new smart file, new temperature, still spun down.
 	r.write("smart/disk1", "ID# ATTRIBUTE_NAME FLAG VALUE WORST THRESH TYPE UPDATED WHEN_FAILED RAW_VALUE\n  5 Reallocated_Sector_Ct 0x0033 100 100 010 Pre-fail Always - 0\n")
 	r.write("disks.ini", diskINI("1", "31"))
-	settle()
+	settle(t, r, clock) // the daemon has read both files and decided
 	if after := countCalls(r.chip.callList(), "set "); after != before {
-		t.Errorf("a SMART read of a sleeping disk wrote to the LED: %v", r.chip.callList()[before:])
+		t.Errorf("a SMART read of a sleeping disk wrote to the LED: %v", r.chip.callList()[before:after])
 	}
 
 	// It wakes: full look at once, no stale standby.
 	r.write("disks.ini", diskINI("0", "32"))
 	waitFor(t, r, "awake again", look("on", "255"))
-	settle()
+	settle(t, r, clock)
 
 	// And sleeps again: standby look, no stuck blink or full brightness.
 	r.write("disks.ini", diskINI("1", "*"))
 	waitFor(t, r, "standby again", look("on", "51"))
-	settle()
+	settle(t, r, clock)
 
 	if rc := stop(); rc != 0 {
 		t.Errorf("rc = %d", rc)
@@ -181,15 +234,22 @@ func TestStandbyTransitionsAroundSmartRead(t *testing.T) {
 			break
 		}
 	}
-	// Every change of look is written exactly once: awake, standby, awake, standby.
+	// The look only ever changes between awake and standby, starting awake and ending in standby; how often the
+	// daemon went round in between does not matter.
 	var brightness []string
 	for _, c := range calls {
 		if f := strings.Fields(c); len(f) == 4 && f[0] == "set" && f[1] == "disk1" && f[2] == "brightness" {
 			brightness = append(brightness, f[3])
 		}
 	}
-	if want := []string{"255", "51", "255", "51"}; !slices.Equal(brightness, want) {
-		t.Errorf("brightness writes %v, want %v", brightness, want)
+	for i, b := range brightness {
+		if want := []string{"255", "51"}[i%2]; b != want {
+			t.Errorf("brightness writes %v: write %d is %s, want %s (alternating awake/standby)", brightness, i, b, want)
+			break
+		}
+	}
+	if n := len(brightness); n < 4 || n%2 != 0 {
+		t.Errorf("brightness writes %v, want awake, standby, awake, standby", brightness)
 	}
 }
 
@@ -197,10 +257,13 @@ func TestStandbyTransitionsAroundSmartRead(t *testing.T) {
 func TestStandbyAfterWakeEndsActivityBlink(t *testing.T) {
 	r := newRig(t, "DXP2800")
 	writeSystem(r)
-	r.config("standby_mode=\"dim\"\nstandby_level=\"20\"\n")
-	stop := startDaemon(t, r)
+	r.config("disk1_color=\"1 2 3\"\nstandby_mode=\"dim\"\nstandby_level=\"20\"\n")
+	stop, clock := startDaemon(t, r)
 
-	waitFor(t, r, "awake", func() bool { return r.chip.get("disk1")[1] == "255" })
+	look := func(mode, brightness string) func() bool {
+		return func() bool { s := r.chip.get("disk1"); return s[0] == mode && s[1] == brightness && s[2] == "1" }
+	}
+	waitFor(t, r, "awake", look("on", "255"))
 
 	n := 1
 	waitFor(t, r, "blinks with traffic", func() bool {
@@ -210,11 +273,8 @@ func TestStandbyAfterWakeEndsActivityBlink(t *testing.T) {
 	})
 
 	r.write("disks.ini", diskINI("1", "*"))
-	waitFor(t, r, "standby look, no blink", func() bool {
-		s := r.chip.get("disk1")
-		return s[1] == "51" && s[0] == "on"
-	})
-	time.Sleep(100 * time.Millisecond) // no traffic: nothing blinks it again
+	waitFor(t, r, "standby look", look("on", "51"))
+	settle(t, r, clock) // no traffic since: nothing may blink it again, and a last blink is released
 	if s := r.chip.get("disk1"); s[0] != "on" || s[1] != "51" {
 		t.Errorf("disk1 = %v", s)
 	}
@@ -227,9 +287,9 @@ func TestDaemonStopEndsNetdevActivityBlink(t *testing.T) {
 	r := newRig(t, "DXP2800")
 	writeSystem(r)
 	r.config("netdev_color=\"9 8 7\"\nnetdev_brightness=\"100\"\n")
-	stop := startDaemon(t, r)
+	stop, _ := startDaemon(t, r)
 
-	waitFor(t, r, "network LED set", func() bool { return r.chip.get("netdev")[1] == "255" })
+	waitFor(t, r, "network LED set", func() bool { s := r.chip.get("netdev"); return s[1] == "100" && s[2] == "9" })
 
 	n := 1
 	waitFor(t, r, "network blinks with traffic", func() bool {
@@ -264,11 +324,11 @@ func TestDaemonStopKeepsManualNetdev(t *testing.T) {
 	r := newRig(t, "DXP2800")
 	writeSystem(r)
 	r.config("netdev_status=\"manual\"\nnetdev_color=\"9 8 7\"\nnetdev_effect=\"breath\"\nnetdev_on=\"1200\"\nnetdev_off=\"900\"\n")
-	stop := startDaemon(t, r)
+	stop, clock := startDaemon(t, r)
 
 	waitFor(t, r, "manual look applied", func() bool { return r.chip.get("netdev")[0] == "breath" })
 	r.write("sys/net/eth0/statistics/rx_bytes", "5000\n")
-	time.Sleep(100 * time.Millisecond)
+	settle(t, r, clock)
 	stop()
 
 	if s := r.chip.get("netdev"); s[0] != "breath" || s[2] != "9" {

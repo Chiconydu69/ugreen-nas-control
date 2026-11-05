@@ -9,10 +9,10 @@ export default {
     cpu: 'Intel Core Ultra 5 125H (Pro: Core Ultra 7 255H)',
     bays: 6,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
     lan: { maxMbit: [10000, 10000] },
     led: 'bays',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear6011',
     fan: {
         chip: 'ITE IT5571 embedded controller',
@@ -31,7 +31,10 @@ export default {
             status: 'expected',
             note: 'Pro only: it uses the same IT5571 embedded controller as the DXP4800 GT with four fans (second CPU fan, second case fan; their registers are from the MIT-licensed noodlemctwoodle plugin), a 25 % floor because the case fan stalls near 20 %, and emergency limits of 88 C CPU and 60 C disk. Not run on a device with this plugin. The plain iDX6011 and iDX6012 have a different fan map: the plugin shows their fan readings (speed, duty, mode) and writes nothing. The Pro LCD backlight can be read and set.'
         },
-        case: { status: 'expected', note: 'Drawn after photos, not compared on a device. The iDX6012 is the pre-launch name of the iDX6011 as far as known.' },
+        case: {
+            status: 'expected',
+            note: "Drawn after photos, inside after UGREEN's manual; slot numbering assumed. Not compared on a device. The iDX6012 is the pre-launch name of the iDX6011 as far as known."
+        },
         sensors: { status: 'expected' }
     },
     sources: [

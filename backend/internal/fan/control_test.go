@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -418,5 +419,79 @@ func TestLoadConfigWarnsAboutInvalidValues(t *testing.T) {
 	os.WriteFile(path, []byte("mode=\"quiet\"\n"), 0o644)
 	if c = LoadConfig(path); len(c.Warnings) != 0 {
 		t.Errorf("a valid file warns: %q", c.Warnings)
+	}
+}
+
+// An input that reports no real temperature (unwired thermistor, ACPI zone without a sensor) is not a reading:
+// it is not shown, not used, and diag gets it as "not connected".
+func TestImplausibleTemperaturesAreNotConnected(t *testing.T) {
+	for _, tc := range []struct {
+		name, raw string
+		want      *int
+		listed    bool
+	}{
+		{"ok", "28000", intp(28), false},
+		{"lowest plausible", "-10000", intp(-10), false},
+		{"highest plausible", "125000", intp(125), false},
+		{"acpitz -21", "-21000", nil, true},
+		{"it87 empty input -128", "-128000", nil, true},
+		{"below range", "-11000", nil, true},
+		{"above range", "126000", nil, true},
+		{"sentinel 255", "255000", nil, true},
+		{"driver sentinel", "-2147483000", nil, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			for chip, files := range map[string]map[string]string{
+				"hwmon0": {"name": "coretemp", "temp1_input": "50000", "temp1_label": "Package id 0"},
+				"hwmon1": {"name": "acpitz", "temp1_input": tc.raw},
+				"hwmon2": {"name": "nvme", "temp1_input": tc.raw, "temp1_label": "Composite"},
+			} {
+				os.MkdirAll(filepath.Join(dir, chip), 0o755)
+				for f, c := range files {
+					os.WriteFile(filepath.Join(dir, chip, f), []byte(c+"\n"), 0o644)
+				}
+			}
+			defer func(h, d string) { hwmonDir, disksINI = h, d }(hwmonDir, disksINI)
+			hwmonDir, disksINI = dir, filepath.Join(dir, "none.ini")
+			s := ReadSensors()
+
+			if (tc.want == nil) != (s.Board == nil) || (tc.want != nil && *s.Board != *tc.want) {
+				t.Fatalf("board = %v, want %v", s.Board, tc.want)
+			}
+			if len(s.NVMe) != 1 || (tc.want == nil) != (s.NVMe[0].Temp == nil) {
+				t.Fatalf("nvme = %+v", s.NVMe)
+			}
+			if s.MaxNVMe() != s.NVMe[0].Temp {
+				t.Fatalf("hottest nvme uses a bad reading")
+			}
+			if s.CPU == nil || *s.CPU != 50 || Decide(Config{CPUCurve: Curve{{Temp: 40, Pct: 30}, {Temp: 90, Pct: 100}}, CPUCrit: 90, DiskCrit: 200}, s).Failsafe != "" {
+				t.Fatalf("the CPU stays usable: %v", s.CPU)
+			}
+			n, _ := strconv.Atoi(tc.raw)
+			_ = n
+			rawC := *milli(writeTemp(t, n))
+			if tc.listed {
+				if len(s.NotConnected) != 2 || s.NotConnected[0].Raw != rawC || s.NotConnected[0].Source != "acpitz" {
+					t.Fatalf("not connected = %+v", s.NotConnected)
+				}
+			} else if len(s.NotConnected) != 0 {
+				t.Fatalf("not connected = %+v", s.NotConnected)
+			}
+		})
+	}
+}
+
+func writeTemp(t *testing.T, milliC int) string {
+	p := filepath.Join(t.TempDir(), "temp1_input")
+	os.WriteFile(p, []byte(strconv.Itoa(milliC)), 0o644)
+	return p
+}
+
+func TestChipTempsDropImplausible(t *testing.T) {
+	for raw, ok := range map[int]bool{0x80: false, 0xEB: false, 0x7F: false, 0xC0: false, 0x1C: true, 0x00: true, 0xF6: true} {
+		if got := plausibleTemp(int(int8(raw))); got != ok {
+			t.Errorf("0x%02x -> %d: plausible = %v, want %v", raw, int8(raw), got, ok)
+		}
 	}
 }

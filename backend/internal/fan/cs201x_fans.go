@@ -234,6 +234,9 @@ func (c *CS201x) temp(reg uint32) *int {
 		return nil
 	}
 	t := int(v)
+	if !plausibleTemp(t) {
+		return nil
+	}
 	return &t
 }
 

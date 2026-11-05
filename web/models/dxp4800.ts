@@ -9,10 +9,10 @@ export default {
     cpu: 'Intel Pentium Gold 8505 (Plus), Core i3-1315U (Pro)',
     bays: 4,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
     lan: { maxMbit: [10000, 2500] },
     led: 'bays',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear4800',
     fan: {
         chip: 'ITE IT8613E',
@@ -34,7 +34,10 @@ export default {
             status: 'expected',
             note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. The Plus was reported to use outputs 2 and 3; UGREEN's own driver expects cpu on header 2 and case on header 3."
         },
-        case: { status: 'expected', note: 'Drawn after a photo of the Plus; the Pro was not compared.' },
+        case: {
+            status: 'expected',
+            note: "Front and rear after a photo of the Plus, the Pro was not compared; inside after UGREEN's manual; slot numbering assumed."
+        },
         sensors: { status: 'expected' }
     },
     sources: [

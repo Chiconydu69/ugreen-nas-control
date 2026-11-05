@@ -58,6 +58,13 @@ export function hardware(m: Model) {
     const second = slots.includes('system') ? 'system' : (slots[1] ?? 'm2');
     const nvmeSlots = m.caseView === 'none' ? ['pcie', 'pcie'] : [slots[0] ?? 'm2', second];
     const ports = m.lan?.maxMbit ?? [2500];
+    // All flash: the four M.2 slots stand in for the bays (the plugin lists them by PCIe address, front.ts withM2Bays).
+    const flash = !m.bays && m.caseView !== 'none';
+    const flashNvme = [
+        { id: 'nvme0', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:01:00.0', temp: 38, role: 'disk1', boot: false },
+        { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:02:00.0', temp: 41, role: 'parity', boot: false },
+        { id: 'nvme2', model: 'Samsung SSD 990 PRO 2TB', size_bytes: 2000 * GB, slot: 'm2', pci: '0000:03:00.0', temp: 47, role: 'cache', boot: false }
+    ];
     return {
         ok: true,
         model: m.fixtureDmi,
@@ -70,12 +77,14 @@ export function hardware(m: Model) {
             manufacturer: 'Micron',
             part_number: 'CT32G56C46S5'
         })),
-        nvme: [
-            { id: 'nvme3', model: 'Samsung SSD 990 PRO 2TB', size_bytes: 2000 * GB, slot: nvmeSlots[0], pci: 'x', temp: 44, role: 'cache', boot: false },
-            { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
-        ],
+        nvme: flash
+            ? flashNvme
+            : [
+                  { id: 'nvme3', model: 'Samsung SSD 990 PRO 2TB', size_bytes: 2000 * GB, slot: nvmeSlots[0], pci: 'x', temp: 44, role: 'cache', boot: false },
+                  { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
+              ],
         // The plugin knows the bays of the models with a case view only (backend/internal/fan/hardware.go layoutFor).
-        bays: m.caseView === 'none' ? [] : bays,
+        bays: m.caseView === 'none' || flash ? [] : bays,
         net: ports.map((max, i) => ({ name: `eth${i}`, link: i === 0, speed_mbit: i === 0 ? (max ?? 2500) : 0, max_mbit: max ?? 0 }))
     };
 }
@@ -242,7 +251,8 @@ export function status(m: Model) {
                 { iface: 'eth1', label: 'MAC', temp: 64 }
             ],
             disks: [{ name: 'disk2', device: 'sdd', temp: 47, standby: false, hdd: true }],
-            board: 30
+            board: 30,
+            not_connected: []
         },
         net_io: (m.lan?.maxMbit ?? [2500]).map((_, i) => ({ name: `eth${i}`, rx: 0, tx: 0 })),
         presets: {
@@ -303,7 +313,7 @@ export function status(m: Model) {
             'conflict-led': { conflicts: LED_RIVALS }
         },
         led: {
-            enabled: true,
+            enabled: m.led !== 'none',
             supported: m.led !== 'none',
             blocker: '',
             untested: m.verified.leds.status === 'expected',

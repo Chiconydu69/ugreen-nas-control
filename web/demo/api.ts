@@ -172,7 +172,7 @@ export function createDemo(model: Model, store: Store, opts: DemoOptions = {}) {
         const p = prefs();
         if (p.ui_lang) s.settings.ui_lang = p.ui_lang;
         if (p.ui_theme) s.settings.ui_theme = p.ui_theme;
-        s.led.enabled = state.led;
+        s.led.enabled = state.led && s.led.enabled;
         const secs = Math.floor(now() / 1000);
         for (const [i, nic] of s.net_io.entries()) {
             nic.rx += secs * (NET_IO_RATES[i]?.[0] ?? 0);

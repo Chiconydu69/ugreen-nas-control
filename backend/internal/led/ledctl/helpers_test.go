@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 )
@@ -170,6 +171,7 @@ type rig struct {
 	out  *bytes.Buffer
 	err  *bytes.Buffer
 	c    *Ctl
+	seq  atomic.Int64
 }
 
 // newRig builds a Ctl on a temp root; every path of Env points into it.
@@ -205,7 +207,12 @@ func (r *rig) write(rel, content string) {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		r.t.Fatal(err)
 	}
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+	// Atomic like a rename-into-place: a daemon reading in between must never see a truncated file.
+	tmp := filepath.Join(r.dir, fmt.Sprintf(".tmp-%d", r.seq.Add(1)))
+	if err := os.WriteFile(tmp, []byte(content), 0o644); err != nil {
+		r.t.Fatal(err)
+	}
+	if err := os.Rename(tmp, path); err != nil {
 		r.t.Fatal(err)
 	}
 }

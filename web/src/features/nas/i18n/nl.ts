@@ -200,12 +200,20 @@ export const nl: Record<Key, string> = {
     'leds.import_btn': 'Instellingen overnemen',
     'leds.import_after': 'Daarna kun je UGREEN LED Control verwijderen onder Plug-ins: de ingebouwde LED-besturing neemt het over.',
     'leds.imported': 'Instellingen overgenomen',
-    'case.unknown':
-        'Voor de {model} is er nog geen behuizingsweergave: die bestaat voor de DXP6800 Pro, de DXP4800 GT, de DXP4800 / Plus / Pro, de DXP8800 Plus, de DXP2800 en de iDX6011 / Pro.',
-    'leds.limited':
-        'Voor de {model} is er LED-besturing, systeeminfo en temperaturen. Ventilatorregeling bestaat alleen voor de modellen uit de modellenlijst (vaste bedrading, of na een test of bevestiging), de behuizingsweergave ook voor de DXP4800 / Plus / Pro, de DXP8800 Plus, de DXP2800 en de iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Voor de {model} is er LED-besturing, systeeminfo, temperaturen en de behuizingsweergave. Ventilatorregeling bestaat alleen voor de modellen uit de modellenlijst (vaste bedrading, of na een test of bevestiging).',
+    'model.box': 'Op de {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'LED-besturing omvat de bay-LED’s en de voedings-LED.',
+    'model.leds.power':
+        'LED-besturing omvat alleen de voedings-LED (vast wit zolang LED-besturing aan staat; kleur, helderheid en uitschakelen worden niet ondersteund).',
+    'model.leds.none': 'Er is geen LED-besturing.',
+    'model.fans.fixed': 'Ventilatorregeling is beschikbaar.',
+    'model.fans.probe': 'Ventilatorregeling start na een test die je bevestigt.',
+    'model.fans.confirm': 'Ventilatorregeling start nadat je de ventilatoren hebt bevestigd.',
+    'model.fans.none': 'Er is geen ventilatorregeling.',
+    'model.case.full': 'De behuizingsweergave toont voorkant, achterkant en binnenkant.',
+    'model.case.front_rear': 'De behuizingsweergave toont voorkant en achterkant.',
+    'model.case.none': 'Voor dit model is er nog geen behuizingsweergave.',
+    'model.unknown': 'De {model} staat nog niet in de modellenlijst.',
+    'model.all': 'Alle modellen',
     'leds.untested':
         'LED-besturing voor de {model} is niet getest: de controller is op alle UGREEN-modellen hetzelfde, maar de volgorde van de bays en de LED-nummers zijn voor dit model aangenomen of komen uit meldingen van andere plug-ins. Controleer met “Identificeren” of de juiste LED oplicht en meld problemen als issue.',
     'leds.warn_standalone':
@@ -252,6 +260,12 @@ export const nl: Record<Key, string> = {
     'in.front': 'Voorkant',
     'case.inside_hint_gt':
         'Het serviceluik aan de onderkant, voorkant links. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_8800':
+        'Het serviceluik aan de onderkant volgens de UGREEN-handleiding: twee RAM-sockets, M.2 eronder en ernaast; de PCIe-sleuf zit in het frame. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_like_8800plus':
+        'De binnenkant is getekend naar de DXP8800 Plus: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_4800':
+        'Het serviceluik aan de onderkant, naar de handleiding van UGREEN. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'in.slot_empty': '{label} · leeg',
     'nvme.boot': 'Opstart-SSD van Unraid',
     'nvme.role': 'SSD in groep “{name}”',
@@ -261,6 +275,15 @@ export const nl: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'vrij',
     'case.running_at': 'draait op {speed} MT/s (tot {max})',
+    'case.m2_hint':
+        'De vier M.2-slots vervangen de bays en zijn genummerd van 01 tot 04 zoals op het onderpaneel. Welke SSD in welk slot zit, is aangenomen uit de volgorde van de PCIe-adressen; wijkt jouw apparaat af, open dan een issue.',
+    'case.intro_noinside': 'De schijven in detail en de achterkant. De voorkant met de bays staat op het Overzicht.',
+    'case.intro_m2': 'De M.2-schijven in detail en de achterkant. De voorkant staat op het Overzicht.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Het servicepaneel aan de onderkant. Het geheugen is vastgesoldeerd, dus er zijn geen RAM-sleuven. M.2-1 / M.2-2 zijn op aanname genummerd; open een issue als jouw kast afwijkt.',
+    'in.idx6011_ram': 'RAM · {type} · vastgesoldeerd',
+    'in.idx6011_pcie': 'PCIe 4.0 x8-sleuf',
 
     'safety.intro': 'Grenzen die altijd winnen van de curves (niet in BIOS-modus).',
     'safety.min': 'Laagste ventilatortoerental',
@@ -323,7 +346,6 @@ export const nl: Record<Key, string> = {
     'models.col_fans': 'Ventilatoren',
     'models.st_verified': 'geverifieerd',
     'models.st_confirmed': 'bevestigd',
-    'models.st_reported': 'gemeld',
     'models.st_untested': 'niet getest',
     'models.st_power': 'alleen voedings-LED',
     'models.st_none': 'niet aangeboden',
@@ -331,7 +353,8 @@ export const nl: Record<Key, string> = {
     'models.case_fr': 'voorkant, achterkant',
     'models.mine': 'jouw apparaat',
     'models.footnote':
-        'Geverifieerd: getest door de auteur of door miskcoo. Bevestigd of gemeld: gebruikers zagen het op hun apparaat. Niet getest: de plug-in schakelt de LED’s in maar de bayvolgorde is aangenomen; controleer met “Identificeren”. Ventilatorregeling bestaat alleen waar de bedrading bekend is; op de andere modellen raakt de plug-in de ventilatorchip niet aan.',
+        'Geverifieerd: getest door de auteur of door miskcoo. Bevestigd: gebruikers zagen het op hun apparaat. Niet getest: de plug-in schakelt de LED’s in maar de bayvolgorde is aangenomen; controleer met “Identificeren”. Ventilatoren: ✓ bedrading bekend, regeling klaar; “na ventilatortest”: voer eerst de test uit en bevestig het resultaat, dan start de regeling; – de plug-in raakt de ventilatorchip niet aan.',
+    'models.fan_test': 'na ventilatortest',
     'about.tagline': 'Ventilatorregeling, LED-besturing en systeeminfo voor UGREEN NAS onder Unraid',
     'about.license_badge': 'MIT-licentie',
     'about.github_hint': 'Broncode, releases en wijzigingen',
@@ -342,8 +365,9 @@ export const nl: Record<Key, string> = {
     'about.help':
         'Help het project: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">testapparaten gezocht</a>, te leen of als gift. Of bevestig hierboven je apparaat.',
     'about.thanks': 'Met dank aan',
+    'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> en <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (ontwikkeling van UGREEN NAS Control; j3n57h0m45 ook de ondersteuning van de DXP4800 GT: ventilatoren via de IT5571, LED’s, behuizings- en systeemweergaven en het nieuwe ontwerp van de interface), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
     'language.label': 'Interfacetaal',
     'language.auto': 'Zoals Unraid',
     'theme.label': 'Kleurenschema',
@@ -469,6 +493,25 @@ export const nl: Record<Key, string> = {
         'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de twee RAM-sockets in het bodempaneel. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt.',
     'in.gt_cage': 'Schijvenkooi · linkerbinnenwand',
     'in.gt_panel': 'Bodempaneel',
+    'in.bottom_case': 'Bodembehuizing · vier M.2-sleuven',
+    'case.inside_hint_2800':
+        'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de ene SO-DIMM-socket in het bodempaneel. De nummering van de M.2-sleuven is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_480':
+        'De binnenkant volgens de UGREEN-handleiding: vier M.2-sleuven 01 tot 04 in de bodembehuizing, twee SO-DIMM-sockets onder het bodempaneel. Welke SSD in welke sleuf zit, is aangenomen uit de volgorde van de PCIe-adressen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_4800plus':
+        'De binnenkant is getekend naar de DXP4800 Plus: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_2800':
+        'De binnenkant is getekend naar de DXP2800: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_6800pro':
+        'De binnenkant is getekend naar de DXP6800 Pro: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'in.dh_cage': 'Schijvenkooi · zijwand',
+    'in.dh_board': 'Moederbord · onder',
+    'case.inside_hint_dx':
+        'Het binnenste staat niet in het materiaal van UGREEN; de slots zijn getekend zoals het onderpaneel van de DXP4800. RAM 1 / RAM 2 en M.2-1 / M.2-2 zijn op aanname genummerd; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dx4700':
+        'De hele kastweergave is getekend naar de DX4600 Pro: het moederbord van dit model is niet bekend. De slots zijn getekend zoals het bodempaneel van de DXP4800; de nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dh':
+        "Het binnenste naar de productrenders van UGREEN: de twee M.2-slots aan de zijkant van de schijvenkooi, de twee RAM-sockets op het moederbord eronder. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt. De tweede RAM-socket komt uit de specificaties van UGREEN; de foto's tonen één SO-DIMM.",
     ...panelNl,
     ...powerNl
 };

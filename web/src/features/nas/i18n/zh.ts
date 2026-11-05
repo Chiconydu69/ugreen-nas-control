@@ -195,10 +195,19 @@ export const zh: Record<Key, string> = {
     'leds.import_btn': '导入设置',
     'leds.import_after': '之后你可以在“插件”中卸载 UGREEN LED Control：内置的 LED 控制会取代它。',
     'leds.imported': '设置已导入',
-    'case.unknown': '{model} 暂无机箱视图：目前支持 DXP6800 Pro、DXP4800 GT、DXP4800 / Plus / Pro、DXP8800 Plus、DXP2800 以及 iDX6011 / Pro。',
-    'leds.limited':
-        '{model} 支持 LED 控制、系统信息和温度。风扇控制仅适用于型号列表中的机型（固定接线，或经检测或确认后）；机箱视图另外支持 DXP4800 / Plus / Pro、DXP8800 Plus、DXP2800 以及 iDX6011 / Pro。',
-    'leds.limited_fans': '{model} 支持 LED 控制、系统信息、温度和机箱视图。风扇控制仅适用于型号列表中的机型（固定接线，或经检测或确认后）。',
+    'model.box': '{model}：{leds}{fans}{case}',
+    'model.leds.bays': 'LED 控制涵盖盘位 LED 和电源 LED。',
+    'model.leds.power': 'LED 控制仅涵盖电源 LED（LED 控制开启时恒亮白色；不支持颜色、亮度和关闭）。',
+    'model.leds.none': '没有 LED 控制。',
+    'model.fans.fixed': '可使用风扇控制。',
+    'model.fans.probe': '风扇控制在你确认检测结果后启动。',
+    'model.fans.confirm': '风扇控制在你确认风扇后启动。',
+    'model.fans.none': '没有风扇控制。',
+    'model.case.full': '机箱视图显示正面、背面和内部。',
+    'model.case.front_rear': '机箱视图显示正面和背面。',
+    'model.case.none': '此型号暂无机箱视图。',
+    'model.unknown': '{model} 尚未列入型号列表。',
+    'model.all': '所有型号',
     'leds.untested':
         '{model} 的 LED 控制尚未测试：所有 UGREEN 型号的控制器相同，但此型号的盘位顺序和 LED 编号是推测的，或来自其他插件的反馈。请用“识别”确认亮起的是正确的 LED，如有问题请提交 issue。',
     'leds.warn_standalone':
@@ -244,6 +253,10 @@ export const zh: Record<Key, string> = {
     'in.ram_empty': '内存 {n} · 空',
     'in.front': '正面',
     'case.inside_hint_gt': '底部检修盖板，正面在左侧。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_8800':
+        '底部检修盖板，依据 UGREEN 手册绘制：两个内存插槽，M.2 位于其下方和旁边；PCIe 插槽在机架内部。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_like_8800plus': '内部按 DXP8800 Plus 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_4800': '底部检修盖板，依据 UGREEN 手册绘制。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'in.slot_empty': '{label} · 空',
     'nvme.boot': 'Unraid 启动 SSD',
     'nvme.role': '存储池 SSD“{name}”',
@@ -253,7 +266,14 @@ export const zh: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': '空闲',
     'case.running_at': '运行于 {speed} MT/s（最高 {max}）',
+    'case.m2_hint': '四个 M.2 插槽代替盘位，编号 01 至 04，与底部面板一致。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint': '机身底部的维护面板。内存为板载焊接，没有内存插槽。M.2-1 / M.2-2 的编号为推测；如果你的机器不同，请提交 issue。',
+    'in.idx6011_ram': '内存 · {type} · 板载',
+    'in.idx6011_pcie': 'PCIe 4.0 x8 插槽',
 
+    'case.intro_noinside': '硬盘详情和背面。带盘位的正面请见概览。',
+    'case.intro_m2': 'M.2 硬盘详情和背面。正面请见概览。',
     'safety.intro': '始终优先于曲线的上限（BIOS 模式下无效）。',
     'safety.min': '最低风扇转速',
     'safety.now_none_cpu': '无法读取，所有风扇 100 %',
@@ -311,7 +331,6 @@ export const zh: Record<Key, string> = {
     'models.col_fans': '风扇',
     'models.st_verified': '已验证',
     'models.st_confirmed': '已确认',
-    'models.st_reported': '已反馈',
     'models.st_untested': '未测试',
     'models.st_power': '仅电源 LED',
     'models.st_none': '不提供',
@@ -319,7 +338,8 @@ export const zh: Record<Key, string> = {
     'models.case_fr': '正面、背面',
     'models.mine': '你的设备',
     'models.footnote':
-        '已验证：由作者或 miskcoo 测试。已确认或已反馈：用户在自己的设备上验证过。未测试：插件会启用 LED，但盘位顺序是推测的；请用“识别”检查。只有在接线已知的型号上才有风扇控制；其他型号上插件不会操作风扇芯片。',
+        '已验证：由作者或 miskcoo 测试。已确认：用户在自己的设备上验证过。未测试：插件会启用 LED，但盘位顺序是推测的；请用“识别”检查。风扇：✓ 接线已知，风扇控制就绪；“风扇测试后”：先运行风扇测试并确认结果，之后风扇控制才会启动；– 插件不会操作风扇芯片。',
+    'models.fan_test': '风扇测试后',
     'about.tagline': '适用于 Unraid 上 UGREEN NAS 的风扇控制、LED 控制和系统信息',
     'about.license_badge': 'MIT 许可证',
     'about.github_hint': '源代码、发行版和更新记录',
@@ -330,8 +350,9 @@ export const zh: Record<Key, string> = {
     'about.help':
         '帮助本项目：<a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">征集测试设备</a>，可借用或捐赠。也可以在上方确认你的设备。',
     'about.thanks': '致谢',
+    'about.maintainers': '维护者',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> 和 <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a>（UGREEN NAS Control 的开发；j3n57h0m45 还负责 DXP4800 GT 的支持：通过 IT5571 的风扇控制、LED、机箱和系统视图，以及界面的重新设计）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及所有在自己的型号上测试过的人',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及所有在自己的型号上测试过的人',
     'language.label': '界面语言',
     'language.auto': '与 Unraid 相同',
     'theme.label': '配色方案',
@@ -455,6 +476,22 @@ export const zh: Record<Key, string> = {
         '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，两个内存插槽位于底部面板。两组编号均为假设；如果你的机器不同，请提交 issue。',
     'in.gt_cage': '硬盘仓 · 左内壁',
     'in.gt_panel': '底部面板',
+    'in.bottom_case': '底壳 · 四个 M.2 插槽',
+    'case.inside_hint_2800':
+        '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，唯一的 SO-DIMM 插槽位于底部面板。M.2 插槽编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_480':
+        '根据 UGREEN 手册绘制的内部视图：底壳内四个 M.2 插槽 01 至 04，底部面板下两个 SO-DIMM 插槽。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_like_4800plus': '内部按 DXP4800 Plus 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_2800': '内部按 DXP2800 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_6800pro': '内部按 DXP6800 Pro 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'in.dh_cage': '硬盘笼 · 侧壁',
+    'in.dh_board': '主板 · 底部',
+    'case.inside_hint_dx':
+        'UGREEN 的资料没有展示内部结构，插槽按 DXP4800 的底部面板绘制。RAM 1 / RAM 2 和 M.2-1 / M.2-2 的编号为假设；如与实机不符，请提交 issue。',
+    'case.inside_hint_dx4700':
+        '整个机箱视图按 DX4600 Pro 绘制：本型号自身的主板尚不清楚。插槽按 DXP4800 底部面板绘制；RAM 与 M.2 的编号为假设；如与实机不符，请提交 issue。',
+    'case.inside_hint_dh':
+        '内部结构依据 UGREEN 的产品渲染图：两个 M.2 插槽在硬盘笼侧面，两个内存插槽在下方的主板上。两组编号均为假设；如与实机不符，请提交 issue。 第二个内存插槽依据 UGREEN 的规格说明，照片中只能看到一条 SO-DIMM。',
     ...panelZh,
     ...powerZh
 };
