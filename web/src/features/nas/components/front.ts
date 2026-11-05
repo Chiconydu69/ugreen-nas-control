@@ -189,7 +189,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             rear: [],
             pcie: true,
             inside6800: true,
-            hint: 'case.inside_hint_ultra'
+            hint: 'case.inside_hint_like_6800pro'
         }
     ],
     [
@@ -206,7 +206,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             rear: [],
             pcie: true,
             inside8800: true,
-            hint: 'case.inside_hint_ultra'
+            hint: 'case.inside_hint_like_8800plus'
         }
     ],
     // DXP8800 Plus: eight bays; the back after a photo (rear8800Html); the inside after UGREEN's manual. No fan control.

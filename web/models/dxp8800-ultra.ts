@@ -20,7 +20,7 @@ export default {
         fans: { status: 'unsupported' },
         case: {
             status: 'expected',
-            note: "Front and rear after UGREEN's product renders. No photo of the inside exists: drawn after the DXP8800 Plus, slot positions and numbering assumed."
+            note: "Front and rear after UGREEN's product renders. The inside is drawn after the DXP8800 Plus (photos of the Plus used as proxy), slot positions and numbering assumed."
         },
         sensors: { status: 'expected' }
     },
