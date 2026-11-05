@@ -165,10 +165,13 @@ func (c *Chip) Temps() []*int {
 	out := make([]*int, len(it8613Temps))
 	for i, reg := range it8613Temps {
 		v, err := c.Read(reg)
-		if err != nil || v == 0x80 {
+		if err != nil {
 			continue
 		}
 		t := int(int8(v))
+		if v == 0x80 || !plausibleTemp(t) {
+			continue
+		}
 		out[i] = &t
 	}
 	return out

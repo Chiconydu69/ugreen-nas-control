@@ -251,7 +251,8 @@ export function status(m: Model) {
                 { iface: 'eth1', label: 'MAC', temp: 64 }
             ],
             disks: [{ name: 'disk2', device: 'sdd', temp: 47, standby: false, hdd: true }],
-            board: 30
+            board: 30,
+            not_connected: []
         },
         net_io: (m.lan?.maxMbit ?? [2500]).map((_, i) => ({ name: `eth${i}`, rx: 0, tx: 0 })),
         presets: {

@@ -56,6 +56,8 @@ type Sensors struct {
 	GPU       *int      `json:"gpu"`
 	Disks     []Disk    `json:"disks"`
 	Board     *int      `json:"board"`
+	// NotConnected lists the inputs whose reading is not a temperature (an unwired thermistor); they are left out above.
+	NotConnected []NotConnected `json:"not_connected"`
 }
 
 func readInt(path string) (int, bool) {
@@ -72,31 +74,65 @@ func readString(path string) string {
 	return strings.TrimSpace(string(b))
 }
 
+// NotConnected is one input that reports a value no sensor can have; Raw is that value in °C.
+type NotConnected struct {
+	Source string `json:"source"`
+	Name   string `json:"name"`
+	Raw    int    `json:"raw"`
+}
+
+// Plausible temperature range in °C. Outside it the input is not wired (-128 from an empty ITE input, -21 from an ACPI zone
+// without a sensor): it is never shown or used.
+const (
+	tempMin = -10
+	tempMax = 125
+)
+
+func plausibleTemp(t int) bool { return t >= tempMin && t <= tempMax }
+
+// temp reads a hwmon input in °C; an implausible reading is recorded in NotConnected and returns nil.
+func (s *Sensors) temp(source, path string) *int {
+	t := milli(path)
+	if t == nil || plausibleTemp(*t) {
+		return t
+	}
+	name := readString(strings.TrimSuffix(path, "_input") + "_label")
+	if name == "" {
+		name = strings.TrimSuffix(filepath.Base(path), "_input")
+	}
+	s.NotConnected = append(s.NotConnected, NotConnected{Source: source, Name: name, Raw: *t})
+	return nil
+}
+
 func milli(path string) *int {
 	n, ok := readInt(path)
 	if !ok {
 		return nil
 	}
 	t := (n + 500) / 1000
+	if n < 0 {
+		t = (n - 500) / 1000
+	}
 	return &t
 }
 
 // ReadSensors collects CPU (coretemp, or k10temp on AMD), NVMe (hwmon) and Unraid's disk temperatures.
 // Disks are only read from disks.ini, so a spun-down disk is never woken up.
 func ReadSensors() Sensors {
-	s := Sensors{NVMeExtra: []Temp{}, NIC: []NICTemp{}}
+	s := Sensors{NVMeExtra: []Temp{}, NIC: []NICTemp{}, NotConnected: []NotConnected{}}
 
 	dirs, _ := filepath.Glob(filepath.Join(hwmonDir, "hwmon*"))
 	sort.Slice(dirs, func(i, j int) bool { return hwmonNumber(dirs[i]) < hwmonNumber(dirs[j]) })
 
 	for _, dir := range dirs {
-		switch readString(filepath.Join(dir, "name")) {
+		chip := readString(filepath.Join(dir, "name"))
+		switch chip {
 		case "coretemp":
 			inputs, _ := filepath.Glob(filepath.Join(dir, "temp*_input"))
 			sort.Slice(inputs, func(i, j int) bool { return tempNumber(inputs[i]) < tempNumber(inputs[j]) })
 			for _, in := range inputs {
 				label := readString(strings.TrimSuffix(in, "_input") + "_label")
-				t := milli(in)
+				t := s.temp(chip, in)
 				if strings.HasPrefix(label, "Package") {
 					if s.CPU == nil {
 						s.CPU = t
@@ -111,7 +147,7 @@ func ReadSensors() Sensors {
 			sort.Slice(inputs, func(i, j int) bool { return tempNumber(inputs[i]) < tempNumber(inputs[j]) })
 			for _, in := range inputs {
 				label := readString(strings.TrimSuffix(in, "_input") + "_label")
-				t := milli(in)
+				t := s.temp(chip, in)
 				switch label {
 				case "Tdie":
 					if t != nil {
@@ -127,22 +163,22 @@ func ReadSensors() Sensors {
 			}
 		case "nvme":
 			name := filepath.Base(readLink(filepath.Join(dir, "device")))
-			s.NVMe = append(s.NVMe, Temp{Name: name, Label: readString(filepath.Join(dir, "temp1_label")), Temp: milli(filepath.Join(dir, "temp1_input"))})
+			s.NVMe = append(s.NVMe, Temp{Name: name, Label: readString(filepath.Join(dir, "temp1_label")), Temp: s.temp(chip, filepath.Join(dir, "temp1_input"))})
 			// temp2 and up (Sensor 1, ...): shown only; their max/crit are not trustworthy.
 			extra, _ := filepath.Glob(filepath.Join(dir, "temp*_input"))
 			sort.Slice(extra, func(i, j int) bool { return tempNumber(extra[i]) < tempNumber(extra[j]) })
 			for _, in := range extra {
 				if tempNumber(in) > 1 {
-					s.NVMeExtra = append(s.NVMeExtra, Temp{Name: name, Label: readString(strings.TrimSuffix(in, "_input") + "_label"), Temp: milli(in)})
+					s.NVMeExtra = append(s.NVMeExtra, Temp{Name: name, Label: readString(strings.TrimSuffix(in, "_input") + "_label"), Temp: s.temp(chip, in)})
 				}
 			}
 		case "acpitz":
 			if s.Board == nil {
-				s.Board = milli(filepath.Join(dir, "temp1_input"))
+				s.Board = s.temp(chip, filepath.Join(dir, "temp1_input"))
 			}
 		case "amdgpu", "nouveau", "i915", "xe":
 			if s.GPU == nil {
-				s.GPU = milli(filepath.Join(dir, "temp1_input"))
+				s.GPU = s.temp(chip, filepath.Join(dir, "temp1_input"))
 			}
 		default:
 			if iface := nicOf(dir); iface != "" {
@@ -150,7 +186,7 @@ func ReadSensors() Sensors {
 				sort.Slice(inputs, func(i, j int) bool { return tempNumber(inputs[i]) < tempNumber(inputs[j]) })
 				for _, in := range inputs {
 					label := strings.TrimSuffix(readString(strings.TrimSuffix(in, "_input")+"_label"), " Temperature")
-					s.NIC = append(s.NIC, NICTemp{Iface: iface, Label: label, Temp: milli(in)})
+					s.NIC = append(s.NIC, NICTemp{Iface: iface, Label: label, Temp: s.temp(chip, in)})
 				}
 			}
 		}
@@ -231,7 +267,7 @@ func readDisks(path string) []Disk {
 			Standby: cur["spundown"] == "1",
 			HDD:     cur["rotational"] != "0",
 		}
-		if n, err := strconv.Atoi(cur["temp"]); err == nil {
+		if n, err := strconv.Atoi(cur["temp"]); err == nil && plausibleTemp(n) {
 			d.Temp = &n
 		}
 		disks = append(disks, d)
