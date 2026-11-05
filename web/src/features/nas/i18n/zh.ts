@@ -480,6 +480,9 @@ export const zh: Record<Key, string> = {
         '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，唯一的 SO-DIMM 插槽位于底部面板。M.2 插槽编号为假设；如果你的机器不同，请提交 issue。',
     'case.inside_hint_480':
         '根据 UGREEN 手册绘制的内部视图：底壳内四个 M.2 插槽 01 至 04，底部面板下两个 SO-DIMM 插槽。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_like_4800plus': '内部按 DXP4800 Plus 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_2800': '内部按 DXP2800 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_6800pro': '内部按 DXP6800 Pro 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
     ...panelZh,
     ...powerZh
 };

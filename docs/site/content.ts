@@ -71,7 +71,7 @@ export const TECH = {
     },
     case: {
         items: [
-            'Inside view (M.2, system, PCIe) on the DXP6800 Pro and DXP4800 GT (verified), and drawn for the DXP6800 and Plus (expected); front and rear on the other models that have a case view.',
+            'Inside view (M.2, system, PCIe) on the DXP6800 Pro and DXP4800 GT (verified), and drawn for the DXP6800 and Plus (expected); the DXP4800S, DXP2800S and DXP6800S are drawn after their sister models (expected); front and rear on the other models that have a case view.',
             "The demo above is the plugin's own interface on sample data, not a mockup."
         ],
         doc: 'hardware.md'

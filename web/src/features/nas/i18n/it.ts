@@ -494,6 +494,12 @@ export const it: Record<Key, string> = {
         "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, l'unico zoccolo SO-DIMM nel pannello inferiore. La numerazione degli slot M.2 è presunta; apri una issue se il tuo box è diverso.",
     'case.inside_hint_480':
         "L'interno secondo il manuale UGREEN: quattro slot M.2 da 01 a 04 nel fondo del case, due zoccoli SO-DIMM sotto il pannello inferiore. Quale SSD stia in quale slot è presunto dall'ordine degli indirizzi PCIe; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_4800plus':
+        "L'interno è disegnato sul DXP4800 Plus: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_2800':
+        "L'interno è disegnato sul DXP2800: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_6800pro':
+        "L'interno è disegnato sul DXP6800 Pro: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
     ...panelIt,
     ...powerIt
 };
