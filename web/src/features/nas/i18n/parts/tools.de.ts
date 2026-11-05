@@ -25,7 +25,7 @@ export const toolsDe: Record<keyof typeof toolsEn, string> = {
     'profiles.new': 'Neu',
     'profiles.no_diff': 'Es würde sich nichts ändern.',
     'profiles.unchanged': '{n} Einstellungen sind schon gleich.',
-    'profiles.notes': 'Bitte beachten',
+    'profiles.notes': 'Hinweise',
     'profiles.skipped': 'Nicht übernommen',
     'profiles.rival': '{name} läuft und steuert die Lüfter noch. Beende es zuerst, sonst haben diese Einstellungen keine Wirkung.',
     'profiles.backup': 'Deine bisherige Einstellungsdatei bleibt als fan.cfg.bak erhalten.',
@@ -65,19 +65,19 @@ export const toolsDe: Record<keyof typeof toolsEn, string> = {
     'probe.forget': 'Zuordnung verwerfen',
     'probe.forgot': 'Zuordnung entfernt, Lüftersteuerung ist aus',
     'probe.map_error': 'Die gespeicherte Lüfterzuordnung passt nicht zu diesem NAS: {error}',
-    'tools.load_failed': 'Nicht ladbar: {error}',
+    'tools.load_failed': 'Laden fehlgeschlagen: {error}',
     'probe.tachs': 'Drehzahl-Eingänge',
     'probe.read_tachs': 'Jetzt lesen',
     'probe.tach_row': '{id}: {rpm} U/min',
     'watchdog.title': 'Watchdog',
-    'watchdog.state.armed': 'Vom BIOS scharf geschaltet, vom Plugin gefüttert',
+    'watchdog.state.armed': 'Vom BIOS aktiviert, vom Plugin gefüttert',
     'watchdog.state.off': 'Aus: das BIOS aktiviert den Hardware-Watchdog nicht',
     'watchdog.state.action_needed': 'Handlungsbedarf',
     'watchdog.hint_action':
-        'Der Watchdog ist scharf, wurde aber länger nicht gefüttert. Das NAS kann sich selbst neu starten. Prüfe, ob der Lüfterdienst läuft.',
+        'Der Watchdog ist aktiv, wurde aber länger nicht gefüttert. Das NAS kann sich selbst neu starten. Prüfe, ob die Lüftersteuerung läuft.',
     'watchdog.none': 'Noch kein Messwert',
     'watchdog.hint_kill':
-        'Solange der BIOS-Watchdog scharf ist, lässt ein hartes Beenden des Lüfterdienstes (kill -9, Speichermangel) ihn ungefüttert, und das NAS startet nach der Wartezeit neu. Normales Stoppen oder Neustarten ist sicher.',
+        'Solange der BIOS-Watchdog aktiv ist, lässt ein hartes Beenden der Lüftersteuerung (kill -9, Speichermangel) ihn ungefüttert, und das NAS startet nach der Wartezeit neu. Normales Stoppen oder Neustarten ist sicher.',
     'backlight.title': 'Display-Helligkeit',
     'backlight.hint': 'Helligkeit des LCD an der Front.'
 };

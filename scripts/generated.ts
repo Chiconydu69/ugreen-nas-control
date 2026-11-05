@@ -21,8 +21,11 @@ export const WEB_ICONS: { svg: string; size: number; out: string }[] = [
     { svg: 'web/assets/icon-small.svg', size: 64, out: '.build/plugin/icons/ugreen-nas-control.png' }
 ];
 
-/** Blocks rendered into hand-written files (docs/tools/gen-docs.ts). Tracked: GitHub renders them. */
-export const DOC_FILES = ['README.md', 'docs/hardware.md'] as const;
+/** The model registry as JSON for the backend (go:embed in backend/internal/nasctl), written by docs/tools/gen-docs.ts. Tracked: a Go build needs it in a clean checkout. */
+export const REGISTRY_JSON = 'backend/internal/nasctl/models.json';
+
+/** Blocks rendered into hand-written files and the registry JSON (docs/tools/gen-docs.ts). Tracked: GitHub renders the docs. */
+export const DOC_FILES = ['README.md', 'docs/hardware.md', REGISTRY_JSON] as const;
 
 /** Written by the release tooling (plugin/tools/changes.ts, plugin/tools/plg.ts). Tracked: installed systems read the plg from main. */
 export const RELEASE_FILES = ['CHANGELOG.md', 'plugin/ugreen-nas-control.plg'] as const;

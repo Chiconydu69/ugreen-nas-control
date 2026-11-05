@@ -86,7 +86,9 @@ func getLayout() string {
 	defer layoutState.mu.Unlock()
 
 	if !layoutState.set {
-		layoutState.v, layoutState.set = detectLayout(hw.ProductName(hw.DMIDir)), true
+		product := hw.ProductName(hw.DMIDir)
+		layoutState.v, layoutState.set = detectLayout(product), true
+		seedFrameOrder(layoutState.v, product)
 	}
 
 	return layoutState.v
@@ -100,7 +102,10 @@ func SetLayout(v string) {
 
 // UseProduct picks the layout from a model name given by the caller (UGREEN_PRODUCT, a test DMI file);
 // UGREEN_LAYOUT still wins.
-func UseProduct(product string) { SetLayout(detectLayout(product)) }
+func UseProduct(product string) {
+	SetLayout(detectLayout(product))
+	seedFrameOrder(getLayout(), product)
+}
 
 func detectLayout(product string) string {
 	if v := testenv.Get("UGREEN_LAYOUT"); v != "" {

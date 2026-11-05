@@ -20,7 +20,7 @@ export const inputsEs: Record<keyof typeof inputsEn, string> = {
     'inputs.drives': 'Discos',
     'inputs.no_drives': 'No se encontraron discos.',
     'inputs.drives_hint': 'Sin marcar: todos los discos del array y de la caché. Los discos en reposo se omiten.',
-    'inputs.standby': 'En espera',
+    'inputs.standby': 'En reposo',
     'inputs.parts': 'Fuentes',
     'inputs.parts_hint': 'Cuenta la más alta de entre {min} y {max} fuentes.',
     'inputs.test': 'Probar',

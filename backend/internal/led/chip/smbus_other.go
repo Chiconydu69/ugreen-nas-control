@@ -39,3 +39,5 @@ func (b *bus) status(string) (ledStatus, error) {
 }
 
 func (b *bus) busPath() string { return b.path }
+
+func (b *bus) detect() error { return errNotLinux }

@@ -12,8 +12,8 @@ export default {
     m2: null,
     lan: { maxMbit: [10000] },
     led: 'power',
-    caseView: 'none',
-    caseVariant: 'none',
+    caseView: 'front-rear',
+    caseVariant: 'rear480',
     fan: null,
     verified: {
         leds: {
@@ -24,12 +24,12 @@ export default {
         },
         fans: {
             status: 'unsupported',
-            note: "UGREEN's fan driver expects cpu on header 3 and case fans on headers 2 and 4; header 4 is unconfirmed, so there is no fan control and no case view."
+            note: "UGREEN's fan driver expects cpu on header 3 and case fans on headers 2 and 4; header 4 is unconfirmed, so there is no fan control."
         },
-        case: { status: 'unsupported' },
+        case: { status: 'expected', note: "Drawn after UGREEN's manual (front, rear ports, four M.2 slots as drives); slot order assumed." },
         sensors: { status: 'expected' }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp480t-plus-nas-storage', 'https://github.com/miskcoo/ugreen_leds_controller/issues/6'],
-    note: 'All-flash model: no SATA bays, four M.2 slots, one 10G LAN port. Only the power LED works.',
+    note: 'All-flash model: no SATA bays, four M.2 slots (shown as drives in the case view), one 10G LAN port. Only the power LED works.',
     shots: false
 } satisfies Model;

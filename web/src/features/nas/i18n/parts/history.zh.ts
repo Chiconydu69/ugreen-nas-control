@@ -1,10 +1,10 @@
 import type { historyEn } from './history.en';
 
 export const historyZh: Record<keyof typeof historyEn, string> = {
-    'nav.history': '历史',
+    'nav.history': '历史记录',
     'hist.sub': '每个风扇的运行情况，以及是哪个来源决定了它的转速。',
     'hist.title': '风扇历史',
-    'hist.note': '仅保存在风扇服务的内存中，不会写入闪存盘。服务重启后历史重新开始。',
+    'hist.note': '仅保存在风扇服务的内存中，不会写入 U 盘（Flash）。服务重启后历史重新开始。',
     'hist.since': '记录始于 {time}',
     'hist.range': '时间范围',
     'hist.range_1h': '1 小时',
@@ -42,17 +42,17 @@ export const historyZh: Record<keyof typeof historyEn, string> = {
     'hist.src.emergency': '紧急：{reason}',
     'hist.src.bios': '由 BIOS 控制风扇',
     'hist.src.rival': '另一个风扇控制器',
-    'hist.src.calibration': '正在校准',
+    'hist.src.calibration': '正在测量',
     'hist.src.other': '其他来源',
     'hist.mod.quiet': '静音时段上限',
     'hist.mod.mover': 'Mover 提高了转速',
-    'hist.mod.parity': '校验检查提高了转速',
-    'hist.mod.job': 'Mover 或校验检查提高了转速',
+    'hist.mod.parity': '奇偶校验提高了转速',
+    'hist.mod.job': 'Mover 或奇偶校验提高了转速',
     'hist.mod.floor': '最低转速',
     'hist.mod.shape': '斜率或死区',
     'hist.mod.missing': '来源无法读取，使用了其他规则',
     'hist.mod.emergency': '紧急，100 %',
-    'hist.now': '当前 {pct} % · {rpm} 转/分',
+    'hist.now': '当前 {pct} % · {rpm} rpm',
     'hist.now_by': '由 {source} 控制',
     'hist.tip_avg': '{s} 秒平均值',
     'hist.tip_speed': '转速',
@@ -66,6 +66,6 @@ export const historyZh: Record<keyof typeof historyEn, string> = {
     'hist.col_limits': '限制',
     'hist.empty_stopped': '风扇服务未运行，因此没有历史记录。',
     'hist.empty_wait': '暂无数据，前几个数据点将在 10 秒内出现。',
-    'hist.failed': '无法加载历史：{error}',
+    'hist.failed': '无法加载历史记录：{error}',
     'hist.summary': '{name}：转速 {min} 至 {max} %，最近 {pct} %，时间 {from} 至 {to}。'
 };

@@ -11,11 +11,13 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"time"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan/conflict"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fsx"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/chip"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/proc"
 )
 
@@ -131,6 +133,11 @@ type Ctl struct {
 	Sleep func(time.Duration)
 	// Tick is the daemon's loop period (200 ms).
 	Tick time.Duration
+	// RejectBackoff is the first wait before the daemon asks a controller that rejects every command again; it
+	// doubles up to RejectBackoffMax. Zero: 30 s and 10 min.
+	RejectBackoff, RejectBackoffMax time.Duration
+
+	rejected atomic.Bool // the chip tool exited with chip.ExitRejected since the daemon last looked
 
 	product string
 	bays    int
@@ -227,7 +234,12 @@ func (c *Ctl) requireLED(name string) bool {
 // tool runs one chip command with the script's stdout/stderr and returns the exit code.
 // Slow blink/breath commands also leave a phase stamp for the web preview.
 func (c *Ctl) tool(args ...string) int {
+	// The controller rejected a command a moment ago: the next ones would only wait through their retries.
+	if c.rejected.Load() {
+		return chip.ExitRejected
+	}
 	if rc := c.Chip.Exec(args, c.Out, c.Err); rc != 0 {
+		c.noteRejected(rc)
 		return rc
 	}
 	c.stampPhase(args)
@@ -246,7 +258,15 @@ func (c *Ctl) toolOut(showErr bool, args ...string) (string, int) {
 	if rc == 0 {
 		c.stampPhase(args)
 	}
+	c.noteRejected(rc)
 	return sb.String(), rc
+}
+
+// noteRejected remembers that the controller rejects every command, for the daemon to back off.
+func (c *Ctl) noteRejected(rc int) {
+	if rc == chip.ExitRejected {
+		c.rejected.Store(true)
+	}
 }
 
 // stampPhase notes when a slow blink/breath was sent, so the browser can start its

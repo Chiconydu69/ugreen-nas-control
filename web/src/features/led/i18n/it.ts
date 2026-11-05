@@ -3,7 +3,7 @@ import type { Key } from './en';
 export const it: Record<Key, string> = {
     'alerts.title': 'Avvisi di Unraid',
     'alerts.intro':
-        'Finché Unraid ha notifiche non lette, il LED di alimentazione lampeggia. Quando le leggi o le archivi in Unraid, torna normale. Controllo ogni minuto.',
+        'Finché Unraid ha notifiche non lette, il LED di alimentazione lampeggia. Quando le leggi o le archivi in Unraid, torna normale. Il plugin controlla ogni minuto.',
     'alerts.enable': 'Mostra gli avvisi sul LED di alimentazione',
     'alerts.level': 'Mostra per',
     'alerts.level_warning': 'Avvertenze e avvisi',
@@ -11,7 +11,7 @@ export const it: Record<Key, string> = {
     'alerts.color': 'Colore',
     'alerts.state_off': 'Disattivato – il LED di alimentazione non mostra le notifiche di Unraid.',
     'alerts.state_none': 'Nessuna notifica non letta.',
-    'alerts.state_active': '{n} notifica/notifiche non letta/e – il LED di alimentazione lampeggia.',
+    'alerts.state_active': 'Notifiche non lette: {n} – il LED di alimentazione lampeggia.',
     'alerts.saved': 'Avvisi salvati',
     'warn.title': 'Il monitor LED di «ugreenleds-driver» è in esecuzione.',
     'warn.text':
@@ -87,8 +87,8 @@ export const it: Record<Key, string> = {
     'bays.errors': '{n} errori di lettura/scrittura',
     'case.error': 'Errore',
     'sync.check': 'Controllo di parità in corso: {percent} %',
-    'sync.recon': 'Ricostruzione in corso: {percent} %',
-    'sync.clear': 'Azzeramento del disco: {percent} %',
+    'sync.recon': 'Ricostruzione dei dati in corso: {percent} %',
+    'sync.clear': 'Pulizia del disco in corso: {percent} %',
     'display.title': 'Visualizzazione dello stato',
     'display.sync': 'Mostra controllo di parità e ricostruzione',
     'display.sync_hint':
@@ -104,7 +104,7 @@ export const it: Record<Key, string> = {
     'display.smart_hint':
         'Un vano si accende con il colore di avvertimento quando aumentano i settori riallocati, in sospeso o non correggibili oppure Unraid conta errori di lettura/scrittura.',
     'display.color_mode': 'Colore dei LED dei dischi',
-    'display.color_own': 'Colore proprio',
+    'display.color_own': 'Colore scelto',
     'display.color_temperature': 'In base alla temperatura del disco',
     'display.netdev': 'Il LED di rete mostra',
     'display.netdev_activity': 'Collegamento e traffico',
@@ -135,7 +135,7 @@ export const it: Record<Key, string> = {
     'display.standby_pulse': 'Respiro lento',
     'display.smart_color': 'Colore per gli avvisi SMART',
     'display.error': 'Mostra gli errori dei dischi',
-    'display.error_hint': 'Un vano con un disco disattivato o mancante si accende con il colore di errore. Disattivato: mantiene il proprio colore.',
+    'display.error_hint': 'Un vano con un disco disabilitato o mancante si accende con il colore di errore. Disattivato: mantiene il proprio colore.',
     'display.activity': 'Lampeggia con l’attività del disco',
     'display.activity_hint': 'Il LED di un vano lampeggia mentre il suo disco legge o scrive. Disattivato: resta fisso.',
     'bays.smart': 'SMART: {list}',
@@ -156,15 +156,15 @@ export const it: Record<Key, string> = {
     'disk.DISK_OK': 'OK',
     'disk.DISK_NP': 'non assegnato',
     'disk.DISK_INVALID': 'non valido',
-    'disk.DISK_DSBL': 'disattivato',
-    'disk.DISK_DSBL_NEW': 'disattivato (nuovo)',
+    'disk.DISK_DSBL': 'disabilitato',
+    'disk.DISK_DSBL_NEW': 'disabilitato (nuovo)',
     'disk.DISK_WRONG': 'disco sbagliato',
     'disk.DISK_NP_MISSING': 'mancante',
     'disk.DISK_NEW': 'nuovo',
 
     'night.title': 'Modalità notte',
     'night.intro':
-        'Attenua o spegni a orari fissi ogni giorno – anche a cavallo della mezzanotte, ad es. dalle 22:00 alle 07:00. In modalità stato seguono i LED di dischi e rete; i LED spenti di notte non lampeggiano.',
+        'Attenua o spegne i LED a orari fissi ogni giorno, anche a cavallo della mezzanotte, ad es. dalle 22:00 alle 07:00. In modalità stato valgono anche per i LED di dischi e rete; i LED spenti di notte non lampeggiano.',
     'night.enable': 'Attiva la modalità notte',
     'night.start': 'Inizio',
     'night.end': 'Fine',

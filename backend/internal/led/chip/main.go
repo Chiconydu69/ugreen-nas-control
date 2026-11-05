@@ -56,6 +56,16 @@ func (c *cli) fail(err error) int {
 	return 1
 }
 
+// failErr is fail with the exit code of the state: ExitRejected when the controller rejects everything.
+func (c *cli) failErr(err error) int {
+	rc := c.fail(err)
+	if errors.Is(err, ErrRejected) {
+		return ExitRejected
+	}
+
+	return rc
+}
+
 func (c *cli) usageError() int {
 	_, _ = fmt.Fprint(c.err, usage)
 	return 2
@@ -176,8 +186,11 @@ func (c *cli) run(args []string) int {
 	case "probe":
 		var found []string
 		for _, name := range leds {
-			if _, err := b.status(name); err == nil {
+			_, err := b.status(name)
+			if err == nil {
 				found = append(found, name)
+			} else if errors.Is(err, ErrRejected) {
+				return c.failErr(err) // the other LEDs would fail the same way, five retries each
 			}
 		}
 		c.printJSON(map[string]any{"bus": b.busPath(), "address": probeAddress(b), "leds": found})
@@ -191,10 +204,10 @@ func (c *cli) run(args []string) int {
 			s, err := b.status(name)
 			if err != nil {
 				// "all" lists what exists; a named LED that doesn't answer is an error.
-				if args[1] == "all" {
+				if args[1] == "all" && !errors.Is(err, ErrRejected) {
 					continue
 				}
-				return c.fail(err)
+				return c.failErr(err)
 			}
 			statuses[name] = s
 		}
@@ -214,7 +227,7 @@ func (c *cli) run(args []string) int {
 		for _, name := range leds {
 			id, _ := ledID(name)
 			if err := b.change(id, command, params); err != nil {
-				return c.fail(fmt.Errorf("%s: %w", name, err))
+				return c.failErr(fmt.Errorf("%s: %w", name, err))
 			}
 		}
 	}

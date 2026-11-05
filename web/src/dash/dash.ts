@@ -9,7 +9,7 @@ import { type TempKind, deg, tempClass } from '../core/format';
 import { isStatusResponse } from '../core/guard';
 import { escapeHtml } from '../core/html';
 import { luminance } from '../core/theme';
-import { miniFrontHtml } from '../features/nas/components/front';
+import { miniFrontHtml, withM2Bays } from '../features/nas/components/front';
 import { fanName } from '../features/nas/names';
 import { t, tRaw } from '../features/nas/text';
 
@@ -253,7 +253,7 @@ async function load(root: HTMLElement): Promise<void> {
             window.UNCPoll.json<HardwareResponse>(`${API}?action=hardware`, 55000).catch(() => null),
             fetchLeds(root)
         ]);
-        const hw = raw && raw.ok !== false ? raw : null;
+        const hw = raw && raw.ok !== false ? withM2Bays(raw) : null;
 
         paintFront(root, hw, led);
         set(root.querySelector('[data-nvme]'), ssdChips(hw?.nvme || []));

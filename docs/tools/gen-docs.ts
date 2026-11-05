@@ -8,7 +8,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { loadModels } from '../../web/models/index';
-import { ALL_OUTPUTS, DOC_FILES } from '../../scripts/generated';
+import { ALL_OUTPUTS, DOC_FILES, REGISTRY_JSON } from '../../scripts/generated';
 import { format } from '../../scripts/format';
 import { CAPABILITIES, type Capability, type Evidence, type Model, type Overall, SERIES, monthYear, overallStatus } from '../../web/models/schema';
 import { CAPABILITY_LABEL, EVIDENCE_HELP, EVIDENCE_LABEL, OVERALL_HELP, OVERALL_LABEL, checkText } from '../site/content';
@@ -116,7 +116,29 @@ function demoLinks(): string {
     return models.map(m => `- [${m.name}](${SITE}/demo/?model=${m.id})`).join('\n');
 }
 
-const RENDER: Record<(typeof DOC_FILES)[number], () => string> = {
+/** The registry as the backend's `ugreen-nas-ctl diag` reads it (go:embed): what each model is and how well each capability is known. */
+function registryJson(): string {
+    const out = models.map(m => ({
+        id: m.id,
+        name: m.name,
+        dmiPattern: m.dmiPattern,
+        fixtureDmi: m.fixtureDmi,
+        cpu: m.cpu,
+        bays: m.bays,
+        m2Slots: m.m2Slots,
+        m2: m.m2,
+        lan: m.lan,
+        led: m.led,
+        caseView: m.caseView,
+        fan: m.fan,
+        overall: overallStatus(m),
+        verified: m.verified,
+        note: m.note
+    }));
+    return JSON.stringify({ schema: 1, models: out });
+}
+
+const RENDER: Record<Exclude<(typeof DOC_FILES)[number], typeof REGISTRY_JSON>, () => string> = {
     'README.md': compact,
     'docs/hardware.md': () => [summary(), '', '### Details per model', '', detail(), '', '### Live demo', '', demoLinks()].join('\n')
 };
@@ -201,6 +223,19 @@ function problems(file: string, text: string, known: Set<string>): string[] {
 
 const check = process.argv.includes('--check');
 const errors: string[] = [];
+
+{
+    const path = join(root, REGISTRY_JSON);
+    const next = format(REGISTRY_JSON, registryJson());
+    const current = existsSync(path) ? readFileSync(path, 'utf8') : '';
+    if (next !== current) {
+        if (check) errors.push(`${REGISTRY_JSON}: out of date (run just docs)`);
+        else {
+            writeFileSync(path, next);
+            console.log(`wrote ${REGISTRY_JSON}`);
+        }
+    }
+}
 
 for (const [file, render] of Object.entries(RENDER)) {
     const path = join(root, file);

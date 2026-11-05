@@ -13,16 +13,9 @@ This plugin is the bridge.
 
 [![Release](https://img.shields.io/github/v/release/ugreen-nas-control/ugreen-nas-control?color=0078ff&label=release)](https://github.com/ugreen-nas-control/ugreen-nas-control/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/ugreen-nas-control/ugreen-nas-control/latest/total?color=00c853&label=downloads%20%28latest%29)](https://github.com/ugreen-nas-control/ugreen-nas-control/releases/latest)
-[![Checks](https://img.shields.io/github/actions/workflow/status/ugreen-nas-control/ugreen-nas-control/checks.yml?branch=next&label=checks)](https://github.com/ugreen-nas-control/ugreen-nas-control/actions/workflows/checks.yml)
 [![Unraid](https://img.shields.io/badge/Unraid-7.2%2B-f15a2c)](docs/unraid.md)
-[![Models](https://img.shields.io/badge/models-DX%20%C2%B7%20DXP%20%C2%B7%20iDX-0078ff)](#your-model-your-status)
-[![Fan control](https://img.shields.io/badge/fan%20control-DXP6800%20Pro%20%C2%B7%20DXP4800%20GT-0078ff)](#your-model-your-status)
-[![Watchdog](https://img.shields.io/badge/watchdog-DXP4800%20GT%20%C2%B7%20iDX6011%20Pro-0078ff)](docs/watchdog.md)
 [![License: MIT](https://img.shields.io/github/license/ugreen-nas-control/ugreen-nas-control?color=lightgrey)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/ugreen-nas-control/ugreen-nas-control?style=flat&color=ffd60a)](https://github.com/ugreen-nas-control/ugreen-nas-control/stargazers)
 [![Unraid forum](https://img.shields.io/badge/support-Unraid%20forum-f15a2c)](https://forums.unraid.net/topic/201044-plugin-ugreen-nas-control-led-fan-and-system-control-for-ugreen-dxdxp-nas/)
-[![Issues](https://img.shields.io/github/issues/ugreen-nas-control/ugreen-nas-control?color=ff8c00)](https://github.com/ugreen-nas-control/ugreen-nas-control/issues)
-[![Discussions](https://img.shields.io/github/discussions/ugreen-nas-control/ugreen-nas-control?color=ff8c00)](https://github.com/ugreen-nas-control/ugreen-nas-control/discussions)
 
 **[Live demo](https://ugreen-nas-control.github.io/ugreen-nas-control/demo/?model=dxp6800-pro)** · [Install](#install-in-60-seconds) · [Models](#your-model-your-status) · [Docs](#documentation) · [Help](#help)
 
@@ -86,7 +79,7 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 | ------------------------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ------------------ |
 | [DXP4800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-gt/)          | ●    | ●           | ●         | ●       | ● Verified         |
 | [DXP6800 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800-pro/)        | ●    | ●           | ●         | ●       | ● Verified         |
-| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | –         | ○       | ◔ Community-tested |
+| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | ○         | ○       | ◔ Community-tested |
 | [DXP2800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800/)                | ◔    | ○           | ○         | ○       | ◔ Community-tested |
 | [DXP2800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800-gt/)          | ○    | ◔           | ○         | ○       | ◔ Community-tested |
 | [DXP4800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-base/)           | ◔    | ○           | ○         | ○       | ◔ Community-tested |

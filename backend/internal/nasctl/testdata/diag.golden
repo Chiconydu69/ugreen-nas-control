@@ -1,0 +1,238 @@
+## ugreen-nas-ctl diag
+
+```
+time (UTC): 2026-11-04 10:00:00
+plugin: 4.3
+unraid: 7.1.2
+kernel: 6.12.24-Unraid
+model: UGREEN DXP4800 Plus (family NAS)
+board: UGREEN UGREEN-BOARD
+bios: AMI 1.2 03/01/2024
+```
+
+Checks:
+
+```
+i2c-dev was not loaded (diag loaded it for the scan)
+it87 loaded: may fight over the fan chip
+leftover plugin folder: ugreenleds-driver/
+```
+
+<details><summary>Report summary</summary>
+
+```
+cpu: Intel(R) N100, 4 threads
+memory: 16384 MB DDR5 4800 MT/s
+fan chip: it8613 revision 5 base 0x0a00 ports -
+led: supported true, blocker -, probe ok, bus /dev/i2c-4 address 0x3a, 6 leds
+nvme slots: m2-1
+network: eth0 max 2500 Mbit
+rivals: -
+```
+
+</details>
+
+<details><summary>Model (registry)</summary>
+
+```
+registry: dxp4800-gt (DXP4800 GT), overall verified
+note: Four bays (SATA or U.2), two M.2 slots, two 10G LAN ports. Fan control through the IT5571 embedded controller; LEDs through /dev/mem.
+leds: verified on 5.0.0 2026-11-02 - Through /dev/mem on the AMD DesignWare I2C controller.
+  led_support: expected bays, detected supported true, blocker - [n/a]
+  led_controller: expected ok, detected ok [ok]
+fans: verified on 5.0.0 2026-11-02 - CPU fan and case fan measured; the roles are not swapped.
+  fan_chip: expected it5571, detected it5571 [ok]
+  fan_headers: expected ["fan1:cpu","fan3:case"], detected ["fan1:cpu","fan3:case"] [ok]
+  fans_spin: expected all fans above 0 rpm, detected false [MISMATCH]
+case: verified on 5.0.0 2026-11-02 - Inside view drawn from the service panel; RAM/M.2 slot numbering assumed, open an issue if your box differs.
+  bays: expected 4, detected 2 [MISMATCH]
+  nvme_slots: expected ["m2-1","m2-2"], detected ["m2-1","m2-2"] [ok]
+  lan_ports: expected 2, detected 2 [ok]
+sensors: verified on 5.0.0 2026-11-02 - CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.
+  cpu_temperature: expected true, detected true [ok]
+watchdog: expected - Registers from the driver UGREEN ships; no armed watchdog seen on a device with this plugin yet.
+  watchdog_state: expected armed or off, detected - [n/a]
+open points in the registry: -
+```
+
+</details>
+
+<details><summary>LED</summary>
+
+```
+enabled: true  supported: true  untested model: false  daemon running: true
+blocker: -  warning: -
+i2c adapters: -
+bay 1: ata1  hdd  slot parity
+bay 2: ata2  empty  slot -
+loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)
+per-LED state (name mode brightness R G B on_ms off_ms):
+  power on 255 255 255 255 0 0
+  disk1 on 255 0 255 0 0 0
+i2c scan all:
+  /dev/i2c-4: 0x3a
+ugreen-led-ctl status:
+```
+
+</details>
+
+<details><summary>Features (state and effective settings)</summary>
+
+```
+led.control: enabled true, supported true, blocker -, untested model false, warning -
+led.daemon: running true, mode status, mapping dmi, foreign_monitor false
+led.live: 2 LEDs read (name mode/brightness/R,G,B): power on/255/255,255,255; disk1 on/255/0,255,0
+led.status_mode: mode status, disk_color_mode own
+led.disk_activity: disk activity: activity_enabled true
+led.smart: smart_enabled true, smart_color 255 140 0
+led.disk_errors: error_enabled true, disk_error_color 255 59 48
+led.standby: standby_mode pulse, standby_level 15
+led.netdev: netdev_status link, netdev_speed_enabled true, network_device eth0, netdev_speed 2500, netdev_speed_colors {"2500":"0 200 83"}
+led.night: schedule: night_enabled=1 night_start=22:00 night_end=07:00 night_action=dim night_brightness=20; current phase: night (dimmed or off)
+led.alerts: alert_enabled true, alert_level warning, alert_color 255 59 48, alert_count 0, alert_active false
+led.sync: sync_enabled true, sync_color 0 120 255, sync_action check, sync_percent 42
+led.shutdown: shutdown_blink true, shutdown_effect blink, shutdown_color 255 140 0
+led.effects: fx -, fx_leds disk1,disk2, fx_speed 2, fx_reverse false, fx_idle false
+led.identify: identify []
+led.import: leds.cfg of the UGREEN LED Control plugin available to import: false
+fan.control: on true (setting true), kind probe, 0 channels, chip it8613, min speed floor 0%
+fan.daemon: running true, mode auto, job mover, yielding to -
+fan.mode: custom (config version 2), case fans follow the CPU curve too: false, warnings: -
+fan.curves: cpu 40:30,60:50,80:100; case 35:40,55:100
+fan.inputs: cpu auto, case script, fan3 nic; inputs missing now: -
+fan.excluded_drives: 2 drives excluded (names hidden)
+fan.limits: min speed 20%, cpu critical 90 C, disk critical 55 C, nvme offset 15 C, notify on stalled fan true
+fan.failsafe: active: -, stalled fans: -, unapplied: -
+fan.quiet: enabled true, 23:00 to 07:00, days mon,tue,wed,thu,fri,sat,sun, cap 40%, scope case, active now true
+fan.jobs: mover floor 50%, parity check off 40%
+fan.shaping: cpu: dead zone 3%, kick-start 0% for 0 ms, min run 20%, ramp up 100 down 2 per tick, may stop false, input missing -> fallback; case: dead zone 0%, kick-start 0% for 0 ms, min run 20%, ramp up 100 down 2 per tick, may stop false, input missing -> fallback; fans with their own settings: 1
+fan.calibration: never run
+fan.history: daemon buffer answers true, 3 points in the last hour (10 s steps, RAM only)
+fan.map: map confirmed false, proposal waiting false, probe none, fan control possible false, map error -
+fan.profiles: importable settings of other tools: fanctrlplus (running false)
+fan.scripts: script inputs: set, 2 files, interpreters: bash, php (names hidden)
+watchdog: armed, armed true, timeout 60 s, feed interval 20 s, last feed 10s before the sample, counter 7
+power_on_ac: mode on, readable true, settable true, source ite-sio
+panel.buttons: readable: DXP4800 Plus (vendor source) power: up, reset: up
+panel.beeper: present, backend PC speaker (never sounded by diag)
+lcd.backlight: n/a for this model
+mqtt: enabled true, publisher running true, host set (hidden), login set (hidden), tls false, port 1883, interval 5s, control true, control updates false, control containers false, connection: failing: connection refused
+conflicts: detected: module:it87 (warn); fan daemon yields to: -; LED takeover blocked by: -; rival processes running: 0
+ui.dashboard: dashboard tile installed: true
+ui.language_theme: language de, theme auto
+```
+
+</details>
+
+<details><summary>Other fan and LED tools</summary>
+
+```
+RUNNING: FanCtrl Plus (fanctrlplus_loop.sh) pid 7, up 1h0m0s, writes fan
+kernel modules holding our devices: -
+hwmon pwm in manual mode (someone sets the speed): -
+cron files that run such tools: none
+user scripts that call a fan or LED tool: none
+UGREEN NAS Control fan daemon yields: no
+LED blocker: -
+```
+
+</details>
+
+<details><summary>Fans</summary>
+
+```
+daemon running: true
+fan control on: true  chip: it8613
+fan cpu (cpu): 40%, 1200 rpm, auto false
+fan case (case): unknown, 900 rpm, auto true
+temps: cpu 45 C  board 38 C
+daemon state: mode auto  failsafe -  job -  quiet false
+source temps: cpu 45 C  case 38 C (from nvme, driver case)
+targets: case 30%, cpu 40%
+stalled: -  inputs missing: -  yielding to: -  unapplied: -
+watchdog: armed  armed true  timeout 60s  interval 20s  last feed 10s before the sample
+conflicts: module:it87 (warn)
+calibration: never run
+```
+
+</details>
+
+<details><summary>DMI (no serial numbers, UUID or asset tags)</summary>
+
+```
+product_name: DXP4800 Plus
+board_name: UGREEN-BOARD
+```
+
+</details>
+
+<details><summary>Drives (no serials, ids, models or labels)</summary>
+
+```
+parity: Parity ata hdd, spundown 1, temp *, DISK_OK
+disk1: empty
+pool1: Cache nvme ssd, spundown 0, temp 38, DISK_OK
+Unassigned Devices plugin installed: false
+```
+
+</details>
+
+<details><summary>Settings (every known key; credentials, drive names and unknown keys hidden)</summary>
+
+```
+fan.cfg:
+  foo: <hidden>
+  mode=auto
+  mqtt_enabled=1
+  mqtt_host: <hidden> (set)
+leds.cfg:
+  bay1_serial: <hidden> (set)
+  disk1_color=255 160 0
+  mode=status
+MQTT publisher running: false
+```
+
+</details>
+
+<details><summary>Environment</summary>
+
+```
+other LED/fan plugins in /boot/config/plugins: ugreen-nas-control/ ugreenleds-driver/
+files in the plugin's own folder: fan.cfg leds.cfg
+loaded modules: it87 i2c_dev
+i2c devices: i2c-4
+hwmon: hwmon1=it8613
+```
+
+</details>
+
+<details><summary>Log (last 1 ugreen-* syslog lines)</summary>
+
+```
+Nov  4 10:00:00 <host> ugreen-nas-ctl[1]: fan daemon started
+```
+
+</details>
+
+<details><summary>Machine-readable (diag/1)</summary>
+
+```json
+{
+  "areas": {
+    "case": {"registry_status":"verified","checks":[{"id":"bays","expected":4,"detected":2,"ok":false},{"id":"nvme_slots","expected":["m2-1","m2-2"],"detected":["m2-1","m2-2"],"ok":true},{"id":"lan_ports","expected":2,"detected":2,"ok":true}]},
+    "fans": {"registry_status":"verified","checks":[{"id":"fan_chip","expected":"it5571","detected":"it5571","ok":true},{"id":"fan_headers","expected":["fan1:cpu","fan3:case"],"detected":["fan1:cpu","fan3:case"],"ok":true},{"id":"fans_spin","expected":"all fans above 0 rpm","detected":false,"ok":false}]},
+    "leds": {"registry_status":"verified","checks":[{"id":"led_support","expected":"bays","detected":"supported true, blocker -","ok":null},{"id":"led_controller","expected":"ok","detected":"ok","ok":true}]},
+    "sensors": {"registry_status":"verified","checks":[{"id":"cpu_temperature","expected":true,"detected":true,"ok":true}]},
+    "watchdog": {"registry_status":"expected","checks":[{"id":"watchdog_state","expected":"armed or off","detected":null,"ok":null}]}
+  },
+  "channel": "stable",
+  "model": {"id":"dxp4800-gt","name":"DXP4800 GT","known":true,"dmi":{"sys_vendor":"UGREEN","product_name":"DXP4800 GT","product_family":"","board_vendor":"","board_name":"","bios_vendor":"","bios_version":"1.2 \u003cremoved\u003e","bios_date":""}},
+  "plugin_version": "5.0.0",
+  "rivals": {"running":["FanCtrl Plus (fanctrlplus_loop.sh)"],"installed":[],"modules":[],"manual_pwm":[],"yielding_to":[]},
+  "schema": "diag/1",
+  "time_utc": "2026-11-04T10:00:00Z",
+  "unraid_version": "7.1.2"
+}
+```
+
+</details>

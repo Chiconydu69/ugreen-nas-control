@@ -191,7 +191,7 @@ func TestMissingInputRules(t *testing.T) {
 			t.Errorf("%s: %+v, want %d", rule, p, want)
 		}
 	}
-	// hold keeps the last target; with none yet it is the curve's low point
+	// hold keeps the last target; with none yet it is the default input (never the idle point)
 	k := newController()
 	if p := run("hold", fixedInputs{"gpu": 44}, k); p.Out["fan3"] != 50 {
 		t.Fatalf("hold, readable: %d", p.Out["fan3"])
@@ -199,8 +199,8 @@ func TestMissingInputRules(t *testing.T) {
 	if p := run("hold", fixedInputs{}, k); p.Out["fan3"] != 50 {
 		t.Errorf("hold: %d, want 50", p.Out["fan3"])
 	}
-	if p := run("hold", fixedInputs{}, newController()); p.Out["fan3"] != 25 {
-		t.Errorf("hold without history: %d", p.Out["fan3"])
+	if p := run("hold", fixedInputs{}, newController()); p.Out["fan3"] != 88 {
+		t.Errorf("hold without history: %d, want the default input (88)", p.Out["fan3"])
 	}
 }
 

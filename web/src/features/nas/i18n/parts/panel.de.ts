@@ -55,8 +55,8 @@ export const panelDe: Record<keyof typeof panelEn, string> = {
     'cs201x.inputs_on': 'eingerichtet',
     'cs201x.inputs_off': 'nicht eingerichtet',
     'cs201x.wdt': '{armed}, {counting}',
-    'cs201x.wdt_armed': 'scharf',
-    'cs201x.wdt_off': 'nicht scharf',
+    'cs201x.wdt_armed': 'aktiv',
+    'cs201x.wdt_off': 'nicht aktiv',
     'cs201x.wdt_counting': 'zählt',
     'cs201x.wdt_idle': 'zählt nicht',
     'readonly.note':

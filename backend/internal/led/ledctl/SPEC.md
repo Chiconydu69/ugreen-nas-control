@@ -45,7 +45,7 @@ sync_action, sync_percent, sync_enabled, sync_color, standby_mode, standby_level
 activity_enabled, smart_color, disk_color_mode, netdev_status, alert_enabled, alert_level, alert_color,
 shutdown_blink, shutdown_color, shutdown_effect, alert_count, alert_active, fx_speed, fx_reverse, fx_idle, night,
 disk_error_color, saved_brightness, network_device, netdev_speed, network_ports, netdev_speed_enabled,
-netdev_speed_colors, controller, i2c_bus, i2c_address, i2c_probe, leds.
+netdev_speed_colors, controller, i2c_bus, i2c_address, i2c_probe, leds. When the controller answers a detect but rejects every command (chip tool exit 4), `i2c_probe` is `rejected` and `i2c_error` follows it; `status` itself exits 0.
 
 Before every command except help the script makes sure an SMBus adapter exists (`modprobe i2c-dev`, `i2c_i801`,
 waits up to 3 s), unless `UGREEN_LED_I2C` is set.
@@ -117,7 +117,7 @@ sync state, night mode; decide each bay `off | steady | breath | pulse` (error >
 or own colour; standby dims/pulses); write only what differs from the last write; netdev by link/gateway/speed or
 hands off when `manual`. Every 30 s (tick 150, not at 0): compare with `get all` and rewrite LEDs that differ,
 foreign-monitor check (also at tick 0). Every tick: blink a bay/netdev while its counters move. SIGTERM: log
-`status daemon stopped`, exit 0. The network check (ping) runs in its own goroutine in Go; in the script it blocks the loop.
+`status daemon stopped`, end the activity blink of bays and netdev (back to steady `on`), exit 0; `daemon stop` then applies the saved settings to all LEDs (netdev included). Exit 4 of the chip tool (controller rejects everything): log once, no more writes, probe again after 30 s, doubling to 10 min. The network check (ping) runs in its own goroutine in Go; in the script it blocks the loop.
 
 ## Not covered by parity
 

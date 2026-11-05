@@ -51,7 +51,7 @@ export const historyIt: Record<keyof typeof historyEn, string> = {
     'hist.mod.job': 'Il mover o il controllo della parità aumenta la velocità',
     'hist.mod.floor': 'Velocità minima',
     'hist.mod.shape': 'Rampa o banda morta',
-    'hist.mod.missing': "Sorgente non leggibile, usata un'altra regola",
+    'hist.mod.missing': 'Sorgente non leggibile, usata un’altra regola',
     'hist.mod.emergency': 'Emergenza, 100 %',
     'hist.now': 'Ora {pct} % · {rpm} giri/min',
     'hist.now_by': 'controllata da {source}',
@@ -65,7 +65,7 @@ export const historyIt: Record<keyof typeof historyEn, string> = {
     'hist.col_temp': 'Temperatura',
     'hist.col_by': 'Controllata da',
     'hist.col_limits': 'Limiti',
-    'hist.empty_stopped': "Il servizio ventole non è in esecuzione, quindi non c'è cronologia.",
+    'hist.empty_stopped': 'Il servizio ventole non è in esecuzione, quindi non c’è cronologia.',
     'hist.empty_wait': 'Ancora nessun dato. I primi punti compaiono entro 10 secondi.',
     'hist.failed': 'Impossibile caricare la cronologia: {error}',
     'hist.summary': '{name}: velocità da {min} a {max} %, ultima {pct} %, tra {from} e {to}.'

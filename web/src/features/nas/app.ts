@@ -28,7 +28,7 @@ import type {
     Settings,
     StatusResponse
 } from '../../core/contract';
-import { caseModel, frontHtml, socket, SOCKET, type SocketKind } from './components/front';
+import { caseModel, frontHtml, socket, SOCKET, type SocketKind, withM2Bays } from './components/front';
 import { berlin, biosDate, chipName, deg, fmtRam, fmtSize, friendly, LIMITS, shortCpu, speedText, tempClass, type TempKind } from '../../core/format';
 import { curveAt, curveText, effectivePoints, parseCurve, rpmAt as rpmAtRows, rpmTicks as rpmTicksOf, validCurve, type CurvePoint } from '../../core/curve';
 import { hit, setRangeFill } from '../../core/dom';
@@ -60,6 +60,7 @@ import { type Key, t, tEnum, tRaw } from './text';
 import './fan/index';
 import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
+import { caseText, modelBox, modelFacts } from './model-info';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
 
@@ -195,6 +196,10 @@ function main(root: HTMLElement): void {
     }
 
     const navLink = (nav: string, key: Key): string => linkBtn(t(key), `data-nav="${nav}"`);
+
+    // "All models": opens About with the supported-models table.
+    const modelsLink = (): string => linkBtn(t('model.all'), 'data-models-link');
+    const modelNote = (text: string): string => `${escapeHtml(text)} ${modelsLink()}`;
 
     // Static spots in the page that hold a component: <span data-unc="btn" data-unc-label="<i18n key>" …>. Parameters are
     // data-unc-*; every other attribute is passed on. Inner html (card head actions) is kept. Buttons first: they sit in heads.
@@ -392,6 +397,19 @@ function main(root: HTMLElement): void {
         about: 'sub.about'
     };
 
+    // The intro names only what the model has: M.2 slots as drives, an inside view or not.
+    function caseIntro(): Key {
+        const model = state.hw && caseModel(state.hw);
+        if (model?.m2Bays) return 'case.intro_m2';
+        return model?.noInside ? 'case.intro_noinside' : 'case.intro';
+    }
+
+    // The "Bay LEDs & Identify" button is for models whose LED controller has bay LEDs.
+    function paintDriveLedButton(): void {
+        const none = Boolean(state.hw && caseModel(state.hw).m2Bays) || Boolean(state.ledStatus && !state.ledBays);
+        qa('[data-nav="led:drives"]').forEach(button => button.classList.toggle('unc-nobays', none));
+    }
+
     function renderTitle() {
         const nav = state.nav;
 
@@ -403,7 +421,9 @@ function main(root: HTMLElement): void {
                     : 'probe.title'
                 : nav === 'curves' && fanReadOnly()
                   ? 'readonly.sub'
-                  : SUBTITLES[nav] || 'sub.overview'
+                  : nav === 'case'
+                    ? caseIntro()
+                    : SUBTITLES[nav] || 'sub.overview'
         );
         qa('[data-model]').forEach(element => {
             element.textContent = state.data?.info?.model || 'UGREEN NAS';
@@ -681,7 +701,9 @@ function main(root: HTMLElement): void {
             : n.slot === 'system'
               ? t('slot.system')
               : n.slot === 'm2'
-                ? 'M.2'
+                ? state.hw?.bays?.some(b => b.device === n.id)
+                    ? t('case.m2_slot', { n: state.hw.bays.find(b => b.device === n.id)?.bay ?? '' })
+                    : 'M.2'
                 : t('case.m2_slot', { n: n.slot.replace('m2-', '') });
 
     function uptime(seconds: number): string {
@@ -1733,12 +1755,15 @@ function main(root: HTMLElement): void {
         q('#unc-led-import').hidden = !led.import_available;
         // The LED pages come with the page itself: they are there once it has been loaded with the switch on.
         // Without them the LEDs group is the overview with the switch.
+        // A power-only model (DXP480T Plus) has nothing to colour, dim or schedule: those pages and controls stay away, the switch and the note remain.
+        const powerOnly = modelFacts(led.model || '')?.leds === 'power';
         qa('[data-led-only]').forEach(button => {
-            button.hidden = !(led.enabled && window.UNC_LED);
+            button.hidden = !(led.enabled && window.UNC_LED) || powerOnly;
         });
+        document.getElementById('ulc')?.toggleAttribute('hidden', powerOnly);
 
         q('#unc-led-limited').hidden = fanKnown();
-        q('#unc-led-limited').textContent = fanKnown() ? '' : t(caseKnown() ? 'leds.limited_fans' : 'leds.limited', { model: led.model || '?' });
+        q('#unc-led-limited').innerHTML = fanKnown() ? '' : modelNote(modelBox(led.model || '?', modelFacts(led.model || ''), t));
         q('#unc-led-untested').hidden = !led.untested;
         q('#unc-led-untested').textContent = led.untested ? t('leds.untested', { model: led.model || '?' }) : '';
 
@@ -1888,7 +1913,7 @@ function main(root: HTMLElement): void {
     // A model whose fan readings the page shows: driven (fixed, confirmed probe) or read only.
     const fanShown = () => fanKnown() || fanReadOnly();
     const panelKnown = () => hasButtons(modelName()) || hasBeeper(modelName());
-    const caseKnown = () => fanKnown() || /^(DXP4800( Plus| Pro)?|DXP8800( Plus| Pro)?|DXP2800( GT)?|iDX601[12]( Pro)?)$/.test(modelName());
+    const caseKnown = () => fanKnown() || (modelFacts(modelName())?.view ?? 'none') !== 'none';
 
     function renderFront(hw: Hardware, target = '#unc-front'): void {
         q(target).innerHTML = frontHtml(hw);
@@ -1942,6 +1967,9 @@ function main(root: HTMLElement): void {
                 .join('')}
             </div>`
             : emptyText(t('case.empty'));
+        // The slot order of an all-flash model is assumed: say so under the cards.
+        const hint = caseModel(hw).m2Bays ? caseModel(hw).hint : undefined;
+        if (hint) q('#unc-drive-list').insertAdjacentHTML('beforeend', `<p class="unc-note" data-i18n="${hint}">${escapeHtml(t(hint))}</p>`);
     }
 
     const REAR_FAN_SVG =
@@ -2121,6 +2149,29 @@ function main(root: HTMLElement): void {
             </div>`;
     }
 
+    // After the manual of the DXP480T Plus: a vent of slots over one row of ports. The fans sit on the underside.
+    function rear480Html(hw: Hardware, dc: string): string {
+        const k = rearKit(hw);
+        const row = 60;
+
+        return `
+            <div class="unc-rear6800 unc-rear480">
+                <div class="r-body"></div>
+                <svg class="r-slots" viewBox="0 0 520 22" preserveAspectRatio="none" aria-hidden="true">
+                    <defs><pattern id="unc-480slots" width="10.4" height="22" patternUnits="userSpaceOnUse"><rect x="1.6" y="0" width="6" height="22" rx="3"/></pattern></defs>
+                    <rect width="520" height="22" fill="url(#unc-480slots)"/>
+                </svg>
+                ${k.port(14.7, row, 'dc', dc)}
+                ${k.port(21.9, row, 'reset', 'RESET')}
+                ${k.port(29.9, row, 'usbc', 'TB4')}${k.port(39.1, row, 'usbc', 'TB4', 'usbc2')}
+                ${k.port(50, row, 'usba', 'USB3.2')}
+                ${k.port(62.7, row, 'hdmi', 'HDMI')}
+                ${k.port(72.8, row, 'jack', '3.5 mm')}
+                ${k.lan(0, 81.9, row, 'LAN 10G')}
+                <i class="r-foot" style="left:5%"></i><i class="r-foot" style="left:88%"></i>
+            </div>`;
+    }
+
     function rearFanHtml(count = 1): string {
         const fans = caseFans(state.data?.fans);
         const one = (i: number): string => {
@@ -2170,6 +2221,11 @@ function main(root: HTMLElement): void {
 
         if (model.rear8800) {
             q(target).innerHTML = rear8800Html(hw);
+            return;
+        }
+
+        if (model.rear480) {
+            q(target).innerHTML = rear480Html(hw, model.dc || t('case.dc'));
             return;
         }
 
@@ -2357,6 +2413,206 @@ function main(root: HTMLElement): void {
             </svg>`;
     }
 
+    // DXP2800 GT, after UGREEN's manual: the two M.2 slots sit stacked on the inner left wall of the drive cage
+    // (trays out, connector at the back, buckle at the front), the two SO-DIMM sockets in the bottom panel.
+    function inside2800gtHtml(hw: Hardware): string {
+        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const memory = hw.memory;
+        const m2 = (y: number, drive: Nvme | undefined, n: number): string => {
+            const label = t('in.m2', { n });
+            const rail = `<rect x="190" y="${y - 6}" width="380" height="92" rx="4" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="550" y="${y + 16}" width="8" height="48" rx="2" fill="#aeb6bf"/><rect x="196" y="${y + 24}" width="14" height="32" rx="3" style="fill:var(--bd-sock2)"/>`;
+            if (!drive) {
+                return `${rail}<rect x="214" y="${y + 3}" width="328" height="74" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>${boardText(60, y + 44, t('in.slot_empty', { label }))}`;
+            }
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const roleText = role.length > 21 ? `${role.slice(0, 20)}…` : role;
+
+            return `${rail}<g transform="translate(214 ${y + 3})">${nvmeModule(328, 74, drive, true)}</g>${tempBadge6800(60, y + 8, drive.temp)}${boardText(60, y + 44, label)}${roleText ? boardText(60, y + 58, roleText) : ''}`;
+        };
+        const ram = (y: number, mod: Dimm | undefined, n: number): string => {
+            const filled = Boolean(mod?.size_mb);
+            const speed = mod ? mod.configured_mt || mod.speed_mt : 0;
+            const sub = mod && filled ? [fmtRam(mod.size_mb), mod.type, speed ? `${speed} MT/s` : ''].filter(Boolean).join(' · ') : t('case.empty');
+            const socket = `<rect x="654" y="${y}" width="276" height="78" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="644" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/><rect x="930" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/>`;
+
+            return `${socket}${mod && filled ? `<g transform="translate(662 ${y + 7})">${ramModule(260, 64, mod)}</g>` : ''}${boardText(654, y - 22, t('case.ram_slot', { n }))}<text x="654" y="${y - 8}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
+        };
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 470" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <rect x="10" y="10" width="980" height="450" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="40" y="40" width="570" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="60" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_cage'))}</text>
+                <rect x="620" y="40" width="350" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_panel'))}</text>
+                <g transform="translate(0 -4)">${m2(100, ssd('m2-1'), 1)}${m2(260, ssd('m2-2'), 2)}</g>
+                ${ram(170, memory[0], 1)}
+                ${ram(290, memory[1], 2)}
+                <text x="60" y="414" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('in.front'))} ←</text>
+            </svg>`;
+    }
+
+    // DXP8800 Plus / DXP8800 / Pro: the bottom service panel, drawn after UGREEN's manual (p9-12): two SO-DIMM sockets
+    // side by side, one M.2 slot below them (lengthwise), one M.2 slot upright to their right. The PCIe slot sits
+    // inside the frame, below. Which M.2 slot is 1 and which RAM socket is 1 is assumed.
+    function inside8800Html(hw: Hardware): string {
+        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const memory = hw.memory;
+        const card = ssd('pcie');
+        const ram = (x: number, mod: Dimm | undefined): string => {
+            const socket = `<rect x="${x}" y="16" width="84" height="200" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="${x + 39}" y="196" width="6" height="14" rx="2" style="fill:var(--bd-sock2)"/><rect x="${x - 8}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/><rect x="${x + 84}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/>`;
+
+            return socket + (mod && mod.size_mb ? place(x + 3, 19, 194, true, ramModule(194, 78, mod)) : '');
+        };
+        const ramLabel = (y: number, mod: Dimm | undefined, n: number): string => {
+            const filled = Boolean(mod?.size_mb);
+            const speed = mod ? mod.configured_mt || mod.speed_mt : 0;
+            const sub = mod && filled ? [fmtRam(mod.size_mb), mod.type, speed ? `${speed} MT/s` : ''].filter(Boolean).join(' · ') : t('case.empty');
+
+            return `${boardText(580, y, t('case.ram_slot', { n }))}<text x="580" y="${y + 15}" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(sub)}</text>`;
+        };
+        const m2Label = (y: number, drive: Nvme | undefined, n: number): string => {
+            const label = t('in.m2', { n });
+            if (!drive)
+                return `${boardText(580, y, label)}<text x="580" y="${y + 15}" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('case.empty'))}</text>`;
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const sub = [friendly(drive.model || drive.id), fmtSize(drive.size_bytes), role].filter(Boolean).join(' · ');
+
+            return `${tempBadge6800(580, y - 12, drive.temp)}${boardText(636, y, label)}<text x="636" y="${y + 15}" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(sub)}</text>`;
+        };
+        const m2Empty = (w: number, h: number): string =>
+            `<rect width="${w}" height="${h}" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>`;
+        const m2a = ssd('m2-1');
+        const m2b = ssd('m2-2');
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 590" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <rect x="10" y="10" width="980" height="570" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="60" y="40" width="464" height="326" rx="10" style="fill:var(--bd-plate);stroke:var(--bd-edge)" stroke-width="2"/>
+                <g transform="translate(76 52)">
+                    <rect width="432" height="302" rx="4" style="fill:var(--bd-g1)"/>
+                    <g transform="translate(14 0)">${ram(0, memory[0])}${ram(106, memory[1])}</g>
+                    <g transform="translate(14 226)">${m2a ? nvmeModule(262, 62, m2a) : m2Empty(262, 62)}</g>
+                    <g transform="translate(346 14)">${place(0, 0, 276, true, m2b ? nvmeModule(276, 62, m2b) : m2Empty(276, 62))}</g>
+                    <circle cx="410" cy="290" r="7" fill="#b87333"/><circle cx="322" cy="22" r="6" fill="#b87333"/>
+                </g>
+                <text x="580" y="70" style="fill:var(--bd-text2)" font-size="13" font-weight="700">${escapeHtml(t('sensors.group_ssd'))}</text>
+                ${m2Label(104, m2a, 1)}
+                ${m2Label(160, m2b, 2)}
+                <text x="580" y="226" style="fill:var(--bd-text2)" font-size="13" font-weight="700">${escapeHtml(t('sensors.group_mem'))}</text>
+                ${ramLabel(260, memory[0], 1)}
+                ${ramLabel(310, memory[1], 2)}
+                <rect x="60" y="440" width="464" height="26" rx="6" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/>
+                <text x="292" y="458" style="fill:var(--bd-text2)" font-size="12" text-anchor="middle">${escapeHtml(t('case.pcie_slot'))}${card ? '' : ` · ${escapeHtml(t('case.free'))}`}</text>
+                ${
+                    card
+                        ? `<rect x="76" y="476" width="432" height="86" rx="4" fill="#142a2a" stroke="#2f9a63" stroke-width="1.500"/>${goldFingers(100, 554, 260, 8, 38, null)}${place(98, 484, 252, false, nvmeModule(252, 64, card))}
+                    ${tempBadge6800(580, 468, card.temp)}${boardText(636, 480, t('in.pcie_card'))}<text x="636" y="495" style="fill:var(--bd-text2)" font-size="12">${escapeHtml([friendly(card.model || card.id), fmtSize(card.size_bytes), card.boot ? t('nvme.boot') : ssdRoleText(card.role)].filter(Boolean).join(' · '))}</text>`
+                        : ''
+                }
+            </svg>`;
+    }
+
+    // iDX6011 / iDX6012 / Pro: the service panel on the underside (after UGREEN's manual and the NASCompares photos): a mainboard strip with
+    // two M.2 Gen4 x4 slots stacked (M.2-1 above M.2-2, numbering assumed), the coin cell and the PCIe Gen4 x8 slot. The LPDDR5X memory is soldered:
+    // no slots, one block with the total. The Pro and the plain boxes differ in RAM size only.
+    function inside6011Html(hw: Hardware): string {
+        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const loose = hw.nvme.filter(d => d.slot === 'm2');
+        const drives = [ssd('m2-1'), ssd('m2-2')];
+        for (let i = 0; i < drives.length; i++) if (!drives[i]) drives[i] = loose.shift();
+        const card = ssd('pcie');
+        const mem = hw.memory.filter(m => m.size_mb);
+        const total = mem.reduce((sum, m) => sum + m.size_mb, 0);
+        const type = mem.find(m => m.type)?.type || 'LPDDR5X';
+        const speed = mem[0] ? mem[0].configured_mt || mem[0].speed_mt : 0;
+        const m2 = (y: number, drive: Nvme | undefined, n: number): string => {
+            const label = t('in.m2', { n });
+            const silk = `<text x="250" y="${y - 7}" style="fill:var(--bd-text2)" font-size="10">M.2 NVMe · PCIe Gen4 ×4</text>`;
+            const connector = `<rect x="592" y="${y + 12}" width="8" height="42" rx="2" fill="#aeb6bf"/>`;
+            if (!drive) {
+                return `${silk}${connector}<rect x="250" y="${y}" width="340" height="66" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>${boardText(60, y + 38, t('in.slot_empty', { label }))}`;
+            }
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const roleText = role.length > 24 ? `${role.slice(0, 23)}…` : role;
+
+            return `${silk}${connector}<g transform="translate(250 ${y})">${nvmeModule(340, 66, drive, true)}</g>${tempBadge6800(60, y + 4, drive.temp)}${boardText(60, y + 38, label)}${roleText ? boardText(60, y + 52, roleText) : ''}`;
+        };
+        const packages = [0, 1, 2, 3]
+            .map(i => `<rect x="${620 + i * 76}" y="64" width="60" height="44" rx="4" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/>`)
+            .join('');
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 590" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <defs>
+                    <pattern id="unc-ribs" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" style="fill:var(--bd-ribA)"/><rect width="8" height="3.5" style="fill:var(--bd-ribB)"/></pattern>
+                </defs>
+                <rect x="10" y="10" width="980" height="570" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="40" y="36" width="540" height="110" rx="8" fill="url(#unc-ribs)" style="stroke:var(--bd-plate)" stroke-width="2"/>
+                <text x="310" y="104" style="fill:var(--bd-ink)" font-size="34" font-weight="900" text-anchor="middle" letter-spacing="5">UGREEN</text>
+                ${packages}
+                ${boardText(620, 134, `${t('in.idx6011_ram', { type })} · ${fmtRam(total)}${speed ? ` · ${speed} MT/s` : ''}`)}
+                <rect x="40" y="170" width="920" height="380" rx="10" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <circle cx="62" cy="192" r="7" fill="#b87333"/><circle cx="938" cy="192" r="7" fill="#b87333"/><circle cx="62" cy="528" r="7" fill="#b87333"/><circle cx="938" cy="528" r="7" fill="#b87333"/>
+                ${m2(236, drives[0], 1)}
+                ${m2(346, drives[1], 2)}
+                <circle cx="760" cy="300" r="46" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><circle cx="760" cy="300" r="30" style="fill:var(--bd-sock2);stroke:var(--bd-sockedge)" stroke-width="2"/>
+                <rect x="250" y="456" width="690" height="26" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/>
+                <text x="595" y="474" style="fill:var(--bd-text2)" font-size="12" text-anchor="middle">${escapeHtml(t('in.idx6011_pcie'))}${card ? '' : ` · ${escapeHtml(t('case.free'))}`}</text>
+                ${
+                    card
+                        ? `${tempBadge6800(60, 500, card.temp)}${boardText(60, 526, t('in.pcie_card'))}${boardText(60, 540, card.boot ? t('nvme.boot') : ssdRoleText(card.role))}<g transform="translate(250 496)">${nvmeModule(340, 66, card, true)}</g>`
+                        : ''
+                }
+            </svg>`;
+    }
+
+    // DXP4800, Plus and Pro: the service panel on the underside after UGREEN's manual and a photo of the open panel:
+    // two SO-DIMM sockets stacked (RAM 1 on top) and two M.2 slots side by side (M.2-1 at the left), connectors at the bottom.
+    function inside4800Html(hw: Hardware): string {
+        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const memory = hw.memory;
+        const ram = (y: number, mod: Dimm | undefined, n: number): string => {
+            const filled = Boolean(mod?.size_mb);
+            const socket = `<rect x="30" y="${y}" width="350" height="112" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="30" y="${y + 100}" width="350" height="12" rx="3" style="fill:var(--bd-sock2)"/><rect x="22" y="${y + 40}" width="8" height="30" rx="2" fill="#aeb6bf"/><rect x="380" y="${y + 40}" width="8" height="30" rx="2" fill="#aeb6bf"/>`;
+            const body = mod && filled ? `<g transform="translate(35 ${y + 4})">${ramModule(340, 96, mod)}</g>` : '';
+            const sub = mod && filled ? `${fmtRam(mod.size_mb)} ${mod.type || ''}`.trim() : t('case.empty');
+
+            return `${socket}${body}${boardText(30, y + 132, t('case.ram_slot', { n }))}<text x="30" y="${y + 146}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
+        };
+        const m2 = (x: number, drive: Nvme | undefined, n: number): string => {
+            const label = t('in.m2', { n });
+            const top = 130;
+            const len = 330;
+            const frame = `<circle cx="${x + 37}" cy="${top - 16}" r="7" fill="#b87333"/><rect x="${x - 2}" y="${top + len}" width="78" height="10" rx="2" fill="#aeb6bf"/>`;
+            if (!drive) {
+                return `${frame}${place(x, top, len, true, `<rect width="${len}" height="74" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>`)}${boardText(x, top + len + 38, t('in.slot_empty', { label }))}`;
+            }
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const roleText = role.length > 20 ? `${role.slice(0, 19)}…` : role;
+
+            return `${frame}${place(x, top, len, true, nvmeModule(len, 74, drive))}${tempBadge6800(x, top + len + 24, drive.temp)}${boardText(x, top + len + 54, label)}${roleText ? boardText(x, top + len + 68, roleText) : ''}`;
+        };
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 640" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <defs>
+                    <pattern id="unc-ribs" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" style="fill:var(--bd-ribA)"/><rect width="8" height="3.5" style="fill:var(--bd-ribB)"/></pattern>
+                </defs>
+                <rect x="10" y="10" width="980" height="620" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="114" y="34" width="772" height="572" rx="8" style="fill:var(--bd-plate);stroke:var(--bd-edge)" stroke-width="2"/>
+                <rect x="120" y="40" width="760" height="560" rx="4" fill="url(#unc-ribs)"/>
+                <g transform="translate(120 40)">
+                    <circle cx="420" cy="22" r="8" fill="#b87333"/><circle cx="22" cy="536" r="8" fill="#b87333"/><circle cx="738" cy="22" r="8" fill="#b87333"/><circle cx="738" cy="536" r="8" fill="#b87333"/>
+                    ${ram(40, memory[0], 1)}
+                    ${ram(230, memory[1], 2)}
+                    ${m2(440, ssd('m2-1'), 1)}
+                    ${m2(580, ssd('m2-2'), 2)}
+                    <g transform="rotate(-90 700 300)"><text x="700" y="318" style="fill:var(--bd-ink)" font-size="54" font-weight="900" text-anchor="middle" letter-spacing="5">UGREEN</text></g>
+                </g>
+            </svg>`;
+    }
+
     function ssdSlotRow(name: string, ssd: Nvme | undefined): string {
         if (!ssd) return sensorRow({ ico: icon('m2'), name, vals: [{ label: '', text: t('case.empty'), level: 'na' }] });
 
@@ -2404,10 +2660,38 @@ function main(root: HTMLElement): void {
         if (article) article.hidden = Boolean(caseModel(hw).noInside);
         if (caseModel(hw).noInside) return;
 
+        if (caseModel(hw).inside4800) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint);
+            q(target).innerHTML = inside4800Html(hw);
+            return;
+        }
+
         if (caseModel(hw).inside4800gt) {
             q(target).classList.add('board-svg');
             setHint(q('#unc-inside-hint'), caseModel(hw).hint);
             q(target).innerHTML = inside4800gtHtml(hw);
+            return;
+        }
+
+        if (caseModel(hw).inside2800gt) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint);
+            q(target).innerHTML = inside2800gtHtml(hw);
+            return;
+        }
+
+        if (caseModel(hw).inside8800) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint);
+            q(target).innerHTML = inside8800Html(hw);
+            return;
+        }
+
+        if (caseModel(hw).inside6011) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint);
+            q(target).innerHTML = inside6011Html(hw);
             return;
         }
 
@@ -2434,6 +2718,7 @@ function main(root: HTMLElement): void {
             return;
         }
         renderDriveList(state.hw);
+        paintDriveLedButton();
         renderRear(state.hw);
         renderInside(state.hw);
     }
@@ -2478,6 +2763,7 @@ function main(root: HTMLElement): void {
             state.leds = all.leds || {};
             state.ledMode = { mode: status.mode, fx: status.fx };
             state.ledBays = Number(status.bays) || 0;
+            paintDriveLedButton();
             state.ledStatus = status;
             state.ledMisses = status.i2c_address ? 0 : (state.ledMisses || 0) + 1;
             if (state.data) renderSystem();
@@ -2517,13 +2803,14 @@ function main(root: HTMLElement): void {
         try {
             // The tool prints a list it found nothing for (no NVMe, no dmidecode, no NIC) as null.
             const hw = await api.get('hardware');
-            state.hw = hw && { ...hw, memory: hw.memory || [], nvme: hw.nvme || [], net: hw.net || [] };
+            state.hw = hw && withM2Bays({ ...hw, memory: hw.memory || [], nvme: hw.nvme || [], net: hw.net || [] });
             state.hwError = false;
         } catch (error) {
             // A failed read keeps the last picture: dropping it would shrink the page under the reader and jump to the top.
             if (!state.hw) state.hwError = true;
         }
         keepScroll(() => {
+            renderTitle();
             renderCase();
             if (state.data?.ok) {
                 renderFans();
@@ -2544,7 +2831,6 @@ function main(root: HTMLElement): void {
 
     function renderHero() {
         const hw = state.hw;
-        const info: Partial<Info> = state.data?.info || {};
         const stage = q('#unc-hero');
 
         if (!hw) {
@@ -2555,7 +2841,7 @@ function main(root: HTMLElement): void {
 
         if (!caseKnown()) {
             stage.className = 'unc-hero';
-            stage.innerHTML = emptyText(t('case.unknown', { model: hw.model || info.model || '?' }), 'center');
+            stage.innerHTML = `${emptyText(caseText(t), 'center')}${linkRow(modelsLink())}`;
             return;
         }
 
@@ -2637,7 +2923,7 @@ function main(root: HTMLElement): void {
                 ${mt ? `<span class="unc-muted">${mt} MT/s</span>` : ''}</p>`
                     : emptyText(t('cc.none'))
             }
-            ${link('case', 'ov.inside')}`;
+            ${hw && caseModel(hw).noInside ? '' : link('case', 'ov.inside')}`;
 
         const ports = lanPorts();
         const nics = data.sensors?.nic || [];
@@ -2995,6 +3281,12 @@ function main(root: HTMLElement): void {
 
         qa('[data-nav]').forEach(button => {
             button.addEventListener('click', () => showView(button.dataset.nav ?? ''));
+        });
+        document.addEventListener('click', event => {
+            if (!hit(event)?.closest('[data-models-link]')) return;
+            q<HTMLDetailsElement>('#unc-models-fold').open = true;
+            showView('about');
+            q('#unc-models-card').scrollIntoView({ block: 'start' });
         });
         q('.unc-ov').addEventListener('click', event => {
             const link = hit(event)?.closest<HTMLElement>('[data-nav]');

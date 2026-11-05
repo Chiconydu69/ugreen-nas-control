@@ -197,7 +197,17 @@ func (b *bus) readByte(command byte) (byte, error) {
 
 // change sends one command and waits until the controller confirms it (see framesFor for the frame order).
 func (b *bus) change(id, command byte, params [4]byte) error {
-	return sendFrames(b, framesFor(b.gt), id, command, params)
+	return asRejected(sendFrames(b, framesFor(b.gt), id, command, params), b.detect)
+}
+
+// detect reads one byte from the controller address, as i2cdetect does; the DesignWare path has no such transfer.
+func (b *bus) detect() error {
+	if b.dw != nil {
+		return errors.New("no detect transfer on this adapter")
+	}
+
+	var data [smbusBlockMax + 2]byte
+	return smbusIoctl(b.file, smbusRead, 0, smbusByte, &data)
 }
 
 func (b *bus) status(name string) (ledStatus, error) {
@@ -206,6 +216,8 @@ func (b *bus) status(name string) (ledStatus, error) {
 		return ledStatus{}, err
 	}
 
+	busOnly := true
+
 	for i := range retries {
 		backoff(i)
 
@@ -213,10 +225,15 @@ func (b *bus) status(name string) (ledStatus, error) {
 		if block, err = b.readBlock(regStatusBase+id, statusLength); err != nil {
 			continue
 		}
+		busOnly = false
 		var s ledStatus
 		if s, err = parseStatus(name, block); err == nil {
 			return s, nil
 		}
+	}
+
+	if busOnly {
+		err = asRejected(busFailure{err}, b.detect)
 	}
 
 	return ledStatus{}, fmt.Errorf("%s: %w", name, err)

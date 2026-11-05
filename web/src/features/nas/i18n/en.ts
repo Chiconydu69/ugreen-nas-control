@@ -197,12 +197,19 @@ export const en = {
     'leds.import_btn': 'Take over the settings',
     'leds.import_after': 'Afterwards you can uninstall UGREEN LED Control under Plugins: the built-in LED control replaces it.',
     'leds.imported': 'Settings taken over',
-    'case.unknown':
-        'There is no case view for {model} yet: it exists for the DXP6800 Pro, the DXP4800 GT, the DXP4800 / Plus / Pro the DXP8800 Plus, the DXP2800 and the iDX6011 / Pro.',
-    'leds.limited':
-        'For the {model} there is LED control, system info and temperatures. Fan control exists only for the models on the model list (fixed wiring, or after a probe or confirmation), the case view also for the DXP4800 / Plus / Pro the DXP8800 Plus, the DXP2800 and the iDX6011 / Pro.',
-    'leds.limited_fans':
-        'For the {model} there is LED control, system info, temperatures and the case view. Fan control exists only for the models on the model list (fixed wiring, or after a probe or confirmation).',
+    'model.box': 'On the {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'LED control covers the bay LEDs and the power LED.',
+    'model.leds.power': 'LED control covers only the power LED (steady white while LED control is on; colour, brightness and off are not supported).',
+    'model.leds.none': 'There is no LED control.',
+    'model.fans.fixed': 'Fan control is available.',
+    'model.fans.probe': 'Fan control starts after a probe that you confirm.',
+    'model.fans.confirm': 'Fan control starts after you confirm the fans.',
+    'model.fans.none': 'There is no fan control.',
+    'model.case.full': 'The case view shows front, rear and inside.',
+    'model.case.front_rear': 'The case view shows front and rear.',
+    'model.case.none': 'There is no case view for this model yet.',
+    'model.unknown': 'The {model} is not in the model list yet.',
+    'model.all': 'All models',
     'leds.untested':
         'LED control for the {model} is untested: the controller is the same on all UGREEN models, but the order of the bays and the LED numbers is guessed for this model or comes from reports of other plugins. Check with “Identify” that the right LED lights up, and report problems as an issue.',
     'leds.warn_standalone':
@@ -249,6 +256,10 @@ export const en = {
     'in.front': 'Front',
     'case.inside_hint_gt':
         'The underside service panel, front at the left. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.',
+    'case.inside_hint_8800':
+        "The bottom service panel after UGREEN's manual: two RAM sockets, M.2 below and beside them; the PCIe slot sits inside the frame. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
+    'case.inside_hint_4800':
+        "The underside service panel, after UGREEN's manual. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
     'in.slot_empty': '{label} · empty',
     'nvme.boot': 'Unraid boot SSD',
     'nvme.role': 'Pool SSD “{name}”',
@@ -258,6 +269,15 @@ export const en = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'free',
     'case.running_at': 'runs at {speed} MT/s (up to {max})',
+    'case.m2_hint':
+        'The four M.2 slots stand in for bays, numbered 01 to 04 as on the bottom panel. Which SSD sits in which slot is assumed from the order of the PCIe addresses; open an issue if your box differs.',
+    'case.intro_noinside': 'The drives in detail and the rear. The front with the bays is on the Overview.',
+    'case.intro_m2': 'The M.2 drives in detail and the rear. The front is on the Overview.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'The underside service panel. The memory is soldered, so there are no RAM slots. M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.',
+    'in.idx6011_ram': 'RAM · {type} · soldered',
+    'in.idx6011_pcie': 'PCIe 4.0 x8 slot',
 
     'safety.intro': 'Limits that always win over the curves (not in BIOS mode).',
     'safety.min': 'Lowest fan speed',
@@ -458,6 +478,11 @@ export const en = {
     ...historyEn,
     ...scheduleEn,
     ...toolsEn,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the two RAM sockets in the bottom panel. The numbering of both pairs is assumed; open an issue if your box differs.",
+    'in.gt_cage': 'Drive cage · inner left wall',
+    'in.gt_panel': 'Bottom panel',
     ...panelEn,
     ...powerEn
 } as const;

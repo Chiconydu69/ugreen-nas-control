@@ -145,3 +145,74 @@ type failingIO struct{}
 
 func (failingIO) writeBlock(byte, uint32, []byte) error { return errors.New("boom") }
 func (failingIO) readByte(byte) (byte, error)           { return 0, errors.New("boom") }
+
+func TestIdxFirstFromSystemVersion(t *testing.T) {
+	for _, c := range []struct {
+		product, version string
+		want             bool
+	}{
+		{"DXP2800", "EM_DXP2800_SUB2_V1.0.27", false},
+		{"DXP2800", "DXP2800 V1.2 251215", true},
+		{"DXP2800", "", false},
+		{"DXP2800", "Default string", false},
+		{"DXP2800", "To Be Filled By O.E.M.", false},
+		{"DXP6800", "DXP6800 V1.2 251215", false},
+		{"DXP6800S", "V1", false},
+		{"DXP4800", "V1", false},
+	} {
+		if got := idxFirstFor(c.product, c.version); got != c.want {
+			t.Errorf("idxFirstFor(%q, %q) = %v, want %v", c.product, c.version, got, c.want)
+		}
+	}
+}
+
+// The system version decides the first frame; the other one stays the fallback.
+func TestDXP2800FirstFrameFollowsSystemVersion(t *testing.T) {
+	saved, savedVersion := getLayout(), systemVersion
+	t.Cleanup(func() {
+		SetLayout(saved)
+		systemVersion = savedVersion
+		dxp2800Pref.mu.Lock()
+		dxp2800Pref.idxFirst = false
+		dxp2800Pref.mu.Unlock()
+	})
+
+	for version, first := range map[string]string{"EM_DXP2800_SUB2_V1.0.27": "legacy", "DXP2800 V1.2 251215": "idx"} {
+		systemVersion = func() string { return version }
+		UseProduct("DXP2800")
+
+		got := framesFor(false)
+		if len(got) != 2 || got[0].name != first {
+			t.Errorf("version %q: first frame %v, want %s then the other", version, got, first)
+		}
+	}
+
+	// DXP6800 keeps legacy first whatever the version says.
+	systemVersion = func() string { return "DXP6800 V1.2 251215" }
+	UseProduct("DXP6800")
+	if got := framesFor(false); got[0].name != "legacy" {
+		t.Errorf("DXP6800: %v", got)
+	}
+}
+
+// A V1.2 board seeded to the idx frame is written with it at once, without the failed legacy attempts.
+func TestDXP2800SeededIdxBoardSendsIdxFirst(t *testing.T) {
+	withDXP2800(t)
+	dxp2800Pref.mu.Lock()
+	dxp2800Pref.idxFirst = true
+	dxp2800Pref.mu.Unlock()
+
+	m := &fakeMCU{accept: []byte{11}}
+	if err := sendFrames(m, framesFor(false), 0, cmdOnOff, [4]byte{1}); err != nil {
+		t.Fatal(err)
+	}
+	if legacy, idx := sentSizes(m); legacy != 0 || idx != 1 {
+		t.Fatalf("legacy %d idx %d, want 0 1", legacy, idx)
+	}
+
+	// A board that says idx but only takes the legacy frame still works through the fallback.
+	m = &fakeMCU{accept: []byte{12}}
+	if err := sendFrames(m, framesFor(false), 0, cmdOnOff, [4]byte{1}); err != nil {
+		t.Fatal(err)
+	}
+}

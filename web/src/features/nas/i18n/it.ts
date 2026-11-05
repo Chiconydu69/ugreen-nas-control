@@ -69,7 +69,7 @@ export const it: Record<Key, string> = {
     'follow.edit': 'Modifica curve',
     'follow.safety': 'Limiti di sicurezza',
     'follow.disk': 'disco più caldo {temp}',
-    'follow.nvme': '{name} {nvme}, contato come {temp} (tutti i dischi in standby)',
+    'follow.nvme': '{name} {nvme}, considerata come {temp} (tutti i dischi in standby)',
     'follow.none': 'tutti i dischi in standby, nessuna unità NVMe: punto più basso della curva',
     'follow.bios': 'Le ventole girano ai valori fissi del BIOS.',
     'follow.stopped': 'Il controllo delle ventole non è in esecuzione.',
@@ -137,8 +137,8 @@ export const it: Record<Key, string> = {
     'curves.cpu_asks': 'CPU {temp} °C: almeno {pct} %{rpm}',
     'curves.mix_now': 'Ventole del case ora al {pct} %{rpm} (dischi); la CPU richiede almeno {cpu} %{cpurpm}.',
     'curves.mix_now_cpu': 'Ventole del case ora al {pct} %{rpm} perché la CPU è a {temp} °C.',
-    'curves.mix_cpu_on': 'Le ventole del case danno una mano',
-    'curves.mix_cpu_on_hint': 'Alla temperatura attuale della CPU girano almeno veloci quanto prevede questa curva.',
+    'curves.mix_cpu_on': 'Le ventole del case aiutano la CPU',
+    'curves.mix_cpu_on_hint': 'In base alla temperatura attuale della CPU girano almeno alla velocità prevista da questa curva.',
     'curves.mix_cpu_off': 'Solo la ventola CPU segue questa curva',
     'curves.mix_cpu_off_hint': 'Le ventole del case seguono solo i dischi.',
     'curves.by_cpu': '(CPU)',
@@ -167,7 +167,7 @@ export const it: Record<Key, string> = {
     'calib.running_title': 'Misurazione delle ventole',
     'calib.running': '{fan} al {pct} %',
     'calib.starting': 'Avvio…',
-    'calib.step': 'Passo {step} di {steps}, mancano circa {min} min',
+    'calib.step': 'Passaggio {step} di {steps}, mancano circa {min} min',
     'calib.live': '{rpm} giri/min ora',
     'calib.running_note':
         'Le ventole accelerano e rallentano di proposito e a volte sono rumorose. Le curve restano in pausa fino alla fine della misurazione. Puoi lasciare questa pagina, la misurazione continua.',
@@ -199,12 +199,20 @@ export const it: Record<Key, string> = {
     'leds.import_btn': 'Importa le impostazioni',
     'leds.import_after': 'Dopo puoi disinstallare UGREEN LED Control in Plugin: il controllo LED integrato lo sostituisce.',
     'leds.imported': 'Impostazioni importate',
-    'case.unknown':
-        'Per il {model} non esiste ancora una vista del case: esiste per DXP6800 Pro, DXP4800 GT, DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 e iDX6011 / Pro.',
-    'leds.limited':
-        'Per il {model} ci sono il controllo dei LED, le info di sistema e le temperature. Il controllo delle ventole esiste solo per i modelli dell’elenco dei modelli (cablaggio fisso, oppure dopo un test o una conferma), la vista del case anche per DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 e iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Per il {model} ci sono il controllo dei LED, le info di sistema, le temperature e la vista del case. Il controllo delle ventole esiste solo per i modelli dell’elenco dei modelli (cablaggio fisso, oppure dopo un test o una conferma).',
+    'model.box': 'Su {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'Il controllo dei LED comprende i LED dei vani e il LED di alimentazione.',
+    'model.leds.power':
+        'Il controllo dei LED comprende solo il LED di alimentazione (bianco fisso finché il controllo dei LED è attivo; colore, luminosità e spegnimento non sono supportati).',
+    'model.leds.none': 'Non c’è il controllo dei LED.',
+    'model.fans.fixed': 'Il controllo delle ventole è disponibile.',
+    'model.fans.probe': 'Il controllo delle ventole parte dopo un test che confermi.',
+    'model.fans.confirm': 'Il controllo delle ventole parte dopo la conferma delle ventole.',
+    'model.fans.none': 'Non c’è il controllo delle ventole.',
+    'model.case.full': 'La vista del case mostra fronte, retro e interno.',
+    'model.case.front_rear': 'La vista del case mostra fronte e retro.',
+    'model.case.none': 'Per questo modello non esiste ancora una vista del case.',
+    'model.unknown': 'Il {model} non è ancora nell’elenco dei modelli.',
+    'model.all': 'Tutti i modelli',
     'leds.untested':
         'Il controllo dei LED per il {model} non è testato: il controller è lo stesso su tutti i modelli UGREEN, ma l’ordine dei vani e i numeri dei LED sono ipotizzati per questo modello o derivano da segnalazioni di altri plugin. Con «Identifica» controlla che si accenda il LED giusto e segnala i problemi con una issue.',
     'leds.warn_standalone':
@@ -251,6 +259,10 @@ export const it: Record<Key, string> = {
     'in.front': 'Fronte',
     'case.inside_hint_gt':
         'Il pannello di servizio sul fondo, fronte a sinistra. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
+    'case.inside_hint_8800':
+        'Il pannello di servizio sul fondo secondo il manuale UGREEN: due zoccoli RAM, M.2 sotto e accanto; lo slot PCIe si trova nel telaio. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
+    'case.inside_hint_4800':
+        'Il pannello di servizio sul fondo, secondo il manuale di UGREEN. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'in.slot_empty': '{label} · vuoto',
     'nvme.boot': 'SSD di avvio Unraid',
     'nvme.role': 'SSD del pool «{name}»',
@@ -260,6 +272,15 @@ export const it: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'libero',
     'case.running_at': 'funziona a {speed} MT/s (fino a {max})',
+    'case.m2_hint':
+        'I quattro slot M.2 fanno da vani, numerati da 01 a 04 come sul pannello inferiore. Quale SSD si trova in quale slot è presunto dall’ordine degli indirizzi PCIe; se il tuo dispositivo è diverso, apri una issue.',
+    'case.intro_noinside': 'I dischi nel dettaglio e il retro. Il frontale con i vani è nella Panoramica.',
+    'case.intro_m2': 'I dischi M.2 nel dettaglio e il retro. Il frontale è nella Panoramica.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Il pannello di servizio sul fondo. La memoria è saldata, quindi non ci sono slot RAM. M.2-1 / M.2-2 sono numerati per ipotesi; apri una segnalazione se il tuo box è diverso.',
+    'in.idx6011_ram': 'RAM · {type} · saldata',
+    'in.idx6011_pcie': 'Slot PCIe 4.0 x8',
 
     'safety.intro': 'Limiti che prevalgono sempre sulle curve (non in modalità BIOS).',
     'safety.min': 'Velocità minima delle ventole',
@@ -312,7 +333,7 @@ export const it: Record<Key, string> = {
     'models.confirm_comment': 'Commento (facoltativo)',
     'models.confirm_button': 'Apri come issue su GitHub',
     'models.confirm_privacy':
-        'Si apre una issue GitHub precompilata. Non viene inviato nulla finché non fai clic su «Submit» lì. Il testo contiene modello, versioni di plugin, Unraid e kernel e le tue selezioni, senza numeri di serie, indirizzi IP o nomi dei dischi.',
+        'Si apre una issue GitHub precompilata. Non viene inviato nulla finché non clicchi su «Submit» su GitHub. Il testo contiene modello, versioni di plugin, Unraid e kernel e le tue selezioni, senza numeri di serie, indirizzi IP o nomi dei dischi.',
     'models.title': 'Modelli supportati',
     'models.intro': 'Ogni modello di NAS UGREEN e cosa fa questo plugin per esso.',
     'models.col_model': 'Modello',
@@ -428,7 +449,7 @@ export const it: Record<Key, string> = {
         'Un sensore aggiuntivo dell’SSD, spesso il controller o i chip di memoria. Il valore complessivo (Composito) è indicato con l’SSD stesso; solo quello comanda le ventole.',
     'slot.system': 'Slot di sistema',
     'case.drives_leds': 'LED dei vani e Identifica',
-    'follow.nvme_awake': '{name} {nvme}, contato come {temp} (più caldo del disco più caldo)',
+    'follow.nvme_awake': '{name} {nvme}, considerata come {temp} (più calda del disco più caldo)',
     'curves.case_src_link': 'Limiti di emergenza e offset NVMe: pagina Sicurezza',
     'mode.note_full': 'Tutte le ventole girano sempre al 100 %.',
     'mode.discard_confirm': 'Annullare le modifiche non salvate?',
@@ -462,6 +483,11 @@ export const it: Record<Key, string> = {
     ...historyIt,
     ...scheduleIt,
     ...toolsIt,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, i due zoccoli RAM nel pannello inferiore. La numerazione delle due coppie è presunta; apri una issue se il tuo box è diverso.",
+    'in.gt_cage': 'Gabbia dei dischi · parete interna sinistra',
+    'in.gt_panel': 'Pannello inferiore',
     ...panelIt,
     ...powerIt
 };

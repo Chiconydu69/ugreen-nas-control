@@ -19,3 +19,5 @@ docs/ca/case-dark.png linguist-generated=true
 docs/ca/leds-dark.png linguist-generated=true
 # Light variant of the overview for the README hero (<picture>), rendered by the same recipe.
 docs/ca/overview-light.png linguist-generated=true
+# Model registry as JSON for `ugreen-nas-ctl diag` (go:embed), rendered from web/models/ by docs/tools/gen-docs.ts; tracked so a Go build works in a clean checkout, `just docs-check` keeps it current.
+backend/internal/nasctl/models.json linguist-generated=true

@@ -64,3 +64,27 @@ func LoadConfig(path string) Config {
 	}
 	return c
 }
+
+// Key is one mqtt_* setting of fan.cfg. Private: the value names the broker, a login or a topic, so a diagnostics
+// paste never prints it.
+type Key struct {
+	Name    string
+	Private bool
+}
+
+// Keys is every setting LoadConfig reads (TestKeysCoverLoadConfig checks it against the source).
+var Keys = []Key{
+	{"mqtt_enabled", false}, {"mqtt_host", true}, {"mqtt_port", false}, {"mqtt_tls", false},
+	{"mqtt_user", true}, {"mqtt_pass", true}, {"mqtt_name", true}, {"mqtt_interval", false},
+	{"mqtt_control", false}, {"mqtt_control_updates", false}, {"mqtt_control_containers", false},
+}
+
+// KnownKey reports whether key is an mqtt_* setting and whether its value is private.
+func KnownKey(key string) (known, private bool) {
+	for _, k := range Keys {
+		if k.Name == key {
+			return true, k.Private
+		}
+	}
+	return false, false
+}

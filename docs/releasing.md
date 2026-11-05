@@ -4,8 +4,9 @@ For maintainers. Contributors only need [CONTRIBUTING.md](../.github/CONTRIBUTIN
 
 ## Branches
 
-- `next` is the development and default branch. Every PR targets it. Each push builds the next channel.
-- `main` holds released code only. The installed plugin reads `plugin/ugreen-nas-control.plg` from `main` (raw URL), and the Community Applications entry points there too.
+- `main` is the default branch and holds released code only.
+- `next` is the development branch. Every PR targets it. Each push builds the next channel.
+- `main` also serves the installs: The installed plugin reads `plugin/ugreen-nas-control.plg` from `main` (raw URL), and the Community Applications entry points there too.
 - `site` holds the Pages playground (`docs/site/` only).
 - Feature PRs never touch `plugin/ugreen-nas-control.plg` or `CHANGELOG.md`; the CI `guard` job fails them unless the branch is `release/*`. Each PR adds one fragment `.changes/<slug>.md` ([format](../.changes/README.md)) or carries the label `no-changelog`.
 
@@ -41,10 +42,10 @@ Each deployment replaces the whole site, so only the current archive is hosted: 
 ## Release
 
 1. Check `next` is green and the fragments in `.changes/` read well. Run `just models-check`: it lists stale checks; re-test them first, see [Re-test the maintainer boxes](#re-test-the-maintainer-boxes).
-2. **Actions, Release, Run workflow** on `next`, input the version `X.Y.Z` (see Versions). The workflow folds the fragments into `CHANGELOG.md` and the plugin's change list, builds the binaries and the archive, renders the `.plg` with its hashes, pushes `release/X.Y.Z`, creates the **draft** release `vX.Y.Z` (archive, `.plg`, `SHA256SUMS`, SBOM; no tag, no public URL) and opens the PR `release/X.Y.Z` to `main`.
-3. The required check `ci-ok` includes the job `release`: it rebuilds from the branch and fails unless the rebuilt `.plg` and archive equal the committed `.plg` and the draft's assets. Without `RELEASE_PR_TOKEN` the workflow starts CI on `release/X.Y.Z` itself (`workflow_dispatch`); the checks attach to the same commit.
+2. **Actions, Release, Run workflow** with "Use workflow from: next" (the workflow refuses other refs; its file exists on `main`, which `workflow_dispatch` needs), input the version `X.Y.Z` (see Versions). The workflow folds the fragments into `CHANGELOG.md` and the plugin's change list, builds the binaries and the archive, renders the `.plg` with its hashes, pushes `release/X.Y.Z`, creates the **draft** release `vX.Y.Z` (archive, `.plg`, `SHA256SUMS`, SBOM; no tag, no public URL) and opens the PR `release/X.Y.Z` to `main`.
+3. The required check `ci-ok` includes the job `release`: it rebuilds from the branch and fails unless the rebuilt `.plg` and archive equal the committed `.plg` and the draft's assets. Without `RELEASE_PR_TOKEN` the workflow starts CI on `release/X.Y.Z` itself (`workflow_dispatch`); the checks attach to the same commit. The release PR opened with `GITHUB_TOKEN` also gets a `pull_request` checks run that waits for approval (`action_required`); approve it (Actions, the run, Approve, or `gh api -X POST repos/<repo>/actions/runs/<id>/approve`), otherwise the PR stays BLOCKED even with the dispatched `ci-ok` green.
 4. Merge the PR with a **merge commit** (`main` and `next` then share history). The push to `main` verifies the draft's assets against the `.plg` on `main`, attests them (build provenance), deploys the Pages site, then creates the tag `vX.Y.Z` at the merge commit and publishes the draft. A failed site deploy keeps the release a draft; re-run the workflow to retry. Only now do the raw `.plg` on `main` and the download URLs work together. A failed run is safe to re-run: a published release with its archive is skipped, a draft is verified and published.
-5. A `main` to `next` PR opens (merge commit; a fast-forward in effect unless `next` moved on). Merge it.
+5. A `main` to `next` PR opens. It fails `guard` by design (it carries the `.plg` and `CHANGELOG.md`); merge it with a merge commit through the admin bypass.
 6. The site was already deployed in step 4.
 7. Post the release in the forum thread and in [Discussions, Announcements](https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/categories/announcements). Rollback: release a new patch `X.Y.(Z+1)` with the fix; a published asset is never replaced because installs check its hash.
 
@@ -69,7 +70,7 @@ For each capability that works, set `version` (the release under test), `date` a
 
 Not stored in the repo; do it in this order before the first release:
 
-1. Create `next` from `main` and make it the default branch (Settings, Branches). Workflows with `workflow_dispatch` (Release) must exist on the default branch.
+1. Create `next` from `main`; `main` stays the default branch. Workflows with `workflow_dispatch` (Release) must exist on the default branch, so on `main`.
 2. Rulesets on `next` and `main`: require a PR, require the status check `ci-ok`, block force pushes. No linear-history rule.
 3. Merge methods: squash and merge commits allowed. Feature PRs into `next` are squashed (the PR title becomes the commit message); the release PR `release/X.Y.Z` to `main` and the back-merge PR use a merge commit. Delete branches on merge.
 4. Settings, Actions, General, Workflow permissions: enable **Allow GitHub Actions to create and approve pull requests**. Without it `gh pr create` in the release and back-merge jobs fails with 403.
