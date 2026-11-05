@@ -195,10 +195,19 @@ export const zh: Record<Key, string> = {
     'leds.import_btn': '导入设置',
     'leds.import_after': '之后你可以在“插件”中卸载 UGREEN LED Control：内置的 LED 控制会取代它。',
     'leds.imported': '设置已导入',
-    'case.unknown': '{model} 暂无机箱视图：目前支持 DXP6800 Pro、DXP4800 GT、DXP4800 / Plus / Pro、DXP8800 Plus、DXP2800 以及 iDX6011 / Pro。',
-    'leds.limited':
-        '{model} 支持 LED 控制、系统信息和温度。风扇控制仅适用于型号列表中的机型（固定接线，或经检测或确认后）；机箱视图另外支持 DXP4800 / Plus / Pro、DXP8800 Plus、DXP2800 以及 iDX6011 / Pro。',
-    'leds.limited_fans': '{model} 支持 LED 控制、系统信息、温度和机箱视图。风扇控制仅适用于型号列表中的机型（固定接线，或经检测或确认后）。',
+    'model.box': '{model}：{leds}{fans}{case}',
+    'model.leds.bays': 'LED 控制涵盖盘位 LED 和电源 LED。',
+    'model.leds.power': 'LED 控制仅涵盖电源 LED（LED 控制开启时恒亮白色；不支持颜色、亮度和关闭）。',
+    'model.leds.none': '没有 LED 控制。',
+    'model.fans.fixed': '可使用风扇控制。',
+    'model.fans.probe': '风扇控制在你确认检测结果后启动。',
+    'model.fans.confirm': '风扇控制在你确认风扇后启动。',
+    'model.fans.none': '没有风扇控制。',
+    'model.case.full': '机箱视图显示正面、背面和内部。',
+    'model.case.front_rear': '机箱视图显示正面和背面。',
+    'model.case.none': '此型号暂无机箱视图。',
+    'model.unknown': '{model} 尚未列入型号列表。',
+    'model.all': '所有型号',
     'leds.untested':
         '{model} 的 LED 控制尚未测试：所有 UGREEN 型号的控制器相同，但此型号的盘位顺序和 LED 编号是推测的，或来自其他插件的反馈。请用“识别”确认亮起的是正确的 LED，如有问题请提交 issue。',
     'leds.warn_standalone':
@@ -244,6 +253,9 @@ export const zh: Record<Key, string> = {
     'in.ram_empty': '内存 {n} · 空',
     'in.front': '正面',
     'case.inside_hint_gt': '底部检修盖板，正面在左侧。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_8800':
+        '底部检修盖板，依据 UGREEN 手册绘制：两个内存插槽，M.2 位于其下方和旁边；PCIe 插槽在机架内部。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_4800': '底部检修盖板，依据 UGREEN 手册绘制。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'in.slot_empty': '{label} · 空',
     'nvme.boot': 'Unraid 启动 SSD',
     'nvme.role': '存储池 SSD“{name}”',
@@ -253,7 +265,14 @@ export const zh: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': '空闲',
     'case.running_at': '运行于 {speed} MT/s（最高 {max}）',
+    'case.m2_hint': '四个 M.2 插槽代替盘位，编号 01 至 04，与底部面板一致。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint': '机身底部的维护面板。内存为板载焊接，没有内存插槽。M.2-1 / M.2-2 的编号为推测；如果你的机器不同，请提交 issue。',
+    'in.idx6011_ram': '内存 · {type} · 板载',
+    'in.idx6011_pcie': 'PCIe 4.0 x8 插槽',
 
+    'case.intro_noinside': '硬盘详情和背面。带盘位的正面请见概览。',
+    'case.intro_m2': 'M.2 硬盘详情和背面。正面请见概览。',
     'safety.intro': '始终优先于曲线的上限（BIOS 模式下无效）。',
     'safety.min': '最低风扇转速',
     'safety.now_none_cpu': '无法读取，所有风扇 100 %',

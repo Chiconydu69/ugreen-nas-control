@@ -192,12 +192,20 @@ export const es: Record<Key, string> = {
     'leds.import_btn': 'Importar los ajustes',
     'leds.import_after': 'Después puedes desinstalar UGREEN LED Control en Plugins: el control de LED integrado lo sustituye.',
     'leds.imported': 'Ajustes importados',
-    'case.unknown':
-        'Todavía no hay vista de la caja para {model}: existe para el DXP6800 Pro, el DXP4800 GT, los DXP4800 / Plus / Pro, el DXP8800 Plus, el DXP2800 y los iDX6011 / Pro.',
-    'leds.limited':
-        'Para el {model} hay control de LED, información del sistema y temperaturas. El control de ventiladores solo está disponible para los modelos de la lista de modelos (cableado fijo, o tras una prueba o confirmación), la vista de la caja también para los DXP4800 / Plus / Pro, el DXP8800 Plus, el DXP2800 y los iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Para el {model} hay control de LED, información del sistema, temperaturas y la vista de la caja. El control de ventiladores solo está disponible para los modelos de la lista de modelos (cableado fijo, o tras una prueba o confirmación).',
+    'model.box': 'En el {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'El control de LED abarca los LED de las bahías y el LED de encendido.',
+    'model.leds.power':
+        'El control de LED abarca solo el LED de encendido (blanco fijo mientras el control de LED está activado; no admite color, brillo ni apagado).',
+    'model.leds.none': 'No hay control de LED.',
+    'model.fans.fixed': 'El control de ventiladores está disponible.',
+    'model.fans.probe': 'El control de ventiladores se inicia tras una prueba que confirmes.',
+    'model.fans.confirm': 'El control de ventiladores se inicia cuando confirmas los ventiladores.',
+    'model.fans.none': 'No hay control de ventiladores.',
+    'model.case.full': 'La vista de la caja muestra el frente, la parte trasera y el interior.',
+    'model.case.front_rear': 'La vista de la caja muestra el frente y la parte trasera.',
+    'model.case.none': 'Todavía no hay vista de la caja para este modelo.',
+    'model.unknown': 'El {model} todavía no está en la lista de modelos.',
+    'model.all': 'Todos los modelos',
     'leds.untested':
         'El control de LED para el {model} no está probado: el controlador es el mismo en todos los modelos UGREEN, pero el orden de las bahías y los números de LED son estimados para este modelo o proceden de informes de otros plugins. Comprueba con «Identificar» que se enciende el LED correcto e informa de los problemas en un issue.',
     'leds.warn_standalone':
@@ -243,6 +251,10 @@ export const es: Record<Key, string> = {
     'in.front': 'Frontal',
     'case.inside_hint_gt':
         'El panel de servicio de la parte inferior, con el frontal a la izquierda. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
+    'case.inside_hint_8800':
+        'El panel de servicio de la parte inferior según el manual de UGREEN: dos zócalos de RAM, M.2 debajo y al lado; la ranura PCIe está dentro del bastidor. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
+    'case.inside_hint_4800':
+        'El panel de servicio de la parte inferior, según el manual de UGREEN. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
     'in.slot_empty': '{label} · vacía',
     'nvme.boot': 'SSD de arranque de Unraid',
     'nvme.role': 'SSD del pool «{name}»',
@@ -252,6 +264,15 @@ export const es: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'libre',
     'case.running_at': 'funciona a {speed} MT/s (hasta {max})',
+    'case.m2_hint':
+        'Las cuatro ranuras M.2 hacen de bahías, numeradas del 01 al 04 como en el panel inferior. Qué SSD está en qué ranura se supone por el orden de las direcciones PCIe; si tu equipo difiere, abre un issue.',
+    'case.intro_noinside': 'Las unidades en detalle y la parte trasera. El frontal con las bahías está en el Resumen.',
+    'case.intro_m2': 'Las unidades M.2 en detalle y la parte trasera. El frontal está en el Resumen.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'El panel de servicio de la parte inferior. La memoria está soldada, no hay ranuras de RAM. M.2-1 / M.2-2 están numeradas por suposición; abre una incidencia si tu equipo es distinto.',
+    'in.idx6011_ram': 'RAM · {type} · soldada',
+    'in.idx6011_pcie': 'Ranura PCIe 4.0 x8',
     'safety.intro': 'Límites que siempre se imponen a las curvas (no en modo BIOS).',
     'safety.min': 'Velocidad mínima del ventilador',
     'safety.now_none_cpu': 'no se puede leer, todos al 100 %',

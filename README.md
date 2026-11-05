@@ -79,7 +79,7 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 | ------------------------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ------------------ |
 | [DXP4800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-gt/)          | ●    | ●           | ●         | ●       | ● Verified         |
 | [DXP6800 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800-pro/)        | ●    | ●           | ●         | ●       | ● Verified         |
-| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | –         | ○       | ◔ Community-tested |
+| [DXP480T Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp480t-plus/)      | ◐    | –           | ○         | ○       | ◔ Community-tested |
 | [DXP2800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800/)                | ◔    | ○           | ○         | ○       | ◔ Community-tested |
 | [DXP2800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800-gt/)          | ○    | ◔           | ○         | ○       | ◔ Community-tested |
 | [DXP4800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-base/)           | ◔    | ○           | ○         | ○       | ◔ Community-tested |

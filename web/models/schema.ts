@@ -76,7 +76,7 @@ export interface Model {
     led: LedSupport;
     caseView: CaseView;
     /** Which drawing the case view uses (CASE_MODELS in web/src/features/nas/components/front.ts); 'none' without case view. */
-    caseVariant: 'none' | 'rear6800' | 'rear4800' | 'rear2800' | 'rear6011' | 'rear8800';
+    caseVariant: 'none' | 'rear6800' | 'rear4800' | 'rear2800' | 'rear6011' | 'rear8800' | 'rear480';
     fan: FanSupport | null;
     verified: Record<Capability, Check>;
     sources: string[];
@@ -172,9 +172,9 @@ export function validate(m: Model, fileId: string): string[] {
     if (m.lan !== null && !(Array.isArray(m.lan?.maxMbit) && m.lan.maxMbit.length >= 1)) bad.push('lan: {maxMbit: [..]} or null');
     if (!['bays', 'power', 'none'].includes(m.led)) bad.push('led');
     if (!['none', 'front-rear', 'full'].includes(m.caseView)) bad.push('caseView');
-    if (!['none', 'rear6800', 'rear4800', 'rear2800', 'rear6011', 'rear8800'].includes(m.caseVariant)) bad.push('caseVariant');
+    if (!['none', 'rear6800', 'rear4800', 'rear2800', 'rear6011', 'rear8800', 'rear480'].includes(m.caseVariant)) bad.push('caseVariant');
     if ((m.caseView === 'none') !== (m.caseVariant === 'none')) bad.push('caseVariant must be none exactly when caseView is none');
-    if (m.caseView !== 'none' && !m.bays) bad.push('a case view needs bays');
+    if (m.caseView !== 'none' && !m.bays && !m.m2Slots) bad.push('a case view needs bays or M.2 slots');
     if (m.caseView === 'full' && m.m2 === null) bad.push('caseView full needs m2');
     if (m.fan !== null && !(m.fan?.chip && Object.keys(m.fan.fans ?? {}).length > 0)) bad.push('fan: {chip, fans} or null');
     if (m.fan?.watchdog) {

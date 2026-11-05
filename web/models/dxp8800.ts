@@ -9,10 +9,10 @@ export default {
     cpu: null,
     bays: 8,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
     lan: null,
     led: 'bays',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear8800',
     fan: { chip: 'ITE IT8613E', fans: { fan2: 'cpu', fan3: 'case', fan4: 'case' }, kind: 'probe' },
     verified: {
@@ -21,7 +21,7 @@ export default {
             status: 'expected',
             note: "Same IT8613E as the DXP8800 Plus: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 control register unconfirmed). Not run on this model yet."
         },
-        case: { status: 'expected', note: 'Drawn like the DXP8800 Plus (eight bays, ports in a row); not compared on a device.' },
+        case: { status: 'expected', note: "inside after UGREEN's manual; slot numbering assumed" },
         sensors: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],

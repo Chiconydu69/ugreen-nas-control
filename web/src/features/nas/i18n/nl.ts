@@ -200,12 +200,20 @@ export const nl: Record<Key, string> = {
     'leds.import_btn': 'Instellingen overnemen',
     'leds.import_after': 'Daarna kun je UGREEN LED Control verwijderen onder Plug-ins: de ingebouwde LED-besturing neemt het over.',
     'leds.imported': 'Instellingen overgenomen',
-    'case.unknown':
-        'Voor de {model} is er nog geen behuizingsweergave: die bestaat voor de DXP6800 Pro, de DXP4800 GT, de DXP4800 / Plus / Pro, de DXP8800 Plus, de DXP2800 en de iDX6011 / Pro.',
-    'leds.limited':
-        'Voor de {model} is er LED-besturing, systeeminfo en temperaturen. Ventilatorregeling bestaat alleen voor de modellen uit de modellenlijst (vaste bedrading, of na een test of bevestiging), de behuizingsweergave ook voor de DXP4800 / Plus / Pro, de DXP8800 Plus, de DXP2800 en de iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Voor de {model} is er LED-besturing, systeeminfo, temperaturen en de behuizingsweergave. Ventilatorregeling bestaat alleen voor de modellen uit de modellenlijst (vaste bedrading, of na een test of bevestiging).',
+    'model.box': 'Op de {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'LED-besturing omvat de bay-LED’s en de voedings-LED.',
+    'model.leds.power':
+        'LED-besturing omvat alleen de voedings-LED (vast wit zolang LED-besturing aan staat; kleur, helderheid en uitschakelen worden niet ondersteund).',
+    'model.leds.none': 'Er is geen LED-besturing.',
+    'model.fans.fixed': 'Ventilatorregeling is beschikbaar.',
+    'model.fans.probe': 'Ventilatorregeling start na een test die je bevestigt.',
+    'model.fans.confirm': 'Ventilatorregeling start nadat je de ventilatoren hebt bevestigd.',
+    'model.fans.none': 'Er is geen ventilatorregeling.',
+    'model.case.full': 'De behuizingsweergave toont voorkant, achterkant en binnenkant.',
+    'model.case.front_rear': 'De behuizingsweergave toont voorkant en achterkant.',
+    'model.case.none': 'Voor dit model is er nog geen behuizingsweergave.',
+    'model.unknown': 'De {model} staat nog niet in de modellenlijst.',
+    'model.all': 'Alle modellen',
     'leds.untested':
         'LED-besturing voor de {model} is niet getest: de controller is op alle UGREEN-modellen hetzelfde, maar de volgorde van de bays en de LED-nummers zijn voor dit model aangenomen of komen uit meldingen van andere plug-ins. Controleer met “Identificeren” of de juiste LED oplicht en meld problemen als issue.',
     'leds.warn_standalone':
@@ -252,6 +260,10 @@ export const nl: Record<Key, string> = {
     'in.front': 'Voorkant',
     'case.inside_hint_gt':
         'Het serviceluik aan de onderkant, voorkant links. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_8800':
+        'Het serviceluik aan de onderkant volgens de UGREEN-handleiding: twee RAM-sockets, M.2 eronder en ernaast; de PCIe-sleuf zit in het frame. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_4800':
+        'Het serviceluik aan de onderkant, naar de handleiding van UGREEN. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'in.slot_empty': '{label} · leeg',
     'nvme.boot': 'Opstart-SSD van Unraid',
     'nvme.role': 'SSD in groep “{name}”',
@@ -261,6 +273,15 @@ export const nl: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'vrij',
     'case.running_at': 'draait op {speed} MT/s (tot {max})',
+    'case.m2_hint':
+        'De vier M.2-slots vervangen de bays en zijn genummerd van 01 tot 04 zoals op het onderpaneel. Welke SSD in welk slot zit, is aangenomen uit de volgorde van de PCIe-adressen; wijkt jouw apparaat af, open dan een issue.',
+    'case.intro_noinside': 'De schijven in detail en de achterkant. De voorkant met de bays staat op het Overzicht.',
+    'case.intro_m2': 'De M.2-schijven in detail en de achterkant. De voorkant staat op het Overzicht.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Het servicepaneel aan de onderkant. Het geheugen is vastgesoldeerd, dus er zijn geen RAM-sleuven. M.2-1 / M.2-2 zijn op aanname genummerd; open een issue als jouw kast afwijkt.',
+    'in.idx6011_ram': 'RAM · {type} · vastgesoldeerd',
+    'in.idx6011_pcie': 'PCIe 4.0 x8-sleuf',
 
     'safety.intro': 'Grenzen die altijd winnen van de curves (niet in BIOS-modus).',
     'safety.min': 'Laagste ventilatortoerental',

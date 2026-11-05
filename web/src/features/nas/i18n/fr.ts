@@ -200,12 +200,20 @@ export const fr: Record<Key, string> = {
     'leds.import_btn': 'Reprendre les réglages',
     'leds.import_after': 'Ensuite, vous pouvez désinstaller UGREEN LED Control dans Plugins : le contrôle des LED intégré le remplace.',
     'leds.imported': 'Réglages repris',
-    'case.unknown':
-        'Il n’existe pas encore de vue du boîtier pour le {model} : elle existe pour le DXP6800 Pro, le DXP4800 GT, les DXP4800 / Plus / Pro, le DXP8800 Plus, le DXP2800 et les iDX6011 / Pro.',
-    'leds.limited':
-        'Pour le {model}, le plugin propose le contrôle des LED, les infos système et les températures. Le contrôle des ventilateurs n’existe que pour les modèles de la liste des modèles (câblage fixe, ou après un test ou une confirmation). La vue du boîtier n’existe, elle aussi, que pour les DXP4800 / Plus / Pro, le DXP8800 Plus, le DXP2800 et les iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Pour le {model}, le plugin propose le contrôle des LED, les infos système, les températures et la vue du boîtier. Le contrôle des ventilateurs n’existe que pour les modèles de la liste des modèles (câblage fixe, ou après un test ou une confirmation).',
+    'model.box': 'Sur le {model} : {leds} {fans} {case}',
+    'model.leds.bays': 'Le contrôle des LED couvre les LED des baies et la LED d’alimentation.',
+    'model.leds.power':
+        'Le contrôle des LED ne couvre que la LED d’alimentation (blanc fixe tant que le contrôle des LED est activé ; couleur, luminosité et extinction ne sont pas pris en charge).',
+    'model.leds.none': 'Il n’y a pas de contrôle des LED.',
+    'model.fans.fixed': 'Le contrôle des ventilateurs est disponible.',
+    'model.fans.probe': 'Le contrôle des ventilateurs démarre après un test que vous confirmez.',
+    'model.fans.confirm': 'Le contrôle des ventilateurs démarre une fois que vous avez confirmé les ventilateurs.',
+    'model.fans.none': 'Il n’y a pas de contrôle des ventilateurs.',
+    'model.case.full': 'La vue du boîtier montre l’avant, l’arrière et l’intérieur.',
+    'model.case.front_rear': 'La vue du boîtier montre l’avant et l’arrière.',
+    'model.case.none': 'Il n’existe pas encore de vue du boîtier pour ce modèle.',
+    'model.unknown': 'Le {model} ne figure pas encore dans la liste des modèles.',
+    'model.all': 'Tous les modèles',
     'leds.untested':
         'Le contrôle des LED du {model} n’est pas testé : le contrôleur est le même sur tous les modèles UGREEN, mais l’ordre des baies et les numéros de LED sont supposés pour ce modèle ou viennent de retours d’autres plugins. Vérifiez avec « Identifier » que la bonne LED s’allume, et signalez les problèmes dans un ticket.',
     'leds.warn_standalone':
@@ -252,6 +260,10 @@ export const fr: Record<Key, string> = {
     'in.front': 'Avant',
     'case.inside_hint_gt':
         'La trappe de service sous le boîtier, avant à gauche. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.',
+    'case.inside_hint_8800':
+        "La trappe de service sous le boîtier, d'après le manuel UGREEN : deux supports de RAM, M.2 en dessous et à côté ; le slot PCIe se trouve dans le châssis. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
+    'case.inside_hint_4800':
+        "La trappe de service sous le boîtier, d'après le manuel d'UGREEN. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
     'in.slot_empty': '{label} · vide',
     'nvme.boot': 'SSD de démarrage Unraid',
     'nvme.role': 'SSD du pool « {name} »',
@@ -261,6 +273,15 @@ export const fr: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'libre',
     'case.running_at': 'fonctionne à {speed} MT/s (jusqu’à {max})',
+    'case.m2_hint':
+        'Les quatre emplacements M.2 tiennent lieu de baies, numérotés de 01 à 04 comme sur le panneau inférieur. Le SSD de chaque emplacement est supposé d’après l’ordre des adresses PCIe ; ouvrez un ticket si votre appareil diffère.',
+    'case.intro_noinside': 'Les disques en détail et l’arrière. La façade avec les baies se trouve dans l’aperçu.',
+    'case.intro_m2': 'Les disques M.2 en détail et l’arrière. La façade se trouve dans l’aperçu.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Le panneau de service sur le dessous. La mémoire est soudée, il n’y a pas de barrettes. M.2-1 / M.2-2 sont numérotés par hypothèse ; ouvrez un ticket si votre boîtier diffère.',
+    'in.idx6011_ram': 'RAM · {type} · soudée',
+    'in.idx6011_pcie': 'Emplacement PCIe 4.0 x8',
 
     'safety.intro': 'Limites qui l’emportent toujours sur les courbes (hors mode BIOS).',
     'safety.min': 'Vitesse minimale des ventilateurs',

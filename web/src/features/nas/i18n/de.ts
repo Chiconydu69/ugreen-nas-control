@@ -199,12 +199,20 @@ export const de: Record<Key, string> = {
     'leds.import_btn': 'Einstellungen übernehmen',
     'leds.import_after': 'Danach kannst du UGREEN LED Control unter Plugins deinstallieren: die eingebaute LED-Steuerung ersetzt es.',
     'leds.imported': 'Einstellungen übernommen',
-    'case.unknown':
-        'Für die {model} gibt es noch keine Gehäuseansicht. Sie ist für folgende Modelle verfügbar: DXP6800 Pro, DXP4800 GT, DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 und iDX6011 / Pro.',
-    'leds.limited':
-        'Für die {model} stehen LED-Steuerung, Systeminfo und Temperaturen zur Verfügung. Die Lüfter steuert das Plugin nur bei Modellen aus der Modellliste, deren Verdrahtung bekannt ist oder per Test bestätigt wurde. Die Gehäuseansicht gibt es außerdem für DXP4800 / Plus / Pro, DXP8800 Plus, DXP2800 und iDX6011 / Pro.',
-    'leds.limited_fans':
-        'Für die {model} stehen LED-Steuerung, Systeminfo, Temperaturen und Gehäuseansicht zur Verfügung. Die Lüfter steuert das Plugin nur bei Modellen aus der Modellliste, deren Verdrahtung bekannt ist oder per Test bestätigt wurde.',
+    'model.box': 'Bei der {model}: {leds} {fans} {case}',
+    'model.leds.bays': 'Die LED-Steuerung umfasst die Schacht-LEDs und die Power-LED.',
+    'model.leds.power':
+        'Die LED-Steuerung umfasst nur die Power-LED (weiß leuchtend, solange die LED-Steuerung an ist; Farbe, Helligkeit und Ausschalten gibt es nicht).',
+    'model.leds.none': 'Es gibt keine LED-Steuerung.',
+    'model.fans.fixed': 'Die Lüftersteuerung ist verfügbar.',
+    'model.fans.probe': 'Die Lüftersteuerung startet nach einem Test, den du bestätigst.',
+    'model.fans.confirm': 'Die Lüftersteuerung startet, sobald du die Lüfter bestätigt hast.',
+    'model.fans.none': 'Es gibt keine Lüftersteuerung.',
+    'model.case.full': 'Die Gehäuseansicht zeigt Vorderseite, Rückseite und Innenraum.',
+    'model.case.front_rear': 'Die Gehäuseansicht zeigt Vorder- und Rückseite.',
+    'model.case.none': 'Für dieses Modell gibt es noch keine Gehäuseansicht.',
+    'model.unknown': 'Die {model} steht noch nicht in der Modellliste.',
+    'model.all': 'Alle Modelle',
     'leds.untested':
         'Die LED-Steuerung ist für die {model} ungetestet. Der Controller ist bei allen UGREEN-Modellen derselbe, aber die Reihenfolge der Schächte und die LED-Nummern sind für dieses Modell geraten oder stammen aus Berichten anderer Plugins. Prüfe mit „Schacht identifizieren“, ob die richtige LED leuchtet, und melde Probleme als Issue.',
     'leds.warn_standalone':
@@ -251,6 +259,10 @@ export const de: Record<Key, string> = {
     'in.front': 'Vorne',
     'case.inside_hint_gt':
         'Die Wartungsklappe an der Unterseite, vorne links. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_8800':
+        'Die Wartungsklappe an der Unterseite nach dem UGREEN-Handbuch: zwei RAM-Sockel, M.2 darunter und daneben; der PCIe-Slot sitzt im Rahmen. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_4800':
+        'Die Wartungsklappe an der Unterseite, nach dem Handbuch von UGREEN. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'in.slot_empty': '{label} · leer',
     'nvme.boot': 'Unraid-Boot-SSD',
     'nvme.role': 'Pool-SSD „{name}“',
@@ -260,6 +272,15 @@ export const de: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'frei',
     'case.running_at': 'läuft mit {speed} MT/s (bis {max})',
+    'case.m2_hint':
+        'Die vier M.2-Plätze ersetzen die Schächte und sind wie auf der Unterseite von 01 bis 04 nummeriert. Welche SSD in welchem Platz steckt, ist aus der Reihenfolge der PCIe-Adressen angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.intro_noinside': 'Die Laufwerke im Einzelnen und die Rückseite. Die Vorderseite mit den Schächten ist auf der Übersicht.',
+    'case.intro_m2': 'Die M.2-Laufwerke im Einzelnen und die Rückseite. Die Vorderseite ist auf der Übersicht.',
+    // iDX6011 / iDX6012 / Pro
+    'in.idx6011_hint':
+        'Das Wartungsfach an der Unterseite. Der Arbeitsspeicher ist aufgelötet, es gibt keine RAM-Steckplätze. M.2-1 / M.2-2 sind angenommen nummeriert; öffne ein Issue, falls dein Gerät abweicht.',
+    'in.idx6011_ram': 'RAM · {type} · aufgelötet',
+    'in.idx6011_pcie': 'PCIe-4.0-x8-Steckplatz',
 
     'safety.intro': 'Grenzen, die immer vor den Kurven gelten (nicht im BIOS-Modus).',
     'safety.min': 'Niedrigste Lüfterdrehzahl',
