@@ -489,6 +489,11 @@ export const it: Record<Key, string> = {
         "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, i due zoccoli RAM nel pannello inferiore. La numerazione delle due coppie è presunta; apri una issue se il tuo box è diverso.",
     'in.gt_cage': 'Gabbia dei dischi · parete interna sinistra',
     'in.gt_panel': 'Pannello inferiore',
+    'in.bottom_case': 'Fondo del case · quattro slot M.2',
+    'case.inside_hint_2800':
+        "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, l'unico zoccolo SO-DIMM nel pannello inferiore. La numerazione degli slot M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_480':
+        "L'interno secondo il manuale UGREEN: quattro slot M.2 da 01 a 04 nel fondo del case, due zoccoli SO-DIMM sotto il pannello inferiore. Quale SSD stia in quale slot è presunto dall'ordine degli indirizzi PCIe; apri una issue se il tuo box è diverso.",
     ...panelIt,
     ...powerIt
 };

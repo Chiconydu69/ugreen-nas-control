@@ -39,7 +39,11 @@ export interface CaseModel {
     lanLabels?: string[];
     inside6800?: boolean;
     inside4800gt?: boolean;
+    // inside2800gt: the DXP2800 GT's chassis, also the DXP2800's.
     inside2800gt?: boolean;
+    inside480?: boolean;
+    // SO-DIMM sockets drawn in the DXP2800 GT's inside view (default 2).
+    ramSlots?: number;
     inside8800?: boolean;
     inside4800?: boolean;
     inside6011?: boolean;
@@ -55,6 +59,8 @@ export interface CaseModel {
     m2Bays?: boolean;
     flat?: boolean;
     rear480?: boolean;
+    // Hint under the inside view when it differs from `hint` (which an m2Bays model shows under its drive cards).
+    hint2?: Key;
 }
 export const CASE_DEFAULT: CaseModel = {
     front: [
@@ -73,7 +79,7 @@ export const CASE_DEFAULT: CaseModel = {
 
 export const CASE_MODELS: [RegExp, CaseModel][] = [
     // DXP480T Plus: a flat mini box, drawn after UGREEN's manual (front with the power button, back with the ports,
-    // the four M.2 slots on the underside). Only a power LED, one 10G LAN port, no bays and no inside view.
+    // the four M.2 slots and two SO-DIMM sockets on the underside). Only a power LED, one 10G LAN port, no bays.
     [
         /^DXP480T/,
         {
@@ -83,8 +89,9 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             m2Bays: true,
             dc: 'DC 20V',
             rear: [],
-            noInside: true,
-            hint: 'case.m2_hint'
+            inside480: true,
+            hint: 'case.m2_hint',
+            hint2: 'case.inside_hint_480'
         }
     ],
     // DXP4800 GT: the chassis of the DXP4800 Plus (mesh filter with the fan behind it, the ports in one row below),
@@ -108,7 +115,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
     // DXP4800, DXP4800 Plus and DXP4800 Pro: one chassis, drawn after a photo of the Plus. The slots of the
     // inside view after UGREEN's manual; no fan control either.
     // DXP2800: a shrunken DXP4800, drawn after photos: two bays, USB-C and USB-A at the front (no SD slot), one
-    // 2.5G LAN port at the back. No inside view, no fan control.
+    // 2.5G LAN port at the back. Inside after the manual (the GT's drawing with one RAM socket), no fan control.
     [
         /^DXP2800$/,
         {
@@ -118,7 +125,11 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             ],
             rear2800: true,
             rear: [],
-            noInside: true
+            inside2800gt: true,
+            ramSlots: 1,
+            dc: 'DC 12V',
+            pcie: false,
+            hint: 'case.inside_hint_2800'
         }
     ],
     // iDX6011 and iDX6011 Pro: six bays and a small display at the front, the ports like the DXP6800 Pro's;

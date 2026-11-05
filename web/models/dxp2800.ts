@@ -9,10 +9,10 @@ export default {
     cpu: 'Intel N100',
     bays: 2,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
     lan: { maxMbit: [2500] },
     led: 'bays',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear2800',
     fan: {
         chip: 'ITE IT8613E',
@@ -33,7 +33,10 @@ export default {
             status: 'expected',
             note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. One fan was reported on tach 3 (1726 rpm), none on tach 2; UGREEN's own driver also drives only header 3."
         },
-        case: { status: 'expected', note: 'Drawn after photos, not compared on a device.' },
+        case: {
+            status: 'expected',
+            note: "Drawn after UGREEN's manual and photos (front, rear with 12V inlet, two M.2 slots on the inner left wall of the cage); one SO-DIMM socket in the bottom panel; M.2 slot numbering assumed. Not compared on a device."
+        },
         sensors: { status: 'expected' }
     },
     sources: [

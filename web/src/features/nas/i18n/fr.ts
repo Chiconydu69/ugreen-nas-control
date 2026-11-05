@@ -491,6 +491,11 @@ export const fr: Record<Key, string> = {
         "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, les deux supports RAM dans le panneau du dessous. La numérotation des deux paires est supposée ; ouvre un ticket si ton boîtier diffère.",
     'in.gt_cage': 'Cage des disques · paroi intérieure gauche',
     'in.gt_panel': 'Panneau du dessous',
+    'in.bottom_case': 'Fond du boîtier · quatre emplacements M.2',
+    'case.inside_hint_2800':
+        "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, l'unique support SO-DIMM dans le panneau du dessous. La numérotation des emplacements M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_480':
+        "L'intérieur d'après le manuel UGREEN : quatre emplacements M.2 01 à 04 dans le fond du boîtier, deux supports SO-DIMM sous le panneau du dessous. Quel SSD occupe quel emplacement est supposé d'après l'ordre des adresses PCIe ; ouvre un ticket si ton boîtier diffère.",
     ...panelFr,
     ...powerFr
 };
