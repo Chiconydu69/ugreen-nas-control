@@ -84,7 +84,8 @@ export const es: Record<Key, string> = {
     'sync.clear': 'Borrando disco: {percent} %',
     'display.title': 'Pantalla de estado',
     'display.sync': 'Mostrar comprobación de paridad y reconstrucción',
-    'display.sync_hint': 'Los discos del array muestran este color mientras Unraid realiza comprobaciones o reconstrucciones. Los discos con errores mantienen el color de error.', // Having a hard time here, but tend to keep it as "array": '"Array de discos duros" is more commonly used in technical and professional IT environments, as engineers frequently adopt English technical terms directly. However, "matriz de discos duros" is widely considered the correct and official Spanish translation. It is highly common in formal documentation, articles, and product catalogs.'
+    'display.sync_hint':
+        'Los discos del array muestran este color mientras Unraid realiza comprobaciones o reconstrucciones. Los discos con errores mantienen el color de error.', // Having a hard time here, but tend to keep it as "array": '"Array de discos duros" is more commonly used in technical and professional IT environments, as engineers frequently adopt English technical terms directly. However, "matriz de discos duros" is widely considered the correct and official Spanish translation. It is highly common in formal documentation, articles, and product catalogs.'
     'display.sync_color': 'Color durante una comprobación',
     'display.standby': 'Discos en reposo',
     'display.standby_dim': 'Atenuado',
@@ -93,7 +94,8 @@ export const es: Record<Key, string> = {
     'display.standby_level': 'Brillo en reposo',
     'display.saved': 'Pantalla de estado guardada',
     'display.smart': 'Mostrar advertencias SMART',
-    'display.smart_hint': 'Una bahía se ilumina con el color de advertencia cuando se reasigna, aumenta el número de sectores pendientes o irrecuperables, o Unraid registra errores de lectura/escritura.',
+    'display.smart_hint':
+        'Una bahía se ilumina con el color de advertencia cuando se reasigna, aumenta el número de sectores pendientes o irrecuperables, o Unraid registra errores de lectura/escritura.',
     'display.color_mode': 'Color de los LED de las unidades', // (This comment is only for reference:) Here, due due the "sense of place" (information design) in this sub-menu, the additional "de disco" is not necessary or helpful.
     'display.color_own': 'Color propio',
     'display.color_temperature': 'Por temperatura del disco',
@@ -108,7 +110,8 @@ export const es: Record<Key, string> = {
     'display.speed_current': 'Enlace actual: {speed}.',
     'display.speed_unknown': 'La velocidad del enlace no se puede leer en este momento.',
     'shutdown.title': 'Apagar y reiniciar', // Similar as above: Verbs in their basic form, instead of participle or noun form
-    'shutdown.intro': 'El LED de encendido indica que el NAS se apaga o se reinicia: desde que Unraid detiene el array hasta que el equipo se apaga o vuelve a arrancar.',
+    'shutdown.intro':
+        'El LED de encendido indica que el NAS se apaga o se reinicia: desde que Unraid detiene el array hasta que el equipo se apaga o vuelve a arrancar.',
     'shutdown.enable': 'Señal al apagar y reiniciar', // Señal fits better here (imho) than a verb
     'shutdown.enable_hint': 'Solo cuando el NAS realmente se apaga o se reinicia, no cuando solo se detiene el array. El modo nocturno sigue aplicándose.',
     'shutdown.color': 'Color',
@@ -151,7 +154,8 @@ export const es: Record<Key, string> = {
     'disk.DISK_NP_MISSING': 'Ausente', // To make things more uniform, I suggest to capitalize this word.
     'disk.DISK_NEW': 'Nuevo', // To make things more uniform, I suggest to capitalize this word.
     'night.title': 'Modo nocturno',
-    'night.intro': 'Atenúa o apaga los LED a horas fijas todos los días, incluso cruzando la medianoche (p. ej., de 22:00 a 07:00). En el modo de estado, los LED de la unidad y de la red siguen este comportamiento; los LED que están apagados no parpadean por la noche.',
+    'night.intro':
+        'Atenúa o apaga los LED a horas fijas todos los días, incluso cruzando la medianoche (p. ej., de 22:00 a 07:00). En el modo de estado, los LED de la unidad y de la red siguen este comportamiento; los LED que están apagados no parpadean por la noche.',
     'night.enable': 'Activar el modo nocturno',
     'night.start': 'Inicio',
     'night.end': 'Fin',
@@ -177,7 +181,8 @@ export const es: Record<Key, string> = {
     'error.api': 'Error de API (HTTP {status})',
     'api.Invalid schedule values': 'Valores de horario no válidos',
     'api.Invalid effect values': 'Valores de efecto no válidos',
-    'api.In status mode effects apply to the power LED (and a manual network LED) only': 'En el modo de estado, los efectos solo se aplican al LED de encendido (y a un LED de red manual)',
+    'api.In status mode effects apply to the power LED (and a manual network LED) only':
+        'En el modo de estado, los efectos solo se aplican al LED de encendido (y a un LED de red manual)',
     'mode.title': 'Modo',
     'mode.hint_status': 'Los LED de las unidades y de red muestran el estado. Todavía eliges el color y el brillo.', // The English "still" was missing completely in the previous Spanish translation.
     'mode.hint_manual': 'Cada LED muestra exactamente lo que ajustes abajo.',
