@@ -2,6 +2,10 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.1.1
+
+- Sensors: an unconnected temperature input (for example "Motherboard -21 °C" on the DXP8800 Plus) is shown as not connected and no longer used.
+
 ## 5.1.0
 
 - `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag` prints one anonymised, read-only diagnostics block to paste into a bug report or the forum.

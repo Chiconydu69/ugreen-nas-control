@@ -3,9 +3,9 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "ugreen-nas-control">
 <!ENTITY author    "Alexander Schubert">
-<!ENTITY version   "5.1.0">
+<!ENTITY version   "5.1.1">
 <!ENTITY launch    "Settings/UGREENNASControl">
-<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.1.0">
+<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.1.1">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugin/ugreen-nas-control.plg">
 <!ENTITY bootDIR   "/boot/config/plugins/&name;">
 <!ENTITY srcDIR    "&bootDIR;/&version;">
@@ -23,6 +23,9 @@
 >
 
 <CHANGES>
+
+### 5.1.1
+- Sensors: an unconnected temperature input (for example "Motherboard -21 °C" on the DXP8800 Plus) is shown as not connected and no longer used.
 
 ### 5.1.0
 - `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag` prints one anonymised, read-only diagnostics block to paste into a bug report or the forum.
@@ -135,19 +138,16 @@
 ### 2.6
 - Contributions by j3n57h0m45: temperatures of the LAN ports, the iGPU and the extra NVMe sensors; the System facts show the fan controller and the LED controller side by side and say why the LED part is off; the LAN and DISK LEDs in the strip front take the LED controller's colours; the case view keeps working on a model without NVMe drives; the Processor card names the fan controller temperature like the temperature list
 
-### 2.5
-- Case view for the DXP2800 (two bays, tall rear with one LAN port) and the iDX6011 / iDX6011 Pro (six bays and the display at the front, the rear with the PCIe slot, mesh, vent, power inlet, USB, two 10G LAN ports, HDMI and OCuLink), drawn after photos; the LEDs are drawn like on the DXP6800 Pro. No inside view, no fan control. The tool maps the iDX bays on its two SATA controllers like UGREEN LED Control does
-
 </CHANGES>
 
 <!-- All plugin files in one archive (web files, the one Go binary and the links to it at their install-relative paths), cached on
      the boot device (/boot: USB flash drive or SSD) per version so a reboot needs no network.
      The plugin manager checks the SHA256 of the download (MD5 is kept for Community Applications). -->
 
-<FILE Name="&srcDIR;/ugreen-nas-control-5.1.0.tar.xz">
-<URL>&releaseURL;/ugreen-nas-control-5.1.0.tar.xz</URL>
-<SHA256>6f0d4f37bc0da671a235693d41d8f4a5fdc2c43656998e9de0815f3df98d9a78</SHA256>
-<MD5>74026f04baf6355356497824affaafc5</MD5>
+<FILE Name="&srcDIR;/ugreen-nas-control-5.1.1.tar.xz">
+<URL>&releaseURL;/ugreen-nas-control-5.1.1.tar.xz</URL>
+<SHA256>34731d19060f80c59ac3ce72c96ec749cca9e525203944d4a1d8dbe7eac1ed7f</SHA256>
+<MD5>d42cbcd5963db35b03da17decc66e18f</MD5>
 </FILE>
 
 <!-- ========================================================= -->
@@ -160,7 +160,7 @@
 NAME="&name;"
 VERSION="&version;"
 BOOT_DIR="&bootDIR;"
-ARCHIVE="&srcDIR;/ugreen-nas-control-5.1.0.tar.xz"
+ARCHIVE="&srcDIR;/ugreen-nas-control-5.1.1.tar.xz"
 EXEC_FILES="backend/ugreen-nas event/stopping"
 DATA_FILES="api.php UGREENNASControl.page UGREENNASDashboard.page images/ugreen-nas-control.png icons/ugreen-nas-control.png README.md LICENSE third-party.md include/lang.php include/fan_v2.php include/fan_schedule.php include/fan_history.php include/fan_inputs.php include/fan_profile.php include/fan_probe.php include/fan_backlight.php include/panel.php include/power_ac.php css/app.css css/fan-inputs.css css/fan-schedule.css css/fan-history.css css/fan-tools.css js/i18n.js js/app.js js/ledfx.js js/dash.js led/api.php led/css/app.css led/js/app.js led/js/i18n.js led/include/views.php css/led-embed.css led/images/ugreen-led-control.png"
 # Symbolic links, "path=target": the tool names are links to the one binary backend/ugreen-nas.
