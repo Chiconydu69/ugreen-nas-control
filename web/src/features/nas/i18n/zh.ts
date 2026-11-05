@@ -475,6 +475,11 @@ export const zh: Record<Key, string> = {
         '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，两个内存插槽位于底部面板。两组编号均为假设；如果你的机器不同，请提交 issue。',
     'in.gt_cage': '硬盘仓 · 左内壁',
     'in.gt_panel': '底部面板',
+    'in.bottom_case': '底壳 · 四个 M.2 插槽',
+    'case.inside_hint_2800':
+        '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，唯一的 SO-DIMM 插槽位于底部面板。M.2 插槽编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_480':
+        '根据 UGREEN 手册绘制的内部视图：底壳内四个 M.2 插槽 01 至 04，底部面板下两个 SO-DIMM 插槽。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
     ...panelZh,
     ...powerZh
 };

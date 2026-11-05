@@ -2391,10 +2391,24 @@ function main(root: HTMLElement): void {
             </svg>`;
     }
 
+    // SO-DIMM socket of the DXP2800 GT / DXP480T Plus bottom panel: lengthwise, label and size above it.
+    const wideRam = (y: number, mod: Dimm | undefined, n: number): string => {
+        const filled = Boolean(mod?.size_mb);
+        const speed = mod ? mod.configured_mt || mod.speed_mt : 0;
+        const sub = mod && filled ? [fmtRam(mod.size_mb), mod.type, speed ? `${speed} MT/s` : ''].filter(Boolean).join(' · ') : t('case.empty');
+        const socket = `<rect x="654" y="${y}" width="276" height="78" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="644" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/><rect x="930" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/>`;
+
+        return `${socket}${mod && filled ? `<g transform="translate(662 ${y + 7})">${ramModule(260, 64, mod)}</g>` : ''}${boardText(654, y - 22, t('case.ram_slot', { n }))}<text x="654" y="${y - 8}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
+    };
+
     // DXP2800 GT, after UGREEN's manual: the two M.2 slots sit stacked on the inner left wall of the drive cage
     // (trays out, connector at the back, buckle at the front), the two SO-DIMM sockets in the bottom panel.
     function inside2800gtHtml(hw: Hardware): string {
-        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        // The DXP2800 does not map its slots to root ports yet: an SSD of unknown slot ("m2") takes the free one.
+        const loose = hw.nvme.filter(d => d.slot === 'm2');
+        const mapped = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const drives = [mapped('m2-1'), mapped('m2-2')];
+        for (let k = 0; k < drives.length; k++) if (!drives[k]) drives[k] = loose.shift();
         const memory = hw.memory;
         const m2 = (y: number, drive: Nvme | undefined, n: number): string => {
             const label = t('in.m2', { n });
@@ -2407,15 +2421,6 @@ function main(root: HTMLElement): void {
 
             return `${rail}<g transform="translate(214 ${y + 3})">${nvmeModule(328, 74, drive, true)}</g>${tempBadge6800(60, y + 8, drive.temp)}${boardText(60, y + 44, label)}${roleText ? boardText(60, y + 58, roleText) : ''}`;
         };
-        const ram = (y: number, mod: Dimm | undefined, n: number): string => {
-            const filled = Boolean(mod?.size_mb);
-            const speed = mod ? mod.configured_mt || mod.speed_mt : 0;
-            const sub = mod && filled ? [fmtRam(mod.size_mb), mod.type, speed ? `${speed} MT/s` : ''].filter(Boolean).join(' · ') : t('case.empty');
-            const socket = `<rect x="654" y="${y}" width="276" height="78" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="644" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/><rect x="930" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/>`;
-
-            return `${socket}${mod && filled ? `<g transform="translate(662 ${y + 7})">${ramModule(260, 64, mod)}</g>` : ''}${boardText(654, y - 22, t('case.ram_slot', { n }))}<text x="654" y="${y - 8}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
-        };
-
         return `
             <svg class="unc-board-svg" viewBox="0 0 1000 470" role="img" aria-label="${escapeHtml(t('case.inside'))}">
                 <rect x="10" y="10" width="980" height="450" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
@@ -2423,10 +2428,42 @@ function main(root: HTMLElement): void {
                 <text x="60" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_cage'))}</text>
                 <rect x="620" y="40" width="350" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
                 <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_panel'))}</text>
-                <g transform="translate(0 -4)">${m2(100, ssd('m2-1'), 1)}${m2(260, ssd('m2-2'), 2)}</g>
-                ${ram(170, memory[0], 1)}
-                ${ram(290, memory[1], 2)}
+                <g transform="translate(0 -4)">${m2(100, drives[0], 1)}${m2(260, drives[1], 2)}</g>
+                ${caseModel(hw).ramSlots === 1 ? wideRam(230, memory[0], 1) : `${wideRam(170, memory[0], 1)}${wideRam(290, memory[1], 2)}`}
                 <text x="60" y="414" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('in.front'))} ←</text>
+            </svg>`;
+    }
+
+    // DXP480T Plus, after UGREEN's manual (p4, p9): the bottom case holds four M.2 slots 01..04 side by side, the
+    // bottom panel two SO-DIMM sockets (one module pre-installed). The slots are not mapped to PCIe root ports: the
+    // SSDs follow the order of their PCIe addresses (the bays of withM2Bays), so which SSD is 01 is assumed.
+    function inside480Html(hw: Hardware): string {
+        const memory = hw.memory;
+        const slot = (i: number): string => {
+            const x = 66 + i * 134;
+            const bay = hw.bays?.[i];
+            const drive = bay?.present ? hw.nvme.find(d => d.id === bay.id) : undefined;
+            const label = t('in.m2', { n: i + 1 });
+            const frame = `<rect x="${x}" y="84" width="118" height="256" rx="4" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="${x + 20}" y="76" width="78" height="8" rx="2" fill="#aeb6bf"/><circle cx="${x + 59}" cy="326" r="5" fill="#b87333"/>`;
+            if (!drive) {
+                return `${frame}<rect x="${x + 10}" y="92" width="98" height="214" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>${boardText(x, 366, t('in.slot_empty', { label }))}`;
+            }
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const roleText = role.length > 17 ? `${role.slice(0, 16)}…` : role;
+
+            return `${frame}${place(x + 11, 92, 214, true, nvmeModule(214, 96, drive, true))}${tempBadge6800(x, 348, drive.temp)}${boardText(x + 54, 360, label)}${roleText ? boardText(x, 388, roleText) : ''}`;
+        };
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 470" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <rect x="10" y="10" width="980" height="450" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="40" y="40" width="570" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="60" y="64" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.bottom_case'))}</text>
+                ${[0, 1, 2, 3].map(slot).join('')}
+                <rect x="620" y="40" width="350" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_panel'))}</text>
+                ${wideRam(170, memory[0], 1)}
+                ${wideRam(290, memory[1], 2)}
             </svg>`;
     }
 
@@ -2656,6 +2693,13 @@ function main(root: HTMLElement): void {
             q(target).classList.add('board-svg');
             setHint(q('#unc-inside-hint'), caseModel(hw).hint);
             q(target).innerHTML = inside2800gtHtml(hw);
+            return;
+        }
+
+        if (caseModel(hw).inside480) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint2 ?? caseModel(hw).hint);
+            q(target).innerHTML = inside480Html(hw);
             return;
         }
 

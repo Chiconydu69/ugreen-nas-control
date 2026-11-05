@@ -490,6 +490,11 @@ export const de: Record<Key, string> = {
         'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, die zwei RAM-Sockel im Bodendeckel. Die Nummerierung beider Paare ist geraten; eröffne ein Issue, falls deine Box abweicht.',
     'in.gt_cage': 'Laufwerkskäfig · linke Innenwand',
     'in.gt_panel': 'Bodendeckel',
+    'in.bottom_case': 'Bodenwanne · vier M.2-Steckplätze',
+    'case.inside_hint_2800':
+        'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, der eine SO-DIMM-Sockel im Bodendeckel. Die Nummerierung der M.2-Steckplätze ist geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'case.inside_hint_480':
+        'Das Innere nach UGREENs Anleitung: vier M.2-Steckplätze 01 bis 04 in der Bodenwanne, zwei SO-DIMM-Sockel unter dem Bodendeckel. Welche SSD in welchem Steckplatz sitzt, ist aus der Reihenfolge der PCIe-Adressen geraten; eröffne ein Issue, falls deine Box abweicht.',
     ...panelDe,
     ...powerDe
 };

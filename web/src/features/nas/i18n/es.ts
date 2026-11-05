@@ -478,6 +478,11 @@ export const es: Record<Key, string> = {
         'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos zócalos de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
     'in.gt_cage': 'Jaula de unidades · pared interior izquierda',
     'in.gt_panel': 'Tapa inferior',
+    'in.bottom_case': 'Carcasa inferior · cuatro ranuras M.2',
+    'case.inside_hint_2800':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y el único zócalo SO-DIMM en la tapa inferior. La numeración de las ranuras M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_480':
+        'El interior según el manual de UGREEN: cuatro ranuras M.2 de la 01 a la 04 en la carcasa inferior y dos zócalos SO-DIMM bajo la tapa inferior. Qué SSD ocupa cada ranura se supone por el orden de las direcciones PCIe; abre un issue si tu equipo es distinto.',
     ...panelEs,
     ...powerEs
 };

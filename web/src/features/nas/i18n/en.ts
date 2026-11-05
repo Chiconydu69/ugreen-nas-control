@@ -484,6 +484,11 @@ export const en = {
         "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the two RAM sockets in the bottom panel. The numbering of both pairs is assumed; open an issue if your box differs.",
     'in.gt_cage': 'Drive cage · inner left wall',
     'in.gt_panel': 'Bottom panel',
+    'in.bottom_case': 'Bottom case · four M.2 slots',
+    'case.inside_hint_2800':
+        "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the one SO-DIMM socket in the bottom panel. Numbering of the M.2 slots is assumed; open an issue if your box differs.",
+    'case.inside_hint_480':
+        "The inside after UGREEN's manual: four M.2 slots 01 to 04 in the bottom case, two SO-DIMM sockets under the bottom panel. Which SSD sits in which slot is assumed from the order of the PCIe addresses; open an issue if your box differs.",
     ...panelEn,
     ...powerEn
 } as const;
