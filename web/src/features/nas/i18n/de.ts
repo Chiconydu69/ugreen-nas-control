@@ -495,8 +495,12 @@ export const de: Record<Key, string> = {
         'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, der eine SO-DIMM-Sockel im Bodendeckel. Die Nummerierung der M.2-Steckplätze ist geraten; eröffne ein Issue, falls deine Box abweicht.',
     'case.inside_hint_480':
         'Das Innere nach UGREENs Anleitung: vier M.2-Steckplätze 01 bis 04 in der Bodenwanne, zwei SO-DIMM-Sockel unter dem Bodendeckel. Welche SSD in welchem Steckplatz sitzt, ist aus der Reihenfolge der PCIe-Adressen geraten; eröffne ein Issue, falls deine Box abweicht.',
-    'case.inside_hint_s':
-        'Das Innere ist nach dem Schwestermodell gezeichnet: die Platine der S-Version ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_4800plus':
+        'Das Innere ist nach dem DXP4800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_2800':
+        'Das Innere ist nach dem DXP2800 gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_6800pro':
+        'Das Innere ist nach dem DXP6800 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
     ...panelDe,
     ...powerDe
 };

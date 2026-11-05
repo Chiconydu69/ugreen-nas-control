@@ -489,8 +489,12 @@ export const en = {
         "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the one SO-DIMM socket in the bottom panel. Numbering of the M.2 slots is assumed; open an issue if your box differs.",
     'case.inside_hint_480':
         "The inside after UGREEN's manual: four M.2 slots 01 to 04 in the bottom case, two SO-DIMM sockets under the bottom panel. Which SSD sits in which slot is assumed from the order of the PCIe addresses; open an issue if your box differs.",
-    'case.inside_hint_s':
-        'The inside is drawn after the sister model: the board of the S version is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'case.inside_hint_like_4800plus':
+        'The inside is drawn after the DXP4800 Plus: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'case.inside_hint_like_2800':
+        'The inside is drawn after the DXP2800: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'case.inside_hint_like_6800pro':
+        'The inside is drawn after the DXP6800 Pro: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
     ...panelEn,
     ...powerEn
 } as const;

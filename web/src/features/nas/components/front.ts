@@ -204,7 +204,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             rear: [],
             inside4800: true,
             ramSlots: 1,
-            hint: 'case.inside_hint_s'
+            hint: 'case.inside_hint_like_4800plus'
         }
     ],
     // DXP2800S: drawn after the DXP2800 (back) and the DXP2800 GT (inside); nothing is known about the S itself.
@@ -219,7 +219,9 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             rear: [],
             pcie: false,
             inside2800gt: true,
-            hint: 'case.inside_hint_s'
+            ramSlots: 1,
+            dc: 'DC 12V',
+            hint: 'case.inside_hint_like_2800'
         }
     ],
     // DXP6800S: drawn like the DXP6800 Pro (the default); nothing is known about the S itself.
@@ -227,7 +229,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
         /^DXP6800S$/,
         {
             ...CASE_DEFAULT,
-            hint: 'case.inside_hint_s'
+            hint: 'case.inside_hint_like_6800pro'
         }
     ],
     [
