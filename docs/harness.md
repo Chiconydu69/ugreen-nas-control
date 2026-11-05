@@ -28,4 +28,4 @@ A new model in `web/models/` shows up in the harness, the screenshots and the si
 
 ## Site preview
 
-`just site` validates `web/models/` and builds `.build/site` (one page per model). `just site-preview` builds it and serves it at `http://localhost:8788/ugreen-nas-control/`, the base path of GitHub Pages, and rebuilds on changes. `SITE_STREAM=next just site` adds the preview banner and noindex of the `/next/` and `/lab/` streams (base URL via `SITE_URL`, released site via `ROOT_URL`). Which branch publishes where: [releasing.md](releasing.md#branches).
+`just site` validates `web/models/` and builds `.build/site` (one page per model). `just site-preview` builds it and serves it at `http://localhost:8788/ugreen-nas-control/`, the base path of GitHub Pages, and rebuilds on changes. `SITE_STREAM=next just site` adds the preview banner and noindex of the `/next/` stream (base URL via `SITE_URL`, released site via `ROOT_URL`). Which branch publishes where: [releasing.md](releasing.md#branches).

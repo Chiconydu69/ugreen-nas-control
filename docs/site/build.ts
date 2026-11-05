@@ -165,12 +165,11 @@ document.addEventListener('click',e=>{
 const THEME_INIT = `(()=>{let t;try{t=localStorage.getItem('theme')}catch(_){}if(!t)t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.theme=t})()`;
 
 /** Previews only: what this stream is, in the page title, the sticky bar and the badge. */
-const STREAM_LABEL = SITE_STREAM === 'site' ? 'LAB' : SITE_STREAM.toUpperCase();
+const STREAM_LABEL = SITE_STREAM.toUpperCase();
 const TAG = PREVIEW ? `[${STREAM_LABEL.toLowerCase()}] ` : '';
 const streamBar = () => {
-    const lab = SITE_STREAM === 'site';
-    const long = lab ? 'Design lab: experiments, not the released site' : 'Preview: next, an unreleased development build. Features may change';
-    const short = lab ? 'Design lab, not released' : 'Unreleased preview';
+    const long = 'Preview: next, an unreleased development build. Features may change';
+    const short = 'Unreleased preview';
     return `<div class="stream-bar" role="note"><strong>${esc(STREAM_LABEL)}</strong><span class="long">${esc(long)}</span><span class="short">${esc(short)}</span><a href="${ROOT_URL}">Go to the released site</a></div>`;
 };
 
@@ -672,9 +671,9 @@ if (existsSync(join(built, 'social-preview.png'))) cpSync(join(built, 'social-pr
 // The plugin's colour tokens and front drawing come first, the site's own rules build on them.
 writeFileSync(join(dist, 'style.css'), `${pluginCss()}\n${readFileSync(join(import.meta.dir, 'style.css'), 'utf8')}`);
 {
-    // Previews get a tinted corner dot on the favicon (amber next, violet lab).
+    // Previews get a tinted corner dot on the favicon (amber).
     const svg = readFileSync(join(root, 'web/assets/icon.svg'), 'utf8');
-    const dot = `<circle cx="52" cy="12" r="11" fill="${SITE_STREAM === 'site' ? '#7c3aed' : '#ffb020'}" stroke="#fff" stroke-width="2.500"/>`;
+    const dot = `<circle cx="52" cy="12" r="11" fill="#ffb020" stroke="#fff" stroke-width="2.500"/>`;
     writeFileSync(join(dist, 'icon.svg'), PREVIEW ? svg.replace(/<\/svg>\s*$/, `${dot}</svg>\n`) : svg);
 }
 cpSync(join(import.meta.dir, 'fonts'), join(dist, 'fonts'), { recursive: true });
