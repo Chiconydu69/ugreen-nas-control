@@ -37,6 +37,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop -c just check
 
   go:
@@ -49,6 +51,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#go -c just go-lint
       - run: nix develop .#go -c just go-test
       - run: nix develop .#go -c just parity
@@ -70,6 +74,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#lint -c just sh-lint
 
   web:
@@ -82,6 +88,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#web -c just web-check
 
   # Hangs on Linux so far (Chrome logs dbus errors until the timeout); manual only (workflow_dispatch input e2e), not in ci-ok.
@@ -96,6 +104,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#e2e -c just e2e --jobs 1 --out .build/e2e
       - run: nix develop .#e2e -c just shots dxp4800-gt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -123,6 +133,8 @@ jobs:
           name: build
           path: .build/bin
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#plugin -c just plg-check
       - run: nix develop .#plugin -c just changes-check
       - run: nix develop .#plugin -c just generated-check
@@ -184,6 +196,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#lint -c actionlint
       - run: nix develop .#lint -c zizmor --offline .github/workflows
 
@@ -204,6 +218,8 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Rebuild and compare with the draft
         env:
           GH_TOKEN: ${{ github.token }}

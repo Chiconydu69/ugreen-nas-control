@@ -1,1 +1,12 @@
-* @ugreen-nas-control/maintainers
+# Review by a maintainer is required only where a change can reach CI secrets, release assets or the published site.
+# Everything else needs no code-owner approval (ruleset: next and main).
+/.github/ @ugreen-nas-control/maintainers
+/plugin/tools/ @ugreen-nas-control/maintainers
+/plugin/ugreen-nas-control.plg @ugreen-nas-control/maintainers
+/plugin/ugreen-nas-control.plg.tmpl @ugreen-nas-control/maintainers
+/plugin/files.txt @ugreen-nas-control/maintainers
+/scripts/ @ugreen-nas-control/maintainers
+/justfile @ugreen-nas-control/maintainers
+/flake.nix @ugreen-nas-control/maintainers
+/flake.lock @ugreen-nas-control/maintainers
+/docs/site/ @ugreen-nas-control/maintainers

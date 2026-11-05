@@ -33,7 +33,52 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # The lab stream runs the build.ts of the `site` branch, which is less reviewed than next: its own job, read-only token,
+  # no attestation rights. Only its static output travels on (artifact) into the Pages build.
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      built: ${{ steps.build.outputs.built }}
+    env:
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+      - name: Build the lab stream
+        id: build
+        run: |
+          set -euo pipefail
+          echo "built=false" >> "$GITHUB_OUTPUT"
+          git fetch --quiet --depth=1 origin site 2>/dev/null || { echo "no site branch"; exit 0; }
+          git worktree add --quiet --detach "$RUNNER_TEMP/wt/site" FETCH_HEAD
+          [ -f "$RUNNER_TEMP/wt/site/docs/site/build.ts" ] || { echo "site has no docs/site/build.ts"; exit 0; }
+          # shellcheck disable=SC2016
+          nix develop .#site -c bash -euo pipefail -c '
+            owner=${REPO%%/*}
+            base="https://${owner,,}.github.io/${REPO#*/}/"
+            cd "$RUNNER_TEMP/wt/site"
+            SITE_STREAM=site SITE_URL="${base}lab/" ROOT_URL="$base" just site
+            mkdir -p "$RUNNER_TEMP/lab"
+            cp -R .build/site/. "$RUNNER_TEMP/lab"
+          '
+          echo "built=true" >> "$GITHUB_OUTPUT"
+      - if: steps.build.outputs.built == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lab-site
+          path: ${{ runner.temp }}/lab
+          if-no-files-found: error
+          retention-days: 1
+
   build:
+    needs: lab
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -48,13 +93,14 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Check out the streams
         run: |
           set -euo pipefail
           fetch() { git fetch --quiet --depth=1 origin "$1" 2>/dev/null && git worktree add --quiet --detach "$RUNNER_TEMP/wt/$2" FETCH_HEAD && [ -f "$RUNNER_TEMP/wt/$2/docs/site/build.ts" ]; }
           fetch "${MAIN_REF:-main}" main || rm -rf "$RUNNER_TEMP/wt/main"
           fetch next next || rm -rf "$RUNNER_TEMP/wt/next"
-          fetch site site || rm -rf "$RUNNER_TEMP/wt/site"
           ls "$RUNNER_TEMP/wt"
       # No magic-nix-cache: its post step spent 2m26s uploading store paths; the lean shell downloads from cache.nixos.org in seconds
       - name: Build the streams
@@ -73,8 +119,12 @@ jobs:
             }
             if [ -d "$wt/main" ]; then build main main ""; elif [ -d "$wt/next" ]; then build next next "" "https://github.com/$REPO"; else echo "no stream has docs/site/build.ts"; exit 1; fi
             [ ! -d "$wt/next" ] || build next next next/
-            [ ! -d "$wt/site" ] || build site site lab/
           '
+      - if: needs.lab.outputs.built == 'true'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: lab-site
+          path: ${{ runner.temp }}/pages/lab
       # Next channel: the plg, its archive and checksums go into /next/ of this deployment (only the current build is hosted).
       # Off unless the repository variable NEXT_CHANNEL_ENABLED is "true". Version X.(Y+1).0-next.<run number>: Unraid compares as text, so run numbers only go up.
       - name: Build the next channel
