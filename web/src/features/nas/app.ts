@@ -2023,6 +2023,7 @@ function main(root: HTMLElement): void {
 
     // After a photo of the DXP4800 Plus.
     function rear4800Html(hw: Hardware, lanLabels: string[] = ['LAN 10G', 'LAN 2.5G']): string {
+        if (caseModel(hw).lanAuto) lanLabels = hw.net.length > 1 ? ['LAN 2.5G', 'LAN 2.5G'] : ['LAN 2.5G'];
         // LAN 1 is the 10G port, LAN 2 the 2.5G one; the kernel's eth0 / eth1 can be either way round, so the
         // port that supports more is LAN 1 (when ethtool didn't tell, they stay in the kernel's order).
         const ordered = hw.net.slice().sort((a, b) => (b.max_mbit || 0) - (a.max_mbit || 0));
@@ -2042,7 +2043,7 @@ function main(root: HTMLElement): void {
                 ${port(16, 87.5, 'hdmi', 'HDMI')}
                 ${port(29.1, 87.5, 'usba', 'USB3.2')}
                 <div class="r-abs r-usb2" style="left:42.9%;top:83.9%">${SOCKET.usb2}<b>USB2.0</b>${SOCKET.usb2}<b>USB2.0</b></div>
-                ${lan(1, 56.8, 84.6, lanLabels[1] ?? '')}${lan(0, 70.7, 84.6, lanLabels[0] ?? '')}
+                ${lanLabels.length > 1 ? lan(1, 56.8, 84.6, lanLabels[1] ?? '') : ''}${lan(0, 70.7, 84.6, lanLabels[0] ?? '')}
                 ${port(79, 86.5, 'reset', 'RESET')}
                 ${port(86.5, 87.1, 'dc', t('case.dc'))}
             </div>`;
@@ -2620,7 +2621,7 @@ function main(root: HTMLElement): void {
                 <g transform="translate(120 40)">
                     <circle cx="420" cy="22" r="8" fill="#b87333"/><circle cx="22" cy="536" r="8" fill="#b87333"/><circle cx="738" cy="22" r="8" fill="#b87333"/><circle cx="738" cy="536" r="8" fill="#b87333"/>
                     ${ram(40, memory[0], 1)}
-                    ${ram(230, memory[1], 2)}
+                    ${caseModel(hw).ramSlots === 1 ? '' : ram(230, memory[1], 2)}
                     ${m2(440, ssd('m2-1'), 1)}
                     ${m2(580, ssd('m2-2'), 2)}
                     <g transform="rotate(-90 700 300)"><text x="700" y="318" style="fill:var(--bd-ink)" font-size="54" font-weight="900" text-anchor="middle" letter-spacing="5">UGREEN</text></g>

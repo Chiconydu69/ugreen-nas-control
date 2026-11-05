@@ -496,6 +496,8 @@ export const nl: Record<Key, string> = {
         'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de ene SO-DIMM-socket in het bodempaneel. De nummering van de M.2-sleuven is aangenomen; open een issue als jouw kast afwijkt.',
     'case.inside_hint_480':
         'De binnenkant volgens de UGREEN-handleiding: vier M.2-sleuven 01 tot 04 in de bodembehuizing, twee SO-DIMM-sockets onder het bodempaneel. Welke SSD in welke sleuf zit, is aangenomen uit de volgorde van de PCIe-adressen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_s':
+        'De binnenkant is getekend naar het zustermodel: het moederbord van de S-versie is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
     ...panelNl,
     ...powerNl
 };

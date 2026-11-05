@@ -42,10 +42,11 @@ export interface CaseModel {
     // inside2800gt: the DXP2800 GT's chassis, also the DXP2800's.
     inside2800gt?: boolean;
     inside480?: boolean;
-    // SO-DIMM sockets drawn in the DXP2800 GT's inside view (default 2).
+    // SO-DIMM sockets drawn in the inside view of the GT chassis and the DXP4800 family (default 2).
     ramSlots?: number;
     inside8800?: boolean;
     inside4800?: boolean;
+    lanAuto?: boolean;
     inside6011?: boolean;
     pcie?: boolean;
     sys?: boolean;
@@ -186,6 +187,47 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             pcie: true,
             inside8800: true,
             hint: 'case.inside_hint_8800'
+        }
+    ],
+    // DXP4800S: the chassis of the DXP4800 Plus with an N150 and one RAM slot. Whether it has one or two 2.5G LAN ports
+    // is not settled (NASCompares says both), so the rear draws as many ports as the system finds.
+    [
+        /^DXP4800S$/,
+        {
+            front: [
+                ['sd', 'SD'],
+                ['usbc', '10G'],
+                ['usba', '10G']
+            ],
+            rear4800: true,
+            lanAuto: true,
+            rear: [],
+            inside4800: true,
+            ramSlots: 1,
+            hint: 'case.inside_hint_s'
+        }
+    ],
+    // DXP2800S: drawn after the DXP2800 (back) and the DXP2800 GT (inside); nothing is known about the S itself.
+    [
+        /^DXP2800S$/,
+        {
+            front: [
+                ['usbc', '10G'],
+                ['usba', '10G']
+            ],
+            rear2800: true,
+            rear: [],
+            pcie: false,
+            inside2800gt: true,
+            hint: 'case.inside_hint_s'
+        }
+    ],
+    // DXP6800S: drawn like the DXP6800 Pro (the default); nothing is known about the S itself.
+    [
+        /^DXP6800S$/,
+        {
+            ...CASE_DEFAULT,
+            hint: 'case.inside_hint_s'
         }
     ],
     [

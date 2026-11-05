@@ -496,6 +496,8 @@ export const fr: Record<Key, string> = {
         "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, l'unique support SO-DIMM dans le panneau du dessous. La numérotation des emplacements M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     'case.inside_hint_480':
         "L'intérieur d'après le manuel UGREEN : quatre emplacements M.2 01 à 04 dans le fond du boîtier, deux supports SO-DIMM sous le panneau du dessous. Quel SSD occupe quel emplacement est supposé d'après l'ordre des adresses PCIe ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_s':
+        "L'intérieur est dessiné d'après le modèle voisin : la carte de la version S n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     ...panelFr,
     ...powerFr
 };
