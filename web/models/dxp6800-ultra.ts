@@ -9,16 +9,19 @@ export default {
     cpu: 'Intel Core 5 120U',
     bays: 6,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2', 'system'], pcieSlot: true },
     lan: { maxMbit: [10000, 10000] },
     led: 'bays',
-    caseView: 'none',
-    caseVariant: 'none',
+    caseView: 'full',
+    caseVariant: 'rear6800',
     fan: null,
     verified: {
         leds: { status: 'expected', note: 'Bay order guessed.' },
         fans: { status: 'unsupported', note: 'Other CPU than the DXP6800 Pro: its fan wiring is not proven for this model.' },
-        case: { status: 'unsupported' },
+        case: {
+            status: 'expected',
+            note: "Front and rear after UGREEN's product renders. No photo of the inside exists: drawn after the DXP6800 Pro, slot positions and numbering assumed."
+        },
         sensors: { status: 'expected' }
     },
     sources: [

@@ -172,6 +172,43 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             hint: 'in.idx6011_hint'
         }
     ],
+    // DXP6800 Ultra and DXP8800 Ultra: the front after UGREEN's renders (power button and LAN / DISK LEDs in a strip, no bay
+    // LED bars), the back after the vendor's rear shot (ports as on the DXP6800 Pro / DXP8800 Plus). No photo of the board
+    // exists, so the inside is the sister model's, slot positions assumed.
+    [
+        /^DXP6800 Ultra/,
+        {
+            front: [
+                ['sd', 'SD'],
+                ['usbc', 'TB4'],
+                ['usbc', 'TB4'],
+                ['usba', '10G']
+            ],
+            strip: true,
+            rear6800: true,
+            rear: [],
+            pcie: true,
+            inside6800: true,
+            hint: 'case.inside_hint_ultra'
+        }
+    ],
+    [
+        /^DXP8800 Ultra/,
+        {
+            front: [
+                ['sd', 'SD'],
+                ['usbc', 'TB4'],
+                ['usbc', 'TB4'],
+                ['usba', '10G']
+            ],
+            strip: true,
+            rear8800: true,
+            rear: [],
+            pcie: true,
+            inside8800: true,
+            hint: 'case.inside_hint_ultra'
+        }
+    ],
     // DXP8800 Plus: eight bays; the back after a photo (rear8800Html); the inside after UGREEN's manual. No fan control.
     [
         /^DXP8800( Plus| Pro)?$/,

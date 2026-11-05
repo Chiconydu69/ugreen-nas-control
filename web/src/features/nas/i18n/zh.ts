@@ -255,6 +255,8 @@ export const zh: Record<Key, string> = {
     'case.inside_hint_gt': '底部检修盖板，正面在左侧。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'case.inside_hint_8800':
         '底部检修盖板，依据 UGREEN 手册绘制：两个内存插槽，M.2 位于其下方和旁边；PCIe 插槽在机架内部。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_ultra':
+        '内部依据 DXP6800 Pro（六盘位）或 DXP8800 Plus（八盘位）绘制：Ultra 的主板尚无照片，因此插槽位置以及 RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号均为假设；如果你的机器不同，请提交 issue。',
     'case.inside_hint_4800': '底部检修盖板，依据 UGREEN 手册绘制。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'in.slot_empty': '{label} · 空',
     'nvme.boot': 'Unraid 启动 SSD',

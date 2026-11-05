@@ -261,6 +261,8 @@ export const it: Record<Key, string> = {
         'Il pannello di servizio sul fondo, fronte a sinistra. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'case.inside_hint_8800':
         'Il pannello di servizio sul fondo secondo il manuale UGREEN: due zoccoli RAM, M.2 sotto e accanto; lo slot PCIe si trova nel telaio. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
+    'case.inside_hint_ultra':
+        "L'interno è disegnato secondo il DXP6800 Pro (sei baie) o il DXP8800 Plus (otto baie): la scheda dell'Ultra non è ancora stata fotografata, quindi le posizioni degli slot e la numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 sono presunte; se il tuo dispositivo è diverso, apri una issue.",
     'case.inside_hint_4800':
         'Il pannello di servizio sul fondo, secondo il manuale di UGREEN. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'in.slot_empty': '{label} · vuoto',

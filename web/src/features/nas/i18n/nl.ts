@@ -262,6 +262,8 @@ export const nl: Record<Key, string> = {
         'Het serviceluik aan de onderkant, voorkant links. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'case.inside_hint_8800':
         'Het serviceluik aan de onderkant volgens de UGREEN-handleiding: twee RAM-sockets, M.2 eronder en ernaast; de PCIe-sleuf zit in het frame. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_ultra':
+        'De binnenkant is getekend naar de DXP6800 Pro (zes bays) of de DXP8800 Plus (acht bays): het moederbord van de Ultra is nog niet gefotografeerd, dus de posities van de sleuven en de nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 zijn aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'case.inside_hint_4800':
         'Het serviceluik aan de onderkant, naar de handleiding van UGREEN. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'in.slot_empty': '{label} · leeg',
