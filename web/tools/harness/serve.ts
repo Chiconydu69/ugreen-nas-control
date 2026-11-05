@@ -145,7 +145,7 @@ export async function startHarness(modelId: string, opts: HarnessOptions = {}): 
     const led = ledOutputs(model);
     for (const [name, value] of Object.entries(led)) writeFileSync(join(back, `led-${name}.json`), JSON.stringify(value));
     for (const [name, value] of Object.entries(led.all)) writeFileSync(join(back, `led-get-${name}.json`), JSON.stringify(value));
-    writeFileSync(join(boot, 'led.enabled'), '');
+    if (model.led !== 'none') writeFileSync(join(boot, 'led.enabled'), '');
     writeFileSync(join(boot, 'leds.cfg'), '');
 
     writeFileSync(join(fsRoot, 'var/local/emhttp/var.ini'), 'csrf_token="fake"\nmdState="STARTED"\n');
