@@ -663,7 +663,7 @@ if (!existsSync(socialPng) || statSync(socialPng).mtimeMs < Math.max(...socialSr
     }
 }
 const models = await loadModels();
-const listed = models.filter(m => m.led !== 'none');
+const listed = models;
 rmSync(dist, { recursive: true, force: true });
 mkdirSync(dist, { recursive: true });
 // The live demo (just demo) is part of the site; build.ts wipes dist, so it is copied back in here.
