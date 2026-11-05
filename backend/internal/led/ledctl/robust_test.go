@@ -229,7 +229,7 @@ func TestDaemonStopEndsNetdevActivityBlink(t *testing.T) {
 	r.config("netdev_color=\"9 8 7\"\nnetdev_brightness=\"100\"\n")
 	stop := startDaemon(t, r)
 
-	waitFor(t, r, "network LED set", func() bool { return r.chip.get("netdev")[1] == "255" })
+	waitFor(t, r, "network LED set", func() bool { s := r.chip.get("netdev"); return s[1] == "100" && s[2] == "9" })
 
 	n := 1
 	waitFor(t, r, "network blinks with traffic", func() bool {
