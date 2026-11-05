@@ -2288,8 +2288,18 @@ function main(root: HTMLElement): void {
     const boardText = (x: number, y: number, text: string): string =>
         `<text x="${x}" y="${y}" style="fill:var(--bd-text)" font-size="11.5">${escapeHtml(text)}</text>`;
 
+    // The two M.2 slots by number; an SSD of unknown slot ("m2", boards without a root-port map) takes the free one.
+    const m2Drives = (hw: Hardware): [Nvme | undefined, Nvme | undefined] => {
+        const loose = hw.nvme.filter(d => d.slot === 'm2');
+        const drives: [Nvme | undefined, Nvme | undefined] = [hw.nvme.find(d => d.slot === 'm2-1'), hw.nvme.find(d => d.slot === 'm2-2')];
+        for (let i = 0; i < 2; i++) drives[i] ??= loose.shift();
+
+        return drives;
+    };
+
     function inside6800Html(hw: Hardware): string {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const [m2One, m2Two] = m2Drives(hw);
         const ramSocket = (x: number, mod: Dimm | undefined, n: number): string => {
             const socket = `<rect x="${x}" y="150" width="104" height="236" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="${x + 49}" y="360" width="6" height="18" rx="2" style="fill:var(--bd-sock2)"/><rect x="${x - 9}" y="178" width="9" height="34" rx="2" fill="#aeb6bf"/><rect x="${x + 104}" y="178" width="9" height="34" rx="2" fill="#aeb6bf"/>`;
             return (
@@ -2322,8 +2332,8 @@ function main(root: HTMLElement): void {
                 <path d="M50 70h620l120 90v320H50z" fill="url(#unc-ribs)" style="stroke:var(--bd-plate)" stroke-width="2"/>
                 <g transform="rotate(-90 300 290)"><text x="300" y="304" style="fill:var(--bd-ink)" font-size="64" font-weight="900" text-anchor="middle" letter-spacing="6">UGREEN</text></g>
                 <circle cx="400" cy="140" r="9" fill="#b87333"/><circle cx="720" cy="430" r="9" fill="#b87333"/><circle cx="240" cy="470" r="9" fill="#b87333"/>
-                ${m2(86, 96, true, ssd('m2-1'), t('in.m2', { n: 1 }), 172, 104)}
-                ${m2(340, 22, false, ssd('m2-2'), t('in.m2', { n: 2 }), 612, 40)}
+                ${m2(86, 96, true, m2One, t('in.m2', { n: 1 }), 172, 104)}
+                ${m2(340, 22, false, m2Two, t('in.m2', { n: 2 }), 612, 40)}
                 ${boardText(452, 140, t('in.dimm', { type: memory.find(m => m.type)?.type || 'DDR5' }))}
                 ${ramSocket(452, memory[1], 2)}
                 ${ramSocket(578, memory[0], 1)}
@@ -2473,6 +2483,7 @@ function main(root: HTMLElement): void {
     // inside the frame, below. Which M.2 slot is 1 and which RAM socket is 1 is assumed.
     function inside8800Html(hw: Hardware): string {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const [m2a, m2b] = m2Drives(hw);
         const memory = hw.memory;
         const card = ssd('pcie');
         const ram = (x: number, mod: Dimm | undefined): string => {
@@ -2498,8 +2509,6 @@ function main(root: HTMLElement): void {
         };
         const m2Empty = (w: number, h: number): string =>
             `<rect width="${w}" height="${h}" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>`;
-        const m2a = ssd('m2-1');
-        const m2b = ssd('m2-2');
 
         return `
             <svg class="unc-board-svg" viewBox="0 0 1000 590" role="img" aria-label="${escapeHtml(t('case.inside'))}">
@@ -2586,7 +2595,7 @@ function main(root: HTMLElement): void {
     // DXP4800, Plus and Pro: the service panel on the underside after UGREEN's manual and a photo of the open panel:
     // two SO-DIMM sockets stacked (RAM 1 on top) and two M.2 slots side by side (M.2-1 at the left), connectors at the bottom.
     function inside4800Html(hw: Hardware): string {
-        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const [m2One, m2Two] = m2Drives(hw);
         const memory = hw.memory;
         const ram = (y: number, mod: Dimm | undefined, n: number): string => {
             const filled = Boolean(mod?.size_mb);
@@ -2622,8 +2631,8 @@ function main(root: HTMLElement): void {
                     <circle cx="420" cy="22" r="8" fill="#b87333"/><circle cx="22" cy="536" r="8" fill="#b87333"/><circle cx="738" cy="22" r="8" fill="#b87333"/><circle cx="738" cy="536" r="8" fill="#b87333"/>
                     ${ram(40, memory[0], 1)}
                     ${caseModel(hw).ramSlots === 1 ? '' : ram(230, memory[1], 2)}
-                    ${m2(440, ssd('m2-1'), 1)}
-                    ${m2(580, ssd('m2-2'), 2)}
+                    ${m2(440, m2One, 1)}
+                    ${m2(580, m2Two, 2)}
                     <g transform="rotate(-90 700 300)"><text x="700" y="318" style="fill:var(--bd-ink)" font-size="54" font-weight="900" text-anchor="middle" letter-spacing="5">UGREEN</text></g>
                 </g>
             </svg>`;
