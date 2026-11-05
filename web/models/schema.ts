@@ -1,4 +1,4 @@
-// The model registry: one file per UGREEN model row (the rows of MODELS in web/src/features/nas/app.ts), validated by
+// The model registry: one file per UGREEN model row (also the rows of About → Supported models), validated by
 // web/tools/check-models.ts. Adding a model = adding one file here; the harness, the screenshots, the docs and the site follow.
 //
 // Two kinds of facts, kept apart:
@@ -62,7 +62,7 @@ export interface Model {
     id: string;
     name: string;
     series: Series;
-    /** Regex source (as in MODELS of web/src/features/nas/app.ts) matching the DMI product_name of every variant. */
+    /** Regex source matching the DMI product_name of every variant. */
     dmiPattern: string;
     /** DMI product_name the harness and the screenshots use (must match dmiPattern). */
     fixtureDmi: string;

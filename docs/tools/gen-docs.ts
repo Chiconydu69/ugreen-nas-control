@@ -123,6 +123,7 @@ function registryJson(): string {
     const out = models.map(m => ({
         id: m.id,
         name: m.name,
+        series: m.series,
         dmiPattern: m.dmiPattern,
         fixtureDmi: m.fixtureDmi,
         cpu: m.cpu,

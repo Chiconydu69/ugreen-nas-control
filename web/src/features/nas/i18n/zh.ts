@@ -330,7 +330,6 @@ export const zh: Record<Key, string> = {
     'models.col_fans': '风扇',
     'models.st_verified': '已验证',
     'models.st_confirmed': '已确认',
-    'models.st_reported': '已反馈',
     'models.st_untested': '未测试',
     'models.st_power': '仅电源 LED',
     'models.st_none': '不提供',
@@ -338,7 +337,8 @@ export const zh: Record<Key, string> = {
     'models.case_fr': '正面、背面',
     'models.mine': '你的设备',
     'models.footnote':
-        '已验证：由作者或 miskcoo 测试。已确认或已反馈：用户在自己的设备上验证过。未测试：插件会启用 LED，但盘位顺序是推测的；请用“识别”检查。只有在接线已知的型号上才有风扇控制；其他型号上插件不会操作风扇芯片。',
+        '已验证：由作者或 miskcoo 测试。已确认：用户在自己的设备上验证过。未测试：插件会启用 LED，但盘位顺序是推测的；请用“识别”检查。风扇：✓ 接线已知，风扇控制就绪；“风扇测试后”：先运行风扇测试并确认结果，之后风扇控制才会启动；– 插件不会操作风扇芯片。',
+    'models.fan_test': '风扇测试后',
     'about.tagline': '适用于 Unraid 上 UGREEN NAS 的风扇控制、LED 控制和系统信息',
     'about.license_badge': 'MIT 许可证',
     'about.github_hint': '源代码、发行版和更新记录',

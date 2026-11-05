@@ -344,7 +344,6 @@ export const fr: Record<Key, string> = {
     'models.col_fans': 'Ventilateurs',
     'models.st_verified': 'vérifié',
     'models.st_confirmed': 'confirmé',
-    'models.st_reported': 'signalé',
     'models.st_untested': 'non testé',
     'models.st_power': 'LED d’alimentation seulement',
     'models.st_none': 'non proposé',
@@ -352,7 +351,8 @@ export const fr: Record<Key, string> = {
     'models.case_fr': 'façade, arrière',
     'models.mine': 'votre appareil',
     'models.footnote':
-        'Vérifié : testé par l’auteur ou par miskcoo. Confirmé ou signalé : des utilisateurs l’ont constaté sur leur appareil. Non testé : le plugin active les LED mais l’ordre des baies est supposé ; vérifiez avec « Identifier ». Le contrôle des ventilateurs n’existe que là où le câblage est connu ; sur les autres modèles, le plugin ne touche pas à la puce des ventilateurs.',
+        'Vérifié : testé par l’auteur ou par miskcoo. Confirmé : des utilisateurs l’ont constaté sur leur appareil. Non testé : le plugin active les LED mais l’ordre des baies est supposé ; vérifiez avec « Identifier ». Ventilateurs : ✓ câblage connu, contrôle prêt ; « après test des ventilateurs » : lancez d’abord le test et confirmez son résultat, ensuite le contrôle démarre ; – le plugin ne touche pas à la puce des ventilateurs.',
+    'models.fan_test': 'après test des ventilateurs',
     'about.tagline': 'Contrôle des ventilateurs, des LED et infos système pour les NAS UGREEN sous Unraid',
     'about.license_badge': 'Licence MIT',
     'about.github_hint': 'Code source, versions et modifications',

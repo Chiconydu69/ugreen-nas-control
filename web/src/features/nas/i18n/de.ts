@@ -343,7 +343,6 @@ export const de: Record<Key, string> = {
     'models.col_fans': 'Lüfter',
     'models.st_verified': 'geprüft',
     'models.st_confirmed': 'bestätigt',
-    'models.st_reported': 'gemeldet',
     'models.st_untested': 'ungetestet',
     'models.st_power': 'nur Power-LED',
     'models.st_none': 'nicht angeboten',
@@ -351,7 +350,8 @@ export const de: Record<Key, string> = {
     'models.case_fr': 'vorn, hinten',
     'models.mine': 'dein Gerät',
     'models.footnote':
-        'Geprüft: vom Autor oder von miskcoo getestet. Bestätigt oder gemeldet: Nutzer haben es auf ihrem Gerät gesehen. Ungetestet: das Plugin schaltet die LEDs frei, die Schachtreihenfolge ist geraten; mit „Identifizieren“ prüfen. Lüftersteuerung gibt es nur, wo die Verdrahtung bekannt ist; bei den anderen Modellen fasst das Plugin den Lüfter-Chip nicht an.',
+        'Geprüft: vom Autor oder von miskcoo getestet. Bestätigt: Nutzer haben es auf ihrem Gerät gesehen. Ungetestet: das Plugin schaltet die LEDs frei, die Schachtreihenfolge ist geraten; mit „Identifizieren“ prüfen. Lüfter: ✓ Verdrahtung bekannt, Lüftersteuerung bereit; „nach Lüftertest“: erst den Lüftertest laufen lassen und sein Ergebnis bestätigen, dann startet die Lüftersteuerung; – das Plugin fasst den Lüfter-Chip nicht an.',
+    'models.fan_test': 'nach Lüftertest',
     'about.tagline': 'Lüfter- und LED-Steuerung und Systeminfo für UGREEN-NAS unter Unraid',
     'about.license_badge': 'MIT-Lizenz',
     'about.github_hint': 'Quellcode, Releases und Änderungen',
