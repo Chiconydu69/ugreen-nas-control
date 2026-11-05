@@ -2,6 +2,20 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.1.0
+
+- `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag` prints one anonymised, read-only diagnostics block to paste into a bug report or the forum.
+- Case view for the DXP480T Plus: front with the power LED, rear ports and the four M.2 slots as drives.
+- Inside view for the DXP2800 GT: M.2 slots, RAM and what is installed.
+- Inside view for the DXP4800, DXP4800 Plus and Pro: M.2 slots, RAM and what is installed.
+- Inside view for the DXP8800 Plus and DXP8800 / Pro: M.2 slots, RAM, PCIe slot and what is installed.
+- Inside view for the iDX6011 / iDX6012 / Pro: M.2 slots, RAM and what is installed.
+- German interface texts reworded to read naturally.
+- Fans: an input that is missing from the first tick (script, GPU, HBA, drive) now follows the default input also with "hold", and a missing input is logged and sent as an Unraid notification.
+- Spanish, French, Italian, Dutch and Chinese texts use Unraid's own terms and read more naturally.
+- LEDs: DXP2800 boards that reject all LED commands are reported once and no longer retried in a loop, the DXP2800 picks its LED frame by the BIOS system version, and the network LED stops blinking when the LED daemon stops.
+- The model box on the LED page shows what the plugin does on your model from the model list (DXP480T Plus: power LED only).
+
 ## 5.0.0
 
 - DXP2800 GT: fan control, confirmed on hardware by a community tester; it stays off until you run `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm`, runs at 25 % minimum and puts the fans back to their start speed when the plugin stops. Probe by Alexander Schubert (issue 95).
