@@ -4,6 +4,7 @@
     {
       "id": "dh2600",
       "name": "DH2600",
+      "series": "DH",
       "dmiPattern": "^DH2600",
       "fixtureDmi": "DH2600",
       "cpu": null,
@@ -29,6 +30,7 @@
     {
       "id": "dx4600-pro",
       "name": "DX4600 Pro",
+      "series": "DX",
       "dmiPattern": "^DX4600",
       "fixtureDmi": "DX4600 Pro",
       "cpu": null,
@@ -56,6 +58,7 @@
     {
       "id": "dx4700",
       "name": "DX4700+",
+      "series": "DX",
       "dmiPattern": "^DX4700",
       "fixtureDmi": "DX4700+",
       "cpu": null,
@@ -83,6 +86,7 @@
     {
       "id": "dxp480t-plus",
       "name": "DXP480T Plus",
+      "series": "DXP",
       "dmiPattern": "^DXP480T",
       "fixtureDmi": "DXP480T Plus",
       "cpu": "Intel Core i5-1235U",
@@ -113,6 +117,7 @@
     {
       "id": "dxp2800",
       "name": "DXP2800",
+      "series": "DXP",
       "dmiPattern": "^DXP2800$",
       "fixtureDmi": "DXP2800",
       "cpu": "Intel N100",
@@ -150,6 +155,7 @@
     {
       "id": "dxp2800-gt",
       "name": "DXP2800 GT",
+      "series": "DXP",
       "dmiPattern": "^DXP2800 GT",
       "fixtureDmi": "DXP2800 GT",
       "cpu": "AMD Ryzen Embedded R2514",
@@ -183,6 +189,7 @@
     {
       "id": "dxp2800s",
       "name": "DXP2800S",
+      "series": "DXP",
       "dmiPattern": "^DXP2800S$",
       "fixtureDmi": "DXP2800S",
       "cpu": null,
@@ -205,6 +212,7 @@
     {
       "id": "dxp4800-base",
       "name": "DXP4800",
+      "series": "DXP",
       "dmiPattern": "^DXP4800$",
       "fixtureDmi": "DXP4800",
       "cpu": "Intel N100",
@@ -241,6 +249,7 @@
     {
       "id": "dxp4800-gt",
       "name": "DXP4800 GT",
+      "series": "DXP",
       "dmiPattern": "^DXP4800.*GT",
       "fixtureDmi": "DXP4800 GT",
       "cpu": "AMD Ryzen Embedded R2514",
@@ -295,6 +304,7 @@
     {
       "id": "dxp4800",
       "name": "DXP4800 Plus / Pro",
+      "series": "DXP",
       "dmiPattern": "^DXP4800 (Plus|Pro)$",
       "fixtureDmi": "DXP4800 Plus",
       "cpu": "Intel Pentium Gold 8505 (Plus), Core i3-1315U (Pro)",
@@ -336,6 +346,7 @@
     {
       "id": "dxp4800s",
       "name": "DXP4800S",
+      "series": "DXP",
       "dmiPattern": "^DXP4800S$",
       "fixtureDmi": "DXP4800S",
       "cpu": "Intel N150",
@@ -361,6 +372,7 @@
     {
       "id": "dxp6800",
       "name": "DXP6800 / DXP6800 Plus",
+      "series": "DXP",
       "dmiPattern": "^DXP6800( Plus|\\+)?$",
       "fixtureDmi": "DXP6800 Plus",
       "cpu": null,
@@ -392,6 +404,7 @@
     {
       "id": "dxp6800-pro",
       "name": "DXP6800 Pro",
+      "series": "DXP",
       "dmiPattern": "^DXP6800 Pro$",
       "fixtureDmi": "DXP6800 Pro",
       "cpu": "Intel Core i5-1235U",
@@ -439,6 +452,7 @@
     {
       "id": "dxp6800-ultra",
       "name": "DXP6800 Ultra",
+      "series": "DXP",
       "dmiPattern": "^DXP6800 Ultra",
       "fixtureDmi": "DXP6800 Ultra",
       "cpu": "Intel Core 5 120U",
@@ -461,6 +475,7 @@
     {
       "id": "dxp6800s",
       "name": "DXP6800S",
+      "series": "DXP",
       "dmiPattern": "^DXP6800S$",
       "fixtureDmi": "DXP6800S",
       "cpu": null,
@@ -486,6 +501,7 @@
     {
       "id": "dxp8800",
       "name": "DXP8800 / DXP8800 Pro",
+      "series": "DXP",
       "dmiPattern": "^DXP8800( Pro)?$",
       "fixtureDmi": "DXP8800 Pro",
       "cpu": null,
@@ -511,6 +527,7 @@
     {
       "id": "dxp8800-plus",
       "name": "DXP8800 Plus",
+      "series": "DXP",
       "dmiPattern": "^DXP8800 Plus$",
       "fixtureDmi": "DXP8800 Plus",
       "cpu": "Intel Core i5-1235U",
@@ -542,13 +559,21 @@
           "note": "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 control register unconfirmed)."
         },
         "case": { "status": "expected", "note": "inside after UGREEN's manual; slot numbering assumed" },
-        "sensors": { "status": "expected" }
+        "sensors": {
+          "status": "community",
+          "by": "users",
+          "version": "5.1.0",
+          "date": "2026-11-05",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165",
+          "note": "Temperatures and the dashboard tile confirmed by a user; a one-off -21 °C board reading from the ACPI thermal zone is ignored since 5.1.1."
+        }
       },
       "note": "Eight bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. Fan control after a fan probe."
     },
     {
       "id": "dxp8800-ultra",
       "name": "DXP8800 Ultra",
+      "series": "DXP",
       "dmiPattern": "^DXP8800 Ultra",
       "fixtureDmi": "DXP8800 Ultra",
       "cpu": "Intel Core 7 150U",
@@ -571,6 +596,7 @@
     {
       "id": "idx6011",
       "name": "iDX6011 / iDX6012 / Pro",
+      "series": "iDX",
       "dmiPattern": "^iDX601[12]",
       "fixtureDmi": "iDX6011 Pro",
       "cpu": "Intel Core Ultra 5 125H (Pro: Core Ultra 7 255H)",

@@ -2,7 +2,7 @@
 
 ## Credits
 
-Maintainer: [Alexander Schubert](https://github.com/alexanderschubert). Contributor (merged code): [j3n57h0m45](https://github.com/j3n57h0m45): DXP4800 GT support (fans, LEDs, case and System view), UX overhaul, fan measuring, CI.
+Maintainers: [Alexander Schubert](https://github.com/alexanderschubert) and [Jens Thomas](https://github.com/j3n57h0m45). Jens Thomas merged DXP4800 GT support (fans, LEDs, case and System view), the UX overhaul, fan measuring and CI.
 
 Prior work this project builds on; licenses and what is used follow below.
 

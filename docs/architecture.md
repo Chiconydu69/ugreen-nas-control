@@ -50,7 +50,7 @@ flowchart LR
 
 ## Where to add things
 
-- A model: add `web/models/<id>.ts` ([development.md](development.md#add-a-model)); the plugin's own model table still lives in the frontend source under `web/src/features/nas`.
+- A model: add `web/models/<id>.ts` ([development.md](development.md#add-a-model)).
 - A page or sensor: `web/src/features/nas/`; texts in every language ([translations.md](translations.md)).
 - A shipped file: add it to `plugin/files.txt`; `just plg-check` fails otherwise.
 
@@ -88,5 +88,5 @@ A feature is one hardware function with its own page or tile (fans, LEDs, a new 
 3. API: an action in `web/plugin/api.php` (or a `web/plugin/<feature>/api.php` of its own) that calls the tool and returns JSON; extend `web/src/core/contract.ts` and `guard.ts` with its shape.
 4. Frontend: `web/src/features/<feature>/` with `app.ts`, `text.ts` and `i18n/<code>.ts` for every language ([translations.md](translations.md)); shared helpers go to `web/src/core/`. Register the entry point in `WEB_BUNDLES` in `scripts/generated.ts` (the output path is under `.build/plugin/js`, gitignored) and add a `<script>` for it to the page.
 5. Shipping: add every new source (and the bundle's output path) to `plugin/files.txt`; `just plg-check` lists what is missing. The binary is `release:ugreen-nas` (built to `.build/bin/ugreen-nas` by `just go-build`); a tool name is a line `release:<name> <path> -> <target>` (a symbolic link to it).
-6. Models: a capability flag in `web/models/schema.ts` (like `fan`) says which models have the feature; fill it in the model files, `web/models/fixture.ts` for the harness data, then `just docs`. The plugin decides at run time from the DMI name (`MODELS` in `web/src/features/nas/app.ts`, `layoutFor` in `backend/internal/fan/hardware.go`).
+6. Models: a capability flag in `web/models/schema.ts` (like `fan`) says which models have the feature; fill it in the model files, `web/models/fixture.ts` for the harness data, then `just docs`. The plugin decides at run time from the DMI name (the About table and the model box come from the registry, `layoutFor` in `backend/internal/fan/hardware.go`).
 7. Checks: tests next to the code, i18n keys in every language, `just check`, then `just harness <model>` and `just e2e`.

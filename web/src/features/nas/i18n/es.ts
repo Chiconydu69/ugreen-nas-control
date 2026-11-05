@@ -332,7 +332,6 @@ export const es: Record<Key, string> = {
     'models.col_fans': 'Ventiladores',
     'models.st_verified': 'verificado',
     'models.st_confirmed': 'confirmado',
-    'models.st_reported': 'informado',
     'models.st_untested': 'sin probar',
     'models.st_power': 'solo LED de encendido',
     'models.st_none': 'no ofrecido',
@@ -340,7 +339,8 @@ export const es: Record<Key, string> = {
     'models.case_fr': 'frontal, trasera',
     'models.mine': 'tu equipo',
     'models.footnote':
-        'Verificado: probado por el autor o por miskcoo. Confirmado o informado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». El control de ventiladores solo existe donde se conoce el cableado; en los demás modelos el plugin no toca el chip de los ventiladores.',
+        'Verificado: probado por el autor o por miskcoo. Confirmado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». Ventiladores: ✓ cableado conocido, control listo; «tras la prueba de ventiladores»: ejecuta primero la prueba y confirma su resultado, después arranca el control; – el plugin no toca el chip de los ventiladores.',
+    'models.fan_test': 'tras la prueba de ventiladores',
     'about.tagline': 'Control de ventiladores y LED e información del sistema para UGREEN NAS en Unraid',
     'about.license_badge': 'Licencia MIT',
     'about.github_hint': 'Código fuente, versiones y cambios',
@@ -351,8 +351,9 @@ export const es: Record<Key, string> = {
     'about.help':
         'Ayuda al proyecto: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">se buscan equipos de prueba</a>, en préstamo o donados. O confirma tu equipo arriba.',
     'about.thanks': 'Agradecimientos',
+    'about.maintainers': 'Mantenedores',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocolo y asignación de bahías del control de LED), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> y <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (desarrollo de UGREEN NAS Control; j3n57h0m45 también el soporte del DXP4800 GT: ventiladores mediante el IT5571, LED, vistas de la caja y del sistema, y el rediseño de la interfaz), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traducción al español) y todos los que probaron en su modelo',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocolo y asignación de bahías del control de LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traducción al español) y todos los que probaron en su modelo',
     'language.label': 'Idioma de la interfaz',
     'language.auto': 'Igual que Unraid',
     'theme.label': 'Esquema de colores',

@@ -60,7 +60,7 @@ import { type Key, t, tEnum, tRaw } from './text';
 import './fan/index';
 import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
-import { caseText, modelBox, modelFacts } from './model-info';
+import { caseText, modelBox, modelFacts, modelRows } from './model-info';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
 
@@ -741,31 +741,6 @@ function main(root: HTMLElement): void {
         return t(led.warning === 'standalone' && !led.enabled ? 'system.ledctl_standalone' : 'system.ledctl_off');
     }
 
-    // Every UGREEN NAS model by series and what this plugin does for it: [series, model, test regex of the DMI name, LEDs, case view, fans].
-    // LEDs: verified | confirmed | reported (by users) | untested | power (power LED only) | none; case: full | fr | ''.
-    type LedSupport = 'verified' | 'confirmed' | 'reported' | 'untested' | 'power' | 'none';
-    const MODELS: [series: string, model: string, test: RegExp, leds: LedSupport, view: '' | 'fr' | 'full', fans: boolean][] = [
-        ['DH', 'DH2600', /^DH2600/, 'none', '', false],
-        ['DX', 'DX4600 Pro', /^DX4600/, 'confirmed', '', false],
-        ['DX', 'DX4700+', /^DX4700/, 'reported', '', false],
-        ['DXP', 'DXP2800', /^DXP2800$/, 'reported', 'fr', false],
-        ['DXP', 'DXP2800S', /^DXP2800S$/, 'untested', '', false],
-        ['DXP', 'DXP2800 GT', /^DXP2800 GT/, 'untested', 'fr', true],
-        ['DXP', 'DXP480T Plus', /^DXP480T/, 'power', '', false],
-        ['DXP', 'DXP4800', /^DXP4800$/, 'confirmed', 'fr', false],
-        ['DXP', 'DXP4800S', /^DXP4800S$/, 'untested', '', false],
-        ['DXP', 'DXP4800 Plus / Pro', /^DXP4800 (Plus|Pro)$/, 'confirmed', 'fr', false],
-        ['DXP', 'DXP4800 GT', /^DXP4800.*GT/, 'verified', 'full', true],
-        ['DXP', 'DXP6800 / Plus', /^DXP6800( Plus|\+)?$/, 'untested', 'full', true],
-        ['DXP', 'DXP6800S', /^DXP6800S$/, 'untested', '', false],
-        ['DXP', 'DXP6800 Pro', /^DXP6800 Pro$/, 'verified', 'full', true],
-        ['DXP', 'DXP6800 Ultra', /^DXP6800 Ultra/, 'untested', '', false],
-        ['DXP', 'DXP8800 / Pro', /^DXP8800( Pro)?$/, 'untested', 'fr', true],
-        ['DXP', 'DXP8800 Plus', /^DXP8800 Plus$/, 'confirmed', 'fr', false],
-        ['DXP', 'DXP8800 Ultra', /^DXP8800 Ultra/, 'untested', '', false],
-        ['iDX', 'iDX6011 / iDX6012 / Pro', /^iDX601[12]/, 'untested', 'fr', false]
-    ];
-
     function bindModelsFold() {
         const fold = q<HTMLDetailsElement>('#unc-models-fold');
 
@@ -828,6 +803,7 @@ function main(root: HTMLElement): void {
 
     function renderModels() {
         const mine = modelName();
+        const rows = modelRows();
         const cell = (kind: string, text: string): string => `<td class="m-${kind}">${escapeHtml(text)}</td>`;
 
         q('#unc-models').innerHTML = `
@@ -836,20 +812,22 @@ function main(root: HTMLElement): void {
                     <th>${escapeHtml(t('models.col_model'))}</th><th>${escapeHtml(t('models.col_leds'))}</th>
                     <th>${escapeHtml(t('models.col_case'))}</th><th>${escapeHtml(t('models.col_fans'))}</th>
                 </tr></thead>
-                <tbody>${MODELS.map(
-                    ([series, name, re, leds, view, fans], i) => `${
-                        i === 0 || MODELS[i - 1]?.[0] !== series
-                            ? `
+                <tbody>${rows
+                    .map(
+                        ({ series, name, re, leds, view, fans }, i) => `${
+                            i === 0 || rows[i - 1]?.series !== series
+                                ? `
                     <tr class="series"><th colspan="4">${escapeHtml(t('models.series', { s: series }))}</th></tr>`
-                            : ''
-                    }
+                                : ''
+                        }
                     <tr class="${re.test(mine) ? 'mine' : ''}">
                         <td><b>${escapeHtml(name)}</b>${re.test(mine) ? ` <small class="unc-muted">${escapeHtml(t('models.mine'))}</small>` : ''}</td>
                         ${cell(leds, t(`models.st_${leds}`))}
-                        ${cell(view || 'none', view ? t(`models.case_${view}`) : '–')}
-                        ${cell(fans ? 'yes' : 'none', fans ? '✓' : '–')}
+                        ${cell(view, view === 'none' ? '–' : t(view === 'full' ? 'models.case_full' : 'models.case_fr'))}
+                        ${cell(fans === 'none' ? 'none' : 'yes', fans === 'fixed' ? '✓' : fans === 'none' ? '–' : t('models.fan_test'))}
                     </tr>`
-                ).join('')}
+                    )
+                    .join('')}
                 </tbody>
             </table>
             ${note(escapeHtml(t('models.footnote')))}`;

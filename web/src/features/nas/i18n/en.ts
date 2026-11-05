@@ -338,7 +338,6 @@ export const en = {
     'models.col_fans': 'Fans',
     'models.st_verified': 'verified',
     'models.st_confirmed': 'confirmed',
-    'models.st_reported': 'reported',
     'models.st_untested': 'untested',
     'models.st_power': 'power LED only',
     'models.st_none': 'not offered',
@@ -346,7 +345,8 @@ export const en = {
     'models.case_fr': 'front, rear',
     'models.mine': 'your device',
     'models.footnote':
-        'Verified: tested by the author or by miskcoo. Confirmed or reported: users saw it on their device. Untested: the plugin enables the LEDs but the bay order is guessed; check with "Identify". Fan control exists only where the wiring is known; on the other models the plugin does not touch the fan chip.',
+        'Verified: tested by the author or by miskcoo. Confirmed: users saw it on their device. Untested: the plugin enables the LEDs but the bay order is guessed; check with "Identify". Fans: ✓ wiring known, fan control ready; "after fan test": run the fan test and confirm its result first, then fan control starts; – the plugin does not touch the fan chip.',
+    'models.fan_test': 'after fan test',
     'about.tagline': 'Fan control, LED control and system info for UGREEN NAS on Unraid',
     'about.license_badge': 'MIT licence',
     'about.github_hint': 'Source code, releases and changes',
@@ -357,8 +357,9 @@ export const en = {
     'about.help':
         'Help the project: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">test hardware wanted</a>, to lend or donate. Or confirm your device above.',
     'about.thanks': 'Thanks to',
+    'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> and <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (development of UGREEN NAS Control; j3n57h0m45 also the DXP4800 GT support: fans through the IT5571, LEDs, case and system views, and the redesign of the interface), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
     'language.label': 'Interface language',
     'language.auto': 'Same as Unraid',
     'theme.label': 'Colour scheme',

@@ -344,7 +344,6 @@ export const nl: Record<Key, string> = {
     'models.col_fans': 'Ventilatoren',
     'models.st_verified': 'geverifieerd',
     'models.st_confirmed': 'bevestigd',
-    'models.st_reported': 'gemeld',
     'models.st_untested': 'niet getest',
     'models.st_power': 'alleen voedings-LED',
     'models.st_none': 'niet aangeboden',
@@ -352,7 +351,8 @@ export const nl: Record<Key, string> = {
     'models.case_fr': 'voorkant, achterkant',
     'models.mine': 'jouw apparaat',
     'models.footnote':
-        'Geverifieerd: getest door de auteur of door miskcoo. Bevestigd of gemeld: gebruikers zagen het op hun apparaat. Niet getest: de plug-in schakelt de LED’s in maar de bayvolgorde is aangenomen; controleer met “Identificeren”. Ventilatorregeling bestaat alleen waar de bedrading bekend is; op de andere modellen raakt de plug-in de ventilatorchip niet aan.',
+        'Geverifieerd: getest door de auteur of door miskcoo. Bevestigd: gebruikers zagen het op hun apparaat. Niet getest: de plug-in schakelt de LED’s in maar de bayvolgorde is aangenomen; controleer met “Identificeren”. Ventilatoren: ✓ bedrading bekend, regeling klaar; “na ventilatortest”: voer eerst de test uit en bevestig het resultaat, dan start de regeling; – de plug-in raakt de ventilatorchip niet aan.',
+    'models.fan_test': 'na ventilatortest',
     'about.tagline': 'Ventilatorregeling, LED-besturing en systeeminfo voor UGREEN NAS onder Unraid',
     'about.license_badge': 'MIT-licentie',
     'about.github_hint': 'Broncode, releases en wijzigingen',
@@ -363,8 +363,9 @@ export const nl: Record<Key, string> = {
     'about.help':
         'Help het project: <a href="https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134" target="_blank" rel="noopener">testapparaten gezocht</a>, te leen of als gift. Of bevestig hierboven je apparaat.',
     'about.thanks': 'Met dank aan',
+    'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander</a> en <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">j3n57h0m45</a> (ontwikkeling van UGREEN NAS Control; j3n57h0m45 ook de ondersteuning van de DXP4800 GT: ventilatoren via de IT5571, LED’s, behuizings- en systeemweergaven en het nieuwe ontwerp van de interface), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
     'language.label': 'Interfacetaal',
     'language.auto': 'Zoals Unraid',
     'theme.label': 'Kleurenschema',
