@@ -249,7 +249,7 @@ func TestLayoutFor(t *testing.T) {
 			t.Errorf("%s: %+v", model, l)
 		}
 	}
-	for model, want := range map[string][]int{"DXP4800S": {1, 2, 3, 4}, "DXP2800S": {1, 2}, "DXP6800S": {3, 4, 5, 6, 1, 2}} {
+	for model, want := range map[string][]int{"DXP4800S": {1, 2, 3, 4}, "DXP2800S": {1, 2}, "DXP6800S": {3, 4, 5, 6, 1, 2}, "DXP6800 Ultra": {3, 4, 5, 6, 1, 2}, "DXP8800 Ultra": {1, 2, 3, 4, 5, 6, 7, 8}} {
 		if l := layoutFor(model); !slices.Equal(l.bayPorts, want) || l.otherSlot != "m2" || l.slots != nil {
 			t.Errorf("%q: %+v", model, l)
 		}
