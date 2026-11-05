@@ -180,6 +180,8 @@ export interface Sensors {
     gpu: number | null;
     disks: DiskTemp[] | null;
     board: number | null;
+    /** Inputs that report no real temperature (an unwired sensor); left out of the values above. */
+    not_connected?: { source: string; name: string; raw: number }[];
 }
 
 export type FanRole = 'cpu' | 'case' | '';

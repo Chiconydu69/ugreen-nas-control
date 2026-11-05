@@ -730,3 +730,11 @@ func TestCLIDocListsEveryFeature(t *testing.T) {
 		}
 	}
 }
+
+func TestDiagNamesNotConnectedSensors(t *testing.T) {
+	status := `{"fan_control": true, "sensors": {"cpu": 45, "board": null, "not_connected": [{"source":"acpitz","name":"temp1","raw":-21}]}}`
+	sec := fanSection(FanDiag{Status: []byte(status)})
+	if !strings.Contains(sec.Body, "temp acpitz temp1: not connected (raw -21 C)") {
+		t.Fatalf("section = %s", sec.Body)
+	}
+}

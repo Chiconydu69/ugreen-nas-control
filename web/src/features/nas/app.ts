@@ -2946,7 +2946,7 @@ function main(root: HTMLElement): void {
     // A sensor that isn't wired reports nonsense (an NVMe sensor 2 that isn't there, -128 from an empty ITE input).
     const hasTemp = <T extends { temp: number | null }>(item: T): item is T & { temp: number } => item.temp != null;
 
-    const plausible = (value: number | null | undefined): number | null => (value != null && value > -40 && value < 125 ? value : null);
+    const plausible = (value: number | null | undefined): number | null => (value != null && value >= -10 && value <= 125 ? value : null);
 
     interface SensorVal {
         label: string;

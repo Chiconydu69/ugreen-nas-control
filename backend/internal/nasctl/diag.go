@@ -343,8 +343,13 @@ type fanStatus struct {
 		Err  string `json:"error"`
 	} `json:"fans"`
 	Sensors struct {
-		CPU   *int `json:"cpu"`
-		Board *int `json:"board"`
+		CPU          *int `json:"cpu"`
+		Board        *int `json:"board"`
+		NotConnected []struct {
+			Source string `json:"source"`
+			Name   string `json:"name"`
+			Raw    int    `json:"raw"`
+		} `json:"not_connected"`
 	} `json:"sensors"`
 	Daemon *struct {
 		Mode       string         `json:"mode"`
@@ -422,6 +427,9 @@ func fanSection(d FanDiag) Section {
 		l = append(l, line)
 	}
 	l = append(l, fmt.Sprintf("temps: cpu %s  board %s", tempText(st.Sensors.CPU), tempText(st.Sensors.Board)))
+	for _, n := range st.Sensors.NotConnected {
+		l = append(l, fmt.Sprintf("temp %s %s: not connected (raw %d C)", n.Source, n.Name, n.Raw))
+	}
 	if dm := st.Daemon; dm != nil {
 		l = append(l, fmt.Sprintf("daemon state: mode %s  failsafe %s  job %s  quiet %t", orDash(dm.Mode), orDash(dm.Failsafe), orDash(dm.Job), dm.Quiet))
 		l = append(l, fmt.Sprintf("source temps: cpu %s  case %s (from %s, driver %s)", tempText(dm.CPUTemp), tempText(dm.CaseTemp), orDash(dm.CaseFrom), orDash(dm.CaseDriver)))
