@@ -20,6 +20,19 @@ jobs:
     permissions:
       issues: write
     steps:
+      # "Confirm my device" in the plugin opens issues/new?labels=model-report; GitHub drops that label for users
+      # without write access, so the title it sets is the signal.
+      - name: Label model reports from the plugin
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+        run: |
+          case "$TITLE" in
+            "Model report:"*) gh issue edit "$NUMBER" --add-label 'model-report' ;;
+          esac
+
       - name: Add the area label from the form
         env:
           GH_TOKEN: ${{ github.token }}
