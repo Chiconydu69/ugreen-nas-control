@@ -258,6 +258,8 @@ export const en = {
         'The underside service panel, front at the left. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.',
     'case.inside_hint_8800':
         "The bottom service panel after UGREEN's manual: two RAM sockets, M.2 below and beside them; the PCIe slot sits inside the frame. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
+    'case.inside_hint_like_8800plus':
+        'The inside is drawn after the DXP8800 Plus: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
     'case.inside_hint_4800':
         "The underside service panel, after UGREEN's manual. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
     'in.slot_empty': '{label} · empty',
@@ -484,6 +486,25 @@ export const en = {
         "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the two RAM sockets in the bottom panel. The numbering of both pairs is assumed; open an issue if your box differs.",
     'in.gt_cage': 'Drive cage · inner left wall',
     'in.gt_panel': 'Bottom panel',
+    'in.bottom_case': 'Bottom case · four M.2 slots',
+    'case.inside_hint_2800':
+        "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the one SO-DIMM socket in the bottom panel. Numbering of the M.2 slots is assumed; open an issue if your box differs.",
+    'case.inside_hint_480':
+        "The inside after UGREEN's manual: four M.2 slots 01 to 04 in the bottom case, two SO-DIMM sockets under the bottom panel. Which SSD sits in which slot is assumed from the order of the PCIe addresses; open an issue if your box differs.",
+    'case.inside_hint_like_4800plus':
+        'The inside is drawn after the DXP4800 Plus: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'case.inside_hint_like_2800':
+        'The inside is drawn after the DXP2800: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'case.inside_hint_like_6800pro':
+        'The inside is drawn after the DXP6800 Pro: the board of this model is not known. RAM and M.2 numbering is assumed; open an issue if your box differs.',
+    'in.dh_cage': 'Drive cage · side wall',
+    'in.dh_board': 'Mainboard · bottom',
+    'case.inside_hint_dx':
+        "The inside is not shown in UGREEN's material; the slots are drawn like the DXP4800's underside panel. RAM 1 / RAM 2 and M.2-1 / M.2-2 are numbered by assumption; open an issue if your box differs.",
+    'case.inside_hint_dx4700':
+        "The whole case view is drawn after the DX4600 Pro: this model's own board is not known. The slots are drawn like the DXP4800's underside panel; RAM and M.2 numbering is assumed; open an issue if your box differs.",
+    'case.inside_hint_dh':
+        "The inside after UGREEN's product renders: the two M.2 slots on the side of the drive cage, the two RAM sockets on the mainboard below. The numbering of both pairs is assumed; open an issue if your box differs. The second RAM socket is taken from UGREEN's spec text, the photos show one SO-DIMM.",
     ...panelEn,
     ...powerEn
 } as const;

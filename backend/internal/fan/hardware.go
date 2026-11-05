@@ -69,9 +69,9 @@ type layout struct {
 	otherSlot string
 }
 
-// layoutFor knows the DXP6800 Pro (ata3..ata6, then ata1, ata2), the DXP4800 GT, the DXP4800 / Plus / Pro
-// (ata1..ata4) and the DXP8800 Plus (ata1..ata8), the order UGREEN LED Control uses. On the last three the root ports of the M.2 slots are not
-// known, so an NVMe is just "m2". The DXP480T Plus has four M.2 slots and no bays; of the iDX6011 / iDX6012 / Pro only the M.2 default is known. Any other model: no bays, every NVMe on the PCIe slot.
+// layoutFor knows the DXP6800 Pro (ata3..ata6, then ata1, ata2; also for the DXP6800 / Plus / +, whose board is assumed the same), the DXP4800 GT, the DXP4800 / Plus / Pro
+// (ata1..ata4), the DXP2800 / DXP2800S (ata1, ata2), the DXP4800S, DX4600 Pro and DX4700+ (ata1..ata4), the DH2600 (ata1, ata2), the DXP6800S / Ultra (ata3..ata6, then ata1, ata2) and the DXP8800 Plus / Ultra (ata1..ata8), the order UGREEN LED Control uses. Only the
+// DXP6800 Pro / DXP6800 and DXP4800 GT have root-port maps of their M.2 slots; on the others an NVMe is just "m2". The DXP480T Plus has four M.2 slots and no bays; of the iDX6011 / iDX6012 / Pro only the M.2 default is known. Any other model: no bays, every NVMe on the PCIe slot.
 //
 // DXP6800 Pro, from an Unraid box with four NVMe: the CPU's root port 00:06.0 is M.2 slot 1
 // (x4, PCIe 4.0), 00:06.2 the PCIe slot (a card with one SSD, negotiated x1), and the
@@ -79,7 +79,7 @@ type layout struct {
 // slot (x1), the one of the UGOS module. Confirmed by the author for the SSD in the system slot.
 func layoutFor(model string) layout {
 	switch {
-	case strings.HasPrefix(model, "DXP6800"):
+	case model == "DXP6800 Pro", model == "DXP6800", model == "DXP6800 Plus", model == "DXP6800+":
 		return layout{[]int{3, 4, 5, 6, 1, 2}, map[string]string{
 			"0000:00:06.0": "m2-1", "0000:00:1c.0": "m2-2", "0000:00:1c.2": "system", "0000:00:06.2": "pcie",
 		}, ""}
@@ -91,9 +91,17 @@ func layoutFor(model string) layout {
 		return layout{otherSlot: "m2"} // all flash: four M.2 slots, no bays
 	case strings.HasPrefix(model, "iDX601"):
 		return layout{otherSlot: "m2"} // bay ports and M.2 root ports not known yet: no bays, every NVMe "m2"
-	case model == "DXP2800":
+	case model == "DXP2800" || model == "DXP2800S":
 		return layout{bayPorts: []int{1, 2}, otherSlot: "m2"}
-	case model == "DXP8800 Plus", model == "DXP8800", model == "DXP8800 Pro":
+	case model == "DXP4800S":
+		return layout{bayPorts: []int{1, 2, 3, 4}, otherSlot: "m2"}
+	case model == "DXP6800S", strings.HasPrefix(model, "DXP6800 Ultra"):
+		return layout{bayPorts: []int{3, 4, 5, 6, 1, 2}, otherSlot: "m2"} // the DXP6800 order of UGREEN LED Control, board unknown
+	case strings.HasPrefix(model, "DX4600"), strings.HasPrefix(model, "DX4700"):
+		return layout{bayPorts: []int{1, 2, 3, 4}, otherSlot: "m2"} // ata1..ata4 as the LED driver has it; M.2 root ports not known
+	case strings.HasPrefix(model, "DH2600"):
+		return layout{bayPorts: []int{1, 2}, otherSlot: "m2"} // ata order assumed like the DXP2800; M.2 root ports not known
+	case model == "DXP8800 Plus", model == "DXP8800", model == "DXP8800 Pro", strings.HasPrefix(model, "DXP8800 Ultra"):
 		return layout{bayPorts: []int{1, 2, 3, 4, 5, 6, 7, 8}, otherSlot: "m2"}
 	}
 	return layout{}

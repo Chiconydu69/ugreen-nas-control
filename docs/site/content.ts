@@ -71,7 +71,7 @@ export const TECH = {
     },
     case: {
         items: [
-            'Inside view (M.2, system, PCIe) on the DXP6800 Pro and DXP4800 GT (verified), and drawn for the DXP6800 and Plus (expected); front and rear on the other models that have a case view.',
+            'Front, rear and inside view (M.2, RAM, system, PCIe where the model has them) on every model. The DXP6800 Pro and DXP4800 GT are drawn after a real device (verified); the others after UGREEN manuals, product photos and renders, or after a sister model (expected).',
             "The demo above is the plugin's own interface on sample data, not a mockup."
         ],
         doc: 'hardware.md'

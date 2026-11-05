@@ -255,6 +255,7 @@ export const zh: Record<Key, string> = {
     'case.inside_hint_gt': '底部检修盖板，正面在左侧。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'case.inside_hint_8800':
         '底部检修盖板，依据 UGREEN 手册绘制：两个内存插槽，M.2 位于其下方和旁边；PCIe 插槽在机架内部。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_like_8800plus': '内部按 DXP8800 Plus 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
     'case.inside_hint_4800': '底部检修盖板，依据 UGREEN 手册绘制。RAM 1 / RAM 2 与 M.2-1 / M.2-2 的编号为假设；如果你的机器不同，请提交 issue。',
     'in.slot_empty': '{label} · 空',
     'nvme.boot': 'Unraid 启动 SSD',
@@ -475,6 +476,22 @@ export const zh: Record<Key, string> = {
         '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，两个内存插槽位于底部面板。两组编号均为假设；如果你的机器不同，请提交 issue。',
     'in.gt_cage': '硬盘仓 · 左内壁',
     'in.gt_panel': '底部面板',
+    'in.bottom_case': '底壳 · 四个 M.2 插槽',
+    'case.inside_hint_2800':
+        '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，唯一的 SO-DIMM 插槽位于底部面板。M.2 插槽编号为假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_480':
+        '根据 UGREEN 手册绘制的内部视图：底壳内四个 M.2 插槽 01 至 04，底部面板下两个 SO-DIMM 插槽。每块 SSD 所在的插槽按 PCIe 地址顺序假设；如果你的机器不同，请提交 issue。',
+    'case.inside_hint_like_4800plus': '内部按 DXP4800 Plus 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_2800': '内部按 DXP2800 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'case.inside_hint_like_6800pro': '内部按 DXP6800 Pro 绘制:本型号主板的布局尚不清楚。内存和 M.2 的编号为假定;如果你的机器不同,请提交 issue。',
+    'in.dh_cage': '硬盘笼 · 侧壁',
+    'in.dh_board': '主板 · 底部',
+    'case.inside_hint_dx':
+        'UGREEN 的资料没有展示内部结构，插槽按 DXP4800 的底部面板绘制。RAM 1 / RAM 2 和 M.2-1 / M.2-2 的编号为假设；如与实机不符，请提交 issue。',
+    'case.inside_hint_dx4700':
+        '整个机箱视图按 DX4600 Pro 绘制：本型号自身的主板尚不清楚。插槽按 DXP4800 底部面板绘制；RAM 与 M.2 的编号为假设；如与实机不符，请提交 issue。',
+    'case.inside_hint_dh':
+        '内部结构依据 UGREEN 的产品渲染图：两个 M.2 插槽在硬盘笼侧面，两个内存插槽在下方的主板上。两组编号均为假设；如与实机不符，请提交 issue。 第二个内存插槽依据 UGREEN 的规格说明，照片中只能看到一条 SO-DIMM。',
     ...panelZh,
     ...powerZh
 };

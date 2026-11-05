@@ -262,6 +262,8 @@ export const nl: Record<Key, string> = {
         'Het serviceluik aan de onderkant, voorkant links. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'case.inside_hint_8800':
         'Het serviceluik aan de onderkant volgens de UGREEN-handleiding: twee RAM-sockets, M.2 eronder en ernaast; de PCIe-sleuf zit in het frame. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+    'case.inside_hint_like_8800plus':
+        'De binnenkant is getekend naar de DXP8800 Plus: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
     'case.inside_hint_4800':
         'Het serviceluik aan de onderkant, naar de handleiding van UGREEN. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'in.slot_empty': '{label} · leeg',
@@ -491,6 +493,25 @@ export const nl: Record<Key, string> = {
         'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de twee RAM-sockets in het bodempaneel. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt.',
     'in.gt_cage': 'Schijvenkooi · linkerbinnenwand',
     'in.gt_panel': 'Bodempaneel',
+    'in.bottom_case': 'Bodembehuizing · vier M.2-sleuven',
+    'case.inside_hint_2800':
+        'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de ene SO-DIMM-socket in het bodempaneel. De nummering van de M.2-sleuven is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_480':
+        'De binnenkant volgens de UGREEN-handleiding: vier M.2-sleuven 01 tot 04 in de bodembehuizing, twee SO-DIMM-sockets onder het bodempaneel. Welke SSD in welke sleuf zit, is aangenomen uit de volgorde van de PCIe-adressen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_4800plus':
+        'De binnenkant is getekend naar de DXP4800 Plus: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_2800':
+        'De binnenkant is getekend naar de DXP2800: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_like_6800pro':
+        'De binnenkant is getekend naar de DXP6800 Pro: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'in.dh_cage': 'Schijvenkooi · zijwand',
+    'in.dh_board': 'Moederbord · onder',
+    'case.inside_hint_dx':
+        'Het binnenste staat niet in het materiaal van UGREEN; de slots zijn getekend zoals het onderpaneel van de DXP4800. RAM 1 / RAM 2 en M.2-1 / M.2-2 zijn op aanname genummerd; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dx4700':
+        'De hele kastweergave is getekend naar de DX4600 Pro: het moederbord van dit model is niet bekend. De slots zijn getekend zoals het bodempaneel van de DXP4800; de nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dh':
+        "Het binnenste naar de productrenders van UGREEN: de twee M.2-slots aan de zijkant van de schijvenkooi, de twee RAM-sockets op het moederbord eronder. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt. De tweede RAM-socket komt uit de specificaties van UGREEN; de foto's tonen één SO-DIMM.",
     ...panelNl,
     ...powerNl
 };

@@ -261,6 +261,8 @@ export const de: Record<Key, string> = {
         'Die Wartungsklappe an der Unterseite, vorne links. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'case.inside_hint_8800':
         'Die Wartungsklappe an der Unterseite nach dem UGREEN-Handbuch: zwei RAM-Sockel, M.2 darunter und daneben; der PCIe-Slot sitzt im Rahmen. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
+    'case.inside_hint_like_8800plus':
+        'Das Innere ist nach dem DXP8800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
     'case.inside_hint_4800':
         'Die Wartungsklappe an der Unterseite, nach dem Handbuch von UGREEN. Die Nummerierung von RAM 1 / RAM 2 und M.2-1 / M.2-2 ist angenommen; bei einer anderen Belegung bitte ein Issue öffnen.',
     'in.slot_empty': '{label} · leer',
@@ -490,6 +492,25 @@ export const de: Record<Key, string> = {
         'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, die zwei RAM-Sockel im Bodendeckel. Die Nummerierung beider Paare ist geraten; eröffne ein Issue, falls deine Box abweicht.',
     'in.gt_cage': 'Laufwerkskäfig · linke Innenwand',
     'in.gt_panel': 'Bodendeckel',
+    'in.bottom_case': 'Bodenwanne · vier M.2-Steckplätze',
+    'case.inside_hint_2800':
+        'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, der eine SO-DIMM-Sockel im Bodendeckel. Die Nummerierung der M.2-Steckplätze ist geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'case.inside_hint_480':
+        'Das Innere nach UGREENs Anleitung: vier M.2-Steckplätze 01 bis 04 in der Bodenwanne, zwei SO-DIMM-Sockel unter dem Bodendeckel. Welche SSD in welchem Steckplatz sitzt, ist aus der Reihenfolge der PCIe-Adressen geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'case.inside_hint_like_4800plus':
+        'Das Innere ist nach dem DXP4800 Plus gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_2800':
+        'Das Innere ist nach dem DXP2800 gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'case.inside_hint_like_6800pro':
+        'Das Innere ist nach dem DXP6800 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Nummerierung von RAM und M.2 ist angenommen; öffne ein Issue, wenn deine Box abweicht.',
+    'in.dh_cage': 'Laufwerkskäfig · Seitenwand',
+    'in.dh_board': 'Mainboard · unten',
+    'case.inside_hint_dx':
+        'Das Innere zeigt UGREENs Material nicht; die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet. RAM 1 / RAM 2 und M.2-1 / M.2-2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dx4700':
+        'Die ganze Gehäuseansicht ist nach dem DX4600 Pro gezeichnet: die Platine dieses Modells ist nicht bekannt. Die Steckplätze sind wie das Bodenblech des DXP4800 gezeichnet; RAM und M.2 sind angenommen nummeriert; bei Abweichung bitte ein Issue öffnen.',
+    'case.inside_hint_dh':
+        'Das Innere nach UGREENs Produktrenderings: die beiden M.2-Steckplätze an der Seite des Laufwerkskäfigs, die beiden RAM-Sockel auf dem Mainboard darunter. Die Nummerierung beider Paare ist angenommen; bei Abweichung bitte ein Issue öffnen. Der zweite RAM-Sockel stammt aus UGREENs Spezifikationstext, die Fotos zeigen ein SO-DIMM.',
     ...panelDe,
     ...powerDe
 };

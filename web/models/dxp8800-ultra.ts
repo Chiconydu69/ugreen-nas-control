@@ -9,16 +9,19 @@ export default {
     cpu: 'Intel Core 7 150U',
     bays: 8,
     m2Slots: 2,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
     lan: { maxMbit: [10000, 10000] },
     led: 'bays',
-    caseView: 'none',
-    caseVariant: 'none',
+    caseView: 'full',
+    caseVariant: 'rear8800',
     fan: null,
     verified: {
         leds: { status: 'expected', note: 'Bay order guessed.' },
         fans: { status: 'unsupported' },
-        case: { status: 'unsupported' },
+        case: {
+            status: 'expected',
+            note: "Front and rear after UGREEN's product renders. The inside is drawn after the DXP8800 Plus (photos of the Plus used as proxy), slot positions and numbering assumed."
+        },
         sensors: { status: 'expected' }
     },
     sources: [

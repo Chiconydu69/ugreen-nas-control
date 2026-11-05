@@ -20,9 +20,9 @@ test('every combination of LEDs, fans and case view gives one sentence per capab
             }
 });
 
-test('the DXP480T Plus: power LED only, no fans, case view front and rear', () => {
+test('the DXP480T Plus: power LED only, no fans, case view full', () => {
     const facts = modelFacts('DXP480T Plus') as ModelFacts;
-    expect(facts).toEqual({ leds: 'power', fans: 'none', view: 'front-rear' });
+    expect(facts).toEqual({ leds: 'power', fans: 'none', view: 'full' });
     expect(modelBox('DXP480T Plus', facts, t)).toContain(
         'only the power LED (steady white while LED control is on; colour, brightness and off are not supported)'
     );
@@ -63,11 +63,11 @@ test('the models table has one row per registry model with its case view, fans a
     }
 });
 
-test('the table shows the new case views: DXP4800 and DXP8800 Plus full, DXP480T Plus front and rear, DXP2800 front and rear', () => {
+test('the table shows the new case views: DXP4800 and DXP8800 Plus full, DXP480T Plus and DXP2800 full', () => {
     const by = Object.fromEntries(modelRows().map(r => [r.name, r]));
     expect(by['DXP4800']!.view).toBe('full');
     expect(by['DXP8800 Plus']!.view).toBe('full');
-    expect(by['DXP480T Plus']!.view).toBe('front-rear');
-    expect(by['DXP2800']!.view).toBe('front-rear');
+    expect(by['DXP480T Plus']!.view).toBe('full');
+    expect(by['DXP2800']!.view).toBe('full');
     expect(by['DXP480T Plus']!.leds).toBe('power');
 });

@@ -9,10 +9,10 @@ export default {
     cpu: 'Intel Core i5-1235U',
     bays: 0,
     m2Slots: 4,
-    m2: null,
+    m2: { slots: ['m2-1', 'm2-2', 'm2-3', 'm2-4'], pcieSlot: false },
     lan: { maxMbit: [10000] },
     led: 'power',
-    caseView: 'front-rear',
+    caseView: 'full',
     caseVariant: 'rear480',
     fan: null,
     verified: {
@@ -26,7 +26,10 @@ export default {
             status: 'unsupported',
             note: "UGREEN's fan driver expects cpu on header 3 and case fans on headers 2 and 4; header 4 is unconfirmed, so there is no fan control."
         },
-        case: { status: 'expected', note: "Drawn after UGREEN's manual (front, rear ports, four M.2 slots as drives); slot order assumed." },
+        case: {
+            status: 'expected',
+            note: "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order."
+        },
         sensors: { status: 'expected' }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp480t-plus-nas-storage', 'https://github.com/miskcoo/ugreen_leds_controller/issues/6'],

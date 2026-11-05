@@ -253,6 +253,8 @@ export const es: Record<Key, string> = {
         'El panel de servicio de la parte inferior, con el frontal a la izquierda. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
     'case.inside_hint_8800':
         'El panel de servicio de la parte inferior según el manual de UGREEN: dos zócalos de RAM, M.2 debajo y al lado; la ranura PCIe está dentro del bastidor. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
+    'case.inside_hint_like_8800plus':
+        'El interior está dibujado según el DXP8800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
     'case.inside_hint_4800':
         'El panel de servicio de la parte inferior, según el manual de UGREEN. La numeración de RAM 1 / RAM 2 y M.2-1 / M.2-2 es supuesta; si tu equipo difiere, abre un issue.',
     'in.slot_empty': '{label} · vacía',
@@ -478,6 +480,25 @@ export const es: Record<Key, string> = {
         'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos zócalos de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
     'in.gt_cage': 'Jaula de unidades · pared interior izquierda',
     'in.gt_panel': 'Tapa inferior',
+    'in.bottom_case': 'Carcasa inferior · cuatro ranuras M.2',
+    'case.inside_hint_2800':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y el único zócalo SO-DIMM en la tapa inferior. La numeración de las ranuras M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_480':
+        'El interior según el manual de UGREEN: cuatro ranuras M.2 de la 01 a la 04 en la carcasa inferior y dos zócalos SO-DIMM bajo la tapa inferior. Qué SSD ocupa cada ranura se supone por el orden de las direcciones PCIe; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_like_4800plus':
+        'El interior está dibujado según el DXP4800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_2800':
+        'El interior está dibujado según el DXP2800: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_6800pro':
+        'El interior está dibujado según el DXP6800 Pro: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'in.dh_cage': 'Jaula de discos · pared lateral',
+    'in.dh_board': 'Placa base · abajo',
+    'case.inside_hint_dx':
+        'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dx4700':
+        'Toda la vista de la caja está dibujada según el DX4600 Pro: la placa de este modelo no se conoce. Las ranuras se dibujan como el panel inferior del DXP4800; la numeración de RAM y M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dh':
+        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto. El segundo zócalo de RAM sale del texto de especificaciones de UGREEN; las fotos muestran un SO-DIMM.',
     ...panelEs,
     ...powerEs
 };

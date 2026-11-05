@@ -3,9 +3,9 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "ugreen-nas-control">
 <!ENTITY author    "Alexander Schubert, Jens Thomas">
-<!ENTITY version   "5.1.2">
+<!ENTITY version   "5.2.0">
 <!ENTITY launch    "Settings/UGREENNASControl">
-<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.1.2">
+<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.2.0">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugin/ugreen-nas-control.plg">
 <!ENTITY bootDIR   "/boot/config/plugins/&name;">
 <!ENTITY srcDIR    "&bootDIR;/&version;">
@@ -23,6 +23,13 @@
 >
 
 <CHANGES>
+
+### 5.2.0
+- Case view: inside view for the DXP2800 (M.2 slots and RAM, drawn after the GT) and the DXP480T Plus (four M.2 slots and two RAM sockets).
+- Case view for the DX4600 Pro, DX4700+ and DH2600: front, rear and inside drawn after UGREEN's renders (the DX4700+ after the DX4600 Pro), with the bays, LAN ports and memory the system reports.
+- Case view for the DXP4800S, DXP2800S and DXP6800S, drawn after their sister models.
+- Case view for the DXP6800 Ultra and DXP8800 Ultra: front and rear after UGREEN's renders, the inside drawn after the DXP6800 Pro and DXP8800 Plus (slot positions assumed).
+- Site: the DH2600 has its own model page with the live case view.
 
 ### 5.1.2
 - About: the supported models table comes from the model list and shows the new case views.
@@ -135,20 +142,16 @@
 ### 2.8
 - Safety: choose drives that must not drive the case fans (an external SSD that runs hot on its own, for example). Ignored drives neither set the speed of the case fans nor trigger the disk emergency rule. Requested in the forum thread by cardsdoc
 
-### 2.7
-- Overhaul by j3n57h0m45 (one look across the NAS and LED parts): one LED overview with one switch, the LED settings exist once (system LEDs, drive LEDs, one preview), Night mode and Alerts &amp; shutdown pages, separate Settings and About pages with page-specific headers, save bars with a leave warning on Fan curves and Safety, one spacing scale, the web LEDs mirror the device with one renderer, a shared poller that pauses when the page is hidden or idle, a fork-free LED daemon, cached dmidecode and ethtool reads. The Colours and Effects pages, the second LED switch, the global brightness slider and the dashboard tile size option are gone (the tile size did nothing since the LED tile was merged)
-- UGREEN NAS Control now runs on its own: the LED part is maintained here, no longer a copy of UGREEN LED Control (it was last synced from UGREEN LED Control 0.27.0). Settings, effects, the import of UGREEN LED Control's settings and the warning when it is installed too stay
-
 </CHANGES>
 
 <!-- All plugin files in one archive (web files, the one Go binary and the links to it at their install-relative paths), cached on
      the boot device (/boot: USB flash drive or SSD) per version so a reboot needs no network.
      The plugin manager checks the SHA256 of the download (MD5 is kept for Community Applications). -->
 
-<FILE Name="&srcDIR;/ugreen-nas-control-5.1.2.tar.xz">
-<URL>&releaseURL;/ugreen-nas-control-5.1.2.tar.xz</URL>
-<SHA256>6ab25914237eba18c2d041cc929a6779fe259e584861e2e81c802d3da031cc77</SHA256>
-<MD5>7237ecf353250b7abd1890a69eae843a</MD5>
+<FILE Name="&srcDIR;/ugreen-nas-control-5.2.0.tar.xz">
+<URL>&releaseURL;/ugreen-nas-control-5.2.0.tar.xz</URL>
+<SHA256>fe052d77ddbfb597ec3b1e008d9baa414e09326ac270a18e9df66093949ffb13</SHA256>
+<MD5>bf0398be610b0e1626f55d5a2e57a548</MD5>
 </FILE>
 
 <!-- ========================================================= -->
@@ -161,7 +164,7 @@
 NAME="&name;"
 VERSION="&version;"
 BOOT_DIR="&bootDIR;"
-ARCHIVE="&srcDIR;/ugreen-nas-control-5.1.2.tar.xz"
+ARCHIVE="&srcDIR;/ugreen-nas-control-5.2.0.tar.xz"
 EXEC_FILES="backend/ugreen-nas event/stopping"
 DATA_FILES="api.php UGREENNASControl.page UGREENNASDashboard.page images/ugreen-nas-control.png icons/ugreen-nas-control.png README.md LICENSE third-party.md include/lang.php include/fan_v2.php include/fan_schedule.php include/fan_history.php include/fan_inputs.php include/fan_profile.php include/fan_probe.php include/fan_backlight.php include/panel.php include/power_ac.php css/app.css css/fan-inputs.css css/fan-schedule.css css/fan-history.css css/fan-tools.css js/i18n.js js/app.js js/ledfx.js js/dash.js led/api.php led/css/app.css led/js/app.js led/js/i18n.js led/include/views.php css/led-embed.css led/images/ugreen-led-control.png"
 # Symbolic links, "path=target": the tool names are links to the one binary backend/ugreen-nas.

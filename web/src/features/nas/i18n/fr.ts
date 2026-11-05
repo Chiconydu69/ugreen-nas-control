@@ -262,6 +262,8 @@ export const fr: Record<Key, string> = {
         'La trappe de service sous le boîtier, avant à gauche. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.',
     'case.inside_hint_8800':
         "La trappe de service sous le boîtier, d'après le manuel UGREEN : deux supports de RAM, M.2 en dessous et à côté ; le slot PCIe se trouve dans le châssis. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
+    'case.inside_hint_like_8800plus':
+        "L'intérieur est dessiné d'après le DXP8800 Plus : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     'case.inside_hint_4800':
         "La trappe de service sous le boîtier, d'après le manuel d'UGREEN. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
     'in.slot_empty': '{label} · vide',
@@ -491,6 +493,25 @@ export const fr: Record<Key, string> = {
         "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, les deux supports RAM dans le panneau du dessous. La numérotation des deux paires est supposée ; ouvre un ticket si ton boîtier diffère.",
     'in.gt_cage': 'Cage des disques · paroi intérieure gauche',
     'in.gt_panel': 'Panneau du dessous',
+    'in.bottom_case': 'Fond du boîtier · quatre emplacements M.2',
+    'case.inside_hint_2800':
+        "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, l'unique support SO-DIMM dans le panneau du dessous. La numérotation des emplacements M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_480':
+        "L'intérieur d'après le manuel UGREEN : quatre emplacements M.2 01 à 04 dans le fond du boîtier, deux supports SO-DIMM sous le panneau du dessous. Quel SSD occupe quel emplacement est supposé d'après l'ordre des adresses PCIe ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_like_4800plus':
+        "L'intérieur est dessiné d'après le DXP4800 Plus : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_like_2800':
+        "L'intérieur est dessiné d'après le DXP2800 : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'case.inside_hint_like_6800pro':
+        "L'intérieur est dessiné d'après le DXP6800 Pro : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'in.dh_cage': 'Cage à disques · paroi latérale',
+    'in.dh_board': 'Carte mère · dessous',
+    'case.inside_hint_dx':
+        "L'intérieur n'apparaît pas dans la documentation d'UGREEN ; les emplacements sont dessinés comme le panneau du dessous du DXP4800. RAM 1 / RAM 2 et M.2-1 / M.2-2 sont numérotés par hypothèse ; ouvrez un ticket si votre boîtier diffère.",
+    'case.inside_hint_dx4700':
+        "Toute la vue du boîtier est dessinée d'après le DX4600 Pro : la carte de ce modèle n'est pas connue. Les emplacements sont dessinés comme le panneau inférieur du DXP4800 ; la numérotation de la RAM et des M.2 est supposée ; ouvrez un ticket si votre boîtier diffère.",
+    'case.inside_hint_dh':
+        "L'intérieur d'après les rendus produit d'UGREEN : les deux emplacements M.2 sur le côté de la cage à disques, les deux supports RAM sur la carte mère en dessous. La numérotation des deux paires est supposée ; ouvrez un ticket si votre boîtier diffère. Le second support RAM vient du texte de spécifications d'UGREEN ; les photos montrent un SO-DIMM.",
     ...panelFr,
     ...powerFr
 };

@@ -261,6 +261,8 @@ export const it: Record<Key, string> = {
         'Il pannello di servizio sul fondo, fronte a sinistra. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'case.inside_hint_8800':
         'Il pannello di servizio sul fondo secondo il manuale UGREEN: due zoccoli RAM, M.2 sotto e accanto; lo slot PCIe si trova nel telaio. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
+    'case.inside_hint_like_8800plus':
+        "L'interno è disegnato sul DXP8800 Plus: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
     'case.inside_hint_4800':
         'Il pannello di servizio sul fondo, secondo il manuale di UGREEN. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'in.slot_empty': '{label} · vuoto',
@@ -489,6 +491,25 @@ export const it: Record<Key, string> = {
         "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, i due zoccoli RAM nel pannello inferiore. La numerazione delle due coppie è presunta; apri una issue se il tuo box è diverso.",
     'in.gt_cage': 'Gabbia dei dischi · parete interna sinistra',
     'in.gt_panel': 'Pannello inferiore',
+    'in.bottom_case': 'Fondo del case · quattro slot M.2',
+    'case.inside_hint_2800':
+        "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, l'unico zoccolo SO-DIMM nel pannello inferiore. La numerazione degli slot M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_480':
+        "L'interno secondo il manuale UGREEN: quattro slot M.2 da 01 a 04 nel fondo del case, due zoccoli SO-DIMM sotto il pannello inferiore. Quale SSD stia in quale slot è presunto dall'ordine degli indirizzi PCIe; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_4800plus':
+        "L'interno è disegnato sul DXP4800 Plus: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_2800':
+        "L'interno è disegnato sul DXP2800: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_like_6800pro':
+        "L'interno è disegnato sul DXP6800 Pro: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'in.dh_cage': 'Gabbia dei dischi · parete laterale',
+    'in.dh_board': 'Scheda madre · sotto',
+    'case.inside_hint_dx':
+        "L'interno non compare nel materiale di UGREEN; gli slot sono disegnati come il pannello inferiore del DXP4800. RAM 1 / RAM 2 e M.2-1 / M.2-2 sono numerati per ipotesi; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_dx4700':
+        "L'intera vista del case è disegnata sul DX4600 Pro: la scheda di questo modello non è nota. Gli slot sono disegnati come il pannello inferiore del DXP4800; la numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
+    'case.inside_hint_dh':
+        "L'interno secondo i render del prodotto UGREEN: i due slot M.2 sul lato della gabbia dei dischi, i due zoccoli RAM sulla scheda madre sotto. La numerazione di entrambe le coppie è ipotizzata; apri una issue se il tuo box è diverso. Il secondo zoccolo RAM viene dalle specifiche di UGREEN; le foto mostrano un SO-DIMM.",
     ...panelIt,
     ...powerIt
 };

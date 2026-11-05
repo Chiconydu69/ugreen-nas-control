@@ -7,25 +7,28 @@
       "series": "DH",
       "dmiPattern": "^DH2600",
       "fixtureDmi": "DH2600",
-      "cpu": null,
+      "cpu": "Intel Celeron N5105",
       "bays": 2,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500] },
       "led": "none",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
         "leds": { "status": "unsupported", "note": "UGREEN has a LED driver for it (power and two bay LEDs); the plugin does not drive it yet." },
         "fans": {
           "status": "unsupported",
-          "note": "UGREEN's fan driver uses an IT8613E (cpu on header 3, case fan on header 2); no case view, so no fan control here."
+          "note": "UGREEN's fan driver uses an IT8613E (cpu on header 3, case fan on header 2); the plugin does not drive it."
         },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front, rear and inside after UGREEN's product renders (two M.2 on the side of the drive cage, two RAM sockets on the mainboard below); slot numbering and the bay port order are assumed. The photos show one SO-DIMM; the second RAM socket is taken from UGREEN's spec text."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Two bays. Known from UGREEN driver sources only; the plugin shows sensors and drives nothing else on it."
+      "note": "Two bays, two M.2 slots, one 2.5G LAN port. Case view after UGREEN's product renders; sensors only, the plugin drives nothing else on it."
     },
     {
       "id": "dx4600-pro",
@@ -33,13 +36,13 @@
       "series": "DX",
       "dmiPattern": "^DX4600",
       "fixtureDmi": "DX4600 Pro",
-      "cpu": null,
+      "cpu": "Intel Celeron N6005",
       "bays": 4,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500, 2500] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "community",
       "verified": {
@@ -50,10 +53,13 @@
           "note": "LED protocol verified on this model by miskcoo's driver; bay order ata1 to ata4. Not yet reported for this plugin."
         },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front, rear and drive cage after UGREEN's product renders; the inside shows no board there, so it is drawn like the DXP4800's (RAM and M.2 numbering assumed)."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "First-generation four-bay model, no longer listed on the UGREEN store. No case view or fan control."
+      "note": "First-generation four-bay model, no longer listed on the UGREEN store. Two 2.5G LAN ports, two M.2 slots, two DDR4 sockets. Case view; no fan control."
     },
     {
       "id": "dx4700",
@@ -63,11 +69,11 @@
       "fixtureDmi": "DX4700+",
       "cpu": null,
       "bays": 4,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500, 2500] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "community",
       "verified": {
@@ -78,10 +84,13 @@
           "note": "Reported working by users of miskcoo's driver."
         },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "No photos or manual of this model found: drawn after the DX4600 Pro (four bays, two 2.5G LAN ports, two M.2 slots, same back); this model's hardware is not known."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. No case view or fan control."
+      "note": "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control."
     },
     {
       "id": "dxp480t-plus",
@@ -92,10 +101,10 @@
       "cpu": "Intel Core i5-1235U",
       "bays": 0,
       "m2Slots": 4,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2", "m2-3", "m2-4"], "pcieSlot": false },
       "lan": { "maxMbit": [10000] },
       "led": "power",
-      "caseView": "front-rear",
+      "caseView": "full",
       "fan": null,
       "overall": "community",
       "verified": {
@@ -109,7 +118,10 @@
           "status": "unsupported",
           "note": "UGREEN's fan driver expects cpu on header 3 and case fans on headers 2 and 4; header 4 is unconfirmed, so there is no fan control."
         },
-        "case": { "status": "expected", "note": "Drawn after UGREEN's manual (front, rear ports, four M.2 slots as drives); slot order assumed." },
+        "case": {
+          "status": "expected",
+          "note": "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order."
+        },
         "sensors": { "status": "expected" }
       },
       "note": "All-flash model: no SATA bays, four M.2 slots (shown as drives in the case view), one 10G LAN port. Only the power LED works."
@@ -123,10 +135,10 @@
       "cpu": "Intel N100",
       "bays": 2,
       "m2Slots": 2,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
       "lan": { "maxMbit": [2500] },
       "led": "bays",
-      "caseView": "front-rear",
+      "caseView": "full",
       "fan": {
         "chip": "ITE IT8613E",
         "fans": { "fan3": "case" },
@@ -147,7 +159,10 @@
           "status": "expected",
           "note": "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. One fan was reported on tach 3 (1726 rpm), none on tach 2; UGREEN's own driver also drives only header 3."
         },
-        "case": { "status": "expected", "note": "Drawn after photos, not compared on a device." },
+        "case": {
+          "status": "expected",
+          "note": "Drawn after UGREEN's manual and photos (front, rear with 12V inlet, two M.2 slots on the inner left wall of the cage); one SO-DIMM socket in the bottom panel; M.2 slot numbering assumed. Not compared on a device."
+        },
         "sensors": { "status": "expected" }
       },
       "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin."
@@ -195,19 +210,22 @@
       "cpu": null,
       "bays": 2,
       "m2Slots": null,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
       "lan": null,
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
         "leds": { "status": "expected", "note": "Same family as the DXP2800; the LED frame and bay order are not confirmed." },
         "fans": { "status": "unsupported", "note": "No fan wiring known for this model." },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Drawn after the DXP2800 (front, back) and the DXP2800 GT (inside); this model's hardware is not known, so ports, LAN speed and slot numbering are assumed."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Two bays. Known from the name in UGREEN driver sources (power button, beeper); nobody has reported this model yet."
+      "note": "Two bays; the case view is drawn after the DXP2800. Known from the name in UGREEN driver sources (power button, beeper); nobody has reported this model yet."
     },
     {
       "id": "dxp4800-base",
@@ -352,10 +370,10 @@
       "cpu": "Intel N150",
       "bays": 4,
       "m2Slots": 2,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
       "lan": null,
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
@@ -364,10 +382,13 @@
           "note": "Same family as the DXP4800; the name DXP4800S appears in the driver sources of UGREEN, the LED frame is not confirmed."
         },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Drawn after the DXP4800 Plus (UGREEN's chassis, front and back from NASCompares' photos of the Plus; the S itself was not photographed). One RAM slot as the reveal article lists it; slot numbering assumed. The rear draws one or two 2.5G LAN ports as the system finds them."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Four bays, two M.2 slots. Sources disagree on the LAN ports (one or two 2.5G). Nobody has reported this model yet."
+      "note": "Four bays, two M.2 slots. Sources disagree on the LAN ports (one or two 2.5G); the rear shows as many as the system finds. Nobody has reported this model yet."
     },
     {
       "id": "dxp6800",
@@ -458,16 +479,19 @@
       "cpu": "Intel Core 5 120U",
       "bays": 6,
       "m2Slots": 2,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2", "system"], "pcieSlot": true },
       "lan": { "maxMbit": [10000, 10000] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
         "leds": { "status": "expected", "note": "Bay order guessed." },
         "fans": { "status": "unsupported", "note": "Other CPU than the DXP6800 Pro: its fan wiring is not proven for this model." },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front and rear after UGREEN's product renders. No photo of the inside exists: drawn after the DXP6800 Pro, slot positions and numbering assumed."
+        },
         "sensors": { "status": "expected" }
       },
       "note": "Six bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. LEDs are enabled but nobody has confirmed them."
@@ -481,10 +505,10 @@
       "cpu": null,
       "bays": 6,
       "m2Slots": null,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2", "system"], "pcieSlot": true },
       "lan": null,
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
@@ -493,10 +517,13 @@
           "note": "Only UGREEN's LED driver names this model (six bay LEDs, same frame as the plain DXP6800); the bay order is guessed and the plugin has not been tried on it."
         },
         "fans": { "status": "unsupported", "note": "No fan wiring known for this model." },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Drawn after the DXP6800 Pro; this model's hardware is not known, so ports, PCIe slot and slot numbering are assumed."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Known from the name in UGREEN driver sources only; hardware details are not known. LEDs are enabled but nobody has confirmed them."
+      "note": "Known from the name in UGREEN driver sources only; hardware details are not known, the case view is drawn after the DXP6800 Pro. LEDs are enabled but nobody has confirmed them."
     },
     {
       "id": "dxp8800",
@@ -579,16 +606,19 @@
       "cpu": "Intel Core 7 150U",
       "bays": 8,
       "m2Slots": 2,
-      "m2": null,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": true },
       "lan": { "maxMbit": [10000, 10000] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
         "leds": { "status": "expected", "note": "Bay order guessed." },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front and rear after UGREEN's product renders. The inside is drawn after the DXP8800 Plus (photos of the Plus used as proxy), slot positions and numbering assumed."
+        },
         "sensors": { "status": "expected" }
       },
       "note": "Eight bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. LEDs are enabled but nobody has confirmed them."

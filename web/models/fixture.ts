@@ -313,7 +313,7 @@ export function status(m: Model) {
             'conflict-led': { conflicts: LED_RIVALS }
         },
         led: {
-            enabled: true,
+            enabled: m.led !== 'none',
             supported: m.led !== 'none',
             blocker: '',
             untested: m.verified.leds.status === 'expected',
