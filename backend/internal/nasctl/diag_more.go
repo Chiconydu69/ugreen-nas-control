@@ -506,7 +506,7 @@ func diagChecks(f Facts) []string {
 				out = append(out, "rival running: "+c.Kind+" "+c.ID)
 			}
 		}
-		if w := st.Watchdog; w != nil && (w.State == "action_needed" || w.State == "not_counting" || w.State == "not_effective") {
+		if w := st.Watchdog; w != nil && (w.State == "action_needed" || w.State == "not_effective") {
 			out = append(out, "watchdog: "+w.State)
 		}
 		if dm := st.Daemon; dm != nil && dm.Failsafe != "" {

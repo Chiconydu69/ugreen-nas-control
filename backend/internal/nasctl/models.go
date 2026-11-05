@@ -271,12 +271,12 @@ func BuildEvidence(in EvInputs) Evidence {
 	wst := "none"
 	if reg != nil && reg.Fan != nil && reg.Fan.Watchdog != nil {
 		wst = reg.Fan.Watchdog.Status
-		wd.Expected = "armed or off"
+		wd.Expected = "armed, off or not counting"
 	}
 	if in.FanSt != nil && in.FanSt.Watchdog != nil {
 		wd.Detected = in.FanSt.Watchdog.State
 		if wd.Expected != nil {
-			wd.OK = tri(!slices.Contains([]string{"action_needed", "not_counting", "not_effective"}, in.FanSt.Watchdog.State))
+			wd.OK = tri(!slices.Contains([]string{"action_needed", "not_effective"}, in.FanSt.Watchdog.State))
 		}
 	}
 	area("watchdog", wst, wd)

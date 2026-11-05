@@ -759,3 +759,23 @@ func TestM2SlotsMatch(t *testing.T) {
 		}
 	}
 }
+
+// A stale non-zero timer with the BIOS watchdog off reads as not_counting (docs/watchdog.md): nothing is wrong.
+func TestWatchdogNotCountingIsNotAMismatch(t *testing.T) {
+	models, _ := loadRegistry(modelsJSON)
+	reg := matchModel(models, "DXP8800 Plus")
+	if reg == nil {
+		t.Fatal("DXP8800 Plus is not in the registry")
+	}
+	for state, ok := range map[string]bool{"off": true, "armed": true, "not_counting": true, "action_needed": false, "not_effective": false} {
+		var st fanStatus
+		if err := json.Unmarshal([]byte(`{"watchdog": {"state": "`+state+`"}}`), &st); err != nil {
+			t.Fatal(err)
+		}
+		ev := BuildEvidence(EvInputs{Reg: reg, FanSt: &st})
+		got := ev.Areas["watchdog"].Checks[0].OK
+		if got == nil || *got != ok {
+			t.Errorf("%s: ok = %v, want %v", state, got, ok)
+		}
+	}
+}
