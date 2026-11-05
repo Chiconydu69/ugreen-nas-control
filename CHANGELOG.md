@@ -2,6 +2,14 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.2.0
+
+- Case view: inside view for the DXP2800 (M.2 slots and RAM, drawn after the GT) and the DXP480T Plus (four M.2 slots and two RAM sockets).
+- Case view for the DX4600 Pro, DX4700+ and DH2600: front, rear and inside drawn after UGREEN's renders (the DX4700+ after the DX4600 Pro), with the bays, LAN ports and memory the system reports.
+- Case view for the DXP4800S, DXP2800S and DXP6800S, drawn after their sister models.
+- Case view for the DXP6800 Ultra and DXP8800 Ultra: front and rear after UGREEN's renders, the inside drawn after the DXP6800 Pro and DXP8800 Plus (slot positions assumed).
+- Site: the DH2600 has its own model page with the live case view.
+
 ## 5.1.2
 
 - About: the supported models table comes from the model list and shows the new case views.
