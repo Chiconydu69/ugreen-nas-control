@@ -68,6 +68,10 @@ export interface CaseModel {
     rear4600?: boolean;
     rear2600?: boolean;
     noLan?: boolean;
+    // powerDot: the power LED is a round dot at the head of the LED row instead of a button (DX4600 Pro, DX4700+).
+    // door: one rounded door with a copper rim and the LEDs on the rim, no bays visible (DH2600).
+    powerDot?: boolean;
+    door?: boolean;
     insideTitles?: [Key, Key];
 }
 export const CASE_DEFAULT: CaseModel = {
@@ -90,14 +94,27 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
     // front, a big fan and the ports in one row at the back; both after the DX4600 Pro's shop renders. The DX4700+
     // is drawn after it (no photos of its own found). Inside: the board is not shown anywhere, drawn like the DXP4800's.
     [
-        /^DX4[67]00/,
+        /^DX4600/,
         {
             front: [],
             strip: true,
+            powerDot: true,
             rear4600: true,
             rear: [],
             inside4800: true,
             hint: 'case.inside_hint_dx'
+        }
+    ],
+    [
+        /^DX4700/,
+        {
+            front: [],
+            strip: true,
+            powerDot: true,
+            rear4600: true,
+            rear: [],
+            inside4800: true,
+            hint: 'case.inside_hint_dx4700'
         }
     ],
     // DH2600: two bays, rounded case with a door; LEDs power / DISK1 / DISK2 at the front, USB-C, two USB-A and one
@@ -108,6 +125,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
         {
             front: [],
             strip: true,
+            door: true,
             noLan: true,
             rear2600: true,
             rear: [],
@@ -395,6 +413,21 @@ export function frontHtml(hw: Hardware): string {
     const ports = `<span class="unc-front-ports">${model.front.map(([kind, label]) => socket(kind, label)).join('')}</span>`;
     const led = (label: string, on: boolean, key: string): string =>
         `<span class="unc-led"><span class="unc-pled ${on ? 'on' : ''}" data-led="${key}"></span><span class="lbl">${escapeHtml(label)}</span></span>`;
+    const powerIcon = `<svg class="pwr-ico" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1v4M2.8 2.6a3.4 3.4 0 1 0 4.4 0" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>`;
+    const dot = (html: string, key: string): string =>
+        `<span class="unc-led dot"><span class="unc-pled power round" data-led="${key}"></span><span class="lbl">${html}</span></span>`;
+    if (model.door) {
+        const disks = (hw.bays || []).map(b => led(`DISK ${b.bay}`, b.present, `disk${b.bay}`)).join('');
+
+        return `
+        <div class="unc-nas door">
+            <div class="unc-dh">
+                <div class="face"></div>
+                <span class="unc-leds">${dot(powerIcon, 'power')}${disks}</span>
+            </div>
+            <div class="unc-nas-model">${escapeHtml(hw.model)}</div>
+        </div>`;
+    }
     if (model.flat) {
         return `
         <div class="unc-nas flat">
@@ -408,8 +441,8 @@ export function frontHtml(hw: Hardware): string {
     const strip = model.strip
         ? `
             <div class="unc-nas-front">
-                <span class="unc-pbtn"><span class="unc-pled power"></span></span>
-                <span class="unc-leds">${model.noLan ? '' : led('LAN', lan, 'netdev')}${(hw.bays || []).map(b => led(`DISK${b.bay}`, b.present, `disk${b.bay}`)).join('')}</span>
+                ${model.powerDot ? '' : '<span class="unc-pbtn"><span class="unc-pled power"></span></span>'}
+                <span class="unc-leds">${model.powerDot ? dot(powerIcon, 'power') : ''}${model.noLan ? '' : led('LAN', lan, 'netdev')}${(hw.bays || []).map(b => led(`DISK${b.bay}`, b.present, `disk${b.bay}`)).join('')}</span>
                 <span class="spacer"></span>
                 ${ports}
             </div>

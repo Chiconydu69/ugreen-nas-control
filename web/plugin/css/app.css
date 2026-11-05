@@ -3500,3 +3500,48 @@
 .unc-rear2600 .r-usba svg, .unc-rear2600 .r-usba2 svg { width: 8.6cqi; }
 .unc-rear2600 .r-lan svg { width: 11cqi; }
 .unc-rear2600 .r-dc svg { width: 7cqi; }
+
+/* Round power LED at the head of the LED row (DX4600 Pro, DX4700+, DH2600), with a power glyph as its label. */
+.unc-pled.round { width: 6px; height: 6px; border-radius: 50%; }
+.unc-led .pwr-ico { display: block; width: 9px; height: 9px; }
+
+/* DH2600, after UGREEN's renders: one rounded door with a copper rim, no bays visible; the power LED and DISK 1 / DISK 2
+   sit as small dots on the lower rim. */
+.unc-nas.door { container-type: inline-size; max-width: 280px; margin: 0 auto; padding: 2cqi 0 0; background: none; box-shadow: none; }
+.unc-hero .unc-nas.door, .unc-stage .unc-nas.door { max-width: 280px; }
+.unc-dh {
+    position: relative;
+    aspect-ratio: 280 / 360;
+    border-radius: 15cqi;
+    background: linear-gradient(180deg, #c3c8ce, #8d949d);
+    box-shadow: inset 0 .5cqi 0 rgba(255, 255, 255, .35), 0 1cqi 3cqi rgba(0, 0, 0, .25);
+}
+.unc-dh::before {
+    content: "";
+    position: absolute;
+    inset: 4cqi 5cqi;
+    border-radius: 12cqi 12cqi 15cqi 15cqi;
+    background: linear-gradient(180deg, #e0ae94, #b97a5c);
+    box-shadow: inset 0 0 0 .4cqi rgba(255, 255, 255, .25);
+}
+.unc-dh .face {
+    position: absolute;
+    inset: 6.4cqi 7.4cqi 15cqi;
+    border-radius: 10cqi 10cqi 13cqi 13cqi;
+    background: linear-gradient(180deg, #f1f3f5, #c7ccd2);
+    box-shadow: inset 0 .5cqi 1cqi rgba(255, 255, 255, .8), 0 .6cqi 1.4cqi rgba(90, 50, 30, .35);
+}
+.unc-dh .unc-leds {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6.8cqi;
+    justify-content: center;
+    gap: 7cqi;
+}
+.unc-dh .unc-led { color: #5d3724; font-size: clamp(5px, 1.9cqi, 9px); letter-spacing: .06em; text-transform: uppercase; }
+.unc-dh .unc-pled { background: #7d4b34; box-shadow: none; }
+.unc-dh .unc-pled.power { background: #fff; box-shadow: 0 0 5px rgba(255, 255, 255, .9); }
+.unc-dh .unc-led .unc-pled.on { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, .8); }
+.unc[data-theme="light"] .unc-dh .unc-pled.power { background: #fff; box-shadow: 0 0 5px rgba(255, 255, 255, .9); }
+.unc-nas.door .unc-nas-model { padding-top: 2cqi; }
