@@ -84,7 +84,7 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 | [DXP2800 GT](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800-gt/)          | ○    | ◔           | ○         | ○       | ◔ Community-tested |
 | [DXP4800](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800-base/)           | ◔    | ○           | ○         | ○       | ◔ Community-tested |
 | [DXP4800 Plus / Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800/)     | ◔    | ○           | ○         | ○       | ◔ Community-tested |
-| [DXP8800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-plus/)      | ◔    | ○           | ○         | ○       | ◔ Community-tested |
+| [DXP8800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp8800-plus/)      | ◔    | ○           | ○         | ◔       | ◔ Community-tested |
 | [DXP2800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp2800s/)              | ○    | –           | –         | ○       | ○ Expected         |
 | [DXP4800S](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp4800s/)              | ○    | –           | –         | ○       | ○ Expected         |
 | [DXP6800 / DXP6800 Plus](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dxp6800/) | ○    | ○           | ○         | ○       | ○ Expected         |

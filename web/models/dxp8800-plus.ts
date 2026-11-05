@@ -35,7 +35,14 @@ export default {
             note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 control register unconfirmed)."
         },
         case: { status: 'expected', note: "inside after UGREEN's manual; slot numbering assumed" },
-        sensors: { status: 'expected' }
+        sensors: {
+            status: 'community',
+            by: 'users',
+            version: '5.1.0',
+            date: '2026-11-05',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
+            note: 'Temperatures and the dashboard tile confirmed by a user; a one-off -21 °C board reading from the ACPI thermal zone is ignored since 5.1.1.'
+        }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp8800-plus-nas-storage'],
     note: 'Eight bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. Fan control after a fan probe.',
