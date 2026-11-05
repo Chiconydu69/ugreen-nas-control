@@ -7,25 +7,28 @@
       "series": "DH",
       "dmiPattern": "^DH2600",
       "fixtureDmi": "DH2600",
-      "cpu": null,
+      "cpu": "Intel Celeron N5105",
       "bays": 2,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500] },
       "led": "none",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "expected",
       "verified": {
         "leds": { "status": "unsupported", "note": "UGREEN has a LED driver for it (power and two bay LEDs); the plugin does not drive it yet." },
         "fans": {
           "status": "unsupported",
-          "note": "UGREEN's fan driver uses an IT8613E (cpu on header 3, case fan on header 2); no case view, so no fan control here."
+          "note": "UGREEN's fan driver uses an IT8613E (cpu on header 3, case fan on header 2); the plugin does not drive it."
         },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front, rear and inside after UGREEN's product renders (two M.2 on the side of the drive cage, two RAM sockets on the mainboard below); slot numbering and the bay port order are assumed. The photos show one SO-DIMM; the second RAM socket is taken from UGREEN's spec text."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Two bays. Known from UGREEN driver sources only; the plugin shows sensors and drives nothing else on it."
+      "note": "Two bays, two M.2 slots, one 2.5G LAN port. Case view after UGREEN's product renders; sensors only, the plugin drives nothing else on it."
     },
     {
       "id": "dx4600-pro",
@@ -33,13 +36,13 @@
       "series": "DX",
       "dmiPattern": "^DX4600",
       "fixtureDmi": "DX4600 Pro",
-      "cpu": null,
+      "cpu": "Intel Celeron N6005",
       "bays": 4,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500, 2500] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "community",
       "verified": {
@@ -50,10 +53,13 @@
           "note": "LED protocol verified on this model by miskcoo's driver; bay order ata1 to ata4. Not yet reported for this plugin."
         },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "Front, rear and drive cage after UGREEN's product renders; the inside shows no board there, so it is drawn like the DXP4800's (RAM and M.2 numbering assumed)."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "First-generation four-bay model, no longer listed on the UGREEN store. No case view or fan control."
+      "note": "First-generation four-bay model, no longer listed on the UGREEN store. Two 2.5G LAN ports, two M.2 slots, two DDR4 sockets. Case view; no fan control."
     },
     {
       "id": "dx4700",
@@ -63,11 +69,11 @@
       "fixtureDmi": "DX4700+",
       "cpu": null,
       "bays": 4,
-      "m2Slots": null,
-      "m2": null,
-      "lan": null,
+      "m2Slots": 2,
+      "m2": { "slots": ["m2-1", "m2-2"], "pcieSlot": false },
+      "lan": { "maxMbit": [2500, 2500] },
       "led": "bays",
-      "caseView": "none",
+      "caseView": "full",
       "fan": null,
       "overall": "community",
       "verified": {
@@ -78,10 +84,13 @@
           "note": "Reported working by users of miskcoo's driver."
         },
         "fans": { "status": "unsupported" },
-        "case": { "status": "unsupported" },
+        "case": {
+          "status": "expected",
+          "note": "No photos or manual of this model found: drawn after the DX4600 Pro (four bays, two 2.5G LAN ports, two M.2 slots, same back); this model's hardware is not known."
+        },
         "sensors": { "status": "expected" }
       },
-      "note": "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. No case view or fan control."
+      "note": "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control."
     },
     {
       "id": "dxp480t-plus",

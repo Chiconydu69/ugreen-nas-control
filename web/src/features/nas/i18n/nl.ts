@@ -504,6 +504,14 @@ export const nl: Record<Key, string> = {
         'De binnenkant is getekend naar de DXP2800: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
     'case.inside_hint_like_6800pro':
         'De binnenkant is getekend naar de DXP6800 Pro: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'in.dh_cage': 'Schijvenkooi · zijwand',
+    'in.dh_board': 'Moederbord · onder',
+    'case.inside_hint_dx':
+        'Het binnenste staat niet in het materiaal van UGREEN; de slots zijn getekend zoals het onderpaneel van de DXP4800. RAM 1 / RAM 2 en M.2-1 / M.2-2 zijn op aanname genummerd; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dx4700':
+        'De hele kastweergave is getekend naar de DX4600 Pro: het moederbord van dit model is niet bekend. De slots zijn getekend zoals het bodempaneel van de DXP4800; de nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
+    'case.inside_hint_dh':
+        "Het binnenste naar de productrenders van UGREEN: de twee M.2-slots aan de zijkant van de schijvenkooi, de twee RAM-sockets op het moederbord eronder. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt. De tweede RAM-socket komt uit de specificaties van UGREEN; de foto's tonen één SO-DIMM.",
     ...panelNl,
     ...powerNl
 };

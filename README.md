@@ -64,14 +64,14 @@ Every model, every claim, on the record. Each cell is dated and links to its evi
 
 | Model                                                                            | LEDs | Fan control | Case view | Sensors | Status     |
 | -------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ---------- |
-| [DH2600](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dh2600/) | –    | –           | –         | ○       | ○ Expected |
+| [DH2600](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dh2600/) | –    | –           | ○         | ○       | ○ Expected |
 
 **DX series**
 
 | Model                                                                                    | LEDs | Fan control | Case view | Sensors | Status             |
 | ---------------------------------------------------------------------------------------- | ---- | ----------- | --------- | ------- | ------------------ |
-| [DX4600 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4600-pro/) | ◔    | –           | –         | ○       | ◔ Community-tested |
-| [DX4700+](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4700/)        | ◔    | –           | –         | ○       | ◔ Community-tested |
+| [DX4600 Pro](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4600-pro/) | ◔    | –           | ○         | ○       | ◔ Community-tested |
+| [DX4700+](https://ugreen-nas-control.github.io/ugreen-nas-control/models/dx4700/)        | ◔    | –           | ○         | ○       | ◔ Community-tested |
 
 **DXP series**
 

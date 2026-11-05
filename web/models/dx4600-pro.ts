@@ -6,14 +6,14 @@ export default {
     series: 'DX',
     dmiPattern: '^DX4600',
     fixtureDmi: 'DX4600 Pro',
-    cpu: null,
+    cpu: 'Intel Celeron N6005',
     bays: 4,
-    m2Slots: null,
-    m2: null,
-    lan: null,
+    m2Slots: 2,
+    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
+    lan: { maxMbit: [2500, 2500] },
     led: 'bays',
-    caseView: 'none',
-    caseVariant: 'none',
+    caseView: 'full',
+    caseVariant: 'rear4600',
     fan: null,
     verified: {
         leds: {
@@ -23,10 +23,13 @@ export default {
             note: "LED protocol verified on this model by miskcoo's driver; bay order ata1 to ata4. Not yet reported for this plugin."
         },
         fans: { status: 'unsupported' },
-        case: { status: 'unsupported' },
+        case: {
+            status: 'expected',
+            note: "Front, rear and drive cage after UGREEN's product renders; the inside shows no board there, so it is drawn like the DXP4800's (RAM and M.2 numbering assumed)."
+        },
         sensors: { status: 'expected' }
     },
-    sources: ['https://github.com/miskcoo/ugreen_leds_controller'],
-    note: 'First-generation four-bay model, no longer listed on the UGREEN store. No case view or fan control.',
+    sources: ['https://github.com/miskcoo/ugreen_leds_controller', 'https://www.ugnas.com/products-detail/id-29.html'],
+    note: 'First-generation four-bay model, no longer listed on the UGREEN store. Two 2.5G LAN ports, two M.2 slots, two DDR4 sockets. Case view; no fan control.',
     shots: true
 } satisfies Model;

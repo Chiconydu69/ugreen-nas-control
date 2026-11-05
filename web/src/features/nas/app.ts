@@ -2080,6 +2080,52 @@ function main(root: HTMLElement): void {
             </div>`;
     }
 
+    // After the shop render of the DX4600 Pro (DX4700+ drawn alike): the fan in its frame, USB-C, two USB-A, two LAN ports,
+    // RESET, DC inlet and the power button in one row below. LAN 1 is the right-hand port, LAN 2 the left one.
+    function rear4600Html(hw: Hardware): string {
+        const k = rearKit(hw);
+
+        return `
+            <div class="unc-rear6800 unc-rear4800 unc-rear4600">
+                <div class="r-body"></div>
+                ${k.screw(5.1, 5.3)}${k.screw(94.8, 5.3)}${k.screw(5.1, 93.3)}${k.screw(94.8, 93.3)}
+                <div class="r-blende">
+                    <div class="r-fans">${rearFansHtml(1)}</div>
+                    <div class="r-mesh"></div>
+                    ${BRAND_DOTS_SVG}
+                </div>
+                ${k.port(10, 87.5, 'usbc', 'USB-C')}
+                ${k.port(21, 87.5, 'usba', 'USB-A')}${k.port(31.5, 87.5, 'usba', 'USB-A', 'usba2')}
+                ${k.lan(1, 46, 84.6, t('case.lan', { n: 2 }))}${k.lan(0, 60, 84.6, t('case.lan', { n: 1 }))}
+                ${k.port(69, 86.5, 'reset', 'RESET')}
+                ${k.port(78, 87.1, 'dc', 'DC 12V')}
+                ${k.port(88, 87.5, 'power', t('case.power'))}
+            </div>`;
+    }
+
+    // After the shop render of the DH2600: a rounded back with diagonal vent slots and the type label, the ports at its
+    // foot (power button, USB-C, two USB-A, 2.5G LAN, DC inlet).
+    function rear2600Html(hw: Hardware): string {
+        const k = rearKit(hw);
+        const row = 80;
+
+        return `
+            <div class="unc-rear6800 unc-rear2600">
+                <div class="r-body"></div>
+                <svg class="r-slots" viewBox="0 0 520 22" preserveAspectRatio="none" aria-hidden="true">
+                    <defs><pattern id="unc-2600slots" width="10.4" height="22" patternUnits="userSpaceOnUse"><rect x="1.6" y="0" width="6" height="22" rx="3"/></pattern></defs>
+                    <rect width="520" height="22" fill="url(#unc-2600slots)"/>
+                </svg>
+                <div class="r-label"><b>UGREEN</b><span>${escapeHtml(hw.model)} · 12 V</span></div>
+                ${k.port(11, row, 'power', t('case.power'))}
+                ${k.port(26, row, 'usbc', 'USB-C')}
+                ${k.port(41, row, 'usba', 'USB 3.0')}${k.port(55, row, 'usba', 'USB 3.0', 'usba2')}
+                ${k.lan(0, 71, row, 'LAN 2.5G')}
+                ${k.port(88, row, 'dc', 'DC 12V')}
+                <i class="r-foot" style="left:8%"></i><i class="r-foot" style="left:84%"></i>
+            </div>`;
+    }
+
     // After a photo of the iDX6011 (Pro).
     function rear6011Html(hw: Hardware): string {
         const k = rearKit(hw);
@@ -2210,6 +2256,16 @@ function main(root: HTMLElement): void {
 
         if (model.rear2800) {
             q(target).innerHTML = rear2800Html(hw, model.lan, model.dc, model.gt);
+            return;
+        }
+
+        if (model.rear4600) {
+            q(target).innerHTML = rear4600Html(hw);
+            return;
+        }
+
+        if (model.rear2600) {
+            q(target).innerHTML = rear2600Html(hw);
             return;
         }
 
@@ -2434,7 +2490,7 @@ function main(root: HTMLElement): void {
 
     // DXP2800 GT, after UGREEN's manual: the two M.2 slots sit stacked on the inner left wall of the drive cage
     // (trays out, connector at the back, buckle at the front), the two SO-DIMM sockets in the bottom panel.
-    function inside2800gtHtml(hw: Hardware): string {
+    function inside2800gtHtml(hw: Hardware, titles: [Key, Key] = ['in.gt_cage', 'in.gt_panel']): string {
         // The DXP2800 does not map its slots to root ports yet: an SSD of unknown slot ("m2") takes the free one.
         const loose = hw.nvme.filter(d => d.slot === 'm2');
         const mapped = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
@@ -2456,9 +2512,9 @@ function main(root: HTMLElement): void {
             <svg class="unc-board-svg" viewBox="0 0 1000 470" role="img" aria-label="${escapeHtml(t('case.inside'))}">
                 <rect x="10" y="10" width="980" height="450" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
                 <rect x="40" y="40" width="570" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
-                <text x="60" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_cage'))}</text>
+                <text x="60" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t(titles[0]))}</text>
                 <rect x="620" y="40" width="350" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
-                <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_panel'))}</text>
+                <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t(titles[1]))}</text>
                 <g transform="translate(0 -4)">${m2(100, drives[0], 1)}${m2(260, drives[1], 2)}</g>
                 ${caseModel(hw).ramSlots === 1 ? wideRam(230, memory[0], 1) : `${wideRam(170, memory[0], 1)}${wideRam(290, memory[1], 2)}`}
                 <text x="60" y="414" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('in.front'))} ←</text>
@@ -2722,7 +2778,7 @@ function main(root: HTMLElement): void {
         if (caseModel(hw).inside2800gt) {
             q(target).classList.add('board-svg');
             setHint(q('#unc-inside-hint'), caseModel(hw).hint);
-            q(target).innerHTML = inside2800gtHtml(hw);
+            q(target).innerHTML = inside2800gtHtml(hw, caseModel(hw).insideTitles);
             return;
         }
 

@@ -3458,3 +3458,90 @@
 .unc-rear480 .r-jack svg { width: 2.8cqi; }
 .unc-rear480 .r-lan svg { width: 5.6cqi; }
 .unc .unc-nobays { display: none !important; }
+
+/* DX4600 Pro / DX4700+: the grille body of the DXP4800 back with its own row of ports. */
+.unc-rear4600 .r-usbc svg { width: 5.6cqi; }
+.unc-rear4600 .r-usba svg, .unc-rear4600 .r-usba2 svg { width: 7.4cqi; }
+.unc-rear4600 .r-power svg { width: 4.6cqi; }
+
+/* DH2600: a small rounded back, vent slots over the type label, the ports in one row at the foot. */
+.unc-rear6800.unc-rear2600 {
+    max-width: 300px;
+    aspect-ratio: 300 / 340;
+    font-size: clamp(6px, 2.8cqi, 11px);
+}
+.unc-rear2600 .r-body { border-radius: 9cqi; }
+.unc-rear2600 .r-slots { position: absolute; left: 12%; top: 8%; width: 76%; height: 36%; }
+.unc-rear2600 .r-slots pattern rect { fill: #05070a; }
+.unc[data-theme="light"] .unc-rear2600 .r-slots pattern rect { fill: #8f99a4; }
+.unc-rear2600 .r-label {
+    position: absolute;
+    left: 14%;
+    top: 50%;
+    width: 72%;
+    display: grid;
+    gap: .4cqi;
+    padding: 2.4cqi 3cqi;
+    border-radius: 1.4cqi;
+    background: #1a1f25;
+    color: #8f99a4;
+    box-shadow: inset 0 0 0 .3cqi #2c333b;
+}
+.unc-rear2600 .r-label b { font-size: 1.5em; letter-spacing: .08em; color: #c3cad2; }
+.unc[data-theme="light"] .unc-rear2600 .r-label { background: #cfd5dc; color: #36404a; box-shadow: inset 0 0 0 .3cqi #aab2bb; }
+.unc[data-theme="light"] .unc-rear2600 .r-label b { color: #26303a; }
+.unc-rear2600 .r-abs { transform: translate(-50%, -50%); gap: .6cqi; }
+.unc-rear2600 .r-abs b { color: #8f99a4; line-height: 1.1; }
+.unc[data-theme="light"] .unc-rear2600 .r-abs b { color: #26303a; }
+.unc-rear2600 .r-abs em { color: #6f7882; font-size: .74em; line-height: 1.1; }
+.unc-rear2600 .r-lan.up em { color: #4ade80; }
+.unc-rear2600 .r-power svg { width: 6.4cqi; }
+.unc-rear2600 .r-usbc svg { width: 7.6cqi; }
+.unc-rear2600 .r-usba svg, .unc-rear2600 .r-usba2 svg { width: 8.6cqi; }
+.unc-rear2600 .r-lan svg { width: 11cqi; }
+.unc-rear2600 .r-dc svg { width: 7cqi; }
+
+/* Round power LED at the head of the LED row (DX4600 Pro, DX4700+, DH2600), with a power glyph as its label. */
+.unc-pled.round { width: 6px; height: 6px; border-radius: 50%; }
+.unc-led .pwr-ico { display: block; width: 9px; height: 9px; }
+
+/* DH2600, after UGREEN's renders: one rounded door with a copper rim, no bays visible; the power LED and DISK 1 / DISK 2
+   sit as small dots on the lower rim. */
+.unc-nas.door { container-type: inline-size; max-width: 280px; margin: 0 auto; padding: 2cqi 0 0; background: none; box-shadow: none; }
+.unc-hero .unc-nas.door, .unc-stage .unc-nas.door { max-width: 280px; }
+.unc-dh {
+    position: relative;
+    aspect-ratio: 280 / 360;
+    border-radius: 15cqi;
+    background: linear-gradient(180deg, #c3c8ce, #8d949d);
+    box-shadow: inset 0 .5cqi 0 rgba(255, 255, 255, .35), 0 1cqi 3cqi rgba(0, 0, 0, .25);
+}
+.unc-dh::before {
+    content: "";
+    position: absolute;
+    inset: 4cqi 5cqi;
+    border-radius: 12cqi 12cqi 15cqi 15cqi;
+    background: linear-gradient(180deg, #e0ae94, #b97a5c);
+    box-shadow: inset 0 0 0 .4cqi rgba(255, 255, 255, .25);
+}
+.unc-dh .face {
+    position: absolute;
+    inset: 6.4cqi 7.4cqi 15cqi;
+    border-radius: 10cqi 10cqi 13cqi 13cqi;
+    background: linear-gradient(180deg, #f1f3f5, #c7ccd2);
+    box-shadow: inset 0 .5cqi 1cqi rgba(255, 255, 255, .8), 0 .6cqi 1.4cqi rgba(90, 50, 30, .35);
+}
+.unc-dh .unc-leds {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6.8cqi;
+    justify-content: center;
+    gap: 7cqi;
+}
+.unc-dh .unc-led { color: #5d3724; font-size: clamp(5px, 1.9cqi, 9px); letter-spacing: .06em; text-transform: uppercase; }
+.unc-dh .unc-pled { background: #7d4b34; box-shadow: none; }
+.unc-dh .unc-pled.power { background: #fff; box-shadow: 0 0 5px rgba(255, 255, 255, .9); }
+.unc-dh .unc-led .unc-pled.on { background: #22c55e; box-shadow: 0 0 6px rgba(34, 197, 94, .8); }
+.unc[data-theme="light"] .unc-dh .unc-pled.power { background: #fff; box-shadow: 0 0 5px rgba(255, 255, 255, .9); }
+.unc-nas.door .unc-nas-model { padding-top: 2cqi; }
