@@ -79,10 +79,35 @@ export function hardware(m: Model) {
         })),
         nvme: flash
             ? flashNvme
-            : [
-                  { id: 'nvme3', model: 'Samsung SSD 990 PRO 2TB', size_bytes: 2000 * GB, slot: nvmeSlots[0], pci: 'x', temp: 44, role: 'cache', boot: false },
-                  { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
-              ],
+            : m.id === 'dxp8800-plus'
+              ? // The first report (issue 165): three SSDs and no root-port map, so all three are "m2".
+                [
+                    {
+                        id: 'nvme0',
+                        model: 'Samsung SSD 990 PRO 2TB',
+                        size_bytes: 2000 * GB,
+                        slot: 'm2',
+                        pci: '0000:01:00.0',
+                        temp: 41,
+                        role: 'cache',
+                        boot: false
+                    },
+                    { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:56:00.0', temp: 33, role: 'pool1', boot: false },
+                    { id: 'nvme2', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:57:00.0', temp: 32, role: '', boot: true }
+                ]
+              : [
+                    {
+                        id: 'nvme3',
+                        model: 'Samsung SSD 990 PRO 2TB',
+                        size_bytes: 2000 * GB,
+                        slot: nvmeSlots[0],
+                        pci: 'x',
+                        temp: 44,
+                        role: 'cache',
+                        boot: false
+                    },
+                    { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
+                ],
         // The plugin knows the bays of the models with a case view only (backend/internal/fan/hardware.go layoutFor).
         bays: m.caseView === 'none' || flash ? [] : bays,
         net: ports.map((max, i) => ({ name: `eth${i}`, link: i === 0, speed_mbit: i === 0 ? (max ?? 2500) : 0, max_mbit: max ?? 0 }))

@@ -2372,6 +2372,12 @@ function main(root: HTMLElement): void {
 
         return drives;
     };
+    // SSDs of unknown slot beyond the two M.2 slots: they can only sit in the PCIe slot.
+    const m2Surplus = (hw: Hardware): Nvme[] => {
+        const placed = m2Drives(hw);
+
+        return hw.nvme.filter(d => d.slot === 'm2' && !placed.includes(d));
+    };
 
     function inside6800Html(hw: Hardware): string {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
@@ -2561,7 +2567,7 @@ function main(root: HTMLElement): void {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
         const [m2a, m2b] = m2Drives(hw);
         const memory = hw.memory;
-        const card = ssd('pcie');
+        const card = ssd('pcie') ?? m2Surplus(hw)[0];
         const ram = (x: number, mod: Dimm | undefined): string => {
             const socket = `<rect x="${x}" y="16" width="84" height="200" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="${x + 39}" y="196" width="6" height="14" rx="2" style="fill:var(--bd-sock2)"/><rect x="${x - 8}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/><rect x="${x + 84}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/>`;
 
