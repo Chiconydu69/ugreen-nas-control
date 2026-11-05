@@ -464,6 +464,11 @@ export const nl: Record<Key, string> = {
     ...historyNl,
     ...scheduleNl,
     ...toolsNl,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        'De binnenkant volgens de UGREEN-handleiding: de twee M.2-sleuven op de linkerbinnenwand van de schijvenkooi, de twee RAM-sockets in het bodempaneel. De nummering van beide paren is aangenomen; open een issue als jouw kast afwijkt.',
+    'in.gt_cage': 'Schijvenkooi · linkerbinnenwand',
+    'in.gt_panel': 'Bodempaneel',
     ...panelNl,
     ...powerNl
 };

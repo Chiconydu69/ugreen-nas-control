@@ -38,6 +38,7 @@ export interface CaseModel {
     lanLabels?: string[];
     inside6800?: boolean;
     inside4800gt?: boolean;
+    inside2800gt?: boolean;
     pcie?: boolean;
     sys?: boolean;
     hint?: Key;
@@ -99,7 +100,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
     // iDX6011 and iDX6011 Pro: six bays and a small display at the front, the ports like the DXP6800 Pro's;
     // the back after a photo (PCIe slot, mesh, vent, power inlet). No inside view, no fan control.
     // DXP2800 GT: the same chassis in black with a grille like the DXP4800 GT; one 10G LAN port. Front after the product
-    // photos: power button, LAN/DISK1/DISK2 LEDs, no bay LED bars. No inside view.
+    // photos: power button, LAN/DISK1/DISK2 LEDs, no bay LED bars. Inside after the manual.
     [
         /^DXP2800 GT/,
         {
@@ -113,7 +114,9 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             lan: 'LAN 10G',
             dc: 'DC 12V',
             rear: [],
-            noInside: true
+            inside2800gt: true,
+            pcie: false,
+            hint: 'case.inside_hint_2800gt'
         }
     ],
     [

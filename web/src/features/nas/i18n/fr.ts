@@ -464,6 +464,11 @@ export const fr: Record<Key, string> = {
     ...historyFr,
     ...scheduleFr,
     ...toolsFr,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        "L'intérieur d'après le manuel UGREEN : les deux emplacements M.2 sur la paroi intérieure gauche de la cage des disques, les deux supports RAM dans le panneau du dessous. La numérotation des deux paires est supposée ; ouvre un ticket si ton boîtier diffère.",
+    'in.gt_cage': 'Cage des disques · paroi intérieure gauche',
+    'in.gt_panel': 'Panneau du dessous',
     ...panelFr,
     ...powerFr
 };

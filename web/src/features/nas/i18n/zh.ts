@@ -450,6 +450,11 @@ export const zh: Record<Key, string> = {
     ...historyZh,
     ...scheduleZh,
     ...toolsZh,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        '根据 UGREEN 手册绘制的内部视图：两个 M.2 插槽位于硬盘仓内左侧壁，两个内存插槽位于底部面板。两组编号均为假设；如果你的机器不同，请提交 issue。',
+    'in.gt_cage': '硬盘仓 · 左内壁',
+    'in.gt_panel': '底部面板',
     ...panelZh,
     ...powerZh
 };

@@ -458,6 +458,11 @@ export const en = {
     ...historyEn,
     ...scheduleEn,
     ...toolsEn,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        "The inside after UGREEN's manual: the two M.2 slots on the inner left wall of the drive cage, the two RAM sockets in the bottom panel. The numbering of both pairs is assumed; open an issue if your box differs.",
+    'in.gt_cage': 'Drive cage · inner left wall',
+    'in.gt_panel': 'Bottom panel',
     ...panelEn,
     ...powerEn
 } as const;

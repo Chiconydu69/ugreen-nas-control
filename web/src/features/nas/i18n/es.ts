@@ -451,6 +451,11 @@ export const es: Record<Key, string> = {
     ...historyEs,
     ...scheduleEs,
     ...toolsEs,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos zócalos de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
+    'in.gt_cage': 'Jaula de unidades · pared interior izquierda',
+    'in.gt_panel': 'Tapa inferior',
     ...panelEs,
     ...powerEs
 };

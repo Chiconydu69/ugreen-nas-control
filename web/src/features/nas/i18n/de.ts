@@ -463,6 +463,11 @@ export const de: Record<Key, string> = {
     ...historyDe,
     ...scheduleDe,
     ...toolsDe,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        'Das Innere nach UGREENs Anleitung: die zwei M.2-Steckplätze an der linken Innenwand des Schachtkäfigs, die zwei RAM-Sockel im Bodendeckel. Die Nummerierung beider Paare ist geraten; eröffne ein Issue, falls deine Box abweicht.',
+    'in.gt_cage': 'Laufwerkskäfig · linke Innenwand',
+    'in.gt_panel': 'Bodendeckel',
     ...panelDe,
     ...powerDe
 };

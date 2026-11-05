@@ -2357,6 +2357,45 @@ function main(root: HTMLElement): void {
             </svg>`;
     }
 
+    // DXP2800 GT, after UGREEN's manual: the two M.2 slots sit stacked on the inner left wall of the drive cage
+    // (trays out, connector at the back, buckle at the front), the two SO-DIMM sockets in the bottom panel.
+    function inside2800gtHtml(hw: Hardware): string {
+        const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
+        const memory = hw.memory;
+        const m2 = (y: number, drive: Nvme | undefined, n: number): string => {
+            const label = t('in.m2', { n });
+            const rail = `<rect x="190" y="${y - 6}" width="380" height="92" rx="4" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="550" y="${y + 16}" width="8" height="48" rx="2" fill="#aeb6bf"/><rect x="196" y="${y + 24}" width="14" height="32" rx="3" style="fill:var(--bd-sock2)"/>`;
+            if (!drive) {
+                return `${rail}<rect x="214" y="${y + 3}" width="328" height="74" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>${boardText(60, y + 44, t('in.slot_empty', { label }))}`;
+            }
+            const role = drive.boot ? t('nvme.boot') : ssdRoleText(drive.role);
+            const roleText = role.length > 21 ? `${role.slice(0, 20)}…` : role;
+
+            return `${rail}<g transform="translate(214 ${y + 3})">${nvmeModule(328, 74, drive, true)}</g>${tempBadge6800(60, y + 8, drive.temp)}${boardText(60, y + 44, label)}${roleText ? boardText(60, y + 58, roleText) : ''}`;
+        };
+        const ram = (y: number, mod: Dimm | undefined, n: number): string => {
+            const filled = Boolean(mod?.size_mb);
+            const speed = mod ? mod.configured_mt || mod.speed_mt : 0;
+            const sub = mod && filled ? [fmtRam(mod.size_mb), mod.type, speed ? `${speed} MT/s` : ''].filter(Boolean).join(' · ') : t('case.empty');
+            const socket = `<rect x="654" y="${y}" width="276" height="78" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="644" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/><rect x="930" y="${y + 20}" width="10" height="38" rx="2" fill="#aeb6bf"/>`;
+
+            return `${socket}${mod && filled ? `<g transform="translate(662 ${y + 7})">${ramModule(260, 64, mod)}</g>` : ''}${boardText(654, y - 22, t('case.ram_slot', { n }))}<text x="654" y="${y - 8}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
+        };
+
+        return `
+            <svg class="unc-board-svg" viewBox="0 0 1000 470" role="img" aria-label="${escapeHtml(t('case.inside'))}">
+                <rect x="10" y="10" width="980" height="450" rx="26" style="fill:var(--bd-g2);stroke:var(--bd-edge)" stroke-width="3"/>
+                <rect x="40" y="40" width="570" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="60" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_cage'))}</text>
+                <rect x="620" y="40" width="350" height="390" rx="8" style="fill:var(--bd-g1);stroke:var(--bd-edge)" stroke-width="2"/>
+                <text x="654" y="76" style="fill:var(--bd-text)" font-size="15" font-weight="800">${escapeHtml(t('in.gt_panel'))}</text>
+                <g transform="translate(0 -4)">${m2(100, ssd('m2-1'), 1)}${m2(260, ssd('m2-2'), 2)}</g>
+                ${ram(170, memory[0], 1)}
+                ${ram(290, memory[1], 2)}
+                <text x="60" y="414" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('in.front'))} ←</text>
+            </svg>`;
+    }
+
     function ssdSlotRow(name: string, ssd: Nvme | undefined): string {
         if (!ssd) return sensorRow({ ico: icon('m2'), name, vals: [{ label: '', text: t('case.empty'), level: 'na' }] });
 
@@ -2408,6 +2447,13 @@ function main(root: HTMLElement): void {
             q(target).classList.add('board-svg');
             setHint(q('#unc-inside-hint'), caseModel(hw).hint);
             q(target).innerHTML = inside4800gtHtml(hw);
+            return;
+        }
+
+        if (caseModel(hw).inside2800gt) {
+            q(target).classList.add('board-svg');
+            setHint(q('#unc-inside-hint'), caseModel(hw).hint);
+            q(target).innerHTML = inside2800gtHtml(hw);
             return;
         }
 

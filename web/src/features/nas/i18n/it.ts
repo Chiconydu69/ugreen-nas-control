@@ -462,6 +462,11 @@ export const it: Record<Key, string> = {
     ...historyIt,
     ...scheduleIt,
     ...toolsIt,
+    // inside DXP2800 GT
+    'case.inside_hint_2800gt':
+        "L'interno secondo il manuale UGREEN: i due slot M.2 sulla parete interna sinistra della gabbia dei dischi, i due zoccoli RAM nel pannello inferiore. La numerazione delle due coppie è presunta; apri una issue se il tuo box è diverso.",
+    'in.gt_cage': 'Gabbia dei dischi · parete interna sinistra',
+    'in.gt_panel': 'Pannello inferiore',
     ...panelIt,
     ...powerIt
 };
