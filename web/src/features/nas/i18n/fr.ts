@@ -265,7 +265,7 @@ export const fr: Record<Key, string> = {
     'case.inside_hint_like_8800plus':
         "L'intérieur est dessiné d'après le DXP8800 Plus : la carte de ce modèle n'est pas connue. La numérotation de la RAM et des M.2 est supposée ; ouvre un ticket si ton boîtier diffère.",
     'case.inside_hint_4800':
-        "La trappe de service sous le boîtier, d'après le manuel d'UGREEN. La numérotation de RAM 1 / RAM 2 et M.2-1 / M.2-2 est supposée ; ouvrez un ticket si votre appareil diffère.",
+        "La trappe de service sous le boîtier. Les emplacements portent les noms imprimés sur la carte : M.2-1 est M2-KEYM1 (à côté de la RAM) et M.2-3 est M2-KEYM3 ; M2-KEYM2 se trouve dans le boîtier, pour le module système d'origine. La numérotation de RAM 1 / RAM 2 est supposée ; ouvrez un ticket si votre appareil diffère.",
     'in.slot_empty': '{label} · vide',
     'nvme.boot': 'SSD de démarrage Unraid',
     'nvme.role': 'SSD du pool « {name} »',

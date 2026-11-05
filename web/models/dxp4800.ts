@@ -35,8 +35,12 @@ export default {
             note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. The Plus was reported to use outputs 2 and 3; UGREEN's own driver expects cpu on header 2 and case on header 3."
         },
         case: {
-            status: 'expected',
-            note: "Front and rear after a photo of the Plus, the Pro was not compared; inside after UGREEN's manual; slot numbering assumed."
+            status: 'community',
+            by: 'ivolution (issue 184)',
+            version: '5.2.0',
+            date: '2026-11-05',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/184',
+            note: "Front and rear confirmed by a Plus owner. The two M.2 slots of the underside panel are printed M2-KEYM1 (next to the RAM) and M2-KEYM3 on the board, shown as M.2-1 and M.2-3 (UGREEN's photos agree); the third slot, M2-KEYM2, is inside the case. Inside view otherwise after UGREEN's manual, the Pro was not compared."
         },
         sensors: { status: 'expected' }
     },

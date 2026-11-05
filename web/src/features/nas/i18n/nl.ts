@@ -265,7 +265,7 @@ export const nl: Record<Key, string> = {
     'case.inside_hint_like_8800plus':
         'De binnenkant is getekend naar de DXP8800 Plus: het moederbord van dit model is niet bekend. De nummering van RAM en M.2 is aangenomen; open een issue als jouw kast afwijkt.',
     'case.inside_hint_4800':
-        'Het serviceluik aan de onderkant, naar de handleiding van UGREEN. De nummering van RAM 1 / RAM 2 en M.2-1 / M.2-2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
+        'Het serviceluik aan de onderkant. De slots heten zoals op het moederbord gedrukt: M.2-1 is M2-KEYM1 (naast het RAM) en M.2-3 is M2-KEYM3; M2-KEYM2 zit in de behuizing, voor de systeemmodule van de fabriek. De nummering van RAM 1 / RAM 2 is aangenomen; wijkt jouw apparaat af, open dan een issue.',
     'in.slot_empty': '{label} · leeg',
     'nvme.boot': 'Opstart-SSD van Unraid',
     'nvme.role': 'SSD in groep “{name}”',
