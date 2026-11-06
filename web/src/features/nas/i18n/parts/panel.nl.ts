@@ -11,6 +11,7 @@ export const panelNl: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Ingedrukt',
     'panel.released': 'Losgelaten',
     'panel.unreadable': 'Niet leesbaar',
+    'panel.unreadable_box': 'Niet leesbaar op dit apparaat',
     'panel.power_doubtful':
         'Volgens de broncode van UGREEN is de aan/uit-toets van dit model via ACPI aangesloten. De aan/uit-waarde is mogelijk onbetrouwbaar.',
     'panel.read': 'Nu lezen',

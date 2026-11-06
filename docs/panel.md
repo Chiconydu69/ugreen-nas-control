@@ -30,6 +30,8 @@ Read-only: `/dev/mem` is opened read-only and one page-aligned page is mapped pe
 
 `*` = prefix match, as the vendor driver does. `DXP6800 Ultra` and `DXP8800 Ultra` are newer than the vendor source and are refused. The vendor reads the DXP4800 GT at the unaligned addresses 0xFED81526 and 0xFED81522, bit 0; the tool reads the aligned word, which is the same bit.
 
+Unreadable registers: a pad register that reads as 0xFFFFFFFF is not a pad value (real pad registers have reserved bits that read 0); it is what a bus read nobody answers returns. The tool then reports that button as unreadable instead of released: `panel buttons` prints `power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)` and `power unreadable, reset unreadable`, `--watch` exits with an error, the API (`panel_buttons`) returns `"unreadable"` for that button, the Front panel page shows "Not readable on this box" and `diag` marks `panel.buttons` as not readable. On the DXP8800 Plus (BIOS 5.27, Unraid 7.3.4) both registers read as 0xFF: the BIOS hides the P2SB bridge after boot, so the Intel GPIO communities at 0xFD6A0000 and 0xFD6D0000 are not reachable through `/dev/mem`. The button state of that model is therefore not available; its entries stay vendor source.
+
 Vendor press rules, which `--watch` follows:
 
 - Reset: a press is reported after 260 polls (13 s; the vendor comment says 5 s), the release only if the press was reported.
@@ -59,6 +61,6 @@ No other model has a beeper path (DXP4800 GT, DXP2800 GT, DX4600, Ultra models):
 
 ## Open on hardware
 
-- Whether the pad registers can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
+- Whether the BIOS hides the pad registers on other models too (confirmed on the DXP8800 Plus: all reads are 0xFF), and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
 - Whether a speaker is wired on each PC speaker model, and whether the EC and pad beepers sound.
 - The power button on iDX6011/6012 and the 5 s press on the DXP2800 GT.

@@ -11,6 +11,7 @@ export const panelZh: Record<keyof typeof panelEn, string> = {
     'panel.held': '按下',
     'panel.released': '松开',
     'panel.unreadable': '无法读取',
+    'panel.unreadable_box': '此设备上无法读取',
     'panel.power_doubtful': '依据 UGREEN 源码，此型号的电源键走 ACPI，电源键读数不可靠。',
     'panel.read': '立即读取',
     'panel.read_at': '读取于 {time}',

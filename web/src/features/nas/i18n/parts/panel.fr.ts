@@ -11,6 +11,7 @@ export const panelFr: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Appuyé',
     'panel.released': 'Relâché',
     'panel.unreadable': 'Illisible',
+    'panel.unreadable_box': 'Illisible sur cette machine',
     'panel.power_doubtful':
         'D’après le code d’UGREEN, la touche d’alimentation de ce modèle passe par ACPI. Considérez la lecture de l’alimentation comme douteuse.',
     'panel.read': 'Lire maintenant',

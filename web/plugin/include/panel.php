@@ -19,7 +19,7 @@ function panel_run(array $args): array
 }
 
 // GET panel_buttons: whether power and reset are held. The tool prints "model: <name> (...)", an optional
-// "power: not readable by address" and "power held|released, reset held|released".
+// "power: not readable by address" or "power|reset: not readable on this box (...)" lines and "power held|released, reset held|released".
 function panel_buttons(): never
 {
     $result = panel_run(['buttons']);
@@ -28,7 +28,7 @@ function panel_buttons(): never
         respond(['ok' => false, 'error' => fan_tool_error($result['message'])], 409);
     }
 
-    if (preg_match('/^power (held|released), reset (held|released)$/m', $result['output'], $state) !== 1) {
+    if (preg_match('/^power (held|released|unreadable), reset (held|released|unreadable)$/m', $result['output'], $state) !== 1) {
         respond(['ok' => false, 'error' => 'The panel tool gave no button state'], 500);
     }
 
@@ -39,7 +39,7 @@ function panel_buttons(): never
         'model' => $model,
         'power' => $state[1],
         'reset' => $state[2],
-        'power_readable' => preg_match('/^power: not readable by address$/m', $result['output']) !== 1,
+        'power_readable' => preg_match('/^power: not readable by address$/m', $result['output']) !== 1 && $state[1] !== 'unreadable',
         'time' => time(),
     ]);
 }

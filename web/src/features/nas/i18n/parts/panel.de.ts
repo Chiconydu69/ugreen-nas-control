@@ -11,6 +11,7 @@ export const panelDe: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Gedrückt',
     'panel.released': 'Losgelassen',
     'panel.unreadable': 'Nicht lesbar',
+    'panel.unreadable_box': 'Auf diesem Gerät nicht lesbar',
     'panel.power_doubtful': 'Laut UGREEN-Quelltext hängt die Ein-/Aus-Taste dieses Modells an ACPI. Der Wert der Ein-/Aus-Taste ist zweifelhaft.',
     'panel.read': 'Jetzt lesen',
     'panel.read_at': 'Gelesen um {time}',

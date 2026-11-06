@@ -3,6 +3,7 @@ package panel
 import (
 	"bytes"
 	"context"
+	"errors"
 	"slices"
 	"strings"
 	"testing"
@@ -217,5 +218,48 @@ func TestWatch(t *testing.T) {
 		if !strings.Contains(out.String(), want) {
 			t.Errorf("missing %q in\n%s", want, out.String())
 		}
+	}
+}
+
+func TestReadStateUnreadable(t *testing.T) {
+	s := ButtonsFor("DXP8800 Plus")
+	m := newFakeMem()
+	m.words[0xFD6A0B40] = 0xFFFFFFFF
+	m.words[0xFD6D0A10] = 0xFFFFFFFF
+	st, err := s.ReadState(m)
+	if err != nil || !st.PowerUnreadable || !st.ResetUnreadable || st.Power || st.Reset {
+		t.Fatalf("%+v %v", st, err)
+	}
+	if got := describe(st); got != "power unreadable, reset unreadable" {
+		t.Errorf("describe: %q", got)
+	}
+	m.words[0xFD6A0B40] = 2 // power readable and held, reset still hidden
+	st, _ = s.ReadState(m)
+	if st.PowerUnreadable || !st.Power || !st.ResetUnreadable {
+		t.Errorf("%+v", st)
+	}
+}
+
+func TestWatchUnreadableExits(t *testing.T) {
+	m := newFakeMem()
+	m.onRead = func(int, uint64) uint32 { return 0xFFFFFFFF }
+	var out bytes.Buffer
+	err := ButtonsFor("DXP8800 Plus").Watch(context.Background(), m, &out, make(chan time.Time), time.Now)
+	if !errors.Is(err, ErrUnreadable) || out.Len() != 0 {
+		t.Fatalf("%v %q", err, out.String())
+	}
+}
+
+func TestButtonsCLIUnreadable(t *testing.T) {
+	c := newCLI(t, "DXP8800 Plus")
+	c.mem.onRead = func(int, uint64) uint32 { return 0xFFFFFFFF }
+	rc, out := c.run("buttons")
+	if rc != 0 || !strings.Contains(out, "power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)") ||
+		!strings.Contains(out, "power unreadable, reset unreadable") || strings.Contains(out, "released") {
+		t.Errorf("rc %d %q", rc, out)
+	}
+	rc, out = c.run("buttons", "--watch")
+	if rc != 1 || !strings.Contains(out, "ERROR: the buttons are not readable on this box") {
+		t.Errorf("watch: rc %d %q", rc, out)
 	}
 }

@@ -11,6 +11,7 @@ export const panelIt: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Premuto',
     'panel.released': 'Rilasciato',
     'panel.unreadable': 'Non leggibile',
+    'panel.unreadable_box': 'Non leggibile su questo dispositivo',
     'panel.power_doubtful': 'Secondo il codice di UGREEN, il tasto di accensione di questo modello passa da ACPI. Considera dubbia la lettura dell’accensione.',
     'panel.read': 'Leggi ora',
     'panel.read_at': 'Letto alle {time}',
