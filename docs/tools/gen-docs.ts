@@ -265,6 +265,16 @@ for (const [file, render] of Object.entries(RENDER)) {
     }
 }
 
+// README: model names and statuses come only from the generated blocks, so adding or verifying a model never needs a hand edit.
+{
+    const readme = readFileSync(join(root, 'README.md'), 'utf8').replace(/<!-- (\w+):start -->[\s\S]*?<!-- \1:end -->/g, '');
+    const names = models.map(m => m.name).sort((a, b) => b.length - a.length);
+    for (const n of names)
+        if (readme.includes(n)) errors.push(`README.md: model name "${n}" outside the generated blocks (the list is generated; link docs/hardware.md instead)`);
+    const family = readme.match(/\b(?:i?DXP?|DH)\d{3,4}\w*/g);
+    if (family) errors.push(`README.md: model name ${[...new Set(family)].join(', ')} outside the generated blocks`);
+}
+
 const known = recipes();
 for (const file of markdownFiles()) errors.push(...problems(file, readFileSync(join(root, file), 'utf8'), known));
 
