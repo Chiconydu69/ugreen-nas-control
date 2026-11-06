@@ -72,22 +72,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Gespeichert [success]"],
-        "text": "1ab7d9cdbbef"
+        "text": "14118b24d055"
       },
       "de nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1ab7d9cdbbef"
+        "text": "14118b24d055"
       },
       "de nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ee6ca8cf905e"
+        "text": "ec9f91ecccc8"
       },
       "de nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "eb380c4b863c"
+        "text": "b8ad0daafe6f"
       },
       "de nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -127,7 +127,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9f737978d6b6"
+        "text": "1676cd5005a8"
       },
       "language es": {
         "requests": [
@@ -141,22 +141,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Guardado [success]"],
-        "text": "3aa1764db160"
+        "text": "808577093a65"
       },
       "es nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3aa1764db160"
+        "text": "808577093a65"
       },
       "es nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "051fb7961a85"
+        "text": "d80e2e28dc94"
       },
       "es nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "909dff141fd9"
+        "text": "55ddf93593bd"
       },
       "es nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -166,7 +166,7 @@
       "es nav led:overview": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1ee0238d4781"
+        "text": "dc63f53eb815"
       },
       "es nav led:drives": {
         "requests": ["nas GET {\"action\":\"status\"}"],
@@ -181,7 +181,7 @@
       "es nav led:system": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a8034824d185"
+        "text": "f74ddea8f412"
       },
       "es nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
@@ -196,7 +196,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "bada98e6bdd1"
+        "text": "23db855f58bc"
       },
       "language fr": {
         "requests": [
@@ -210,22 +210,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Enregistré [success]"],
-        "text": "a38d4557f6cf"
+        "text": "8180bfd69323"
       },
       "fr nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a38d4557f6cf"
+        "text": "8180bfd69323"
       },
       "fr nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d708aa56d4ec"
+        "text": "b2675501aa5a"
       },
       "fr nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a67592cbcdfd"
+        "text": "df65d6c05426"
       },
       "fr nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -265,7 +265,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "22bd11f0cda0"
+        "text": "80e162df941c"
       },
       "language it": {
         "requests": [
@@ -279,22 +279,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Salvato [success]"],
-        "text": "f457bb0bce6b"
+        "text": "f0e6c343fb64"
       },
       "it nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "f457bb0bce6b"
+        "text": "f0e6c343fb64"
       },
       "it nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "04e4a3168f75"
+        "text": "c9123def5727"
       },
       "it nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "dd6a417a12c0"
+        "text": "544a5a2cfee0"
       },
       "it nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -334,7 +334,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0851fb2af36f"
+        "text": "0885a4cc13a7"
       },
       "language nl": {
         "requests": [
@@ -348,22 +348,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Opgeslagen [success]"],
-        "text": "77ae7c532fb2"
+        "text": "3af60a37c336"
       },
       "nl nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "77ae7c532fb2"
+        "text": "3af60a37c336"
       },
       "nl nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d631db4d1585"
+        "text": "3e814829a843"
       },
       "nl nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1f1bd6e0e6b4"
+        "text": "9f65450d8e2e"
       },
       "nl nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -403,7 +403,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "4abb6769aa6d"
+        "text": "e15155eb87b2"
       },
       "language zh": {
         "requests": [
@@ -417,22 +417,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: 已保存 [success]"],
-        "text": "9b88778914d0"
+        "text": "21ba2f3bf138"
       },
       "zh nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9b88778914d0"
+        "text": "21ba2f3bf138"
       },
       "zh nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c1170a1b10a2"
+        "text": "936148a4e9e1"
       },
       "zh nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "23ca1325311b"
+        "text": "c1c554e98c7a"
       },
       "zh nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -472,7 +472,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "00e698f93482"
+        "text": "8c1c10ea2950"
       },
       "language auto": {
         "requests": [
@@ -486,7 +486,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Saved [success]"],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "language en": {
         "requests": [
@@ -501,22 +501,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": ["toast: Saved [success]"],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "en nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "en nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "947b42054788"
+        "text": "e90fec057622"
       },
       "en nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "365ab68661cb"
+        "text": "ca4d123a715b"
       },
       "en nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -556,7 +556,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "24f95659ec78"
+        "text": "cb25b4519b73"
       }
     },
     "led-drives": {
@@ -1085,22 +1085,22 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "nav overview": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "nav case": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "947b42054788"
+        "text": "e90fec057622"
       },
       "nav sensors": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "365ab68661cb"
+        "text": "ca4d123a715b"
       },
       "nav curves": {
         "requests": ["nas GET {\"action\":\"fan_probe_status\"}", "nas GET {\"action\":\"status\"}"],
@@ -1140,12 +1140,12 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "24f95659ec78"
+        "text": "cb25b4519b73"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "947b42054788"
+        "text": "e90fec057622"
       },
       "case -> fan settings link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -1155,7 +1155,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "24f95659ec78"
+        "text": "cb25b4519b73"
       }
     },
     "poll": {
@@ -1170,7 +1170,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "61 s later": {
         "requests": [
@@ -1181,12 +1181,12 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "5 min later (idle)": {
         "requests": [],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       }
     },
     "settings": {
@@ -1207,9 +1207,9 @@
       "models fold + confirm issue": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20Plus&body=Model%3A%20DXP4800%20Plus%0APlugin%3A%205.1.1%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20none%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20Plus&body=Model%3A%20DXP4800%20Plus%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20none%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "5e176b66fd42"
+        "text": "273bce04980c"
       }
     },
     "theme": {
@@ -1237,7 +1237,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "theme auto": {
         "requests": ["nas POST {\"action\":\"theme\",\"value\":\"auto\"}", "nas GET {\"action\":\"status\"}"],
@@ -1253,7 +1253,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       },
       "theme dark": {
         "requests": ["nas POST {\"action\":\"theme\",\"value\":\"dark\"}", "nas GET {\"action\":\"status\"}"],
@@ -1269,7 +1269,7 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "8511d941dd56"
+        "text": "8700e225e465"
       }
     }
   },
@@ -1815,7 +1815,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "81eb2387cd3d"
+        "text": "c2a41ab1580c"
       },
       "language es": {
         "requests": [
@@ -1865,7 +1865,7 @@
       "es nav led:overview": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d9f4324f04f7"
+        "text": "cfe82bb596b5"
       },
       "es nav led:drives": {
         "requests": ["nas GET {\"action\":\"status\"}"],
@@ -1880,7 +1880,7 @@
       "es nav led:system": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "15fcc27ac205"
+        "text": "2bb5a1d01372"
       },
       "es nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
@@ -1895,7 +1895,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9ad7307a908b"
+        "text": "27c62532700e"
       },
       "language fr": {
         "requests": [
@@ -1975,7 +1975,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2a27f225b731"
+        "text": "baeafa386fbe"
       },
       "language it": {
         "requests": [
@@ -2055,7 +2055,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "89a59e34ffe7"
+        "text": "08822555be9e"
       },
       "language nl": {
         "requests": [
@@ -2135,7 +2135,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fcce9316ac56"
+        "text": "33a45b97c690"
       },
       "language zh": {
         "requests": [
@@ -2215,7 +2215,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "374f70c5f3de"
+        "text": "f6a797d1f476"
       },
       "language auto": {
         "requests": [
@@ -2311,7 +2311,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d971399fbb18"
+        "text": "eb4dcb03e2b1"
       }
     },
     "led-drives": {
@@ -2912,7 +2912,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d971399fbb18"
+        "text": "eb4dcb03e2b1"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -2927,7 +2927,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d971399fbb18"
+        "text": "eb4dcb03e2b1"
       }
     },
     "poll": {
@@ -3046,9 +3046,9 @@
       "models fold + confirm issue": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20GT&body=Model%3A%20DXP4800%20GT%0APlugin%3A%205.1.1%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20blin"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20GT&body=Model%3A%20DXP4800%20GT%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20blin"
         ],
-        "text": "be7c7532387b"
+        "text": "325c05710955"
       }
     },
     "theme": {
@@ -3655,7 +3655,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "958b2032f889"
+        "text": "89b3bc7966a1"
       },
       "language es": {
         "requests": [
@@ -3705,12 +3705,12 @@
       "es nav led:overview": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "751278feddba"
+        "text": "b838bf42dc54"
       },
       "es nav led:drives": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9a53c0585cff"
+        "text": "f60a346dab81"
       },
       "es nav led:schedules": {
         "requests": ["nas GET {\"action\":\"status\"}"],
@@ -3720,7 +3720,7 @@
       "es nav led:system": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "7a0fcc90936b"
+        "text": "e59068612681"
       },
       "es nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
@@ -3735,7 +3735,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "7030c1f01f3f"
+        "text": "06e278b90b78"
       },
       "language fr": {
         "requests": [
@@ -3815,7 +3815,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d78b4576c392"
+        "text": "6d00aa10a431"
       },
       "language it": {
         "requests": [
@@ -3895,7 +3895,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b26af1aa3a4e"
+        "text": "4df77005a6a3"
       },
       "language nl": {
         "requests": [
@@ -3975,7 +3975,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1662613e995a"
+        "text": "a2daf0aa00b4"
       },
       "language zh": {
         "requests": [
@@ -4055,7 +4055,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a40d7a9bcded"
+        "text": "880d14eb3488"
       },
       "language auto": {
         "requests": [
@@ -4151,7 +4151,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5292f0c3f5dc"
+        "text": "afd858c8df0e"
       }
     },
     "led-drives": {
@@ -4752,7 +4752,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5292f0c3f5dc"
+        "text": "afd858c8df0e"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -4767,7 +4767,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5292f0c3f5dc"
+        "text": "afd858c8df0e"
       }
     },
     "poll": {
@@ -4886,9 +4886,9 @@
       "models fold + confirm issue": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP6800%20Pro&body=Model%3A%20DXP6800%20Pro%0APlugin%3A%205.1.1%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT8613%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP6800%20Pro&body=Model%3A%20DXP6800%20Pro%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT8613%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "81d60733cd81"
+        "text": "cb5502ff94c2"
       }
     },
     "theme": {
@@ -5504,7 +5504,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "de44f7b1a5e1"
+        "text": "3c3a2c2599b3"
       },
       "language es": {
         "requests": [
@@ -5555,12 +5555,12 @@
       "es nav led:overview": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "104661fed066"
+        "text": "e6e8716005e7"
       },
       "es nav led:drives": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "7ebabbf84cdb"
+        "text": "90fa194dca8f"
       },
       "es nav led:schedules": {
         "requests": ["nas GET {\"action\":\"status\"}"],
@@ -5570,7 +5570,7 @@
       "es nav led:system": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "7d90ae3950b2"
+        "text": "ab65ada85275"
       },
       "es nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
@@ -5585,7 +5585,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6ba3b50ba70a"
+        "text": "29e75cf35b9b"
       },
       "language fr": {
         "requests": [
@@ -5666,7 +5666,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "72e80ba93e32"
+        "text": "328c87bc60cc"
       },
       "language it": {
         "requests": [
@@ -5747,7 +5747,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2b73a1805ecf"
+        "text": "dab2f18e0ac1"
       },
       "language nl": {
         "requests": [
@@ -5828,7 +5828,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c2ec3ec7ce3b"
+        "text": "97f99cc5fb2c"
       },
       "language zh": {
         "requests": [
@@ -5909,7 +5909,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "341548e37260"
+        "text": "d375923e479b"
       },
       "language auto": {
         "requests": [
@@ -6007,7 +6007,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3230a5eb18b9"
+        "text": "06ad0773d365"
       }
     },
     "led-drives": {
@@ -6615,7 +6615,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3230a5eb18b9"
+        "text": "06ad0773d365"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -6630,7 +6630,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3230a5eb18b9"
+        "text": "06ad0773d365"
       }
     },
     "poll": {
@@ -6762,9 +6762,9 @@
       "models fold + confirm issue": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20iDX6011%20Pro&body=Model%3A%20iDX6011%20Pro%0APlugin%3A%205.1.1%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20iDX6011%20Pro&body=Model%3A%20iDX6011%20Pro%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "5ed4cd7ef1e8"
+        "text": "95d24b99d7ed"
       }
     },
     "theme": {

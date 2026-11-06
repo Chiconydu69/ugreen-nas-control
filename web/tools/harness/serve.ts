@@ -9,6 +9,7 @@
 //   js: 'old'          serve the hand-written front end (src/web/js) of git ref `oldRef` (default upstream/main) instead of the build in the tree
 //   requestLog: true   record every api.php request (NAS and LED) as JSON lines, read with h.requests()
 //   inject: '<js>'     script put at the start of <head> of view.php (before the page's own scripts)
+//   version: 'x.y.z'  plugin version to show (e2e pins it so releases do not change the golden)
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -42,6 +43,8 @@ export interface ApiRequest {
 
 export interface HarnessOptions {
     port?: number | undefined;
+    /** Plugin version shown on the About page and in model reports; default: newest CHANGELOG.md heading. */
+    version?: string | undefined;
     js?: 'new' | 'old' | undefined;
     oldRef?: string | undefined;
     requestLog?: boolean | undefined;
@@ -151,7 +154,9 @@ export async function startHarness(modelId: string, opts: HarnessOptions = {}): 
     writeFileSync(join(fsRoot, 'var/local/emhttp/var.ini'), 'csrf_token="fake"\nmdState="STARTED"\n');
     // Latest released version = newest CHANGELOG.md heading (the tracked .plg is only rendered at release); other streams are marked.
     const stream = process.env.SITE_STREAM ?? 'main';
-    const version = `${/^## (\d+\.\d+(?:\.\d+)?)\s*$/m.exec(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'))?.[1] ?? 'dev'}${stream === 'main' ? '' : `+${stream}`}`;
+    const version =
+        opts.version ??
+        `${/^## (\d+\.\d+(?:\.\d+)?)\s*$/m.exec(readFileSync(join(root, 'CHANGELOG.md'), 'utf8'))?.[1] ?? 'dev'}${stream === 'main' ? '' : `+${stream}`}`;
     writeFileSync(join(fsRoot, 'boot/config/plugins/ugreen-nas-control.plg'), `<!ENTITY version "${version}">\n`);
 
     const cfg = { ui_theme: 'dark', ui_lang: 'en' };
