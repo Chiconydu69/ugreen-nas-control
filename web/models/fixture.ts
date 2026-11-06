@@ -126,6 +126,26 @@ const FAN_RIVALS: Rival[] = [
 const LED_RIVALS: Rival[] = [{ kind: 'daemon', id: 'ugreen-leds', name: 'UGREEN LEDs driver', controls: ['led'], severity: 'block' }];
 
 const cpuName = (m: Model) => m.fixture?.cpu ?? m.cpu ?? 'Intel Core i5-1235U';
+// Threads per CPU name (the demo's cpuName). Intel ARK / intel.com SKU pages; the N6005 page calls it Pentium Silver.
+const THREADS: Record<string, number> = {
+    'Intel Celeron N5105': 4,
+    'Intel Celeron N6005': 4,
+    'Intel N100': 4,
+    'Intel N150': 4,
+    'Intel Pentium Gold 8505': 6,
+    'Intel Core i5-1235U': 12,
+    'Intel Core 5 120U': 12,
+    'Intel Core 7 150U': 12,
+    'Intel Core Ultra 5 125H': 18,
+    'Intel Core Ultra 7 255H': 16,
+    // AMD's spec page could not be read yet; 0 hides the count in the UI (app.ts shows it only when truthy).
+    'AMD Ryzen Embedded R2514': 0
+};
+const threadsOf = (cpu: string) => {
+    const n = THREADS[cpu];
+    if (n === undefined) throw new Error(`no thread count for "${cpu}": add it to THREADS in web/models/fixture.ts`);
+    return n;
+};
 const ram = (m: Model) => m.fixture?.ram ?? m.ram ?? { type: 'DDR5', mt: 4800 };
 
 /** Fan control answers with a chip: a fixed-wiring model. A probe model has no confirmed fan map in the sample data, a model without `fan` has no fan control. */
@@ -256,7 +276,7 @@ export function status(m: Model) {
             bios: '1.0',
             bios_date: '01/01/2024',
             cpu: cpuName(m),
-            threads: 12,
+            threads: threadsOf(cpuName(m)),
             memory_kb: 33554432 * (caseModel({ model: m.fixtureDmi }).ramSlots ?? 2),
             kernel: '6.18.38-Unraid',
             unraid: '7.3.2',
