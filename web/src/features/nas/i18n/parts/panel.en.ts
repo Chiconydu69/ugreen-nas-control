@@ -10,6 +10,7 @@ export const panelEn = {
     'panel.held': 'Held',
     'panel.released': 'Released',
     'panel.unreadable': 'Cannot be read',
+    'panel.unreadable_box': 'Not readable on this box',
     'panel.power_doubtful': 'UGREEN’s source says the power key of this model sits on ACPI. Treat the power reading as doubtful.',
     'panel.read': 'Read now',
     'panel.read_at': 'Read at {time}',

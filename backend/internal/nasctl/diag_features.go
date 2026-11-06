@@ -605,6 +605,9 @@ func panelButtons(in FeatureInputs) string {
 	if r.Err != "" {
 		return "not readable: " + r.Err
 	}
+	if strings.Contains(r.Out, "unreadable") {
+		return "not readable: the BIOS hides the button registers (they read as 0xFF)"
+	}
 	return "readable: " + short(strings.TrimPrefix(strings.TrimSpace(r.Out), "model:"), 200)
 }
 

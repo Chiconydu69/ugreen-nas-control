@@ -24,16 +24,16 @@ function drawButtons(ctx: FanCtx): void {
     const { ui, t } = ctx;
     const model = ctx.status()?.info?.model ?? '';
     const word = (held: boolean): string => t(held ? 'panel.held' : 'panel.released');
-    const pill = (label: string, held: boolean | null): string =>
+    const pill = (label: string, held: boolean | null, hidden = false): string =>
         ui.pill({
             tone: held === null ? 'plain' : held ? 'warn' : 'ok',
             ico: held ? 'power' : '',
-            text: `${label}: ${held === null ? t('panel.unreadable') : word(held)}`,
+            text: `${label}: ${hidden ? t('panel.unreadable_box') : held === null ? t('panel.unreadable') : word(held)}`,
             lg: true
         });
     const read = state.read;
     const states = read
-        ? `<div class="unc-fan-tools-status">${pill(t('panel.power'), read.power_readable ? read.power === 'held' : null)}${pill(t('panel.reset'), read.reset === 'held')}</div>
+        ? `<div class="unc-fan-tools-status">${pill(t('panel.power'), read.power_readable && read.power !== 'unreadable' ? read.power === 'held' : null, read.power === 'unreadable')}${pill(t('panel.reset'), read.reset === 'unreadable' ? null : read.reset === 'held', read.reset === 'unreadable')}</div>
            <p class="unc-muted">${escapeHtml(t('panel.read_at', { time: berlin(read.time) }))}</p>`
         : `<p class="unc-muted">${escapeHtml(t(state.loading ? 'panel.reading' : 'panel.not_read'))}</p>`;
     const error = state.error ? ui.note(escapeHtml(t('panel.read_failed', { error: state.error })), { tone: 'bad', box: true, tag: 'div', ico: 'alert' }) : '';

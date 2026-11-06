@@ -10,7 +10,7 @@ export default {
     ram: { type: 'DDR5', mt: 4800 },
     bays: 8,
     m2Slots: 2,
-    m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
+    m2: { slots: ['m2-1', 'm2-2', 'system'], pcieSlot: true },
     lan: { maxMbit: [10000, 10000] },
     led: 'bays',
     caseView: 'full',
@@ -39,7 +39,14 @@ export default {
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
             note: 'Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. Header 4 (pwm4) control register unconfirmed: the diag shows it in automatic mode.'
         },
-        case: { status: 'expected', note: "inside after UGREEN's manual; slot numbering assumed" },
+        case: {
+            status: 'community',
+            by: 'Chiconydu69 (issue 165)',
+            version: '5.2.0',
+            date: '2026-11-06',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
+            note: "M.2-1, M.2-2 and the internal system slot confirmed by the owner's root-port report (same root ports as the DXP6800 Pro). The PCIe slot port is carried over from the DXP6800 Pro."
+        },
         sensors: {
             status: 'community',
             by: 'users',

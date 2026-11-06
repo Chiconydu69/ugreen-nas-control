@@ -139,6 +139,12 @@ func runButtons(ctx context.Context, env Env, args []string, stdout, stderr io.W
 		if err != nil {
 			return err
 		}
+		if st.PowerUnreadable {
+			say(stdout, "power: %s", unreadableNote)
+		}
+		if st.ResetUnreadable {
+			say(stdout, "reset: %s", unreadableNote)
+		}
 		say(stdout, "%s", describe(st))
 		return nil
 	}
@@ -178,6 +184,8 @@ func runBeep(ctx context.Context, env Env, args []string, stderr io.Writer) erro
 	defer closeFn()
 	return Sound(ctx, b, *freq, *ms, env.Wait)
 }
+
+const unreadableNote = "not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)"
 
 func buttonModels() string {
 	var n []string

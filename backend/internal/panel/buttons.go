@@ -2,6 +2,7 @@ package panel
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -87,23 +88,38 @@ func ButtonsFor(product string) *ButtonSpec {
 	return nil
 }
 
-// State is the held state of both buttons.
-type State struct{ Power, Reset bool }
+// State is the held state of both buttons. An Unreadable button has no valid reading and its held flag is false.
+type State struct{ Power, Reset, PowerUnreadable, ResetUnreadable bool }
+
+// Unreadable reports whether either button had no valid reading.
+func (st State) Unreadable() bool { return st.PowerUnreadable || st.ResetUnreadable }
+
+// ErrUnreadable is returned by Watch when a pad register reads as all ones.
+var ErrUnreadable = errors.New("the buttons are " + unreadableNote)
+
+// padMasked is what a read of memory the bus does not answer returns (master abort). A real pad register has
+// reserved bits that read 0, so it is never the value of a working pad.
+const padMasked = 0xFFFFFFFF
 
 // ReadState reads both pads. The DXP2800 GT driver also clears bit 23 of each register (pin to input); we never
 // write, so on that model the pins are read as the firmware left them.
 func (s *ButtonSpec) ReadState(m MemReader) (State, error) {
 	var st State
 	for _, b := range []struct {
-		p   *Pad
-		out *bool
-	}{{s.Power, &st.Power}, {s.Reset, &st.Reset}} {
+		p     *Pad
+		out   *bool
+		unrdb *bool
+	}{{s.Power, &st.Power, &st.PowerUnreadable}, {s.Reset, &st.Reset, &st.ResetUnreadable}} {
 		if b.p == nil {
 			continue
 		}
 		w, err := m.Read32(b.p.word())
 		if err != nil {
 			return st, err
+		}
+		if w == padMasked {
+			*b.unrdb = true
+			continue
 		}
 		*b.out = b.p.Pressed(w)
 	}
@@ -179,6 +195,9 @@ func (s *ButtonSpec) Watch(ctx context.Context, m MemReader, out io.Writer, tick
 	if err != nil {
 		return err
 	}
+	if st.Unreadable() {
+		return ErrUnreadable
+	}
 	say(out, "start: %s", describe(st))
 	pw, rs := NewPowerTracker(s.PowerPressPolls), NewResetTracker()
 	for {
@@ -190,6 +209,9 @@ func (s *ButtonSpec) Watch(ctx context.Context, m MemReader, out io.Writer, tick
 		st, err := s.ReadState(m)
 		if err != nil {
 			return err
+		}
+		if st.Unreadable() {
+			return ErrUnreadable
 		}
 		for _, b := range []struct {
 			name   string
@@ -208,11 +230,14 @@ func (s *ButtonSpec) Watch(ctx context.Context, m MemReader, out io.Writer, tick
 }
 
 func describe(st State) string {
-	word := func(b bool) string {
+	word := func(b, unreadable bool) string {
+		if unreadable {
+			return "unreadable"
+		}
 		if b {
 			return "held"
 		}
 		return "released"
 	}
-	return fmt.Sprintf("power %s, reset %s", word(st.Power), word(st.Reset))
+	return fmt.Sprintf("power %s, reset %s", word(st.Power, st.PowerUnreadable), word(st.Reset, st.ResetUnreadable))
 }

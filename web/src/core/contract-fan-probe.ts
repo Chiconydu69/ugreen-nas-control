@@ -167,9 +167,10 @@ export type Cs201xConfirmResponse = ApiOk & { map: FanMap };
 /** GET panel_buttons: one read of the power and reset pads. */
 export type PanelButtonsResponse = ApiOk & {
     model: string;
-    power: 'held' | 'released';
-    reset: 'held' | 'released';
-    /** false where UGREEN's source says the power key cannot be read by address. */
+    /** 'unreadable': the pad register reads as all ones (the BIOS hides it), so there is no state. */
+    power: 'held' | 'released' | 'unreadable';
+    reset: 'held' | 'released' | 'unreadable';
+    /** false where UGREEN's source says the power key cannot be read by address, or power is 'unreadable'. */
     power_readable: boolean;
     /** Unix time of the read. */
     time: number;

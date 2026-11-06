@@ -11,6 +11,7 @@ export const panelEs: Record<keyof typeof panelEn, string> = {
     'panel.held': 'Pulsado',
     'panel.released': 'Suelto',
     'panel.unreadable': 'No se puede leer',
+    'panel.unreadable_box': 'No se puede leer en este equipo',
     'panel.power_doubtful': 'Según el código de UGREEN, la tecla de encendido de este modelo está en ACPI. Considera dudosa la lectura del encendido.',
     'panel.read': 'Leer ahora',
     'panel.read_at': 'Leído a las {time}',
