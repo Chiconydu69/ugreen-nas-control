@@ -116,8 +116,12 @@
               "php"
               "rsvg-convert"
               "woff2"
+              "go"
+              "xz"
+              "xmllint"
             ];
             plugin = [
+              "go"
               "bun"
               "rsvg-convert"
               "xmllint"
@@ -129,6 +133,16 @@
               "xz"
               "xmllint"
               "rsvg-convert"
+            ];
+            fmt = [
+              "go"
+              "golangci-lint"
+              "shfmt"
+              "bun"
+              "php"
+              "php-cs-fixer"
+              "nixfmt"
+              "xmllint"
             ];
             lint = [
               "shellcheck"

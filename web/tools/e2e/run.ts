@@ -94,7 +94,7 @@ const JOB_LIMIT_MS = 180000;
 async function runJob(job: Job, view: Bun.WebView): Promise<Result> {
     const started = Date.now();
     const scenario = SCENARIOS.find(s => s.id === job.scenario)!;
-    const h = await startHarness(job.ctx.id, { js: job.variant, oldRef, requestLog: true, inject: pageInit, now: E2E_NOW });
+    const h = await startHarness(job.ctx.id, { js: job.variant, oldRef, requestLog: true, inject: pageInit, now: E2E_NOW, version: '0.0.0' });
     const session = new Session(view, h);
     let crash: string | undefined;
     try {

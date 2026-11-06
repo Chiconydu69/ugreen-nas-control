@@ -1,17 +1,16 @@
 name: 'Website (GitHub Pages)'
 
 # Builds the project site (docs/site/: landing page, one page per model in web/models/, the live demo at /demo/) and
-# publishes one GitHub Pages deployment with three streams:
+# publishes one GitHub Pages deployment with two streams:
 #   /       branch main (released)
 #   /next/  branch next (development)
-#   /lab/   branch site (design playground, docs/site/ only)
 # A branch that does not exist or has no docs/site/build.ts is skipped. Needs Pages enabled with Source = "GitHub Actions".
 #
-# Runs on every push to the three branches and on demand. A release calls this workflow (release.yml, job `pages`) with
+# Runs on every push to the two branches and on demand. A release calls this workflow (release.yml, job `pages`) with
 # `ref` = the release commit, which replaces main in the root stream. The demo shows each stream's own plugin.
 on:
   push:
-    branches: [main, next, site]
+    branches: [main, next]
   workflow_dispatch:
     inputs:
       ref:
@@ -48,13 +47,14 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Check out the streams
         run: |
           set -euo pipefail
           fetch() { git fetch --quiet --depth=1 origin "$1" 2>/dev/null && git worktree add --quiet --detach "$RUNNER_TEMP/wt/$2" FETCH_HEAD && [ -f "$RUNNER_TEMP/wt/$2/docs/site/build.ts" ]; }
           fetch "${MAIN_REF:-main}" main || rm -rf "$RUNNER_TEMP/wt/main"
           fetch next next || rm -rf "$RUNNER_TEMP/wt/next"
-          fetch site site || rm -rf "$RUNNER_TEMP/wt/site"
           ls "$RUNNER_TEMP/wt"
       # No magic-nix-cache: its post step spent 2m26s uploading store paths; the lean shell downloads from cache.nixos.org in seconds
       - name: Build the streams
@@ -73,7 +73,6 @@ jobs:
             }
             if [ -d "$wt/main" ]; then build main main ""; elif [ -d "$wt/next" ]; then build next next "" "https://github.com/$REPO"; else echo "no stream has docs/site/build.ts"; exit 1; fi
             [ ! -d "$wt/next" ] || build next next next/
-            [ ! -d "$wt/site" ] || build site site lab/
           '
       # Next channel: the plg, its archive and checksums go into /next/ of this deployment (only the current build is hosted).
       # Off unless the repository variable NEXT_CHANNEL_ENABLED is "true". Version X.(Y+1).0-next.<run number>: Unraid compares as text, so run numbers only go up.
@@ -81,7 +80,7 @@ jobs:
         if: vars.NEXT_CHANNEL_ENABLED == 'true'
         run: |
           # shellcheck disable=SC2016
-          nix develop .#release -c bash -euo pipefail -c '
+          nix develop .#site -c bash -euo pipefail -c '
             [ -d "$RUNNER_TEMP/wt/next" ] || { echo "no next stream, no next channel"; exit 0; }
             cd "$RUNNER_TEMP/wt/next"
             just go-build
@@ -131,7 +130,6 @@ jobs:
         include:
           - { name: 'Website: released', path: '' }
           - { name: 'Website: next', path: 'next/' }
-          - { name: 'Website: lab', path: 'lab/' }
     environment:
       name: ${{ matrix.name }}
       url: ${{ needs.deploy.outputs.page_url }}${{ matrix.path }}

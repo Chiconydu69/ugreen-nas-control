@@ -264,7 +264,7 @@ export const it: Record<Key, string> = {
     'case.inside_hint_like_8800plus':
         "L'interno è disegnato sul DXP8800 Plus: la scheda di questo modello non è nota. La numerazione di RAM e M.2 è presunta; apri una issue se il tuo box è diverso.",
     'case.inside_hint_4800':
-        'Il pannello di servizio sul fondo, secondo il manuale di UGREEN. La numerazione di RAM 1 / RAM 2 e M.2-1 / M.2-2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
+        'Il pannello di servizio sul fondo. Gli slot hanno i nomi stampati sulla scheda: M.2-1 è M2-KEYM1 (accanto alla RAM) e M.2-3 è M2-KEYM3; M2-KEYM2 è dentro il case, per il modulo di sistema di fabbrica. La numerazione di RAM 1 / RAM 2 è presunta; se il tuo dispositivo è diverso, apri una issue.',
     'in.slot_empty': '{label} · vuoto',
     'nvme.boot': 'SSD di avvio Unraid',
     'nvme.role': 'SSD del pool «{name}»',

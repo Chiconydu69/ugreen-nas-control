@@ -704,7 +704,7 @@ function main(root: HTMLElement): void {
                 ? state.hw?.bays?.some(b => b.device === n.id)
                     ? t('case.m2_slot', { n: state.hw.bays.find(b => b.device === n.id)?.bay ?? '' })
                     : 'M.2'
-                : t('case.m2_slot', { n: n.slot.replace('m2-', '') });
+                : t('case.m2_slot', { n: caseModel(state.hw ?? {}).m2Nos?.[Number(n.slot.replace('m2-', '')) - 1] ?? n.slot.replace('m2-', '') });
 
     function uptime(seconds: number): string {
         const d = Math.floor(seconds / 86400);
@@ -2372,6 +2372,12 @@ function main(root: HTMLElement): void {
 
         return drives;
     };
+    // SSDs of unknown slot beyond the two M.2 slots: they can only sit in the PCIe slot.
+    const m2Surplus = (hw: Hardware): Nvme[] => {
+        const placed = m2Drives(hw);
+
+        return hw.nvme.filter(d => d.slot === 'm2' && !placed.includes(d));
+    };
 
     function inside6800Html(hw: Hardware): string {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
@@ -2561,7 +2567,7 @@ function main(root: HTMLElement): void {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
         const [m2a, m2b] = m2Drives(hw);
         const memory = hw.memory;
-        const card = ssd('pcie');
+        const card = ssd('pcie') ?? m2Surplus(hw)[0];
         const ram = (x: number, mod: Dimm | undefined): string => {
             const socket = `<rect x="${x}" y="16" width="84" height="200" rx="5" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/><rect x="${x + 39}" y="196" width="6" height="14" rx="2" style="fill:var(--bd-sock2)"/><rect x="${x - 8}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/><rect x="${x + 84}" y="40" width="8" height="26" rx="2" fill="#aeb6bf"/>`;
 
@@ -2682,7 +2688,7 @@ function main(root: HTMLElement): void {
             return `${socket}${body}${boardText(30, y + 132, t('case.ram_slot', { n }))}<text x="30" y="${y + 146}" style="fill:var(--bd-text2)" font-size="11">${escapeHtml(sub)}</text>`;
         };
         const m2 = (x: number, drive: Nvme | undefined, n: number): string => {
-            const label = t('in.m2', { n });
+            const label = t('in.m2', { n: caseModel(hw).m2Nos?.[n - 1] ?? n });
             const top = 130;
             const len = 330;
             const frame = `<circle cx="${x + 37}" cy="${top - 16}" r="7" fill="#b87333"/><rect x="${x - 2}" y="${top + len}" width="78" height="10" rx="2" fill="#aeb6bf"/>`;
@@ -2732,8 +2738,8 @@ function main(root: HTMLElement): void {
         const ssd = (slot: string): Nvme | undefined => hw.nvme.find(d => d.slot === slot);
         const card = hw.nvme.filter(d => d.slot === 'pcie');
         const ssds = [
-            ssdSlotRow(t('case.m2_slot', { n: 1 }), ssd('m2-1')),
-            ssdSlotRow(t('case.m2_slot', { n: 2 }), ssd('m2-2')),
+            ssdSlotRow(t('case.m2_slot', { n: model.m2Nos?.[0] ?? 1 }), ssd('m2-1')),
+            ssdSlotRow(t('case.m2_slot', { n: model.m2Nos?.[1] ?? 2 }), ssd('m2-2')),
             model.sys ? ssdSlotRow(t('case.sys_slot'), ssd('system')) : '',
             ...(model.pcie
                 ? card.length

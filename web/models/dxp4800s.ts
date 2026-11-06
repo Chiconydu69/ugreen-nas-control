@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP4800S$',
     fixtureDmi: 'DXP4800S',
     cpu: 'Intel N150',
+    ram: { type: 'DDR5', mt: 5600 },
     bays: 4,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },

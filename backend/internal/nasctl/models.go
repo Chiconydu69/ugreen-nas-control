@@ -33,7 +33,8 @@ type RegModel struct {
 	FixtureDMI string `json:"fixtureDmi"`
 	Bays       *int   `json:"bays"`
 	M2         *struct {
-		Slots []string `json:"slots"`
+		Slots    []string `json:"slots"`
+		PCIeSlot bool     `json:"pcieSlot"`
 	} `json:"m2"`
 	LAN *struct {
 		MaxMbit []*int `json:"maxMbit"`
@@ -249,7 +250,7 @@ func BuildEvidence(in EvInputs) Evidence {
 		if reg.M2 != nil {
 			exp := slices.Clone(reg.M2.Slots)
 			sort.Strings(exp)
-			nvme.Expected, nvme.OK = exp, tri(slices.Equal(exp, m2))
+			nvme.Expected, nvme.OK = exp, tri(m2SlotsMatch(exp, m2, reg.M2.PCIeSlot))
 		}
 		if reg.LAN != nil {
 			lan.Expected, lan.OK = len(reg.LAN.MaxMbit), tri(len(reg.LAN.MaxMbit) == len(r.Network))
@@ -270,12 +271,12 @@ func BuildEvidence(in EvInputs) Evidence {
 	wst := "none"
 	if reg != nil && reg.Fan != nil && reg.Fan.Watchdog != nil {
 		wst = reg.Fan.Watchdog.Status
-		wd.Expected = "armed or off"
+		wd.Expected = "armed, off or not counting"
 	}
 	if in.FanSt != nil && in.FanSt.Watchdog != nil {
 		wd.Detected = in.FanSt.Watchdog.State
 		if wd.Expected != nil {
-			wd.OK = tri(!slices.Contains([]string{"action_needed", "not_counting", "not_effective"}, in.FanSt.Watchdog.State))
+			wd.OK = tri(!slices.Contains([]string{"action_needed", "not_effective"}, in.FanSt.Watchdog.State))
 		}
 	}
 	area("watchdog", wst, wd)
@@ -416,4 +417,24 @@ func evidenceSection(ev Evidence) Section {
 		l = append(l, fmt.Sprintf("  %q: %s", k, v))
 	}
 	return Section{Title: "Machine-readable (diag/1)", Body: "{\n" + strings.Join(l, ",\n") + "\n}", Lang: "json"}
+}
+
+// m2SlotsMatch compares the expected slot names with the detected ones. A plain "m2" is an SSD whose slot
+// the plugin cannot tell (no root-port map): it fits any free expected slot, and on a model with a PCIe slot
+// the SSDs beyond the M.2 slots sit in that.
+func m2SlotsMatch(expected, detected []string, pcieSlot bool) bool {
+	free := slices.Clone(expected)
+	loose := 0
+	for _, d := range detected {
+		if d == "m2" {
+			loose++
+			continue
+		}
+		i := slices.Index(free, d)
+		if i < 0 {
+			return false
+		}
+		free = slices.Delete(free, i, i+1)
+	}
+	return pcieSlot || loose <= len(free)
 }

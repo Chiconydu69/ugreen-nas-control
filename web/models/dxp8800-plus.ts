@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP8800 Plus$',
     fixtureDmi: 'DXP8800 Plus',
     cpu: 'Intel Core i5-1235U',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 8,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
@@ -31,8 +32,12 @@ export default {
             note: "LED protocol verified on this model by miskcoo's driver, confirmed by users of this plugin."
         },
         fans: {
-            status: 'expected',
-            note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 control register unconfirmed)."
+            status: 'community',
+            by: 'Chiconydu69 (issue 165)',
+            version: '5.2.0',
+            date: '2026-11-05',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
+            note: 'Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. Header 4 (pwm4) control register unconfirmed: the diag shows it in automatic mode.'
         },
         case: { status: 'expected', note: "inside after UGREEN's manual; slot numbering assumed" },
         sensors: {

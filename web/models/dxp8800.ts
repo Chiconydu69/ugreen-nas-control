@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP8800( Pro)?$',
     fixtureDmi: 'DXP8800 Pro',
     cpu: null,
+    ram: null,
     bays: 8,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
@@ -26,5 +27,6 @@ export default {
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: "Eight bays. UGREEN's driver sources list a plain DXP8800 and a DXP8800 Pro next to the Plus; nobody has reported either to this plugin yet. Fan control after a fan probe.",
-    shots: false
+    shots: false,
+    fixture: { cpu: 'Intel Core i5-1235U', ram: { type: 'DDR5', mt: 4800 } }
 } satisfies Model;

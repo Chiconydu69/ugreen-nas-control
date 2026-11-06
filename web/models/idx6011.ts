@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^iDX601[12]',
     fixtureDmi: 'iDX6011 Pro',
     cpu: 'Intel Core Ultra 5 125H (Pro: Core Ultra 7 255H)',
+    ram: { type: 'LPDDR5X', mt: 8400 },
     bays: 6,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },
@@ -44,5 +45,6 @@ export default {
         'https://github.com/noodlemctwoodle/unraid-ugreen-idx6011-pro'
     ],
     note: 'Six bays, two M.2 slots, a display at the front (Pro: 3.7 inch LCD), two 10G LAN ports, two Thunderbolt 4 ports, OCuLink. Fan control on the Pro only; the plain iDX6011 and iDX6012 show fan readings only (read-only).',
-    shots: true
+    shots: true,
+    fixture: { cpu: 'Intel Core Ultra 7 255H' }
 } satisfies Model;

@@ -56,6 +56,8 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Refuse an existing tag, published release or branch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -178,6 +180,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Release state
         id: state
         env:
@@ -228,6 +232,8 @@ jobs:
         with:
           persist-credentials: false
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Tag at the merge commit and publish
         env:
           GH_TOKEN: ${{ github.token }}

@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP8800 Ultra',
     fixtureDmi: 'DXP8800 Ultra',
     cpu: 'Intel Core 7 150U',
+    ram: { type: 'DDR5', mt: 5600 },
     bays: 8,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },

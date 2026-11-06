@@ -78,11 +78,6 @@
 :root[data-stream] {
     --sb: 34px;
 }
-:root[data-stream='site'] {
-    --sb-a: #6d28d9;
-    --sb-b: #5b21b6;
-    --sb-fg: #fff;
-}
 html {
     scroll-padding-top: calc(var(--head) + 8px);
 }

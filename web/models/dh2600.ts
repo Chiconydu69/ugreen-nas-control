@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DH2600',
     fixtureDmi: 'DH2600',
     cpu: 'Intel Celeron N5105',
+    ram: { type: 'DDR4', mt: 2933 },
     bays: 2,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },

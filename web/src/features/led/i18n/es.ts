@@ -13,7 +13,7 @@ export const es: Record<Key, string> = {
     'alerts.state_none': 'Sin notificaciones no leídas.',
     'alerts.state_active': '{n} notificación(es) no leída(s): el LED de encendido parpadea.',
     'alerts.saved': 'Alertas guardadas',
-    'warn.title': 'El monitor LED de «ugreenleds-driver» está en funcionamiento.',
+    'warn.title': 'El monitor LED de «ugreenleds-driver» funciona.',
     'warn.text':
         'El sistema sigue restableciendo los LED de la unidad y de la red a sus colores predeterminados. Para realizar pruebas, puedes detenerlo hasta el próximo reinicio ejecutando <code>pkill -f /usr/bin/ugreen-leds</code>.',
     'mode.manual': 'Manual',
@@ -21,8 +21,8 @@ export const es: Record<Key, string> = {
     'mode.status_on': 'Modo de estado activado',
     'mode.manual_on': 'Modo manual activado',
     'group.system': 'LED del sistema',
-    'group.drives': 'LED de las unidades',
-    'group.bays': 'Bahías individuales',
+    'group.drives': 'LED de las unidades de disco', // To make the reference to "hard drives" clearer, I suggest to add (again) the "de disco".
+    'group.bays': 'Bahías de disco individuales', // To make the reference to "hard drives" clearer, I suggest to add (again) the "de disco".
     'group.effect': 'Efecto',
     'colors.reset': 'Restablecer a los valores predeterminados',
     'colors.pick': 'Elige un color',
@@ -32,10 +32,10 @@ export const es: Record<Key, string> = {
     'colors.error_saved': 'Color de error guardado',
     'effect.static': 'Estático',
     'effect.static_text': 'Color sólido',
-    'effect.breath': 'Respiración',
+    'effect.breath': 'Respirar', // As the English text is "Breathe" (a verb), I suggest to also use the Spanish verb "respirar" (instead of it's noun).
     'effect.breath_text': 'Aparición y desaparición gradual y suave',
-    'effect.blink': 'Parpadeo',
-    'effect.blink_text': 'Encendido y apagado constante',
+    'effect.blink': 'Parpadear', // As the English text is "Blink" (a verb), I suggest to also use the Spanish verb "Parpadear" (instead of it's noun).
+    'effect.blink_text': 'Encender y apagar constante', // Similar as above: Verbs in their basic form, instead of participle
     'effect.rainbow': 'Arcoíris',
     'effect.rainbow_text': 'Ciclo de color automático',
     'effect.temperature': 'Temperatura',
@@ -48,7 +48,7 @@ export const es: Record<Key, string> = {
     'preview.title': 'Vista previa',
     'preview.test': 'Prueba',
     'preview.reset': 'Restablecer valores predeterminados',
-    'test.all_off': 'Todos los LED están apagados: enciéndelos primero y luego haz la prueba.',
+    'test.all_off': 'Todos los LED están apagados: enciéndelos primero y luego realiza la prueba.', // "realiza" is still indicative, but sounds less harsh to me (looking at it from the eye of the user) than a "haz" (but this is very subjective)
     'test.done': 'Prueba finalizada',
     'reset.confirm': '¿Restablecer todos los LED a los colores predeterminados, al 80 % de brillo y al modo «Estático»?',
     'reset.done': 'Valores predeterminados restaurados',
@@ -69,15 +69,15 @@ export const es: Record<Key, string> = {
     'led.power': 'LED de encendido',
     'led.netdev': 'LED de red',
     'led.netdev2': 'Segundo LED de red',
-    'led.bay': 'Bahía {n}',
+    'led.bay': 'Bahía {n}', // (This comment is only for reference:) Here, due due the "sense of place" (information design) in this sub-menu, the additional "de disco" is not necessary or helpful.
     'bays.title': 'Asignación y estado',
     'bays.intro': 'Qué disco se encuentra en qué bahía y cómo lo indica Unraid. En el modo de estado, los LED muestran exactamente eso.',
     'bays.none': 'No hay ninguna asignación disponible.',
-    'bays.empty': 'vacía',
-    'bays.outside': 'fuera de Unraid',
+    'bays.empty': 'Vacía', // To make things more uniform, I suggest to capitalize this word.
+    'bays.outside': 'Fuera de Unraid', // To make things more uniform, I suggest to capitalize this string.
     'bays.no_disk': 'No se ha detectado ningún disco',
     'bays.standby': 'En reposo',
-    'bays.errors': '{n} errores de lectura/escritura',
+    'bays.errors': '{n} error(es) de lectura/escritura', // Added the brackets to make the flow of reading more natural when there is exactly one error.
     'case.error': 'Error',
     'sync.check': 'Comprobación de paridad en curso: {percent} %',
     'sync.recon': 'Reconstrucción en curso: {percent} %',
@@ -85,7 +85,7 @@ export const es: Record<Key, string> = {
     'display.title': 'Pantalla de estado',
     'display.sync': 'Mostrar comprobación de paridad y reconstrucción',
     'display.sync_hint':
-        'Los discos del array muestran este color mientras Unraid realiza comprobaciones o reconstrucciones. Los discos con errores mantienen el color de error.',
+        'Los discos del array muestran este color mientras Unraid realiza comprobaciones o reconstrucciones. Los discos con errores mantienen el color de error.', // Having a hard time here, but tend to keep it as "array": '"Array de discos duros" is more commonly used in technical and professional IT environments, as engineers frequently adopt English technical terms directly. However, "matriz de discos duros" is widely considered the correct and official Spanish translation. It is highly common in formal documentation, articles, and product catalogs.'
     'display.sync_color': 'Color durante una comprobación',
     'display.standby': 'Discos en reposo',
     'display.standby_dim': 'Atenuado',
@@ -96,7 +96,7 @@ export const es: Record<Key, string> = {
     'display.smart': 'Mostrar advertencias SMART',
     'display.smart_hint':
         'Una bahía se ilumina con el color de advertencia cuando se reasigna, aumenta el número de sectores pendientes o irrecuperables, o Unraid registra errores de lectura/escritura.',
-    'display.color_mode': 'Color de los LED de las unidades',
+    'display.color_mode': 'Color de los LED de las unidades', // (This comment is only for reference:) Here, due due the "sense of place" (information design) in this sub-menu, the additional "de disco" is not necessary or helpful.
     'display.color_own': 'Color propio',
     'display.color_temperature': 'Por temperatura del disco',
     'display.netdev': 'El LED de red muestra',
@@ -104,26 +104,26 @@ export const es: Record<Key, string> = {
     'display.netdev_link': 'Solo la conexión',
     'display.netdev_manual': 'Ajustar a mano',
     'display.netdev_saved': 'LED de red guardado',
-    'display.speed': 'Colorear el LED de red según la velocidad',
+    'display.speed': 'Colorear el LED de red según la velocidad de enlace', // I added "de enlace" to make the translation from "link speed" (and not only "speed" [!]) clearer.
     'display.speed_hint': 'El color indica la velocidad negociada, p. ej. 1 en vez de 2,5 Gbit/s con un cable defectuoso.',
     'display.speed_color': 'Color a {speed}',
     'display.speed_current': 'Enlace actual: {speed}.',
     'display.speed_unknown': 'La velocidad del enlace no se puede leer en este momento.',
-    'shutdown.title': 'Apagado y reinicio',
+    'shutdown.title': 'Apagar y reiniciar', // Similar as above: Verbs in their basic form, instead of participle or noun form
     'shutdown.intro':
         'El LED de encendido indica que el NAS se apaga o se reinicia: desde que Unraid detiene el array hasta que el equipo se apaga o vuelve a arrancar.',
-    'shutdown.enable': 'Indicar al apagar y reiniciar',
+    'shutdown.enable': 'Señal al apagar y reiniciar', // Señal fits better here (imho) than a verb
     'shutdown.enable_hint': 'Solo cuando el NAS realmente se apaga o se reinicia, no cuando solo se detiene el array. El modo nocturno sigue aplicándose.',
     'shutdown.color': 'Color',
     'shutdown.effect': 'Efecto',
-    'shutdown.effect_blink': 'Parpadeo',
-    'shutdown.effect_breath': 'Respiración',
+    'shutdown.effect_blink': 'Parpadear', // Here as well: As the English text is "Blink" (a verb), I suggest to also use the Spanish verb "parpadear" (instead of it's noun).
+    'shutdown.effect_breath': 'Respirar', // Here as well: As the English text is "Breathe" (a verb), I suggest to also use the Spanish verb "respirar" (instead of it's noun).
     'shutdown.test': 'Probar (6 segundos)',
     'shutdown.test_started': 'El LED de encendido muestra la señal durante 6 segundos',
     'shutdown.saved': 'Señal de apagado guardada',
-    'fact.port_up': 'conectado',
-    'fact.port_down': 'sin conexión',
-    'fact.port_max': 'hasta {speed}',
+    'fact.port_up': 'conectado', // Due to the surroundings, I would NOT make this more uniform, and therefore let this word in lowercase.
+    'fact.port_down': 'sin conexión', // Due to the surroundings, I would NOT make this more uniform, and therefore let this word in lowercase.
+    'fact.port_max': 'hasta {speed}', // Due to the surroundings, I would NOT make this more uniform, and therefore let this word in lowercase.
     'display.standby_pulse': 'Respira lentamente',
     'display.smart_color': 'Color para advertencias SMART',
     'display.error': 'Mostrar errores de disco',
@@ -131,28 +131,28 @@ export const es: Record<Key, string> = {
     'display.activity': 'Parpadear con la actividad del disco',
     'display.activity_hint': 'El LED de una bahía parpadea mientras su disco lee o escribe. Desactivado: permanece fijo.',
     'bays.smart': 'SMART: {list}',
-    'smart.5': '{n} sectores reasignados',
-    'smart.187': '{n} errores irrecuperables',
-    'smart.197': '{n} sectores pendientes',
-    'smart.198': '{n} fuera de línea irrecuperables',
+    'smart.5': '{n} sector(es) reasignado(s)', // Added the brackets to make the flow of reading more natural when n=1.
+    'smart.187': '{n} error(es) irrecuperable(s)', // Added the brackets to make the flow of reading more natural when n=1.
+    'smart.197': '{n} sector(es) pendiente(s)', // Added the brackets to make the flow of reading more natural when n=1.
+    'smart.198': '{n} fuera de línea irrecuperable(s)', // Added the brackets to make the flow of reading more natural when n=1.
     'smart.failed': 'valor por debajo del límite',
-    'smart.errors': '{n} errores de lectura/escritura',
+    'smart.errors': '{n} error(es) de lectura/escritura', // Added the brackets to make the flow of reading more natural when n=1.
     'smart.ack': 'Confirmar',
     'smart.ack_title': 'Acepta los valores actuales; el LED solo volverá a avisar si alguno sigue aumentando',
     'smart.acked': 'Bahía {n}: valores SMART confirmados',
     'identify.button': 'Identificar',
     'identify.stop': 'Detener',
-    'identify.title': 'Haz que el LED de esta bahía parpadee en blanco durante 30 segundos',
+    'identify.title': 'El LED de esta bahía parpadea en blanco durante 30 segundos', // Once again formed the sentence differently, to avoid the "Haz que ..."
     'identify.started': 'La bahía {n} parpadea durante 30 segundos',
     'identify.stopped': 'Identificación detenida',
     'disk.DISK_OK': 'OK',
-    'disk.DISK_NP': 'sin asignar',
-    'disk.DISK_INVALID': 'inválido',
-    'disk.DISK_DSBL': 'desactivado',
-    'disk.DISK_DSBL_NEW': 'desactivado (nuevo)',
-    'disk.DISK_WRONG': 'disco incorrecto',
-    'disk.DISK_NP_MISSING': 'ausente',
-    'disk.DISK_NEW': 'nuevo',
+    'disk.DISK_NP': 'Sin asignar', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_INVALID': 'Inválido', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_DSBL': 'Desactivado', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_DSBL_NEW': 'Desactivado (nuevo)', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_WRONG': 'Disco incorrecto', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_NP_MISSING': 'Ausente', // To make things more uniform, I suggest to capitalize this word.
+    'disk.DISK_NEW': 'Nuevo', // To make things more uniform, I suggest to capitalize this word.
     'night.title': 'Modo nocturno',
     'night.intro':
         'Atenúa o apaga los LED a horas fijas todos los días, incluso cruzando la medianoche (p. ej., de 22:00 a 07:00). En el modo de estado, los LED de la unidad y de la red siguen este comportamiento; los LED que están apagados no parpadean por la noche.',
@@ -165,12 +165,12 @@ export const es: Record<Key, string> = {
     'night.brightness': 'Brillo nocturno',
     'night.state_off': 'Apagado: los LED permanecen igual las 24 horas del día.',
     'night.state_night': 'Ya es de noche – hasta las {time}.',
-    'led.standby_normal': 'en reposo',
-    'led.standby_dim': 'en reposo, atenuado al {pct} % de este brillo',
-    'led.standby_off': 'apagado en reposo',
-    'led.smart_override': 'muestra ahora el color de aviso SMART, no este color',
-    'led.error_override': 'muestra ahora el color de error, no este color',
-    'led.standby_pulse': 'respirando en reposo',
+    'led.standby_normal': 'En reposo', // To make things more uniform, I suggest to capitalize this string.
+    'led.standby_dim': 'En reposo, atenuado al {pct} % de este brillo', // To make things more uniform, I suggest to capitalize this string.
+    'led.standby_off': 'Apagado en reposo', // To make things more uniform, I suggest to capitalize this string.
+    'led.smart_override': 'Muestra ahora el color de aviso SMART, no este color', // To make things more uniform, I suggest to capitalize this sentence.
+    'led.error_override': 'Muestra ahora el color de error, no este color', // To make things more uniform, I suggest to capitalize this sentence.
+    'led.standby_pulse': 'Respirando en reposo', // To make things more uniform, I suggest to capitalize this string.
     'night.note_dim': 'Modo nocturno: el brillo de los LED se reduce hasta las {time}. Aquí se ajusta el brillo diurno.',
     'night.note_off': 'Modo nocturno: los LED permanecen apagados hasta las {time}. Aquí se ajusta el brillo diurno.',
     'night.state_day': 'Ahora es de día; noche a partir de las {time}.',
@@ -184,7 +184,7 @@ export const es: Record<Key, string> = {
     'api.In status mode effects apply to the power LED (and a manual network LED) only':
         'En el modo de estado, los efectos solo se aplican al LED de encendido (y a un LED de red manual)',
     'mode.title': 'Modo',
-    'mode.hint_status': 'Los LED de las unidades y de red muestran el estado. El color y el brillo los eliges tú.',
+    'mode.hint_status': 'Los LED de las unidades y de red muestran el estado. Todavía eliges el color y el brillo.', // The English "still" was missing completely in the previous Spanish translation.
     'mode.hint_manual': 'Cada LED muestra exactamente lo que ajustes abajo.',
     'group.target': 'Efecto para',
     'group.target_both': 'LED de encendido y de red',

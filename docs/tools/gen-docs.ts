@@ -9,9 +9,9 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { loadModels } from '../../web/models/index';
 import { ALL_OUTPUTS, DOC_FILES, REGISTRY_JSON } from '../../scripts/generated';
-import { FORUM_TESTERS, TESTERS } from './testers';
+import { FORUM_TESTERS, MAINTAINERS, TESTERS } from './testers';
 import { format } from '../../scripts/format';
-import { CAPABILITIES, type Capability, type Evidence, type Model, type Overall, SERIES, monthYear, overallStatus } from '../../web/models/schema';
+import { CAPABILITIES, type Capability, type Model, type Overall, SERIES, monthYear, overallStatus } from '../../web/models/schema';
 import { CAPABILITY_LABEL, EVIDENCE_HELP, EVIDENCE_LABEL, OVERALL_HELP, OVERALL_LABEL, checkText } from '../site/content';
 
 const root = resolve(import.meta.dir, '../..');
@@ -41,36 +41,30 @@ function summary(): string {
     return [table(['Model', ...CAPABILITIES.map(c => CAPABILITY_LABEL[c]), 'Overall'], rows), '', `${words}.`].join('\n');
 }
 
-/** One symbol per evidence level for the README table; the legend line above the tables names them. */
-const SYMBOL: Record<Evidence, string> = { verified: '●', community: '◔', partial: '◐', expected: '○', unsupported: '–' };
 const OVERALL_SYMBOL: Record<Overall, string> = { verified: '●', community: '◔', partial: '◐', expected: '○' };
 const RANK: Record<Overall, number> = { verified: 0, partial: 1, community: 2, expected: 3 };
 
-/** README table: grouped by series, best status first (the order of the site matrix), one symbol per capability. */
+/** README list: one line per series, models grouped by overall status (best first); the full matrix stays in docs/hardware.md. */
 function compact(): string {
     const overalls = (Object.keys(RANK) as Overall[]).filter(o => models.some(m => overallStatus(m) === o));
     const counts = overalls.map(o => `${models.filter(m => overallStatus(m) === o).length} ${OVERALL_LABEL[o].toLowerCase()}`).join(', ');
-    const legend = (['verified', 'community', 'partial', 'expected', 'unsupported'] as const)
-        .map(e => `${SYMBOL[e]} ${e === 'unsupported' ? 'not offered' : EVIDENCE_LABEL[e].toLowerCase()}`)
-        .join(' · ');
-    const groups = SERIES.map(s => {
-        const rows = models
+    const legend = overalls.map(o => `${OVERALL_SYMBOL[o]} ${OVERALL_LABEL[o].toLowerCase()}`).join(' · ');
+    const lines = SERIES.map(s => {
+        const ms = models
             .filter(m => m.series === s)
-            .sort((x, y) => RANK[overallStatus(x)] - RANK[overallStatus(y)] || x.name.localeCompare(y.name, 'en', { numeric: true }))
-            .map(m => [
-                link(m),
-                ...CAPABILITIES.map(c => SYMBOL[m.verified[c].status]),
-                `${OVERALL_SYMBOL[overallStatus(m)]} ${OVERALL_LABEL[overallStatus(m)]}`
-            ]);
-        return rows.length ? [`**${s} series**`, '', table(['Model', ...CAPABILITIES.map(c => CAPABILITY_LABEL[c]), 'Status'], rows)].join('\n') : '';
+            .sort((x, y) => RANK[overallStatus(x)] - RANK[overallStatus(y)] || x.name.localeCompare(y.name, 'en', { numeric: true }));
+        const parts = overalls
+            .map(o => ({ o, g: ms.filter(m => overallStatus(m) === o) }))
+            .filter(x => x.g.length)
+            .map(x => `${OVERALL_SYMBOL[x.o]} ${x.g.map(m => link(m)).join(', ')}`);
+        return parts.length ? `- **${s}**: ${parts.join(' · ')}` : '';
     }).filter(Boolean);
     return [
-        `**${counts}.**`,
+        `**${counts}.** ${legend}.`,
         '',
-        legend,
+        ...lines,
         '',
-        ...groups.flatMap(g => [g, '']),
-        'Versions, dates and evidence per cell: [docs/hardware.md](docs/hardware.md), or the model page on the website.'
+        'Per-capability status, versions, dates and evidence: [docs/hardware.md](docs/hardware.md), or the model page on the website.'
     ].join('\n');
 }
 
@@ -146,12 +140,19 @@ const RENDER: Record<Exclude<(typeof DOC_FILES)[number], typeof REGISTRY_JSON>, 
     'docs/hardware.md': () => [summary(), '', '### Details per model', '', detail(), '', '### Live demo', '', demoLinks()].join('\n')
 };
 
+/** Round avatar linked to the GitHub profile. GitHub strips CSS, so the circle comes from wsrv.nl (no title: no hover tooltip). */
+function avatar(login: string, size: number): string {
+    const src = `https://wsrv.nl/?url=github.com/${login}.png&w=${size * 2}&h=${size * 2}&fit=cover&mask=circle`;
+    return `<a href="https://github.com/${login}"><img src="${src}" width="${size}" height="${size}" alt="${login}"></a>`;
+}
+
 function testers(): string {
-    const grid = TESTERS.map(
-        t =>
-            `<a href="https://github.com/${t.login}" title="${t.login}: ${t.did}"><img src="https://github.com/${t.login}.png?size=64" width="48" height="48" alt="${t.login}"></a>`
-    ).join('\n');
-    return `${grid}\n\nThanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
+    const [a, b] = MAINTAINERS.map(m => `${avatar(m.login, 24)} [${m.name}](https://github.com/${m.login})`);
+    const grid = TESTERS.map(t => avatar(t.login, 48)).join('\n');
+    const named = TESTERS.map(t => `[${t.login}](https://github.com/${t.login}) (${t.did})`);
+    const last = named.length - 1;
+    const list = last > 0 ? `${named.slice(0, last).join(', ')} and ${named[last]}` : named.join('');
+    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to ${list} for testing and translating. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
 }
 
 function splice(text: string, body: string, name = 'models', source = 'web/models/'): string {
@@ -269,6 +270,16 @@ for (const [file, render] of Object.entries(RENDER)) {
         if (f === 'docs/README.md') continue;
         if (!index.includes(`](${relative(join(root, 'docs'), join(root, f))})`)) errors.push(`docs/README.md: no link to ${f}`);
     }
+}
+
+// README: model names and statuses come only from the generated blocks, so adding or verifying a model never needs a hand edit.
+{
+    const readme = readFileSync(join(root, 'README.md'), 'utf8').replace(/<!-- (\w+):start -->[\s\S]*?<!-- \1:end -->/g, '');
+    const names = models.map(m => m.name).sort((a, b) => b.length - a.length);
+    for (const n of names)
+        if (readme.includes(n)) errors.push(`README.md: model name "${n}" outside the generated blocks (the list is generated; link docs/hardware.md instead)`);
+    const family = readme.match(/\b(?:i?DXP?|DH)\d{3,4}\w*/g);
+    if (family) errors.push(`README.md: model name ${[...new Set(family)].join(', ')} outside the generated blocks`);
 }
 
 const known = recipes();

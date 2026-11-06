@@ -2,7 +2,7 @@
 
 ## What does it do
 
-Feature list: [README](../README.md#what-you-get). Fan safety rules: [fan.md](fan.md#safety-logic). Supported languages: [translations.md](translations.md).
+Feature list: [README](../README.md#what-it-does). Fan safety rules: [fan.md](fan.md#safety-logic). Supported languages: [translations.md](translations.md).
 
 ## Is my model supported
 

@@ -51,6 +51,8 @@ export interface CaseModel {
     inside6011?: boolean;
     pcie?: boolean;
     sys?: boolean;
+    // Numbers printed on the board for the two M.2 slots drawn, when they are not 1 and 2.
+    m2Nos?: [number, number];
     hint?: Key;
     noInside?: boolean;
     screen?: boolean;
@@ -336,6 +338,7 @@ export const CASE_MODELS: [RegExp, CaseModel][] = [
             rear4800: true,
             rear: [],
             inside4800: true,
+            m2Nos: [1, 3],
             hint: 'case.inside_hint_4800'
         }
     ]

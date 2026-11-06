@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP480T',
     fixtureDmi: 'DXP480T Plus',
     cpu: 'Intel Core i5-1235U',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 0,
     m2Slots: 4,
     m2: { slots: ['m2-1', 'm2-2', 'm2-3', 'm2-4'], pcieSlot: false },

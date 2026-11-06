@@ -51,7 +51,7 @@ case: verified on 5.0.0 2026-11-02 - Inside view drawn from the service panel; R
 sensors: verified on 5.0.0 2026-11-02 - CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.
   cpu_temperature: expected true, detected true [ok]
 watchdog: expected - Registers from the driver UGREEN ships; no armed watchdog seen on a device with this plugin yet.
-  watchdog_state: expected armed or off, detected - [n/a]
+  watchdog_state: expected armed, off or not counting, detected - [n/a]
 open points in the registry: -
 ```
 
@@ -223,7 +223,7 @@ Nov  4 10:00:00 <host> ugreen-nas-ctl[1]: fan daemon started
     "fans": {"registry_status":"verified","checks":[{"id":"fan_chip","expected":"it5571","detected":"it5571","ok":true},{"id":"fan_headers","expected":["fan1:cpu","fan3:case"],"detected":["fan1:cpu","fan3:case"],"ok":true},{"id":"fans_spin","expected":"all fans above 0 rpm","detected":false,"ok":false}]},
     "leds": {"registry_status":"verified","checks":[{"id":"led_support","expected":"bays","detected":"supported true, blocker -","ok":null},{"id":"led_controller","expected":"ok","detected":"ok","ok":true}]},
     "sensors": {"registry_status":"verified","checks":[{"id":"cpu_temperature","expected":true,"detected":true,"ok":true}]},
-    "watchdog": {"registry_status":"expected","checks":[{"id":"watchdog_state","expected":"armed or off","detected":null,"ok":null}]}
+    "watchdog": {"registry_status":"expected","checks":[{"id":"watchdog_state","expected":"armed, off or not counting","detected":null,"ok":null}]}
   },
   "channel": "stable",
   "model": {"id":"dxp4800-gt","name":"DXP4800 GT","known":true,"dmi":{"sys_vendor":"UGREEN","product_name":"DXP4800 GT","product_family":"","board_vendor":"","board_name":"","bios_vendor":"","bios_version":"1.2 \u003cremoved\u003e","bios_date":""}},

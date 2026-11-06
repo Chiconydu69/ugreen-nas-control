@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP2800S$',
     fixtureDmi: 'DXP2800S',
     cpu: null,
+    ram: null,
     bays: 2,
     m2Slots: null,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
@@ -26,5 +27,6 @@ export default {
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: 'Two bays; the case view is drawn after the DXP2800. Known from the name in UGREEN driver sources (power button, beeper); nobody has reported this model yet.',
-    shots: false
+    shots: false,
+    fixture: { cpu: 'Intel N100', ram: { type: 'DDR5', mt: 4800 } }
 } satisfies Model;

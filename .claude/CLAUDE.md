@@ -1,7 +1,7 @@
 # Rules for Claude Code sessions
 
 - Layout: `backend/` Go daemon, `web/` UI (TypeScript on Bun), `plugin/` packaging, `docs/`, `.changes/`. → docs/architecture.md
-- Branches: `main` released only; `next` development + next channel, every PR targets it, never commit to `main`; `site` = playground. Pages: `/` main, `/next/`, `/lab/`. → docs/releasing.md#branches
+- Branches: `main` released only; `next` development + next channel, every PR targets it, never commit to `main`. Pages: `/` main, `/next/`. → docs/releasing.md#branches
 - One topic per commit/PR. Ask the maintainer before bumping versions or changing CI/release.
 - Before pushing: `just check`; UI change also `just e2e`. Other recipes: `just docs`, `site`, `plg-serve`. → docs/development.md
 - macOS runs miss Linux-only code (backend, sensors, e2e on Chromium): say what was not run.

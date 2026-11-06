@@ -1,6 +1,7 @@
 // Sample data the harness serves for a model: the shapes of `ugreen-nas-fan` (status, hardware) and
 // `ugreen-led-ctl` (status, all, bays, list). Fixed values, no serial numbers; the plugin shows them as if from a NAS.
 import type { FanConfigV2, FanGroupConfig } from '../src/core/contract';
+import { caseModel } from '../src/features/nas/components/front';
 import type { Model } from './schema';
 
 const GB = 1e9;
@@ -68,21 +69,46 @@ export function hardware(m: Model) {
     return {
         ok: true,
         model: m.fixtureDmi,
-        memory: ['D0', 'D1'].map(locator => ({
+        memory: ['D0', 'D1'].slice(0, caseModel({ model: m.fixtureDmi }).ramSlots ?? 2).map(locator => ({
             locator,
             size_mb: 32768,
-            type: 'DDR5',
-            speed_mt: 5600,
-            configured_mt: 4800,
+            type: ram(m).type,
+            speed_mt: ram(m).mt,
+            configured_mt: ram(m).mt,
             manufacturer: 'Micron',
             part_number: 'CT32G56C46S5'
         })),
         nvme: flash
             ? flashNvme
-            : [
-                  { id: 'nvme3', model: 'Samsung SSD 990 PRO 2TB', size_bytes: 2000 * GB, slot: nvmeSlots[0], pci: 'x', temp: 44, role: 'cache', boot: false },
-                  { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
-              ],
+            : m.id === 'dxp8800-plus'
+              ? // The first report (issue 165): three SSDs and no root-port map, so all three are "m2".
+                [
+                    {
+                        id: 'nvme0',
+                        model: 'Samsung SSD 990 PRO 2TB',
+                        size_bytes: 2000 * GB,
+                        slot: 'm2',
+                        pci: '0000:01:00.0',
+                        temp: 41,
+                        role: 'cache',
+                        boot: false
+                    },
+                    { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:56:00.0', temp: 33, role: 'pool1', boot: false },
+                    { id: 'nvme2', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:57:00.0', temp: 32, role: '', boot: true }
+                ]
+              : [
+                    {
+                        id: 'nvme3',
+                        model: 'Samsung SSD 990 PRO 2TB',
+                        size_bytes: 2000 * GB,
+                        slot: nvmeSlots[0],
+                        pci: 'x',
+                        temp: 44,
+                        role: 'cache',
+                        boot: false
+                    },
+                    { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: nvmeSlots[1], pci: 'y', temp: 38, role: '', boot: true }
+                ],
         // The plugin knows the bays of the models with a case view only (backend/internal/fan/hardware.go layoutFor).
         bays: m.caseView === 'none' || flash ? [] : bays,
         net: ports.map((max, i) => ({ name: `eth${i}`, link: i === 0, speed_mbit: i === 0 ? (max ?? 2500) : 0, max_mbit: max ?? 0 }))
@@ -99,7 +125,27 @@ const FAN_RIVALS: Rival[] = [
 ];
 const LED_RIVALS: Rival[] = [{ kind: 'daemon', id: 'ugreen-leds', name: 'UGREEN LEDs driver', controls: ['led'], severity: 'block' }];
 
-const cpuName = (m: Model) => m.fixture?.cpu ?? (m.fan?.chip.includes('IT5571') ? 'AMD Ryzen (sample data)' : '12th Gen Intel(R) Core(TM) i5-1235U @ 2.50GHz');
+const cpuName = (m: Model) => m.fixture?.cpu ?? m.cpu ?? 'Intel Core i5-1235U';
+// Threads per CPU name (the demo's cpuName). Intel ARK / intel.com SKU pages; AMD R2514 measured with lscpu on a DXP4800 GT.
+const THREADS: Record<string, number> = {
+    'Intel Celeron N5105': 4,
+    'Intel Pentium Silver N6005': 4,
+    'Intel N100': 4,
+    'Intel N150': 4,
+    'Intel Pentium Gold 8505': 6,
+    'Intel Core i5-1235U': 12,
+    'Intel Core 5 120U': 12,
+    'Intel Core 7 150U': 12,
+    'Intel Core Ultra 5 125H': 18,
+    'Intel Core Ultra 7 255H': 16,
+    'AMD Ryzen Embedded R2514': 8
+};
+const threadsOf = (cpu: string) => {
+    const n = THREADS[cpu];
+    if (n === undefined) throw new Error(`no thread count for "${cpu}": add it to THREADS in web/models/fixture.ts`);
+    return n;
+};
+const ram = (m: Model) => m.fixture?.ram ?? m.ram ?? { type: 'DDR5', mt: 4800 };
 
 /** Fan control answers with a chip: a fixed-wiring model. A probe model has no confirmed fan map in the sample data, a model without `fan` has no fan control. */
 export const fixtureHasChip = (m: Model) => m.fan !== null && m.fan.kind !== 'probe';
@@ -229,8 +275,8 @@ export function status(m: Model) {
             bios: '1.0',
             bios_date: '01/01/2024',
             cpu: cpuName(m),
-            threads: 12,
-            memory_kb: 67108864,
+            threads: threadsOf(cpuName(m)),
+            memory_kb: 33554432 * (caseModel({ model: m.fixtureDmi }).ramSlots ?? 2),
             kernel: '6.18.38-Unraid',
             unraid: '7.3.2',
             uptime: 400000
