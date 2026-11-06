@@ -37,7 +37,8 @@ export const es: Record<Key, string> = {
     'failsafe.nvme_hot': 'Una unidad NVMe ha alcanzado el límite de emergencia (límite de discos más desplazamiento NVMe).',
     'stalled.text': '{list} indica 0 rpm aunque funciona. Revisa el ventilador y su cable.', // Replaced the passive with the active form.
     'conflict.title': '{name} también controla este NAS',
-    'conflict.fan': 'También escribe en el chip de los ventiladores. Dos controladores en un ventilador provocan que la velocidad oscile, así que UGREEN NAS Control solo lee los ventiladores hasta que elijas.',
+    'conflict.fan':
+        'También escribe en el chip de los ventiladores. Dos controladores en un ventilador provocan que la velocidad oscile, así que UGREEN NAS Control solo lee los ventiladores hasta que elijas.',
     'conflict.led': 'También escribe en los LED. Dos herramientas en un LED hacen que los colores parpadeen.',
     'conflict.use_ours': 'Usar UGREEN NAS Control: abrir Plugins',
     'conflict.use_ours_hint': 'Detén o elimina {name} en la página Plugins y recarga esta página. UGREEN NAS Control nunca elimina otros plugins.',
@@ -115,7 +116,8 @@ export const es: Record<Key, string> = {
     'curves.invalid': 'Las temperaturas tienen que subir de arriba abajo y las velocidades entre 0 y 100 %.',
     'curves.now': 'ahora',
     'curves.mix': 'Los ventiladores de la caja ayudan a enfriar la CPU',
-    'curves.mix_hint': 'Los ventiladores de la caja nunca van más lentos de lo que fija la curva de la CPU para la temperatura actual de la CPU, así ayudan cuando se calienta.',
+    'curves.mix_hint':
+        'Los ventiladores de la caja nunca van más lentos de lo que fija la curva de la CPU para la temperatura actual de la CPU, así ayudan cuando se calienta.',
     'flow.measure': 'Medir ventiladores',
     'flow.unmeasured': 'aún sin medir',
     'flow.start_label': 'Empezar desde',
@@ -185,13 +187,15 @@ export const es: Record<Key, string> = {
     'leds.hint': 'Al desactivarlo, los LED se quedan como están hasta que se corte la corriente.',
     'leds.blocker_model': 'El control de LED solo está disponible para modelos UGREEN (DX, DXP, iDX); encontrado: {model}.',
     'leds.import_title': 'Importar los ajustes de UGREEN LED Control',
-    'leds.import_text': 'Se han encontrado los ajustes del plugin UGREEN LED Control (colores, efectos, modo de estado, modo nocturno). Puedes importarlos aquí; antes se guardan los ajustes actuales de esta parte como leds.cfg.bak.',
+    'leds.import_text':
+        'Se han encontrado los ajustes del plugin UGREEN LED Control (colores, efectos, modo de estado, modo nocturno). Puedes importarlos aquí; antes se guardan los ajustes actuales de esta parte como leds.cfg.bak.',
     'leds.import_btn': 'Importar los ajustes',
     'leds.import_after': 'Después puedes desinstalar UGREEN LED Control en Plugins: el control de LED integrado lo sustituye.',
     'leds.imported': 'Ajustes importados',
     'model.box': 'En el {model}: {leds} {fans} {case}',
     'model.leds.bays': 'El control de LED abarca los LED de las bahías y el LED de encendido.',
-    'model.leds.power': 'El control de LED abarca solo el LED de encendido (blanco fijo mientras el control de LED está activado; no admite color, brillo ni apagado).',
+    'model.leds.power':
+        'El control de LED abarca solo el LED de encendido (blanco fijo mientras el control de LED está activado; no admite color, brillo ni apagado).',
     'model.leds.none': 'No hay control de LED.',
     'model.fans.fixed': 'El control de ventiladores está disponible.',
     'model.fans.probe': 'El control de ventiladores se inicia tras una prueba que confirmes.',
@@ -202,8 +206,10 @@ export const es: Record<Key, string> = {
     'model.case.none': 'Todavía no hay vista de la caja para este modelo.',
     'model.unknown': 'El {model} todavía no está en la lista de modelos.',
     'model.all': 'Todos los modelos',
-    'leds.untested': 'El control de LED para el {model} no está probado: el controlador es el mismo en todos los modelos UGREEN, pero el orden de las bahías y los números de LED son estimados para este modelo o proceden de informes de otros plugins. Comprueba con «Identificar» que se enciende el LED correcto e informa de los problemas en un issue.',
-    'leds.warn_standalone': 'El plugin UGREEN LED Control también está instalado. Ambos funcionan por separado pero escriben los mismos LED: gana la última escritura. Usa solo uno (mejor el control de LED integrado de este plugin) y desactiva el control de LED en el otro o elimínalo.',
+    'leds.untested':
+        'El control de LED para el {model} no está probado: el controlador es el mismo en todos los modelos UGREEN, pero el orden de las bahías y los números de LED son estimados para este modelo o proceden de informes de otros plugins. Comprueba con «Identificar» que se enciende el LED correcto e informa de los problemas en un issue.',
+    'leds.warn_standalone':
+        'El plugin UGREEN LED Control también está instalado. Ambos funcionan por separado pero escriben los mismos LED: gana la última escritura. Usa solo uno (mejor el control de LED integrado de este plugin) y desactiva el control de LED en el otro o elimínalo.',
     'leds.blocker_driver': 'El plugin ugreenleds-driver está instalado. Elimínalo primero, porque ambos escribirían los mismos LED.',
     'leds.blocker_module': 'El módulo del kernel led_ugreen está cargado y ocupa el controlador de LED. Elimina el controlador que lo carga y reinicia.',
     'cc.threads': '{n} hilos',
@@ -217,7 +223,8 @@ export const es: Record<Key, string> = {
     'case.rear': 'Trasera',
     'case.fan_settings': 'Ajustes de ventiladores',
     'case.inside': 'Interior',
-    'case.inside_hint': 'Las ranuras se distinguen por su puerto PCIe: la ranura M.2 1 y la ranura PCIe cuelgan directamente de la CPU; la ranura M.2 2 y la ranura interna del sistema (para el módulo de sistema de fábrica) del chipset. Cuál es la M.2 «1» y cuál la «2» es una suposición.',
+    'case.inside_hint':
+        'Las ranuras se distinguen por su puerto PCIe: la ranura M.2 1 y la ranura PCIe cuelgan directamente de la CPU; la ranura M.2 2 y la ranura interna del sistema (para el módulo de sistema de fábrica) del chipset. Cuál es la M.2 «1» y cuál la «2» es una suposición.',
     'case.loading': 'Leyendo el hardware …',
     'case.error': 'No se pudo leer el hardware.',
     'case.empty_bay': 'Vacía',
@@ -259,11 +266,13 @@ export const es: Record<Key, string> = {
     'case.pcie_slot': 'PCIe 4.0 x4',
     'case.free': 'libre',
     'case.running_at': 'funciona a {speed} MT/s (hasta {max})',
-    'case.m2_hint': 'Las cuatro ranuras M.2 hacen de bahías, numeradas del 01 al 04 como en el panel inferior. Qué SSD está en qué ranura se supone por el orden de las direcciones PCIe; si tu equipo difiere, abre un issue.',
+    'case.m2_hint':
+        'Las cuatro ranuras M.2 hacen de bahías, numeradas del 01 al 04 como en el panel inferior. Qué SSD está en qué ranura se supone por el orden de las direcciones PCIe; si tu equipo difiere, abre un issue.',
     'case.intro_noinside': 'Las unidades en detalle y la parte trasera. El frontal con las bahías está en el Resumen.',
     'case.intro_m2': 'Las unidades M.2 en detalle y la parte trasera. El frontal está en el Resumen.',
     // iDX6011 / iDX6012 / Pro
-    'in.idx6011_hint': 'El panel de servicio de la parte inferior. La memoria está soldada, no hay ranuras de RAM. M.2-1 / M.2-2 están numeradas por suposición; abre una incidencia si tu equipo es distinto.',
+    'in.idx6011_hint':
+        'El panel de servicio de la parte inferior. La memoria está soldada, no hay ranuras de RAM. M.2-1 / M.2-2 están numeradas por suposición; abre una incidencia si tu equipo es distinto.',
     'in.idx6011_ram': 'RAM · {type} · soldada',
     'in.idx6011_pcie': 'Ranura PCIe 4.0 x8',
     'safety.intro': 'Límites que siempre se imponen a las curvas (no en modo BIOS).',
@@ -291,15 +300,19 @@ export const es: Record<Key, string> = {
     'fanctl.switch': 'Activar el control de ventiladores de este plugin',
     'fanctl.on': 'Activado. Los ventiladores funcionan según el modo elegido.',
     'fanctl.off': 'Desactivado. Este plugin no toca el chip de los ventiladores; funcionan como los dejó la BIOS.',
-    'fanctl.unsupported': 'Este modelo no tiene control de ventiladores (requiere cableado fijo o una prueba o confirmación, ver la lista de modelos). El plugin no toca el chip, los ventiladores funcionan como los configuró la BIOS, así que no hace falta un interruptor.',
-    'fanctl.hint': 'Desactívalo cuando otro plugin o script controle los ventiladores. Entonces este plugin no toca el chip y los ventiladores recuperan los valores de la BIOS.',
+    'fanctl.unsupported':
+        'Este modelo no tiene control de ventiladores (requiere cableado fijo o una prueba o confirmación, ver la lista de modelos). El plugin no toca el chip, los ventiladores funcionan como los configuró la BIOS, así que no hace falta un interruptor.',
+    'fanctl.hint':
+        'Desactívalo cuando otro plugin o script controle los ventiladores. Entonces este plugin no toca el chip y los ventiladores recuperan los valores de la BIOS.',
     'fanctl.off_note': 'El control de ventiladores está desactivado. Actívalo en Ajustes.',
     'safety.ignore_title': 'Ignorar unidades',
-    'safety.ignore_hint': 'Las unidades marcadas no cuentan ni para los ventiladores de la caja ni para los límites de emergencia, por ejemplo un SSD externo que se calienta por sí solo.',
+    'safety.ignore_hint':
+        'Las unidades marcadas no cuentan ni para los ventiladores de la caja ni para los límites de emergencia, por ejemplo un SSD externo que se calienta por sí solo.',
     'safety.ignore_none': 'No se han encontrado unidades.',
     'safety.saved': 'Ajustes de seguridad guardados',
     'about.how': 'Cómo funciona',
-    'about.how_text': 'Habla directamente con el controlador de ventiladores a través de puertos de E/S (ITE IT8613E en la mayoría de los DXP, controlador embebido IT5571 en el DXP4800 GT y el iDX6011 Pro) y con el controlador de LED por I²C, sin módulo del kernel. Al detenerlo o desinstalarlo, los ventiladores recuperan los valores de la BIOS.',
+    'about.how_text':
+        'Habla directamente con el controlador de ventiladores a través de puertos de E/S (ITE IT8613E en la mayoría de los DXP, controlador embebido IT5571 en el DXP4800 GT y el iDX6011 Pro) y con el controlador de LED por I²C, sin módulo del kernel. Al detenerlo o desinstalarlo, los ventiladores recuperan los valores de la BIOS.',
     'models.series': 'Serie {s}',
     'models.confirm_title': 'Confirmar mi equipo',
     'models.confirm_intro': '¿Has probado el plugin? Marca lo que funciona en tu equipo y envíalo como issue de GitHub: así sabemos qué funciona en tu modelo.',
@@ -311,7 +324,8 @@ export const es: Record<Key, string> = {
     'models.confirm_temps': 'Las temperaturas y el mosaico muestran los valores correctos',
     'models.confirm_comment': 'Comentario (opcional)',
     'models.confirm_button': 'Abrir como issue de GitHub',
-    'models.confirm_privacy': 'Se abre un issue de GitHub rellenado. No se envía nada hasta que pulses «Submit» allí. El texto contiene el modelo, las versiones del plugin, de Unraid y del kernel y tus marcas, sin números de serie, direcciones IP ni nombres de unidades.',
+    'models.confirm_privacy':
+        'Se abre un issue de GitHub rellenado. No se envía nada hasta que pulses «Submit» allí. El texto contiene el modelo, las versiones del plugin, de Unraid y del kernel y tus marcas, sin números de serie, direcciones IP ni nombres de unidades.',
     'models.title': 'Modelos compatibles',
     'models.intro': 'Todos los NAS de UGREEN y lo que este plugin hace por cada uno.',
     'models.col_model': 'Modelo',
@@ -326,7 +340,8 @@ export const es: Record<Key, string> = {
     'models.case_full': 'frontal, trasera, interior',
     'models.case_fr': 'frontal, trasera',
     'models.mine': 'tu equipo',
-    'models.footnote': 'Verificado: probado por el autor o por miskcoo. Confirmado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». Ventiladores: ✓ cableado conocido, control listo; «tras la prueba de ventiladores»: ejecuta primero la prueba y confirma su resultado, después arranca el control; – el plugin no toca el chip de los ventiladores.',
+    'models.footnote':
+        'Verificado: probado por el autor o por miskcoo. Confirmado: usuarios lo vieron en su equipo. Sin probar: el plugin activa los LED pero el orden de las bahías es estimado; comprueba con «Identificar». Ventiladores: ✓ cableado conocido, control listo; «tras la prueba de ventiladores»: ejecuta primero la prueba y confirma su resultado, después arranca el control; – el plugin no toca el chip de los ventiladores.',
     'models.fan_test': 'tras la prueba de ventiladores',
     'about.tagline': 'Control de ventiladores y LED e información del sistema para UGREEN NAS en Unraid',
     'about.license_badge': 'Licencia MIT',
@@ -422,7 +437,8 @@ export const es: Record<Key, string> = {
     'save.discard': 'Descartar',
     'banner.led_off': 'Controlador de LED no encontrado',
     'temps.nic_chip': 'chip de red',
-    'temps.hint_nvme_extra': 'Un sensor adicional del SSD, a menudo el controlador o los chips de memoria. El valor global (Composite) figura junto al SSD; solo ese dirige los ventiladores.',
+    'temps.hint_nvme_extra':
+        'Un sensor adicional del SSD, a menudo el controlador o los chips de memoria. El valor global (Composite) figura junto al SSD; solo ese dirige los ventiladores.',
     'slot.system': 'Ranura del sistema',
     'case.drives_leds': 'LED de bahías e Identificar',
     'follow.nvme_awake': '{name} {nvme}, cuenta como {temp} (más caliente que el disco más caliente)',
@@ -460,20 +476,29 @@ export const es: Record<Key, string> = {
     ...scheduleEs,
     ...toolsEs,
     // inside DXP2800 GT
-    'case.inside_hint_2800gt': 'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos ranuras de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_2800gt':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y los dos ranuras de RAM en la tapa inferior. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto.',
     'in.gt_cage': 'Jaula de unidades · pared interior izquierda',
     'in.gt_panel': 'Tapa inferior',
     'in.bottom_case': 'Caja inferior · cuatro ranuras M.2',
-    'case.inside_hint_2800': 'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y la única ranura SO-DIMM en la tapa inferior. La numeración de las ranuras M.2 es supuesta; abre un issue si tu equipo es distinto.',
-    'case.inside_hint_480': 'El interior según el manual de UGREEN: cuatro ranuras M.2 de la 01 a la 04 en la carcasa inferior y dos ranuras SO-DIMM bajo la tapa inferior. Qué SSD ocupa cada ranura se supone por el orden de las direcciones PCIe; abre un issue si tu equipo es distinto.',
-    'case.inside_hint_like_4800plus': 'El interior está dibujado según el DXP4800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
-    'case.inside_hint_like_2800': 'El interior está dibujado según el DXP2800: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
-    'case.inside_hint_like_6800pro': 'El interior está dibujado según el DXP6800 Pro: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_2800':
+        'El interior según el manual de UGREEN: las dos ranuras M.2 en la pared interior izquierda de la jaula de unidades y la única ranura SO-DIMM en la tapa inferior. La numeración de las ranuras M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_480':
+        'El interior según el manual de UGREEN: cuatro ranuras M.2 de la 01 a la 04 en la carcasa inferior y dos ranuras SO-DIMM bajo la tapa inferior. Qué SSD ocupa cada ranura se supone por el orden de las direcciones PCIe; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_like_4800plus':
+        'El interior está dibujado según el DXP4800 Plus: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_2800':
+        'El interior está dibujado según el DXP2800: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
+    'case.inside_hint_like_6800pro':
+        'El interior está dibujado según el DXP6800 Pro: la placa de este modelo no se conoce. La numeración de RAM y M.2 es supuesta; abre un issue si tu caja es distinta.',
     'in.dh_cage': 'Jaula de discos · pared lateral',
     'in.dh_board': 'Placa base · abajo',
-    'case.inside_hint_dx': 'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
-    'case.inside_hint_dx4700': 'Toda la vista de la caja está dibujada según el DX4600 Pro: la placa de este modelo no se conoce. Las ranuras se dibujan como el panel inferior del DXP4800; la numeración de RAM y M.2 es supuesta; abre un issue si tu equipo es distinto.',
-    'case.inside_hint_dh': 'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto. La segunda ranura de RAM sale del texto de especificaciones de UGREEN; las fotos muestran un SO-DIMM.',
+    'case.inside_hint_dx':
+        'El interior no aparece en el material de UGREEN; las ranuras se dibujan como el panel inferior del DXP4800. RAM 1 / RAM 2 y M.2-1 / M.2-2 están numerados por suposición; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dx4700':
+        'Toda la vista de la caja está dibujada según el DX4600 Pro: la placa de este modelo no se conoce. Las ranuras se dibujan como el panel inferior del DXP4800; la numeración de RAM y M.2 es supuesta; abre un issue si tu equipo es distinto.',
+    'case.inside_hint_dh':
+        'El interior según los renders de producto de UGREEN: las dos ranuras M.2 en el lateral de la jaula de discos, los dos zócalos de RAM en la placa base de abajo. La numeración de ambos pares es supuesta; abre un issue si tu equipo es distinto. La segunda ranura de RAM sale del texto de especificaciones de UGREEN; las fotos muestran un SO-DIMM.',
     ...panelEs,
     ...powerEs
 };
