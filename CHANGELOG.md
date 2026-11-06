@@ -2,6 +2,11 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.3.1
+
+- DXP8800 Plus: each NVMe shows in its real slot (M.2-1, M.2-2, the internal system slot); the factory SSD no longer appears in the PCIe slot. Reported by Chiconydu69.
+- Front panel: when the button registers can't be read (the BIOS hides them, as on a DXP8800 Plus), the plugin says so instead of showing the buttons as released. Reported by Chiconydu69.
+
 ## 5.3.0
 
 - Case view: the two M.2 slots of the DXP4800 Plus and Pro are named M.2-1 and M.2-3 as printed on the board (M2-KEYM1, M2-KEYM3). Reported by ivolution.
