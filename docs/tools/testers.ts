@@ -8,3 +8,9 @@ export const TESTERS: { login: string; did: string }[] = [
 
 /** Testers on the Unraid forum without a known GitHub account: named, not linked. */
 export const FORUM_TESTERS = ['fkiesler', 'gigios', 'NullNull67', 'cardsdoc', 'gonzlobo'];
+
+/** Maintainers, shown first in the README credits. */
+export const MAINTAINERS: { login: string; name: string }[] = [
+    { login: 'j3n57h0m45', name: 'Jens Thomas' },
+    { login: 'alexanderschubert', name: 'Alexander Schubert' }
+];

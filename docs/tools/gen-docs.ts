@@ -9,7 +9,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { loadModels } from '../../web/models/index';
 import { ALL_OUTPUTS, DOC_FILES, REGISTRY_JSON } from '../../scripts/generated';
-import { FORUM_TESTERS, TESTERS } from './testers';
+import { FORUM_TESTERS, MAINTAINERS, TESTERS } from './testers';
 import { format } from '../../scripts/format';
 import { CAPABILITIES, type Capability, type Model, type Overall, SERIES, monthYear, overallStatus } from '../../web/models/schema';
 import { CAPABILITY_LABEL, EVIDENCE_HELP, EVIDENCE_LABEL, OVERALL_HELP, OVERALL_LABEL, checkText } from '../site/content';
@@ -140,12 +140,16 @@ const RENDER: Record<Exclude<(typeof DOC_FILES)[number], typeof REGISTRY_JSON>, 
     'docs/hardware.md': () => [summary(), '', '### Details per model', '', detail(), '', '### Live demo', '', demoLinks()].join('\n')
 };
 
+/** Round avatar linked to the GitHub profile. GitHub strips CSS, so the circle comes from wsrv.nl (no title: no hover tooltip). */
+function avatar(login: string, size: number): string {
+    const src = `https://wsrv.nl/?url=github.com/${login}.png&w=${size * 2}&h=${size * 2}&fit=cover&mask=circle`;
+    return `<a href="https://github.com/${login}"><img src="${src}" width="${size}" height="${size}" alt="${login}"></a>`;
+}
+
 function testers(): string {
-    const grid = TESTERS.map(
-        t =>
-            `<a href="https://github.com/${t.login}" title="${t.login}: ${t.did}"><img src="https://github.com/${t.login}.png?size=64" width="48" height="48" alt="${t.login}"></a>`
-    ).join('\n');
-    return `${grid}\n\nThanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
+    const [a, b] = MAINTAINERS.map(m => `${avatar(m.login, 24)} [${m.name}](https://github.com/${m.login})`);
+    const grid = TESTERS.map(t => avatar(t.login, 48)).join('\n');
+    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
 }
 
 function splice(text: string, body: string, name = 'models', source = 'web/models/'): string {
