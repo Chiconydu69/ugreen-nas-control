@@ -2,6 +2,18 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.3.0
+
+- Case view: the two M.2 slots of the DXP4800 Plus and Pro are named M.2-1 and M.2-3 as printed on the board (M2-KEYM1, M2-KEYM3). Reported by ivolution.
+- DXP8800 Plus: a third NVMe SSD shows in the PCIe slot of the inside view instead of vanishing, and "Confirm my device" no longer flags unknown M.2 slots as a mismatch. Reported by Chiconydu69.
+- Diag no longer flags a stopped watchdog timer ("not counting", normal with the BIOS watchdog off) as a mismatch. Reported by Chiconydu69.
+- Spanish LED texts read more naturally: verbs for the effects, singular and plural forms, link speed. Translation by ivolution.
+- Spanish texts on the NAS pages read more naturally. Translation by ivolution.
+- DXP8800 Plus: fan control with custom curves confirmed. Reported by Chiconydu69.
+- Demo: the DXP4800 GT shows its 8 CPU threads; the DX4600 Pro's CPU is named Pentium Silver N6005.
+- The live demo, the site and the screenshots show each model's own CPU and memory type instead of one shared default.
+- The live demo, the site and the screenshots show each model's own CPU thread count instead of 12 for every model.
+
 ## 5.2.0
 
 - Case view: inside view for the DXP2800 (M.2 slots and RAM, drawn after the GT) and the DXP480T Plus (four M.2 slots and two RAM sockets).
