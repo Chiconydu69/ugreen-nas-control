@@ -1,6 +1,7 @@
 // Sample data the harness serves for a model: the shapes of `ugreen-nas-fan` (status, hardware) and
 // `ugreen-led-ctl` (status, all, bays, list). Fixed values, no serial numbers; the plugin shows them as if from a NAS.
 import type { FanConfigV2, FanGroupConfig } from '../src/core/contract';
+import { caseModel } from '../src/features/nas/components/front';
 import type { Model } from './schema';
 
 const GB = 1e9;
@@ -68,12 +69,12 @@ export function hardware(m: Model) {
     return {
         ok: true,
         model: m.fixtureDmi,
-        memory: ['D0', 'D1'].map(locator => ({
+        memory: ['D0', 'D1'].slice(0, caseModel({ model: m.fixtureDmi }).ramSlots ?? 2).map(locator => ({
             locator,
             size_mb: 32768,
-            type: 'DDR5',
-            speed_mt: 5600,
-            configured_mt: 4800,
+            type: ram(m).type,
+            speed_mt: ram(m).mt,
+            configured_mt: ram(m).mt,
             manufacturer: 'Micron',
             part_number: 'CT32G56C46S5'
         })),
@@ -124,7 +125,8 @@ const FAN_RIVALS: Rival[] = [
 ];
 const LED_RIVALS: Rival[] = [{ kind: 'daemon', id: 'ugreen-leds', name: 'UGREEN LEDs driver', controls: ['led'], severity: 'block' }];
 
-const cpuName = (m: Model) => m.fixture?.cpu ?? (m.fan?.chip.includes('IT5571') ? 'AMD Ryzen (sample data)' : '12th Gen Intel(R) Core(TM) i5-1235U @ 2.50GHz');
+const cpuName = (m: Model) => m.fixture?.cpu ?? m.cpu ?? 'Intel Core i5-1235U';
+const ram = (m: Model) => m.fixture?.ram ?? m.ram ?? { type: 'DDR5', mt: 4800 };
 
 /** Fan control answers with a chip: a fixed-wiring model. A probe model has no confirmed fan map in the sample data, a model without `fan` has no fan control. */
 export const fixtureHasChip = (m: Model) => m.fan !== null && m.fan.kind !== 'probe';
@@ -255,7 +257,7 @@ export function status(m: Model) {
             bios_date: '01/01/2024',
             cpu: cpuName(m),
             threads: 12,
-            memory_kb: 67108864,
+            memory_kb: 33554432 * (caseModel({ model: m.fixtureDmi }).ramSlots ?? 2),
             kernel: '6.18.38-Unraid',
             unraid: '7.3.2',
             uptime: 400000

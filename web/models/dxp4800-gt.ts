@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP4800.*GT',
     fixtureDmi: 'DXP4800 GT',
     cpu: 'AMD Ryzen Embedded R2514',
+    ram: { type: 'DDR4', mt: 3200 },
     bays: 4,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },

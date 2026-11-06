@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP4800 (Plus|Pro)$',
     fixtureDmi: 'DXP4800 Plus',
     cpu: 'Intel Pentium Gold 8505 (Plus), Core i3-1315U (Pro)',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 4,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
@@ -51,5 +52,6 @@ export default {
         'https://github.com/smashah/ugreen-dxp-fan-cli'
     ],
     note: 'Four bays, two M.2 slots, one 10G and one 2.5G LAN port. Fan control after a fan probe.',
-    shots: true
+    shots: true,
+    fixture: { cpu: 'Intel Pentium Gold 8505' }
 } satisfies Model;

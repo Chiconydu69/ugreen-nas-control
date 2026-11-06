@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP2800$',
     fixtureDmi: 'DXP2800',
     cpu: 'Intel N100',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 2,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },

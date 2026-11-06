@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP6800S$',
     fixtureDmi: 'DXP6800S',
     cpu: null,
+    ram: null,
     bays: 6,
     m2Slots: null,
     m2: { slots: ['m2-1', 'm2-2', 'system'], pcieSlot: true },
@@ -29,5 +30,6 @@ export default {
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: 'Known from the name in UGREEN driver sources only; hardware details are not known, the case view is drawn after the DXP6800 Pro. LEDs are enabled but nobody has confirmed them.',
-    shots: false
+    shots: false,
+    fixture: { cpu: 'Intel Core i5-1235U', ram: { type: 'DDR5', mt: 4800 } }
 } satisfies Model;

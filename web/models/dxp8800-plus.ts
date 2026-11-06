@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP8800 Plus$',
     fixtureDmi: 'DXP8800 Plus',
     cpu: 'Intel Core i5-1235U',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 8,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: true },

@@ -33,6 +33,9 @@ export interface Check {
     note?: string;
 }
 
+export type RamType = 'DDR4' | 'DDR5' | 'LPDDR5X';
+const RAM_TYPES: RamType[] = ['DDR4', 'DDR5', 'LPDDR5X'];
+
 export type LedSupport = 'bays' | 'power' | 'none';
 export type CaseView = 'none' | 'front-rear' | 'full';
 export type Series = 'DH' | 'DX' | 'DXP' | 'iDX';
@@ -67,6 +70,8 @@ export interface Model {
     /** DMI product_name the harness and the screenshots use (must match dmiPattern). */
     fixtureDmi: string;
     cpu: string | null;
+    /** Installed memory type and rated speed in MT/s; null when not known. */
+    ram: { type: RamType; mt: number } | null;
     bays: number | null;
     m2Slots: number | null;
     /** M.2 slots the plugin maps (backend/internal/fan/hardware.go); null when it does not map them. */
@@ -82,7 +87,8 @@ export interface Model {
     sources: string[];
     note: string;
     shots: boolean;
-    fixture?: { cpu?: string; chip?: string; ledBays?: number };
+    /** Demo values: `cpu` and `ram` stand in for the sister model's where the model's own are null or list variants. */
+    fixture?: { cpu?: string; ram?: { type: RamType; mt: number }; chip?: string; ledBays?: number };
 }
 
 const RANK: Record<Evidence, number> = { verified: 3, community: 2, partial: 2, expected: 1, unsupported: 0 };
@@ -166,6 +172,10 @@ export function validate(m: Model, fileId: string): string[] {
         bad.push('dmiPattern: not a valid regex');
     }
     if (m.cpu !== null && typeof m.cpu !== 'string') bad.push('cpu: string or null');
+    const badRam = (r: Model['ram'] | undefined) => r != null && !(RAM_TYPES.includes(r.type) && Number.isInteger(r.mt) && r.mt >= 1600 && r.mt <= 9600);
+    if (m.ram === undefined || badRam(m.ram) || badRam(m.fixture?.ram)) bad.push('ram: {type: DDR4|DDR5|LPDDR5X, mt in MT/s} or null');
+    if ((m.cpu === null && !m.fixture?.cpu) || (m.ram === null && !m.fixture?.ram))
+        bad.push("cpu or ram null needs fixture.cpu / fixture.ram (the sister model's)");
     if (m.bays !== null && !(Number.isInteger(m.bays) && m.bays >= 0 && m.bays <= 8)) bad.push('bays: 0..8 or null');
     if (m.m2Slots !== null && !(Number.isInteger(m.m2Slots) && m.m2Slots >= 0 && m.m2Slots <= 8)) bad.push('m2Slots: 0..8 or null');
     if (m.m2 !== null && !(Array.isArray(m.m2?.slots) && typeof m.m2.pcieSlot === 'boolean')) bad.push('m2: {slots, pcieSlot} or null');

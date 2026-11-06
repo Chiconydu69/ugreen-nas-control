@@ -9,6 +9,7 @@ export default {
     dmiPattern: '^DXP6800 Pro$',
     fixtureDmi: 'DXP6800 Pro',
     cpu: 'Intel Core i5-1235U',
+    ram: { type: 'DDR5', mt: 4800 },
     bays: 6,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2', 'system'], pcieSlot: true },

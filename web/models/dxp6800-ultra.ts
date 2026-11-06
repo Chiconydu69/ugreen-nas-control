@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DXP6800 Ultra',
     fixtureDmi: 'DXP6800 Ultra',
     cpu: 'Intel Core 5 120U',
+    ram: { type: 'DDR5', mt: 5600 },
     bays: 6,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2', 'system'], pcieSlot: true },

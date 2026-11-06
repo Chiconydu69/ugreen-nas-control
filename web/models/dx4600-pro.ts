@@ -7,6 +7,7 @@ export default {
     dmiPattern: '^DX4600',
     fixtureDmi: 'DX4600 Pro',
     cpu: 'Intel Celeron N6005',
+    ram: { type: 'DDR4', mt: 3200 },
     bays: 4,
     m2Slots: 2,
     m2: { slots: ['m2-1', 'm2-2'], pcieSlot: false },
