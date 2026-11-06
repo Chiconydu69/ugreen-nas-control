@@ -420,7 +420,7 @@ func TestEvidenceComparesTheRegistryWithWhatWasDetected(t *testing.T) {
 	if strings.Contains(all, "fan_chip") || strings.Contains(all, "fan_headers") || strings.Contains(all, "nvme_slots") {
 		t.Errorf("a matching value is reported as a mismatch:\n%s", all)
 	}
-	if !strings.Contains(sec.Body, "registry: dxp4800-gt (DXP4800 GT)") || !strings.Contains(sec.Body, "leds: verified on 5.0.0") {
+	if !strings.Contains(sec.Body, "registry: dxp4800-gt (DXP4800 GT)") || !strings.Contains(sec.Body, "leds: verified on 5.3.0") {
 		t.Errorf("model section:\n%s", sec.Body)
 	}
 }

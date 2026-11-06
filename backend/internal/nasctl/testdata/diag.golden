@@ -37,18 +37,18 @@ rivals: -
 ```
 registry: dxp4800-gt (DXP4800 GT), overall verified
 note: Four bays (SATA or U.2), two M.2 slots, two 10G LAN ports. Fan control through the IT5571 embedded controller; LEDs through /dev/mem.
-leds: verified on 5.0.0 2026-11-02 - Through /dev/mem on the AMD DesignWare I2C controller.
+leds: verified on 5.3.0 2026-11-06 - Through /dev/mem on the AMD DesignWare I2C controller.
   led_support: expected bays, detected supported true, blocker - [n/a]
   led_controller: expected ok, detected ok [ok]
-fans: verified on 5.0.0 2026-11-02 - CPU fan and case fan measured; the roles are not swapped.
+fans: verified on 5.3.0 2026-11-06 - CPU fan and case fan measured; the roles are not swapped.
   fan_chip: expected it5571, detected it5571 [ok]
   fan_headers: expected ["fan1:cpu","fan3:case"], detected ["fan1:cpu","fan3:case"] [ok]
   fans_spin: expected all fans above 0 rpm, detected false [MISMATCH]
-case: verified on 5.0.0 2026-11-02 - Inside view drawn from the service panel; RAM/M.2 slot numbering assumed, open an issue if your box differs.
+case: verified on 5.3.0 2026-11-06 - Inside view drawn from the service panel; RAM/M.2 slot numbering assumed, open an issue if your box differs.
   bays: expected 4, detected 2 [MISMATCH]
   nvme_slots: expected ["m2-1","m2-2"], detected ["m2-1","m2-2"] [ok]
   lan_ports: expected 2, detected 2 [ok]
-sensors: verified on 5.0.0 2026-11-02 - CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.
+sensors: verified on 5.3.0 2026-11-06 - CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.
   cpu_temperature: expected true, detected true [ok]
 watchdog: expected - Registers from the driver UGREEN ships; no armed watchdog seen on a device with this plugin yet.
   watchdog_state: expected armed, off or not counting, detected - [n/a]
