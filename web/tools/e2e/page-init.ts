@@ -68,6 +68,22 @@ function init(): void {
         advance(ms: number) {
             offset += ms;
         },
+        /** Resolves once idle (no fetch in flight, none finished within `quiet` ms, document loaded) twice in a row, 10 ms apart; a description of what it waits for at the deadline. */
+        settle(quiet: number, limit: number): Promise<string | true> {
+            const end = realNow() + limit;
+            let stable = 0;
+            return new Promise(done => {
+                const check = (): void => {
+                    const since = Math.round(realNow() - e2e.lastIo);
+                    const idle = e2e.pending === 0 && since >= quiet && document.readyState === 'complete';
+                    stable = idle ? stable + 1 : 0;
+                    if (stable >= 2) return done(true);
+                    if (realNow() > end) return done(`${e2e.pending} fetches in flight, ${since} ms since the last, readyState ${document.readyState}`);
+                    setTimeout(check, 10);
+                };
+                check();
+            });
+        },
         drain(): any[] {
             const all = read();
             sessionStorage.removeItem(KEY);

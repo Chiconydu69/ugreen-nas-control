@@ -63,21 +63,17 @@ export class Session {
      */
     async settle(quiet = 120): Promise<void> {
         const end = Date.now() + SETTLE_MS;
-        let stable = 0;
         let last = 'no answer (navigating?)';
-        while (stable < 2) {
-            let idle = false;
+        for (;;) {
             try {
-                const state = await this.eval<string>(
-                    `[window.__e2e.pending, Math.round(window.__e2e.now() - window.__e2e.lastIo), document.readyState].join(' ')`
-                );
-                const [pending, since, ready] = state.split(' ');
-                idle = pending === '0' && Number(since) >= quiet && ready === 'complete';
-                last = `${pending} fetches in flight, ${since} ms since the last, readyState ${ready}`;
+                // The wait runs in the page: one round trip instead of one per poll.
+                const left = Math.max(end - Date.now(), 100);
+                const done = await this.eval<string | true>(`window.__e2e.settle(${quiet}, ${left})`);
+                if (done === true) return;
+                last = done;
             } catch {
                 /* navigating */
             }
-            stable = idle ? stable + 1 : 0;
             if (Date.now() > end) throw new Error(`page never settled (${last})`);
             await Bun.sleep(25);
         }
@@ -181,10 +177,9 @@ export class Session {
         }
         await this.settle(opts.quiet);
         // Layout work (chart redraws on resize) lands a frame later.
-        await this.eval(`new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))`);
-        const events = await this.eval<Event[]>(`window.__e2e.drain()`);
-        const dom = await this.eval<string>(`window.__e2e.dump()`);
-        const text = await this.eval<string>(`window.__e2e.text()`);
+        const { events, dom, text } = await this.eval<{ events: Event[]; dom: string; text: string }>(
+            `new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r({ events: window.__e2e.drain(), dom: window.__e2e.dump(), text: window.__e2e.text() }))))`
+        );
         const requests = this.h.requests();
         this.h.clearRequests();
         const same = this.steps.filter(step => step.name === name || step.name.startsWith(`${name} #`)).length;

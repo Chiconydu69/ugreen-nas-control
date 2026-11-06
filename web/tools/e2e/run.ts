@@ -8,11 +8,12 @@
 // per step). With --old the same flows also run against the hand-written front end of a git ref (default
 // upstream/main = the released 4.x UI, or $UNC_E2E_OLD_REF; the ref must still have src/web/js, i.e. be older than
 // the TypeScript front end), and the two are compared step by step, including a diff of the full DOM. --update writes
-// golden.json from this run (from the old front end when --old is given). Exit code 1 on any regression.
+// golden.json from this run (from the old front end when --old is given). --jobs: parallel tabs, default one per CPU core, at most 8.
+// Exit code 1 on any regression.
 //
 // Browser: Bun.WebView; macOS uses WebKit, Linux Chromium (BUN_CHROME_PATH from the flake devShell; else chromium on PATH or nixpkgs#chromium).
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { availableParallelism, tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { $ } from 'bun';
 import { fixtureHasChip } from '../../models/fixture';
@@ -54,7 +55,7 @@ const update = flag('--update');
 const verbose = flag('-v');
 const modelIds = value('--models')?.split(',') ?? DEFAULT_MODELS;
 const onlyScenarios = value('--scenarios')?.split(',');
-const jobsMax = Number(value('--jobs') ?? 4);
+const jobsMax = Number(value('--jobs') ?? Math.min(availableParallelism(), 8));
 const out = value('--out') ?? join(tmpdir(), 'unc-e2e');
 
 async function chromePath(): Promise<string> {
@@ -297,6 +298,11 @@ for (const scenario of SCENARIOS) {
     if (onlyScenarios && !onlyScenarios.includes(scenario.id)) continue;
     for (const ctx of ctxs) if (scenario.applies(ctx)) for (const variant of variants) queue.push({ ctx, scenario: scenario.id, variant });
 }
+
+// Longest first, so the long scenarios do not start last and decide the end of the run (results are reported in scenario order).
+const SLOW_FIRST = ['language', 'led-overview', 'pages', 'led-drives', 'led-night', 'led-system'];
+const rank = (job: Job) => (SLOW_FIRST.includes(job.scenario) ? SLOW_FIRST.indexOf(job.scenario) : SLOW_FIRST.length);
+queue.sort((a, b) => rank(a) - rank(b));
 
 const makeView = await browser();
 const results: Result[] = [];
