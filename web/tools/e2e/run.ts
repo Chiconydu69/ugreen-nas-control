@@ -358,6 +358,7 @@ for (const r of results) {
         )
     );
     writeFileSync(join(dir, `${r.job.variant}.dom.txt`), r.steps.map(s => `##### ${s.name}\n${s.dom}\n`).join('\n'));
+    writeFileSync(join(dir, `${r.job.variant}.text.txt`), r.steps.map(s => `##### ${s.name}\n${s.text}\n`).join('\n'));
 }
 rmSync(join(out, '.tmp'), { recursive: true, force: true });
 
