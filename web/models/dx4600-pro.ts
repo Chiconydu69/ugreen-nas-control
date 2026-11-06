@@ -6,7 +6,7 @@ export default {
     series: 'DX',
     dmiPattern: '^DX4600',
     fixtureDmi: 'DX4600 Pro',
-    cpu: 'Intel Celeron N6005',
+    cpu: 'Intel Pentium Silver N6005',
     ram: { type: 'DDR4', mt: 3200 },
     bays: 4,
     m2Slots: 2,

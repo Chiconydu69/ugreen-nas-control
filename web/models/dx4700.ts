@@ -33,5 +33,5 @@ export default {
     sources: ['https://github.com/miskcoo/ugreen_leds_controller/issues/22'],
     note: "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control.",
     shots: true,
-    fixture: { cpu: 'Intel Celeron N6005', ram: { type: 'DDR4', mt: 3200 } }
+    fixture: { cpu: 'Intel Pentium Silver N6005', ram: { type: 'DDR4', mt: 3200 } }
 } satisfies Model;
