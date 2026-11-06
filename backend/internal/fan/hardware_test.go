@@ -238,8 +238,13 @@ func TestLayoutFor(t *testing.T) {
 			t.Errorf("%q: %+v", model, l)
 		}
 	}
-	if l := layoutFor("DXP8800 Plus"); len(l.bayPorts) != 8 || l.bayPorts[7] != 8 || l.otherSlot != "m2" {
+	if l := layoutFor("DXP8800 Plus"); len(l.bayPorts) != 8 || l.bayPorts[7] != 8 || l.slots["0000:00:06.0"] != "m2-1" || l.slots["0000:00:1c.0"] != "m2-2" || l.slots["0000:00:1c.2"] != "system" {
 		t.Errorf("DXP8800 Plus: %+v", l)
+	}
+	for _, model := range []string{"DXP8800", "DXP8800 Pro"} {
+		if l := layoutFor(model); len(l.bayPorts) != 8 || l.otherSlot != "m2" || l.slots != nil {
+			t.Errorf("%q: %+v", model, l)
+		}
 	}
 	if l := layoutFor("DXP480T Plus"); l.bayPorts != nil || l.otherSlot != "m2" {
 		t.Errorf("DXP480T Plus: %+v", l)

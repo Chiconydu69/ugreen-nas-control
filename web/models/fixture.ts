@@ -81,20 +81,29 @@ export function hardware(m: Model) {
         nvme: flash
             ? flashNvme
             : m.id === 'dxp8800-plus'
-              ? // The first report (issue 165): three SSDs and no root-port map, so all three are "m2".
+              ? // Issue 165: three SSDs on the root ports of the DXP6800 Pro: two user M.2 SSDs and the 128 GB factory SSD in the system slot.
                 [
                     {
                         id: 'nvme0',
                         model: 'Samsung SSD 990 PRO 2TB',
                         size_bytes: 2000 * GB,
-                        slot: 'm2',
-                        pci: '0000:01:00.0',
+                        slot: 'm2-1',
+                        pci: '0000:00:06.0',
                         temp: 41,
                         role: 'cache',
                         boot: false
                     },
-                    { id: 'nvme1', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:56:00.0', temp: 33, role: 'pool1', boot: false },
-                    { id: 'nvme2', model: 'WD Red SN700 1000GB', size_bytes: 1000 * GB, slot: 'm2', pci: '0000:57:00.0', temp: 32, role: '', boot: true }
+                    {
+                        id: 'nvme1',
+                        model: 'WD Red SN700 1000GB',
+                        size_bytes: 1000 * GB,
+                        slot: 'm2-2',
+                        pci: '0000:00:1c.0',
+                        temp: 33,
+                        role: 'pool1',
+                        boot: false
+                    },
+                    { id: 'nvme2', model: 'TWSC TSC3AN128-F2T70S', size_bytes: 128 * GB, slot: 'system', pci: '0000:00:1c.2', temp: 32, role: '', boot: true }
                 ]
               : [
                     {

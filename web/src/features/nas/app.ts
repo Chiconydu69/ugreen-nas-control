@@ -2591,6 +2591,17 @@ function main(root: HTMLElement): void {
         };
         const m2Empty = (w: number, h: number): string =>
             `<rect width="${w}" height="${h}" rx="3" fill="none" style="stroke:var(--bd-sockedge)" stroke-width="2" stroke-dasharray="6 5"/>`;
+        // The internal system slot (the factory SSD of the NAS) sits inside the case, not behind the service panel: drawn as a strip below it.
+        const sys = ssd('system');
+        const sysLabel = (y: number): string => {
+            const label = t('case.sys_slot');
+            if (!sys)
+                return `${boardText(580, y, label)}<text x="580" y="${y + 15}" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(t('case.empty'))}</text>`;
+            const role = sys.boot ? t('nvme.boot') : ssdRoleText(sys.role);
+            const sub = [friendly(sys.model || sys.id), fmtSize(sys.size_bytes), role].filter(Boolean).join(' · ');
+
+            return `${tempBadge6800(580, y - 12, sys.temp)}${boardText(636, y, label)}<text x="636" y="${y + 15}" style="fill:var(--bd-text2)" font-size="12">${escapeHtml(sub)}</text>`;
+        };
 
         return `
             <svg class="unc-board-svg" viewBox="0 0 1000 590" role="img" aria-label="${escapeHtml(t('case.inside'))}">
@@ -2609,6 +2620,8 @@ function main(root: HTMLElement): void {
                 <text x="580" y="226" style="fill:var(--bd-text2)" font-size="13" font-weight="700">${escapeHtml(t('sensors.group_mem'))}</text>
                 ${ramLabel(260, memory[0], 1)}
                 ${ramLabel(310, memory[1], 2)}
+                ${sysLabel(390)}
+                <g transform="translate(76 380)">${sys ? nvmeModule(262, 40, sys) : m2Empty(262, 40)}</g>
                 <rect x="60" y="440" width="464" height="26" rx="6" style="fill:var(--bd-sock);stroke:var(--bd-sockedge)" stroke-width="2"/>
                 <text x="292" y="458" style="fill:var(--bd-text2)" font-size="12" text-anchor="middle">${escapeHtml(t('case.pcie_slot'))}${card ? '' : ` · ${escapeHtml(t('case.free'))}`}</text>
                 ${
