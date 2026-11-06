@@ -89,7 +89,7 @@ Maintained by <a href="https://github.com/j3n57h0m45"><img src="https://wsrv.nl/
 <a href="https://github.com/Chiconydu69"><img src="https://wsrv.nl/?url=github.com/Chiconydu69.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="Chiconydu69"></a>
 <a href="https://github.com/ivolution"><img src="https://wsrv.nl/?url=github.com/ivolution.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="ivolution"></a>
 
-Thanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: fkiesler, gigios, NullNull67, cardsdoc, gonzlobo.
+Thanks to [321chills](https://github.com/321chills) (DXP2800 GT), [datarepos76](https://github.com/datarepos76) (DXP480T Plus), [Chiconydu69](https://github.com/Chiconydu69) (DXP8800 Plus) and [ivolution](https://github.com/ivolution) (Spanish translation) for testing and translating. And on the Unraid forum: fkiesler, gigios, NullNull67, cardsdoc, gonzlobo.
 
 <!-- testers:end -->
 

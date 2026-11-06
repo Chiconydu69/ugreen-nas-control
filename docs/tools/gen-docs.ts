@@ -149,7 +149,10 @@ function avatar(login: string, size: number): string {
 function testers(): string {
     const [a, b] = MAINTAINERS.map(m => `${avatar(m.login, 24)} [${m.name}](https://github.com/${m.login})`);
     const grid = TESTERS.map(t => avatar(t.login, 48)).join('\n');
-    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to everyone who tested the plugin on their NAS or translated it. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
+    const named = TESTERS.map(t => `[${t.login}](https://github.com/${t.login}) (${t.did})`);
+    const last = named.length - 1;
+    const list = last > 0 ? `${named.slice(0, last).join(', ')} and ${named[last]}` : named.join('');
+    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to ${list} for testing and translating. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
 }
 
 function splice(text: string, body: string, name = 'models', source = 'web/models/'): string {
