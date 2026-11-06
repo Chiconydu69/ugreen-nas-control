@@ -80,7 +80,7 @@ jobs:
         if: vars.NEXT_CHANNEL_ENABLED == 'true'
         run: |
           # shellcheck disable=SC2016
-          nix develop .#release -c bash -euo pipefail -c '
+          nix develop .#site -c bash -euo pipefail -c '
             [ -d "$RUNNER_TEMP/wt/next" ] || { echo "no next stream, no next channel"; exit 0; }
             cd "$RUNNER_TEMP/wt/next"
             just go-build

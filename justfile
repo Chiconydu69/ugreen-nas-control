@@ -61,11 +61,19 @@ go-lint:
     CGO_ENABLED=0 GOOS=linux golangci-lint run ./...
 
 [group('go')]
+go-test: go-test-race go-test-plain
+
+# Parallel jobs in CI (checks.yml: go-test-race and go-test)
+[group('go')]
 [working-directory: 'backend']
-go-test:
+go-test-race:
+    go test -race -tags testhooks -count=1 ./...
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain:
     go vet ./...
     go vet -tags testhooks ./...
-    go test -race -tags testhooks -count=1 ./...
     go test -count=1 ./...
 
 # The one multicall binary of the plugin (the tool names are symlinks to it in the archive): .build/bin/ugreen-nas
