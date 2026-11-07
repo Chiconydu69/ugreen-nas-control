@@ -324,8 +324,9 @@ func (c *cli) runLPSSProbe(write bool) int {
 	return 0
 }
 
-// lpssI801Answers reports whether the SMBus at path has a device at the controller address; a failure to ask counts
-// as "yes", so the SMBus path is never given up on a doubt.
+// lpssI801Answers reports whether the SMBus at path has a device at the controller address. Only a NAK (ENXIO, or
+// EREMOTEIO from i2c_smbus_xfer) says "no device"; any other failure (EBUSY, ETIMEDOUT, ...) counts as "yes", so the
+// SMBus path is never given up on a doubt.
 func lpssI801Answers(path string) bool {
 	file, err := os.OpenFile(path, os.O_RDWR, 0)
 	if err != nil {
@@ -336,5 +337,10 @@ func lpssI801Answers(path string) bool {
 		return true // busy (a kernel driver holds it) or not testable
 	}
 	var data [smbusBlockMax + 2]byte
-	return smbusIoctl(file, smbusRead, 0, smbusByte, &data) == nil
+	return !lpssNoDevice(smbusIoctl(file, smbusRead, 0, smbusByte, &data))
+}
+
+// lpssNoDevice is true for the errors a missing device produces: a NAK on the address.
+func lpssNoDevice(err error) bool {
+	return errors.Is(err, syscall.ENXIO) || errors.Is(err, syscall.EREMOTEIO)
 }

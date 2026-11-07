@@ -3,10 +3,12 @@
 package chip
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -372,5 +374,27 @@ func TestLPSSProbeCommand(t *testing.T) {
 	saved, _ := os.ReadFile(lpssReports)
 	if string(saved) != out.String() || !strings.Contains(out.String(), "result:            ok") {
 		t.Errorf("saved report differs or no result:\n%s", out.String())
+	}
+}
+
+// Only a NAK diverts findBus to the LPSS controller; a busy or timing out SMBus must keep the SMBus path.
+func TestLPSSNoDevice(t *testing.T) {
+	cases := []struct {
+		err  error
+		want bool
+	}{
+		{nil, false},
+		{syscall.ENXIO, true},
+		{syscall.EREMOTEIO, true},
+		{fmt.Errorf("wrapped: %w", syscall.ENXIO), true},
+		{syscall.EBUSY, false},
+		{syscall.ETIMEDOUT, false},
+		{syscall.EIO, false},
+		{syscall.EPERM, false},
+	}
+	for _, c := range cases {
+		if got := lpssNoDevice(c.err); got != c.want {
+			t.Errorf("lpssNoDevice(%v) = %v, want %v", c.err, got, c.want)
+		}
 	}
 }
