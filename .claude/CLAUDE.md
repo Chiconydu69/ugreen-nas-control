@@ -20,7 +20,7 @@
 Plugin page, Unraid dashboard tile (`web/src/dash`), website (SSR `docs/site/live.ts`, live islands `docs/site/islands.ts` = bare-mode demo iframes) and live demo (`web/demo`) render the SAME modules from `web/src` with the plugin CSS (`web/plugin/css`).
 
 - Never build separate markup, copies, hand-made screenshots or mockups for site, README or tile. Extend the shared component (options/props); site and demo follow.
-- Only UI images: CI screenshots `docs/ca/*.png` (`just ca-shots`).
+- Only UI images: CI-rendered screenshots (`just site-shots` into Pages `/shots/`; `docs/ca/*.png` via `just ca-shots` for the CA listing).
 
 ## Site copy
 

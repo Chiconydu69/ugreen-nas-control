@@ -15,7 +15,7 @@ This plugin is the bridge.
 
 **[Live demo](https://ugreen-nas-control.github.io/ugreen-nas-control/demo/?model=dxp6800-pro)** · [Website](https://ugreen-nas-control.github.io/ugreen-nas-control/) · [Install](#install) · [Models](#your-model-your-status) · [Help](#help) · [All docs](docs/README.md)
 
-<a href="https://ugreen-nas-control.github.io/ugreen-nas-control/demo/?model=dxp6800-pro"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/ca/overview-dark.png"><img src="docs/ca/overview-light.png" alt="UGREEN NAS Control overview: the NAS drawn with its bays, drive temperatures and live LED colours" width="860"></picture></a>
+<a href="https://ugreen-nas-control.github.io/ugreen-nas-control/demo/?model=dxp6800-pro"><picture><source media="(prefers-color-scheme: dark)" srcset="https://ugreen-nas-control.github.io/ugreen-nas-control/shots/overview-dark.png"><img src="https://ugreen-nas-control.github.io/ugreen-nas-control/shots/overview-light.png" alt="UGREEN NAS Control overview: the NAS drawn with its bays, drive temperatures and live LED colours" width="860"></picture></a>
 
 <sub>The real plugin UI, rendered by CI. No mockups. <a href="https://ugreen-nas-control.github.io/ugreen-nas-control/demo/?model=dxp6800-pro">Click through it in your browser.</a></sub>
 

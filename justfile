@@ -142,13 +142,23 @@ harness model='dxp6800-pro': web-build
 shots *args: web-build
     bun web/tools/shots.ts {{ args }}
 
-# The 4 Community Applications store screenshots (DXP6800 Pro, dark) and the README hero (overview, light) into docs/ca/; rerun after a visible UI change
-[group('dev')]
-ca-shots: web-build
+# Renders the 5 fixed UI images (DXP6800 Pro fixture: overview, fans, case, leds dark; overview light) into .build/ca-shots/dxp6800-pro/
+[private]
+_ca-render: web-build
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview,fans,case,leds --theme dark --no-social
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview --theme light --no-social
+
+# The 5 Community Applications store screenshots and README hero images into docs/ca/ (the CA listing still loads them from main)
+[group('dev')]
+ca-shots: _ca-render
     mkdir -p docs/ca
     cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png docs/ca/
+
+# The same images into .build/site/shots/ (served by Pages, linked from the README); run after the site build, which clears .build/site
+[group('dev')]
+site-shots: _ca-render
+    mkdir -p .build/site/shots
+    cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png .build/site/shots/
 
 # The site demo (the real plugin UI on sample data, model switcher) into .build/demo; checked against the PHP harness
 [group('dev')]
@@ -161,6 +171,7 @@ demo: web-build
 site: web-build demo
     bun web/tools/check-models.ts
     bun docs/site/build.ts
+    just site-shots
 
 # Installs the locked JS dependencies (bun types, formatters); a no-op when node_modules is current
 [private]
