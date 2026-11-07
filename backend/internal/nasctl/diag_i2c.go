@@ -27,18 +27,24 @@ type I2CModule struct {
 	Kind           string // "module", "built in" or ""
 }
 
-// I2CDiag is the read-only map of where the LED MCU can sit; nothing here opens a bus.
+// I2CDiag is the read-only map of where the LED MCU can sit; nothing here opens a bus or brings a controller up.
 type I2CDiag struct {
 	Controllers []I2CCtl
 	MCUs        []ACPIMCU
 	Modules     []I2CModule
 	Release     string
+	Probe       []string // report of the last ugreen-led-i2c lpss-probe, empty when it was not run
 }
 
 var (
 	bdfRe       = regexp.MustCompile(`[0-9a-f]{4}:[0-9a-f]{2}:[0-9a-f]{2}\.[0-7]`)
 	i2cModNames = []string{"i2c_designware_platform", "i2c_designware_pci", "i2c_designware_core"}
 )
+
+func readAll(path string) string {
+	data, _ := os.ReadFile(path)
+	return string(data)
+}
 
 func sysfsLine(path string) string { return strings.TrimSpace(readFirstLine(path)) }
 
@@ -85,9 +91,28 @@ func (c *Ctl) i2cMCUs() []ACPIMCU {
 				m.Parent = all[len(all)-1]
 			}
 		}
+		if m.Parent == "" {
+			m.Parent = c.pciByACPIPath(m.Path)
+		}
 		out = append(out, m)
 	}
 	return out
+}
+
+// pciByACPIPath is the PCI function whose firmware node is the parent of the ACPI path (\_SB_.PC00.I2C1.MCU0 ->
+// \_SB_.PC00.I2C1), or "". The boards without a driver have no physical_node to follow.
+func (c *Ctl) pciByACPIPath(path string) string {
+	i := strings.LastIndexByte(path, '.')
+	if i <= 0 {
+		return ""
+	}
+	dirs, _ := filepath.Glob(filepath.Join(c.Env.SysPCI, "*"))
+	for _, d := range dirs {
+		if sysfsLine(filepath.Join(d, "firmware_node", "path")) == path[:i] {
+			return filepath.Base(d)
+		}
+	}
+	return ""
 }
 
 // i2cModules says per DesignWare module whether /lib/modules/<release> has it (modules.dep) or the kernel has it
@@ -133,6 +158,9 @@ func (c *Ctl) i2cModules(release string) []I2CModule {
 func (c *Ctl) i2cDiag() I2CDiag {
 	rel := sysfsLine(filepath.Join(c.Env.Proc, "sys/kernel/osrelease"))
 	d := I2CDiag{Release: rel, Controllers: c.i2cControllers(), MCUs: c.i2cMCUs()}
+	if probe := strings.TrimSpace(readAll(c.Env.LPSSProbe)); probe != "" {
+		d.Probe = strings.Split(probe, "\n")
+	}
 	if rel != "" {
 		d.Modules = c.i2cModules(rel)
 	}
@@ -151,7 +179,7 @@ func (d I2CDiag) unbound() string {
 
 // ledHint is the one factual line for a failed 0x3a probe: the MCU is probably behind a controller without a driver.
 func (d I2CDiag) ledHint() string {
-	const tail = "the LED controller probably sits behind it (not supported yet on this board)"
+	const tail = "the LED controller probably sits behind it (DXP2800 SUB2 boards: experimental, run ugreen-led-i2c lpss-probe, then set lpss_leds=\"1\" in leds.cfg)"
 	if b := d.unbound(); b != "" {
 		return "no LED controller at 0x3a on the SMBus; the I2C controller " + b + " has no driver bound, " + tail
 	}
@@ -190,6 +218,12 @@ func (d I2CDiag) lines() []string {
 	}
 	if len(d.Modules) == 0 {
 		l = append(l, "  -")
+	}
+	if len(d.Probe) > 0 {
+		l = append(l, "lpss-probe (last run):")
+		for _, p := range d.Probe {
+			l = append(l, "  "+p)
+		}
 	}
 	return l
 }

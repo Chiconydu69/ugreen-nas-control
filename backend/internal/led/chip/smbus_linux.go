@@ -69,12 +69,19 @@ func findBus() (string, error) {
 			if _, err := os.Stat(path); err != nil {
 				return "", fmt.Errorf("%s is missing; load the i2c-dev module (modprobe i2c-dev)", path)
 			}
+			if prefix != dwAdapter && optIn(lpssOptInKey) && lpssHasMCU() && !lpssI801Answers(path) {
+				return lpssPath, nil // DXP2800 SUB2: nothing at 0x3a on the SMBus, the MCU is behind the LPSS controller
+			}
 			return path, nil
 		}
 	}
 
 	if names, _ := dwControllers(); len(names) > 0 {
 		return dwPath, nil
+	}
+
+	if optIn(lpssOptInKey) && lpssHasMCU() {
+		return lpssPath, nil
 	}
 
 	return "", errors.New("no SMBus I801 or DesignWare I2C adapter found; load the i2c_i801 module (modprobe i2c_i801) and check dmesg | grep -i -e i801 -e designware")
@@ -110,6 +117,19 @@ func openBusAt(path string, addr uintptr, force bool) (*bus, error) {
 	lock, err := acquireLock()
 	if err != nil {
 		return nil, err
+	}
+
+	if path == lpssPath {
+		if !optIn(lpssOptInKey) {
+			_ = lock.Close()
+			return nil, errLPSSOff
+		}
+		dw, err := openLPSS(&lpssReport{}, uint8(addr))
+		if err != nil {
+			_ = lock.Close()
+			return nil, err
+		}
+		return &bus{path: path, dw: dw, lock: lock}, nil
 	}
 
 	if path == dwPath {
@@ -278,6 +298,9 @@ func scanBus(path string) (found, busy []string, err error) {
 
 	if path == dwPath {
 		return scanDW()
+	}
+	if path == lpssPath {
+		return nil, nil, errors.New("scan is not supported on the LPSS controller; use lpss-probe")
 	}
 
 	file, err := os.OpenFile(path, os.O_RDWR, 0)

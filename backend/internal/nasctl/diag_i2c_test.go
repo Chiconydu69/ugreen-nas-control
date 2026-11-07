@@ -157,3 +157,26 @@ func TestI2CSection(t *testing.T) {
 		}
 	}
 }
+
+// The boards without a driver have no physical_node: the controller is found by the firmware node path, and the
+// last lpss-probe report is shown only when it exists.
+func TestI2CDiagLPSS(t *testing.T) {
+	c := i2cFixture(t, false)
+	write(t, c.Env.SysACPI+"/HT32F522:00/hid", "HT32F522\n")
+	write(t, c.Env.SysACPI+"/HT32F522:00/path", "\\_SB_.PC00.I2C1.MCU0\n")
+	write(t, c.Env.SysPCI+"/0000:00:15.0/firmware_node/path", "\\_SB_.PC00.I2C1\n")
+	write(t, c.Env.SysPCI+"/0000:00:15.1/firmware_node/path", "\\_SB_.PC00.I2C2\n")
+	d := c.i2cDiag()
+	if len(d.MCUs) != 1 || d.MCUs[0].Parent != "0000:00:15.0" {
+		t.Fatalf("mcu %+v", d.MCUs)
+	}
+	if strings.Contains(strings.Join(d.lines(), "\n"), "lpss-probe") || d.Probe != nil {
+		t.Error("probe section without a probe run")
+	}
+
+	c.Env.LPSSProbe = t.TempDir() + "/probe"
+	write(t, c.Env.LPSSProbe, "chip_id: 0xc5b2\nresult: ok\n")
+	if out := strings.Join(c.i2cDiag().lines(), "\n"); !strings.Contains(out, "lpss-probe (last run):\n  chip_id: 0xc5b2\n  result: ok") {
+		t.Errorf("probe report missing:\n%s", out)
+	}
+}

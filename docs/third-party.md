@@ -19,20 +19,22 @@ Prior work this project builds on; licenses and what is used follow below.
 
 Primary source for register facts; the community projects below are secondary. UGREEN publishes its GPL kernel sources in the GitHub account [ugreen-opensource](https://github.com/ugreen-opensource). Read at `kernel-6.12` commit `c75c5abd60dd45f45966720293ce1ee505fb8615`, folder `drivers/ugreen`. Files carry `SPDX-License-Identifier: GPL-2.0-only` (the repository `COPYING` is `GPL-2.0 WITH Linux-syscall-note`; GitHub's GPL-3.0 badge is a classifier error).
 
-| Model                                       | Chip                           | Files                                                                               |
-| ------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
-| DXP2800, DXP4800, DX4600, DX4700            | ITE IT8613 (`0x8613`)          | `ug_it86x-sio.c`                                                                    |
-| DXP4800 GT                                  | ITE IT5571                     | `ug_it55_4800gt_functions.c`, `it55_helper.c`                                       |
-| iDX6011 Pro                                 | ITE IT5571                     | `ug_it55pro_functions.c`                                                            |
-| iDX6011, iDX6012                            | ITE IT5571                     | `ug_it55_functions.c`                                                               |
-| DXP2800 GT                                  | Chipsea CS201x (`0x2011`)      | `ug_201x.c` (fan, temperature, watchdog), `leds-sio-201x.c`                         |
-| DXP480T                                     | IT86x + N76E003 LED MCU        | `dxp480t/ug_it86x-cpufan.c`, `leds-mcu-n76e003.c`                                   |
-| DH2600                                      | IT86x + N76E003 LED MCU        | `dh2600/ug_it86x-sio-dh2600.c`, `leds-mcu-n76e003-dh2600.c`                         |
-| DXP6800, DXP8800 (LEDs)                     | LED MCU                        | `dxp68a88/leds-mcu-68a88.c`                                                         |
-| DXP2800, DXP4800, Plus, DXP6800, iDX (LEDs) | LED MCU                        | `leds-mcu.c`, `leds-mcu-28a48.c`                                                    |
-| all                                         | buttons, beeper, register dump | `ug_gpio_btn.c`, `ug_sataio_beeper.c`, `tools/it55_regs_dump.sh` (IT5571 registers) |
+| Model                                       | Chip                             | Files                                                                               |
+| ------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------- |
+| DXP2800, DXP4800, DX4600, DX4700            | ITE IT8613 (`0x8613`)            | `ug_it86x-sio.c`                                                                    |
+| DXP4800 GT                                  | ITE IT5571                       | `ug_it55_4800gt_functions.c`, `it55_helper.c`                                       |
+| iDX6011 Pro                                 | ITE IT5571                       | `ug_it55pro_functions.c`                                                            |
+| iDX6011, iDX6012                            | ITE IT5571                       | `ug_it55_functions.c`                                                               |
+| DXP2800 GT                                  | Chipsea CS201x (`0x2011`)        | `ug_201x.c` (fan, temperature, watchdog), `leds-sio-201x.c`                         |
+| DXP2800 SUB2 boards (LEDs)                  | LED MCU HT32F522, chip id 0xC5B2 | `leds-mcu.c:41,59,716-717,761-791` (address 0x3a, register 0x5A)                    |
+| DXP480T                                     | IT86x + N76E003 LED MCU          | `dxp480t/ug_it86x-cpufan.c`, `leds-mcu-n76e003.c`                                   |
+| DH2600                                      | IT86x + N76E003 LED MCU          | `dh2600/ug_it86x-sio-dh2600.c`, `leds-mcu-n76e003-dh2600.c`                         |
+| DXP6800, DXP8800 (LEDs)                     | LED MCU                          | `dxp68a88/leds-mcu-68a88.c`                                                         |
+| DXP2800, DXP4800, Plus, DXP6800, iDX (LEDs) | LED MCU                          | `leds-mcu.c`, `leds-mcu-28a48.c`                                                    |
+| all                                         | buttons, beeper, register dump   | `ug_gpio_btn.c`, `ug_sataio_beeper.c`, `tools/it55_regs_dump.sh` (IT5571 registers) |
 
 - Product list: `include/misc/ugreen_product.h` (also in the repository `linux-headers-6.12.30`).
+- Linux 6.18 (GPL-2.0, `drivers/mfd/intel-lpss.c`, `intel-lpss-pci.c`, `drivers/i2c/busses/i2c-designware-*.c`): register facts for the Intel LPSS I2C controller of DXP2800 SUB2 boards (RESETS value, 133 MHz input clock, SCL counts); nothing copied, citations in `docs/led.md` and `backend/internal/led/chip/lpss_linux.go`.
 - ARM models (DH2300, DH4300 Plus): repositories `rk3576_kernel` and `rk3588_kernel`, folder `drivers/ugreen`. Not supported by this plugin.
 - Independent check of the release: Geoff Davis, [UGREEN Published Their GPL Sources](https://geoffdavis.com/posts/ugreen-gpl-sources-verified/) (2026-07-03): the LED protocol of miskcoo matches `leds-mcu-28a48.c`; UGOS uses the stock `it87_wdt` watchdog driver on IT8613E models; no byte-for-byte comparison of the published drivers with the shipped modules exists.
 
