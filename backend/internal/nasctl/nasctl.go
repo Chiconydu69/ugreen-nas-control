@@ -569,8 +569,14 @@ func (c *Ctl) ledEnable() int {
 		return 1
 	}
 
-	_ = os.MkdirAll(filepath.Dir(c.Env.LEDFlag), 0o755)
-	_ = fsx.WriteFile(c.Env.LEDFlag, nil, 0o644)
+	if err := os.MkdirAll(filepath.Dir(c.Env.LEDFlag), 0o755); err != nil {
+		c.errf("ERROR: The LEDs cannot be switched on: %v\n", err)
+		return 1
+	}
+	if err := fsx.WriteFile(c.Env.LEDFlag, nil, 0o644); err != nil {
+		c.errf("ERROR: The LEDs cannot be switched on: %v\n", err)
+		return 1
+	}
 
 	// First use with an installed UGREEN LED Control: start with its settings instead of the defaults.
 	if _, err := os.Stat(c.Env.LEDCfg); err != nil && nonEmpty(c.Env.LEDImportSrc) {
