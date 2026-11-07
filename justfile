@@ -8,13 +8,16 @@ set shell := ["bash", "-c", "if [ -n \"${IN_NIX_SHELL:-}\" ] || ! command -v nix
 shell_files := "plugin/event/stopping plugin/tools/install-dev.sh web/tools/harness/fake-led-i2c web/tools/harness/fake-led-ctl backend/internal/led/parity/testdata/bin/* .github/hooks/pre-commit"
 xml_files := "ca_profile.xml plugins/ugreen-nas-control.xml"
 
+# Go packages with the longest tests, split off so each test run finishes in two halves: the -slow recipes (and CI jobs) run these, the -rest ones everything else
+slow_pkgs := "/internal/(fan|led/chip|led/parity)$"
+
 [private]
 default:
     just --list --unsorted
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
+check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -37,7 +40,7 @@ fmt-check: _deps
     nixfmt --check flake.nix
 
 [group('check')]
-lint: go-lint sh-lint php-lint xml-lint workflows-lint
+lint: go-lint go-vet sh-lint php-lint xml-lint workflows-lint
 
 # PHP syntax (php -l); the .page files are checked after their header block
 [group('check')]
@@ -63,18 +66,39 @@ go-lint:
 [group('go')]
 go-test: go-test-race go-test-plain
 
-# Parallel jobs in CI (checks.yml: go-test-race and go-test)
+# Parallel jobs in CI (checks.yml: go-test-slow, go-test-rest, go-test-race-slow, go-test-race-rest)
 [group('go')]
-[working-directory: 'backend']
-go-test-race:
-    go test -race -tags testhooks -count=1 ./...
+go-test-race: go-test-race-slow go-test-race-rest
 
 [group('go')]
 [working-directory: 'backend']
-go-test-plain:
+go-test-race-slow:
+    pkgs=$(go list ./... | grep -E '{{ slow_pkgs }}'); go test -race -tags testhooks -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-test-race-rest:
+    pkgs=$(go list ./... | grep -vE '{{ slow_pkgs }}'); go test -race -tags testhooks -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-vet:
     go vet ./...
     go vet -tags testhooks ./...
-    go test -count=1 ./...
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain: go-test-plain-slow go-test-plain-rest
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-slow:
+    pkgs=$(go list ./... | grep -E '{{ slow_pkgs }}'); go test -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-rest:
+    pkgs=$(go list ./... | grep -vE '{{ slow_pkgs }}'); go test -count=1 $pkgs
 
 # The one multicall binary of the plugin (the tool names are symlinks to it in the archive): .build/bin/ugreen-nas
 [group('go')]
@@ -83,11 +107,11 @@ go-build:
     mkdir -p ../.build/bin
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false -ldflags "-s -w" -o ../.build/bin/ugreen-nas ./cmd/ugreen-nas
 
-# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"
+# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"; `just parity 0/2` and `just parity 1/2` each run half of the scenarios (CI jobs parity-0, parity-1)
 [group('go')]
 [working-directory: 'backend']
-parity:
-    LEDCTL_PARITY=1 go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
+parity shard='':
+    LEDCTL_PARITY=1 LEDCTL_PARITY_SHARD={{ shard }} go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
 
 [group('shell')]
 sh-lint:
