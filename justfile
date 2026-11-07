@@ -107,11 +107,11 @@ go-build:
     mkdir -p ../.build/bin
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false -ldflags "-s -w" -o ../.build/bin/ugreen-nas ./cmd/ugreen-nas
 
-# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"
+# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"; `just parity 0/2` and `just parity 1/2` each run half of the scenarios (CI jobs parity-0, parity-1)
 [group('go')]
 [working-directory: 'backend']
-parity:
-    LEDCTL_PARITY=1 go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
+parity shard='':
+    LEDCTL_PARITY=1 LEDCTL_PARITY_SHARD={{ shard }} go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
 
 [group('shell')]
 sh-lint:
