@@ -4,6 +4,8 @@ export const panelFr: Record<keyof typeof panelEn, string> = {
     'nav.panel': 'Façade',
     'sub.panel': 'Bouton d’alimentation, bouton reset et buzzer, d’après le code source des pilotes UGREEN.',
     'panel.unconfirmed': 'D’après le code source des pilotes UGREEN, pas encore confirmé sur votre matériel.',
+    'panel.confirmed': 'Confirmé par des utilisateurs sur ce modèle.',
+    'panel.confirmed_by': 'Confirmé par des utilisateurs sur ce modèle : {by}.',
     'panel.buttons_title': 'Boutons',
     'panel.buttons_hint': 'Lit une fois le bouton d’alimentation et le bouton reset. Un appui ne déclenche rien : le plugin ne fait que lire.',
     'panel.power': 'Alimentation',

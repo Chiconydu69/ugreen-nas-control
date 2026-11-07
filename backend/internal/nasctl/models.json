@@ -26,7 +26,8 @@
           "status": "expected",
           "note": "Front, rear and inside after UGREEN's product renders (two M.2 on the side of the drive cage, two RAM sockets on the mainboard below); slot numbering and the bay port order are assumed. The photos show one SO-DIMM; the second RAM socket is taken from UGREEN's spec text."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Two bays, two M.2 slots, one 2.5G LAN port. Case view after UGREEN's product renders; sensors only, the plugin drives nothing else on it."
     },
@@ -57,7 +58,8 @@
           "status": "expected",
           "note": "Front, rear and drive cage after UGREEN's product renders; the inside shows no board there, so it is drawn like the DXP4800's (RAM and M.2 numbering assumed)."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected", "note": "Buttons from UGREEN's driver source; the vendor driver has no beeper for this model." }
       },
       "note": "First-generation four-bay model, no longer listed on the UGREEN store. Two 2.5G LAN ports, two M.2 slots, two DDR4 sockets. Case view; no fan control."
     },
@@ -88,7 +90,8 @@
           "status": "expected",
           "note": "No photos or manual of this model found: drawn after the DX4600 Pro (four bays, two 2.5G LAN ports, two M.2 slots, same back); this model's hardware is not known."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected", "note": "Buttons from UGREEN's driver source. The beeper only where the product name is exactly DX4700." }
       },
       "note": "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control."
     },
@@ -122,7 +125,8 @@
           "status": "expected",
           "note": "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "All-flash model: no SATA bays, four M.2 slots (shown as drives in the case view), one 10G LAN port. Only the power LED works."
     },
@@ -173,7 +177,8 @@
           "by": "DanielRuppen",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/244",
           "note": "Reported working by a user on a SUB2 board (5.5.0-next.000133, 2026-11-07, #244): CPU temperature checked ok."
-        }
+        },
+        "panel": { "status": "expected" }
       },
       "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: the plugin drives them by default (lpss_leds=\"0\" in leds.cfg turns that off); LEDs confirmed on a SUB2 board (#214), bay order right, reboot confirmed; ugreen-led-i2c lpss-probe checks the board without changing an LED."
     },
@@ -207,7 +212,8 @@
           "status": "expected",
           "note": "Inside after UGREEN's manual; slot numbering assumed. Front and rear after the product photos, not compared on a device."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected", "note": "Buttons from UGREEN's driver source; the vendor driver has no beeper for this model." }
       },
       "note": "Two bays (U.2 capable), two M.2 slots, one 10G LAN port. LEDs are enabled but nobody has confirmed them. Case view (front and rear after the product photos, inside after the UGREEN manual); fan control after `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm` (Chipsea CS201x embedded controller; wiring from the UGREEN driver, confirmed on a device by a community tester)."
     },
@@ -233,7 +239,8 @@
           "status": "expected",
           "note": "Drawn after the DXP2800 (front, back) and the DXP2800 GT (inside); this model's hardware is not known, so ports, LAN speed and slot numbering are assumed."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Two bays; the case view is drawn after the DXP2800. Known from the name in UGREEN driver sources (power button, beeper); nobody has reported this model yet."
     },
@@ -270,7 +277,8 @@
           "status": "expected",
           "note": "The rear is drawn after the Plus and shows two LAN ports; this model has one 2.5G port. Inside after UGREEN's manual; slot numbering assumed."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Four bays, two M.2 slots, one 2.5G LAN port. Fan control after a fan probe."
     },
@@ -325,7 +333,8 @@
           "version": "5.3.0",
           "date": "2026-11-06",
           "note": "CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support."
-        }
+        },
+        "panel": { "status": "expected", "note": "Buttons from UGREEN's driver source; the vendor driver has no beeper for this model." }
       },
       "note": "Four bays (SATA or U.2), two M.2 slots, two 10G LAN ports. Fan control through the IT5571 embedded controller; LEDs through /dev/mem."
     },
@@ -371,7 +380,8 @@
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/184",
           "note": "Front and rear confirmed by a Plus owner. The two M.2 slots of the underside panel are printed M2-KEYM1 (next to the RAM) and M2-KEYM3 on the board, shown as M.2-1 and M.2-3 (UGREEN's photos agree); the third slot, M2-KEYM2, is inside the case. Inside view otherwise after UGREEN's manual, the Pro was not compared."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Four bays, two M.2 slots, one 10G and one 2.5G LAN port. Fan control after a fan probe."
     },
@@ -400,7 +410,8 @@
           "status": "expected",
           "note": "Drawn after the DXP4800 Plus (UGREEN's chassis, front and back from NASCompares' photos of the Plus; the S itself was not photographed). One RAM slot as the reveal article lists it; slot numbering assumed. The rear draws one or two 2.5G LAN ports as the system finds them."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Four bays, two M.2 slots. Sources disagree on the LAN ports (one or two 2.5G); the rear shows as many as the system finds. Nobody has reported this model yet."
     },
@@ -432,7 +443,8 @@
           "status": "expected",
           "note": "Drawn like the DXP6800 Pro, as the plugin does for every model without a drawing of its own; not compared on a device."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Six bays. UGREEN's driver sources list the DXP6800 and a DXP6800+; nobody has reported either to this plugin yet. Fan control after a fan probe."
     },
@@ -480,7 +492,8 @@
           "date": "2026-10-24",
           "note": "Inside view (M.2 slots on CPU and chipset, system slot, PCIe slot) and the rear drawn after the device."
         },
-        "sensors": { "status": "verified", "by": "upstream maintainer (development box)", "version": "0.1.0", "date": "2026-10-06" }
+        "sensors": { "status": "verified", "by": "upstream maintainer (development box)", "version": "0.1.0", "date": "2026-10-06" },
+        "panel": { "status": "expected" }
       },
       "note": "Six bays, two M.2 slots plus the internal system slot, a PCIe slot, two 10G LAN ports. Fan control through the IT8613E; the reference model of the plugin."
     },
@@ -506,7 +519,8 @@
           "status": "expected",
           "note": "Front and rear after UGREEN's product renders. No photo of the inside exists: drawn after the DXP6800 Pro, slot positions and numbering assumed."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "unsupported", "note": "Newer than UGREEN's driver source, which names no button or beeper path for it." }
       },
       "note": "Six bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. LEDs are enabled but nobody has confirmed them."
     },
@@ -535,7 +549,8 @@
           "status": "expected",
           "note": "Drawn after the DXP6800 Pro; this model's hardware is not known, so ports, PCIe slot and slot numbering are assumed."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Known from the name in UGREEN driver sources only; hardware details are not known, the case view is drawn after the DXP6800 Pro. LEDs are enabled but nobody has confirmed them."
     },
@@ -561,7 +576,8 @@
           "note": "Same IT8613E as the DXP8800 Plus: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 is switched through UGREEN's register 0x1e, not yet checked on this model). Not run on this model yet."
         },
         "case": { "status": "expected", "note": "inside after UGREEN's manual; slot numbering assumed" },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Eight bays. UGREEN's driver sources list a plain DXP8800 and a DXP8800 Pro next to the Plus; nobody has reported either to this plugin yet. Fan control after a fan probe."
     },
@@ -618,6 +634,14 @@
           "date": "2026-11-05",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165",
           "note": "Temperatures and the dashboard tile confirmed by a user; a one-off -21 °C board reading from the ACPI thermal zone is ignored since 5.1.1."
+        },
+        "panel": {
+          "status": "community",
+          "by": "Chiconydu69 (issue 165)",
+          "version": "5.4.0",
+          "date": "2026-11-07",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165",
+          "note": "Buttons: the pad registers read 0x84000100 (power) and 0x84000102 (reset), and panel buttons --watch showed power down, press and up and reset down and up. Beeper: the beeper test sounded right after the click. On some boots the BIOS hides the pad registers (0xFF)."
         }
       },
       "note": "Eight bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. Fan control after a fan probe."
@@ -644,7 +668,8 @@
           "status": "expected",
           "note": "Front and rear after UGREEN's product renders. The inside is drawn after the DXP8800 Plus (photos of the Plus used as proxy), slot positions and numbering assumed."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "unsupported", "note": "Newer than UGREEN's driver source, which names no button or beeper path for it." }
       },
       "note": "Eight bays, two M.2 slots, two 10G LAN ports and two Thunderbolt 4 ports. LEDs are enabled but nobody has confirmed them."
     },
@@ -683,7 +708,8 @@
           "status": "expected",
           "note": "Drawn after photos, inside after UGREEN's manual; slot numbering assumed. Not compared on a device. The iDX6012 is the pre-launch name of the iDX6011 as far as known."
         },
-        "sensors": { "status": "expected" }
+        "sensors": { "status": "expected" },
+        "panel": { "status": "expected" }
       },
       "note": "Six bays, two M.2 slots, a display at the front (Pro: 3.7 inch LCD), two 10G LAN ports, two Thunderbolt 4 ports, OCuLink. Fan control on the Pro only; the plain iDX6011 and iDX6012 show fan readings only (read-only)."
     }

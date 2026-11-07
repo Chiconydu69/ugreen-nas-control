@@ -23,7 +23,8 @@ export default {
             status: 'expected',
             note: "Front and rear after UGREEN's product renders. The inside is drawn after the DXP8800 Plus (photos of the Plus used as proxy), slot positions and numbering assumed."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'unsupported', note: "Newer than UGREEN's driver source, which names no button or beeper path for it." }
     },
     sources: [
         'https://ai.ugreen.com/products/ugreen-nasync-dxp8800-ultra-nas-storage',

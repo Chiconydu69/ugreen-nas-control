@@ -23,7 +23,8 @@ export default {
             note: "Same IT8613E as the DXP8800 Plus: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 is switched through UGREEN's register 0x1e, not yet checked on this model). Not run on this model yet."
         },
         case: { status: 'expected', note: "inside after UGREEN's manual; slot numbering assumed" },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: "Eight bays. UGREEN's driver sources list a plain DXP8800 and a DXP8800 Pro next to the Plus; nobody has reported either to this plugin yet. Fan control after a fan probe.",

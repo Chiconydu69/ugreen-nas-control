@@ -50,9 +50,11 @@ case: verified on 5.3.0 2026-11-06 - Inside view drawn from the service panel; R
   lan_ports: expected 2, detected 2 [ok]
 sensors: verified on 5.3.0 2026-11-06 - CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.
   cpu_temperature: expected true, detected true [ok]
+panel: expected - Buttons from UGREEN's driver source; the vendor driver has no beeper for this model.
+  panel_tables: expected true, detected true [ok]
 watchdog: expected - Registers from the driver UGREEN ships; no armed watchdog seen on a device with this plugin yet.
   watchdog_state: expected armed, off or not counting, detected - [n/a]
-open points in the registry: -
+open points in the registry: panel: Buttons from UGREEN's driver source; the vendor driver has no beeper for this model.
 ```
 
 </details>
@@ -127,7 +129,7 @@ fan.scripts: script inputs: set, 2 files, interpreters: bash, php (names hidden)
 watchdog: armed, armed true, timeout 60 s, feed interval 20 s, last feed 10s before the sample, counter 7
 power_on_ac: mode on, readable true, settable true, source ite-sio
 panel.buttons: readable: DXP4800 Plus (vendor source) power: up, reset: up
-panel.beeper: present, backend PC speaker (never sounded by diag)
+panel.beeper: present, backend PC speaker (never sounded by diag), vendor source, not yet confirmed
 lcd.backlight: n/a for this model
 mqtt: enabled true, publisher running true, host set (hidden), login set (hidden), tls false, port 1883, interval 5s, control true, control updates false, control containers false, connection: failing: connection refused
 conflicts: detected: module:it87 (warn); fan daemon yields to: -; LED takeover blocked by: -; rival processes running: 0
@@ -274,6 +276,7 @@ Nov  4 10:00:00 <host> ugreen-nas-ctl[1]: fan daemon started
     "case": {"registry_status":"verified","checks":[{"id":"bays","expected":4,"detected":2,"ok":false},{"id":"nvme_slots","expected":["m2-1","m2-2"],"detected":["m2-1","m2-2"],"ok":true},{"id":"lan_ports","expected":2,"detected":2,"ok":true}]},
     "fans": {"registry_status":"verified","checks":[{"id":"fan_chip","expected":"it5571","detected":"it5571","ok":true},{"id":"fan_headers","expected":["fan1:cpu","fan3:case"],"detected":["fan1:cpu","fan3:case"],"ok":true},{"id":"fans_spin","expected":"all fans above 0 rpm","detected":false,"ok":false}]},
     "leds": {"registry_status":"verified","checks":[{"id":"led_support","expected":"bays","detected":"supported true, blocker -","ok":null},{"id":"led_controller","expected":"ok","detected":"ok","ok":true}]},
+    "panel": {"registry_status":"expected","checks":[{"id":"panel_tables","expected":true,"detected":true,"ok":true}]},
     "sensors": {"registry_status":"verified","checks":[{"id":"cpu_temperature","expected":true,"detected":true,"ok":true}]},
     "watchdog": {"registry_status":"expected","checks":[{"id":"watchdog_state","expected":"armed, off or not counting","detected":null,"ok":null}]}
   },

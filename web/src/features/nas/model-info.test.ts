@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import registry from '../../../../backend/internal/nasctl/models.json';
 import { type Vars } from '../../core/i18n';
 import { en } from './i18n/en';
-import { type FanKind, type LedKind, type ModelFacts, deviceInfo, modelBox, modelFacts, type ViewKind } from './model-info';
+import { type FanKind, type LedKind, type ModelFacts, deviceInfo, modelBox, modelFacts, panelEvidence, type ViewKind } from './model-info';
 import type { Key } from './i18n/en';
 
 const t = (key: Key, vars: Vars = {}): string => en[key].replace(/\{(\w+)\}/g, (_, name: string) => String(vars[name] ?? `{${name}}`));
@@ -49,16 +49,20 @@ test('the CS201x model is confirmed, the IT8613E probe models are probed', () =>
     expect(modelFacts('DXP4800 GT')?.fans).toBe('fixed');
 });
 
-const entry = (verified: Record<string, { status: string; note?: string }>) => [{ name: 'X1', series: 'DX', dmiPattern: '^X1', verified }];
+const entry = (verified: Record<string, { status: string; by?: string; note?: string }>) => [{ name: 'X1', series: 'DX', dmiPattern: '^X1', verified }];
 const ok = { status: 'verified' };
 
 test('everything confirmed: the quiet "confirm again" action, no untested capability', () => {
-    const d = deviceInfo('X1', entry({ leds: ok, fans: { status: 'community' }, case: { status: 'partial', note: 'n' }, sensors: ok }))!;
+    const d = deviceInfo(
+        'X1',
+        entry({ leds: ok, fans: { status: 'community' }, case: { status: 'partial', note: 'n' }, sensors: ok, panel: { status: 'community', by: 'u' } })
+    )!;
     expect(d.rows.map(r => [r.cap, r.state])).toEqual([
         ['leds', 'confirmed'],
         ['fans', 'users'],
         ['case', 'users'],
-        ['sensors', 'confirmed']
+        ['sensors', 'confirmed'],
+        ['panel', 'users']
     ]);
     expect(d.rows[2]!.note).toBe('n');
     expect(d.untested).toEqual([]);
@@ -66,10 +70,17 @@ test('everything confirmed: the quiet "confirm again" action, no untested capabi
 });
 
 test('some untested: the capabilities are listed and the primary action is "confirm"; not supported is no gap', () => {
-    const d = deviceInfo('X1', entry({ leds: { status: 'expected' }, fans: { status: 'unsupported' }, case: ok, sensors: { status: 'expected' } }))!;
+    const d = deviceInfo('X1', entry({ leds: { status: 'expected' }, fans: { status: 'unsupported' }, case: ok, sensors: { status: 'expected' }, panel: ok }))!;
     expect(d.rows.find(r => r.cap === 'fans')!.state).toBe('none');
     expect(d.untested).toEqual(['leds', 'sensors']);
     expect(d.cta).toBe('confirm');
+});
+
+test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus, nothing elsewhere', () => {
+    expect(panelEvidence('DXP8800 Plus')).toEqual({ state: 'users', by: 'Chiconydu69 (issue 165)' });
+    expect(panelEvidence('DXP4800 Plus')?.state).toBe('untested');
+    expect(panelEvidence('DXP6800 Ultra')?.state).toBe('none');
+    expect(panelEvidence('Something Else')).toBeNull();
 });
 
 test('an unknown model has no device card data', () => {
@@ -81,7 +92,7 @@ test('every registry model gets a card with its name, series and a row per track
         const d = deviceInfo(m.fixtureDmi)!;
         expect(d).not.toBeNull();
         expect(d.series).toBe(m.series);
-        expect(d.rows.length).toBe(4);
+        expect(d.rows.length).toBe(5);
         expect(d.cta).toBe(d.untested.length ? 'confirm' : 'recheck');
     }
 });

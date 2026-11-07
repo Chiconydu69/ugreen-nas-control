@@ -29,7 +29,8 @@ export default {
             status: 'expected',
             note: 'Drawn like the DXP6800 Pro, as the plugin does for every model without a drawing of its own; not compared on a device.'
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: "Six bays. UGREEN's driver sources list the DXP6800 and a DXP6800+; nobody has reported either to this plugin yet. Fan control after a fan probe.",

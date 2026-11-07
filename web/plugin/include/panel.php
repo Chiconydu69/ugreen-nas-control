@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 // The front panel (api.php actions panel_buttons, panel_beep): `ugreen-nas panel buttons` and `panel beep` of the one
-// multicall binary (backend/internal/panel). Facts come from UGREEN's driver source and are not yet confirmed on
-// hardware. Buttons are read once per request (never `--watch`). Uses NAS_BIN, respond(), run() and fan_tool_error() from api.php
+// multicall binary (backend/internal/panel). Facts come from UGREEN's driver source; which model users confirmed is
+// in the model registry (web/models). Buttons are read once per request (never `--watch`). Uses NAS_BIN, respond(), run() and fan_tool_error() from api.php
 // and fan_probe.php.
 
 const PANEL_BEEP_MS = 200;

@@ -28,7 +28,8 @@ export default {
             status: 'expected',
             note: "Front, rear and drive cage after UGREEN's product renders; the inside shows no board there, so it is drawn like the DXP4800's (RAM and M.2 numbering assumed)."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected', note: "Buttons from UGREEN's driver source; the vendor driver has no beeper for this model." }
     },
     sources: ['https://github.com/miskcoo/ugreen_leds_controller', 'https://www.ugnas.com/products-detail/id-29.html'],
     note: 'First-generation four-bay model, no longer listed on the UGREEN store. Two 2.5G LAN ports, two M.2 slots, two DDR4 sockets. Case view; no fan control.',

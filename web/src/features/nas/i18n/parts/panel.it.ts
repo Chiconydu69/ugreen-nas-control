@@ -4,6 +4,8 @@ export const panelIt: Record<keyof typeof panelEn, string> = {
     'nav.panel': 'Pannello frontale',
     'sub.panel': 'Pulsante di accensione e di reset e cicalino, secondo il codice sorgente dei driver UGREEN.',
     'panel.unconfirmed': 'Secondo il codice sorgente dei driver UGREEN, non ancora confermato sul tuo hardware.',
+    'panel.confirmed': 'Confermato da utenti su questo modello.',
+    'panel.confirmed_by': 'Confermato da utenti su questo modello: {by}.',
     'panel.buttons_title': 'Pulsanti',
     'panel.buttons_hint': 'Legge una volta il pulsante di accensione e quello di reset. Premerli non fa nulla: il plugin si limita a leggere.',
     'panel.power': 'Accensione',

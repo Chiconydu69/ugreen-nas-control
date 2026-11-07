@@ -26,7 +26,8 @@ export default {
             status: 'expected',
             note: "Front, rear and inside after UGREEN's product renders (two M.2 on the side of the drive cage, two RAM sockets on the mainboard below); slot numbering and the bay port order are assumed. The photos show one SO-DIMM; the second RAM socket is taken from UGREEN's spec text."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12', 'https://www.ugnas.com/products-detail/id-31.html'],
     note: "Two bays, two M.2 slots, one 2.5G LAN port. Case view after UGREEN's product renders; sensors only, the plugin drives nothing else on it.",

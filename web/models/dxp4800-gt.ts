@@ -52,7 +52,8 @@ export default {
             version: '5.3.0',
             date: '2026-11-06',
             note: 'CPU temperature (k10temp) and board temperature from the IT5571, read while developing the support.'
-        }
+        },
+        panel: { status: 'expected', note: "Buttons from UGREEN's driver source; the vendor driver has no beeper for this model." }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp4800-gt-4-bay-nas-storage', 'https://github.com/miskcoo/ugreen_leds_controller/issues/100'],
     note: 'Four bays (SATA or U.2), two M.2 slots, two 10G LAN ports. Fan control through the IT5571 embedded controller; LEDs through /dev/mem.',

@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import registry from '../../../../backend/internal/nasctl/models.json';
 import { BEEPER_MODELS, BUTTON_MODELS, hasBeeper, hasButtons, powerDoubtful } from './panel-models';
 
 const go = (file: string) => readFileSync(resolve(import.meta.dir, '../../../../backend/internal/panel', file), 'utf8');
@@ -45,4 +46,17 @@ test('the iDX beepers: plain and Pro are different exact names, the buttons take
     expect(hasButtons('iDX6011 Pro Max')).toBe(true);
     expect(powerDoubtful('iDX6011 Pro')).toBe(true);
     expect(powerDoubtful('DXP4800')).toBe(false);
+});
+
+test('the registry offers the front panel exactly where the backend tables have buttons or a beeper', () => {
+    for (const m of registry.models) {
+        const offered = hasButtons(m.fixtureDmi) || hasBeeper(m.fixtureDmi);
+        expect([m.id, m.verified.panel.status !== 'unsupported']).toEqual([m.id, offered]);
+    }
+});
+
+test('the DXP8800 Plus is the one model users confirmed buttons and beeper on (issue 165)', () => {
+    const confirmed = registry.models.filter(m => m.verified.panel.status === 'community').map(m => m.id);
+    expect(confirmed).toEqual(['dxp8800-plus']);
+    expect(registry.models.find(m => m.id === 'dxp8800-plus')!.verified.panel.ref).toContain('/issues/165');
 });
