@@ -40,7 +40,8 @@ export const SCENARIOS: Scenario[] = [
             await s.go('case');
             if (await s.exists('[data-view="case"] [data-nav="curves"]:not([hidden])'))
                 await s.step('case -> fan settings link', () => s.click('[data-view="case"] [data-nav="curves"]'));
-            await s.step('about: models table', () => s.go('about'));
+            await s.step('about: your device card', () => s.go('about'));
+            await s.step('about: confirm my device', () => s.click('[data-device-cta]'));
         }
     },
     {

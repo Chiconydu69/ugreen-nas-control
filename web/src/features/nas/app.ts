@@ -61,7 +61,7 @@ import './fan/index';
 import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
 import { pluginChannel, switchTarget, SWITCH_COMMANDS } from './channel';
-import { caseText, modelBox, modelFacts, modelRows } from './model-info';
+import { caseText, deviceInfo, modelBox, modelFacts, MODELS_URL } from './model-info';
 import { createFeedback } from './feedback-view';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
@@ -199,8 +199,8 @@ function main(root: HTMLElement): void {
 
     const navLink = (nav: string, key: Key): string => linkBtn(t(key), `data-nav="${nav}"`);
 
-    // "All models": opens About with the supported-models table.
-    const modelsLink = (): string => linkBtn(t('model.all'), 'data-models-link');
+    // "All models": the website's model list, in a new tab.
+    const modelsLink = (): string => `<a class="unc-linkbtn" href="${MODELS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('model.all'))}</a>`;
     const modelNote = (text: string): string => `${escapeHtml(text)} ${modelsLink()}`;
 
     // Static spots in the page that hold a component: <span data-unc="btn" data-unc-label="<i18n key>" …>. Parameters are
@@ -766,36 +766,45 @@ function main(root: HTMLElement): void {
         window.openPlugin(SWITCH_COMMANDS[target], t(target === 'next' ? 'channel.title_next' : 'channel.title_stable'));
     }
 
-    function renderModels() {
+    // The "Your device" card of About: what the registry knows per capability on this model and the way to the Feedback view.
+    function renderDevice() {
         const mine = modelName();
-        const rows = modelRows();
-        const cell = (kind: string, text: string): string => `<td class="m-${kind}">${escapeHtml(text)}</td>`;
+        const device = deviceInfo(mine);
+        const model = device?.name ?? mine;
+        const ICO = { confirmed: 'check', users: 'check', untested: 'alert', none: 'info' } as const;
+        const TONE = { confirmed: 'ok', users: 'ok', untested: 'warn', none: 'plain' } as const;
+        const go = (label: string, tone: string, ico: Ico) => `<div class="unc-actions">${btn({ label, ico, tone, attrs: 'data-device-cta' })}</div>`;
+        const all = `<a class="unc-linkbtn" href="${MODELS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('device.all_models'))}</a>`;
 
-        q('#unc-models').innerHTML = `
-            <table class="unc-table unc-models">
-                <thead><tr>
-                    <th>${escapeHtml(t('models.col_model'))}</th><th>${escapeHtml(t('models.col_leds'))}</th>
-                    <th>${escapeHtml(t('models.col_case'))}</th><th>${escapeHtml(t('models.col_fans'))}</th>
-                </tr></thead>
-                <tbody>${rows
-                    .map(
-                        ({ series, name, re, leds, view, fans }, i) => `${
-                            i === 0 || rows[i - 1]?.series !== series
-                                ? `
-                    <tr class="series"><th colspan="4">${escapeHtml(t('models.series', { s: series }))}</th></tr>`
-                                : ''
-                        }
-                    <tr class="${re.test(mine) ? 'mine' : ''}">
-                        <td><b>${escapeHtml(name)}</b>${re.test(mine) ? ` <small class="unc-muted">${escapeHtml(t('models.mine'))}</small>` : ''}</td>
-                        ${cell(leds, t(`models.st_${leds}`))}
-                        ${cell(view, view === 'none' ? '–' : t(view === 'full' ? 'models.case_full' : 'models.case_fr'))}
-                        ${cell(fans === 'none' ? 'none' : 'yes', fans === 'fixed' ? '✓' : fans === 'none' ? '–' : t('models.fan_test'))}
-                    </tr>`
-                    )
-                    .join('')}
-                </tbody>
-            </table>
-            ${note(escapeHtml(t('models.footnote')))}`;
+        if (!device) {
+            q('#unc-device').innerHTML = `
+                <p><b>${escapeHtml(mine || '–')}</b></p>
+                ${note(escapeHtml(t('device.unknown', { model: mine || '–' })), { tone: 'warn', box: true, ico: 'alert', tag: 'div' })}
+                ${go(t('device.tell'), 'primary', 'chat')}
+                <p class="unc-about-help">${all}</p>`;
+            return;
+        }
+        const rows = device.rows
+            .map(
+                ({ cap, state, note: text }) => `
+                <div class="unc-device-row">
+                    <span class="unc-device-cap">${escapeHtml(t(`device.cap_${cap}`))}</span>
+                    ${pill({ tone: TONE[state], ico: ICO[state], text: t(`device.st_${state}`) })}
+                    ${text ? `<small class="unc-muted">${escapeHtml(text)}</small>` : ''}
+                </div>`
+            )
+            .join('');
+        const list = device.untested.map(cap => t(`device.cap_${cap}`)).join(', ');
+        const cta =
+            device.cta === 'confirm'
+                ? `${note(escapeHtml(t('device.untested', { model: device.name, list })), { tone: 'warn', box: true, ico: 'alert', tag: 'div' })}${go(t('device.confirm'), 'primary', 'check')}`
+                : `<p class="unc-muted">${escapeHtml(t('device.all_confirmed', { model: device.name }))}</p>${go(t('device.recheck'), '', 'chat')}`;
+
+        q('#unc-device').innerHTML = `
+            <p class="unc-device-name"><b>${escapeHtml(model)}</b> <span class="unc-muted">${escapeHtml(t('device.series', { s: device.series }))}</span></p>
+            <div class="unc-device-rows">${rows}</div>
+            ${cta}
+            <p class="unc-about-help">${all}</p>`;
     }
 
     function conflictFact(): string {
@@ -1727,7 +1736,7 @@ function main(root: HTMLElement): void {
         renderFans();
         renderModes();
         renderSystem();
-        renderModels();
+        renderDevice();
         feedback.render();
         renderCurves();
         renderSafety();
@@ -3382,10 +3391,8 @@ function main(root: HTMLElement): void {
         qa('[data-nav]').forEach(button => {
             button.addEventListener('click', () => showView(button.dataset.nav ?? ''));
         });
-        document.addEventListener('click', event => {
-            if (!hit(event)?.closest('[data-models-link]')) return;
-            showView('about');
-            q('#unc-models-card').scrollIntoView({ block: 'start' });
+        q('#unc-device').addEventListener('click', event => {
+            if (hit(event)?.closest('[data-device-cta]')) showView('feedback');
         });
         q('.unc-ov').addEventListener('click', event => {
             const link = hit(event)?.closest<HTMLElement>('[data-nav]');

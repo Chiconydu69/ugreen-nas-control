@@ -200,7 +200,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "86a32187ffc3"
+        "text": "191d80d58b29"
       },
       "language es": {
         "requests": [
@@ -274,7 +274,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "acc786397380"
+        "text": "f58050b87f7d"
       },
       "language fr": {
         "requests": [
@@ -348,7 +348,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c32f382a10fa"
+        "text": "20f7a763470a"
       },
       "language it": {
         "requests": [
@@ -422,7 +422,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "05184b9109b8"
+        "text": "c815d81d0783"
       },
       "language nl": {
         "requests": [
@@ -496,7 +496,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3d08fbb4b309"
+        "text": "df51cdbab030"
       },
       "language zh": {
         "requests": [
@@ -570,7 +570,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1ba6590b52e7"
+        "text": "969291e3730a"
       },
       "language auto": {
         "requests": [
@@ -659,7 +659,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "82793fe1bf16"
+        "text": "bb10b2d6c8e7"
       }
     },
     "led-drives": {
@@ -1248,7 +1248,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "82793fe1bf16"
+        "text": "bb10b2d6c8e7"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -1260,10 +1260,15 @@
         "events": [],
         "text": "6e4d5944aaef"
       },
-      "about: models table": {
+      "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "82793fe1bf16"
+        "text": "bb10b2d6c8e7"
+      },
+      "about: confirm my device": {
+        "requests": ["nas GET {\"action\":\"status\"}"],
+        "events": [],
+        "text": "600d8be87afa"
       }
     },
     "poll": {
@@ -1990,7 +1995,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "45903789939e"
+        "text": "675fa4de4de0"
       },
       "language es": {
         "requests": [
@@ -2075,7 +2080,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "4502345d9264"
+        "text": "0868c7d6dd83"
       },
       "language fr": {
         "requests": [
@@ -2160,7 +2165,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2bc4c0b89e2c"
+        "text": "e043e5eec1da"
       },
       "language it": {
         "requests": [
@@ -2245,7 +2250,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "e58b3f495878"
+        "text": "e8487efecbf5"
       },
       "language nl": {
         "requests": [
@@ -2330,7 +2335,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "1b9dd55f5f58"
+        "text": "1aff15b86aed"
       },
       "language zh": {
         "requests": [
@@ -2415,7 +2420,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "09d2a8f14fe5"
+        "text": "aaa036ab8965"
       },
       "language auto": {
         "requests": [
@@ -2516,7 +2521,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "332f210f74ed"
+        "text": "c95ba11f781f"
       }
     },
     "led-drives": {
@@ -3122,7 +3127,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "332f210f74ed"
+        "text": "c95ba11f781f"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -3134,10 +3139,15 @@
         "events": [],
         "text": "917a30f42810"
       },
-      "about: models table": {
+      "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "332f210f74ed"
+        "text": "c95ba11f781f"
+      },
+      "about: confirm my device": {
+        "requests": ["nas GET {\"action\":\"status\"}"],
+        "events": [],
+        "text": "c827454d600a"
       }
     },
     "poll": {
@@ -3932,7 +3942,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "806e05948d98"
+        "text": "b494982c970e"
       },
       "language es": {
         "requests": [
@@ -4017,7 +4027,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "03ed0a6380ab"
+        "text": "328223af5a54"
       },
       "language fr": {
         "requests": [
@@ -4102,7 +4112,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fe17375807d0"
+        "text": "d388d0cee902"
       },
       "language it": {
         "requests": [
@@ -4187,7 +4197,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5a082ced40d0"
+        "text": "42785262b23a"
       },
       "language nl": {
         "requests": [
@@ -4272,7 +4282,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ad531b292e65"
+        "text": "59fd79f9b24b"
       },
       "language zh": {
         "requests": [
@@ -4357,7 +4367,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "adbc6e6f7286"
+        "text": "f4de3de2baff"
       },
       "language auto": {
         "requests": [
@@ -4458,7 +4468,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "03854b11b4d1"
+        "text": "862a7fb3cc11"
       }
     },
     "led-drives": {
@@ -5064,7 +5074,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "03854b11b4d1"
+        "text": "862a7fb3cc11"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -5076,10 +5086,15 @@
         "events": [],
         "text": "e39fcea3ef7e"
       },
-      "about: models table": {
+      "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "03854b11b4d1"
+        "text": "862a7fb3cc11"
+      },
+      "about: confirm my device": {
+        "requests": ["nas GET {\"action\":\"status\"}"],
+        "events": [],
+        "text": "65831475a2ef"
       }
     },
     "poll": {
@@ -5884,7 +5899,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "84635b2b803f"
+        "text": "57c5a89af78b"
       },
       "language es": {
         "requests": [
@@ -5970,7 +5985,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c3f0a60dd54c"
+        "text": "722691102bf5"
       },
       "language fr": {
         "requests": [
@@ -6056,7 +6071,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "f387c1d7577f"
+        "text": "f0e49b3f2996"
       },
       "language it": {
         "requests": [
@@ -6142,7 +6157,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "97fee090deb0"
+        "text": "060fd9ddddf9"
       },
       "language nl": {
         "requests": [
@@ -6228,7 +6243,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a17f6972c69d"
+        "text": "3efe10e2a859"
       },
       "language zh": {
         "requests": [
@@ -6314,7 +6329,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "421f1bafc731"
+        "text": "9d236b62af93"
       },
       "language auto": {
         "requests": [
@@ -6417,7 +6432,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "df8a8d997e8f"
+        "text": "067413cce487"
       }
     },
     "led-drives": {
@@ -7030,7 +7045,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "df8a8d997e8f"
+        "text": "067413cce487"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -7042,10 +7057,15 @@
         "events": [],
         "text": "3e6f43400830"
       },
-      "about: models table": {
+      "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "df8a8d997e8f"
+        "text": "067413cce487"
+      },
+      "about: confirm my device": {
+        "requests": ["nas GET {\"action\":\"status\"}"],
+        "events": [],
+        "text": "e03aebc75d80"
       }
     },
     "poll": {

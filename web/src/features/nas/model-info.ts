@@ -4,6 +4,9 @@ import registry from '../../../../backend/internal/nasctl/models.json';
 import type { Vars } from '../../core/i18n';
 import type { Key } from './i18n/en';
 
+/** The models list on the project website. */
+export const MODELS_URL = 'https://ugreen-nas-control.github.io/ugreen-nas-control/#models';
+
 export type LedKind = 'bays' | 'power' | 'none';
 export type FanKind = 'fixed' | 'probe' | 'confirm' | 'none';
 export type ViewKind = 'full' | 'front-rear' | 'none';
@@ -50,32 +53,46 @@ export function modelBox(model: string, facts: ModelFacts | null, t: T): string 
 /** The phrase of the empty case view. */
 export const caseText = (t: T): string => t(VIEWS.none);
 
-export type LedState = 'verified' | 'confirmed' | 'untested' | 'power' | 'none';
+export type DeviceCap = 'leds' | 'fans' | 'case' | 'sensors';
+/** confirmed = verified by a maintainer; users = confirmed or partly confirmed by users. */
+export type DeviceState = 'confirmed' | 'users' | 'untested' | 'none';
+export type Cta = 'confirm' | 'recheck' | 'tell';
 
-export interface TableRow {
-    series: string;
+export interface DeviceRow {
+    cap: DeviceCap;
+    state: DeviceState;
+    /** The registry note, empty without one. */
+    note: string;
+}
+
+export interface Device {
     name: string;
-    /** The model's DMI pattern. */
-    re: RegExp;
-    leds: LedState;
-    view: ViewKind;
-    fans: FanKind;
-}
-
-interface TableEntry extends RegistryEntry {
     series: string;
+    rows: DeviceRow[];
+    /** Capabilities nobody confirmed yet. */
+    untested: DeviceCap[];
+    /** confirm: something is untested; recheck: everything offered is confirmed. */
+    cta: Cta;
+}
+
+interface DeviceEntry {
     name: string;
-    verified: { leds: { status: string } };
+    series: string;
+    dmiPattern: string;
+    verified: Record<string, { status: string; note?: string }>;
 }
 
-/** The word of the LED cell: no LEDs or power LED only from the registry's led kind, else its leds evidence (community and partial = confirmed, expected = untested). */
-function ledState(m: TableEntry): LedState {
-    if (m.led !== 'bays') return m.led;
-    const s = m.verified.leds.status;
-    return s === 'verified' ? 'verified' : s === 'community' || s === 'partial' ? 'confirmed' : 'untested';
-}
+const STATE: Record<string, DeviceState> = { verified: 'confirmed', community: 'users', partial: 'users', expected: 'untested', unsupported: 'none' };
+const CAPS: DeviceCap[] = ['leds', 'fans', 'case', 'sensors'];
 
-/** The rows of About → Supported models, in registry order (series, then name). */
-export function modelRows(models: readonly TableEntry[] = registry.models as TableEntry[]): TableRow[] {
-    return models.map(m => ({ series: m.series, name: m.name, re: new RegExp(m.dmiPattern), leds: ledState(m), view: m.caseView, fans: fanKind(m) }));
+/** The "Your device" card of About: one row per capability the registry tracks for the model. Null for an unknown model. */
+export function deviceInfo(product: string, models: readonly DeviceEntry[] = registry.models as unknown as DeviceEntry[]): Device | null {
+    const hit = models.find(m => new RegExp(m.dmiPattern).test(product));
+    if (!hit) return null;
+    const rows: DeviceRow[] = CAPS.map(cap => {
+        const c = hit.verified[cap];
+        return { cap, state: STATE[c?.status ?? 'expected'] ?? 'untested', note: c?.note ?? '' };
+    });
+    const untested = rows.filter(r => r.state === 'untested').map(r => r.cap);
+    return { name: hit.name, series: hit.series, rows, untested, cta: untested.length ? 'confirm' : 'recheck' };
 }

@@ -84,7 +84,7 @@ Generated files (`.gitattributes`) are not formatted by hand: their generators c
 1. Copy a similar file in `web/models/` to `web/models/<id>.ts` (lowercase, dashes). The schema and field docs are in `web/models/schema.ts`.
 2. `just models-check`, then `just harness <id>` and look at it.
 3. `just docs` to refresh the generated tables; commit the changed `README.md` and `docs/hardware.md`.
-4. If the plugin itself must learn the model (DMI pattern, case drawing, fan wiring), change `web/src/features/nas/components/front.ts` (`CASE_MODELS`) and, for fan wiring, `backend/internal/fan/hardware.go`; add the Go tests. The registry drives docs, harness, screenshots, the site and the About models table.
+4. If the plugin itself must learn the model (DMI pattern, case drawing, fan wiring), change `web/src/features/nas/components/front.ts` (`CASE_MODELS`) and, for fan wiring, `backend/internal/fan/hardware.go`; add the Go tests. The registry drives docs, harness, screenshots, the site and the About "Your device" card.
 5. Add a `.changes/` fragment of type `model`.
 
 Status words: [hardware.md](hardware.md#how-verification-works). Users report models with [cli.md](cli.md#report-a-model).
