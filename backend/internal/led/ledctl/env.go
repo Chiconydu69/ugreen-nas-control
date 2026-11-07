@@ -32,6 +32,7 @@ type Env struct {
 	PhasePrefix    string
 	ShutdownMark   string
 	BusCache       string
+	NetState       string
 	DynamixCfg     string
 	UdevData       string
 	MaxspeedCache  string
@@ -75,6 +76,7 @@ func EnvFromGetenv(get func(string) string, self string) Env {
 		PhasePrefix:    orDefault(get, "UGREEN_PHASE_PREFIX", "/var/run/ugreen-nas-control.led.phase-"),
 		ShutdownMark:   orDefault(get, "UGREEN_SHUTDOWN_MARK", "/var/run/ugreen-nas-control.led.shutdown"),
 		BusCache:       orDefault(get, "UGREEN_BUS_CACHE", "/var/run/ugreen-nas-control.led.bus"),
+		NetState:       orDefault(get, "UGREEN_NET_STATE", "/var/run/ugreen-nas-control.led.net"),
 		DynamixCfg:     orDefault(get, "UGREEN_DYNAMIX_CFG", "/boot/config/plugins/dynamix/dynamix.cfg"),
 		UdevData:       orDefault(get, "UGREEN_UDEV_DATA", "/run/udev/data"),
 		MaxspeedCache:  orDefault(get, "UGREEN_MAXSPEED_CACHE", "/var/run/ugreen-nas-control.led.maxspeed"),

@@ -1,7 +1,9 @@
 package ledctl
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -513,6 +515,57 @@ func TestSpawnErrorsAreReported(t *testing.T) {
 		}
 		if strings.Contains(r.out.String(), "started") {
 			t.Errorf("%v claims success: %q", args, r.out.String())
+		}
+	}
+}
+
+func TestNetworkVerdictAndStatus(t *testing.T) {
+	r := newRig(t, "DXP2800")
+	writeSystem(r)
+	probe := &netProbe{ok: true}
+	verdict := func() map[string]any {
+		t.Helper()
+		var out bytes.Buffer
+		r.c.Out = &out
+		if rc := r.c.status(); rc != 0 {
+			t.Fatalf("status rc %d", rc)
+		}
+		var got map[string]any
+		if err := json.Unmarshal(out.Bytes(), &got); err != nil {
+			t.Fatal(err)
+		}
+		return got
+	}
+
+	if got := verdict(); got["network_ok"] != nil || got["network_reason"] != "" {
+		t.Errorf("no daemon, no verdict: %v %v", got["network_ok"], got["network_reason"])
+	}
+
+	pid := os.Getpid()
+	r.write(fmt.Sprintf("proc/%d/cmdline", pid), "/x/backend/ugreen-nas\x00led-ctl\x00daemon\x00run\x00")
+	r.c.Env.Proc = filepath.Join(r.dir, "proc")
+	r.write("run/pid", fmt.Sprintf("%d\n", pid))
+	for _, tc := range []struct {
+		name, oper string
+		ping       int
+		ok         bool
+		reason     string
+	}{
+		{"healthy", "up", 0, true, ""},
+		{"link down", "down", 0, false, "operstate down"},
+		{"state unknown", "unknown", 0, false, "operstate unknown"},
+		{"no operstate", "", 0, false, "operstate unreadable"},
+		{"gateway silent", "up", 1, false, "gateway ping failed"},
+	} {
+		if tc.oper == "" {
+			_ = os.Remove(r.env.SysNet + "/eth0/operstate")
+		} else {
+			r.write("sys/net/eth0/operstate", tc.oper+"\n")
+		}
+		r.run.codes["ping -c 1 -W 2 10.0.0.1"] = tc.ping
+		r.c.probeNetwork(probe, "eth0")
+		if got := verdict(); got["network_ok"] != tc.ok || got["network_reason"] != tc.reason {
+			t.Errorf("%s: network_ok=%v reason=%q", tc.name, got["network_ok"], got["network_reason"])
 		}
 	}
 }
