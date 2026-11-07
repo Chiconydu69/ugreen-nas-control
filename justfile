@@ -172,16 +172,17 @@ _deps:
 models-check:
     bun web/tools/check-models.ts
 
-# Regenerate the models tables in README.md and docs/hardware.md and the issue forms in .github/ISSUE_TEMPLATE from web/models/
+# Regenerate the models tables and derived facts (languages, Unraid minimum, kernel claim) in README.md, docs/hardware.md and the CA overview in plugins/ugreen-nas-control.xml, and the issue forms in .github/ISSUE_TEMPLATE, from web/models/ and docs/site/facts.ts
 [group('docs')]
 docs:
     bun docs/tools/gen-docs.ts
     bun docs/tools/gen-templates.ts
 
-# Fail when the generated docs are out of date or a link, path or just recipe in the docs is broken
+# Fail when the generated docs are out of date, prose types a derived fact (docs/tools/facts-lint.ts) or a link, path or just recipe in the docs is broken
 [group('docs')]
 docs-check:
     bun docs/tools/gen-docs.ts --check
+    bun test docs/tools
     bun docs/tools/gen-templates.ts --check
 
 # Fail when a generated file is tracked, a tracked file is gitignored, a generator writes to a tracked path, or the web build writes outside .build/
