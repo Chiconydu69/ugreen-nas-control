@@ -23,6 +23,9 @@ const (
 	mqttConnack   = 2
 	mqttPublish   = 3
 	mqttPuback    = 4
+	mqttPubrec    = 5
+	mqttPubrel    = 6
+	mqttPubcomp   = 7
 	mqttSubscribe = 8
 	mqttSuback    = 9
 	mqttPingreq   = 12
@@ -255,6 +258,7 @@ func (c *client) session(quit <-chan struct{}) error {
 		go c.onConnect()
 	}
 
+	inflight := map[uint16]struct{}{} // QoS 2 packet identifiers received and not yet released
 	for {
 		// Anything, a ping answer included, must arrive within one and a half keep-alive periods.
 		_ = conn.SetReadDeadline(time.Now().Add(mqttKeepAlive * 3 / 2))
@@ -262,24 +266,58 @@ func (c *client) session(quit <-chan struct{}) error {
 		if err != nil {
 			return err
 		}
-		if typ == mqttSuback && len(body) >= 3 && body[2] == 0x80 { // 0x80 = Failure (section 3.9.3): refused, e.g. by an ACL
-			logf("mqtt: subscription refused by the broker (SUBACK 0x80); remote commands will not arrive")
+		switch typ {
+		case mqttPuback, mqttPingresp:
 			continue
+		case mqttSuback:
+			if len(body) >= 3 && body[2] == 0x80 { // 0x80 = Failure (section 3.9.3): refused, e.g. by an ACL
+				logf("mqtt: subscription refused by the broker (SUBACK 0x80); remote commands will not arrive")
+			}
+			continue
+		case mqttPubrel: // completes a QoS 2 delivery (section 4.3.3)
+			if len(body) != 2 || flags != 2 {
+				return errors.New("mqtt: malformed PUBREL")
+			}
+			delete(inflight, uint16(body[0])<<8|uint16(body[1]))
+			_ = c.write(packet(mqttPubcomp, 0, body))
+			continue
+		case mqttPublish:
+		default: // not sent by a server, or reserved: a protocol violation, close the connection [MQTT-4.8.0-1]
+			return fmt.Errorf("mqtt: unexpected packet type %d from the broker", typ)
 		}
-		if typ != mqttPublish || len(body) < 2 {
-			continue
+		if len(body) < 2 {
+			return errors.New("mqtt: malformed PUBLISH")
 		}
 		tl := int(body[0])<<8 | int(body[1])
 		if len(body) < 2+tl {
-			continue
+			return errors.New("mqtt: malformed PUBLISH")
 		}
 		topic, rest := string(body[2:2+tl]), body[2+tl:]
-		if qos := flags >> 1 & 3; qos > 0 {
-			if len(rest) < 2 {
-				continue
+		if tl == 0 { // [MQTT-4.7.3-1]
+			return errors.New("mqtt: empty topic name in PUBLISH")
+		}
+		if strings.ContainsAny(topic, "#+") { // [MQTT-3.3.2-2]
+			return errors.New("mqtt: wildcard in the topic name of a PUBLISH")
+		}
+		if qos := flags >> 1 & 3; qos == 3 { // [MQTT-3.3.1-4]
+			return errors.New("mqtt: PUBLISH with QoS 3")
+		} else if qos > 0 {
+			if len(rest) < 2 || rest[0]|rest[1] == 0 { // [MQTT-2.3.1-1]
+				return errors.New("mqtt: PUBLISH without a packet identifier")
 			}
-			_ = c.write(packet(mqttPuback, 0, rest[:2]))
+			id := uint16(rest[0])<<8 | uint16(rest[1])
 			rest = rest[2:]
+			if qos == 1 {
+				_ = c.write(packet(mqttPuback, 0, []byte{byte(id >> 8), byte(id)}))
+			} else {
+				// The subscription is QoS 1, so the broker should not send this ([MQTT-3.8.4-6]), but a QoS 2 PUBLISH
+				// must be answered with PUBREC and passed on once until its PUBREL ([MQTT-4.3.3-2]).
+				_ = c.write(packet(mqttPubrec, 0, []byte{byte(id >> 8), byte(id)}))
+				if _, dup := inflight[id]; dup {
+					continue
+				}
+				inflight[id] = struct{}{}
+			}
 		}
 		if c.onMessage != nil {
 			c.onMessage(topic, append([]byte(nil), rest...), flags&1 != 0)

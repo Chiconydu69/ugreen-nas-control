@@ -38,6 +38,15 @@ Below `ugreen-nas/<name>/`, payloads are JSON:
 
 Alarms carry a `code` (`cpu_hot`, `cpu_unreadable`, `disk_hot`, `nvme_hot`, `fan_stalled`) for a display to translate. They use the limits the fan daemon uses, so they also show while the daemon is not running.
 
+## Connection
+
+MQTT 3.1.1, clean session, keep-alive 30 s, reconnect after 1 s up to every 60 s. Commands are subscribed at QoS 1.
+
+- A refused connection is logged with the broker's reason (protocol version, client identifier, server unavailable, user name or password, not authorized).
+- A subscription the broker refuses (SUBACK failure, for example by its access rules) is logged; commands then never arrive.
+- Client ID, user name and will topic must be valid UTF-8 without NUL, each string at most 65535 bytes; otherwise the plugin logs the error and does not connect.
+- A packet the broker may not send (reserved or client-only types, a second CONNACK, a malformed PUBLISH, a topic with wildcards, QoS 3) closes the connection, and the plugin reconnects. PINGRESP, SUBACK, PUBACK and QoS 1 and 2 PUBLISH are handled.
+
 ## Commands
 
 A fixed list, nothing else is run:
