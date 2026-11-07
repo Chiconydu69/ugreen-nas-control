@@ -363,3 +363,13 @@ func TestLedBootOtherModelsStillProbe(t *testing.T) {
 		t.Errorf("calls %q", got)
 	}
 }
+
+// led-enable reported success (exit 0, no message) when the switch file could not be written.
+func TestLedEnableFailsWhenTheFlagCannotBeWritten(t *testing.T) {
+	f := newFixture(t)
+	write(t, filepath.Join(f.dir, "blocker"), "x")
+	f.c.Env.LEDFlag = filepath.Join(f.dir, "blocker", "led.enabled")
+	if rc := f.c.ledEnable(); rc == 0 || !strings.Contains(f.errw.String(), "ERROR") {
+		t.Fatalf("rc %d, stderr %q", rc, f.errw.String())
+	}
+}

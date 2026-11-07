@@ -503,6 +503,9 @@ func (c *Ctl) standbyBrightness(b int64) int64 {
 	case "off":
 		return 0
 	}
+	if b == 0 {
+		return 0 // a dark bay stays dark
+	}
 	level := atoiOr(c.get("standby_level", "30"), 0)
 	b = b * level / 100
 	if b < 1 {

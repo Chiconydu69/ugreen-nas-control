@@ -335,3 +335,20 @@ func TestDaemonStopKeepsManualNetdev(t *testing.T) {
 		t.Errorf("manual netdev = %v, want the saved breath", s)
 	}
 }
+
+// A bay whose brightness is 0 (night mode "off", or disk1_brightness="0") stays dark when its disk is in standby:
+// the dimmed standby brightness must not turn 0 into 1.
+func TestStandbyKeepsDarkBayDark(t *testing.T) {
+	r := newRig(t, "DXP2800")
+	writeSystem(r)
+	r.config("disk1_brightness=\"0\"\nstandby_mode=\"dim\"\nstandby_level=\"20\"\n")
+	r.write("disks.ini", diskINI("1", "*"))
+	stop, clock := startDaemon(t, r)
+
+	waitFor(t, r, "disk1 dark", func() bool { return r.chip.get("disk1")[0] == "off" })
+	settle(t, r, clock)
+	if s := r.chip.get("disk1"); s[0] != "off" {
+		t.Errorf("disk1 = %v, want off", s)
+	}
+	stop()
+}

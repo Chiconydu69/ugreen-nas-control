@@ -343,6 +343,9 @@ func more() []scenario {
 		if d.name != "daemon-run-foreign-monitor" { // that one leaves at once, before it writes any LED
 			sc.expect = []string{"set "}
 		}
+		if d.name == "daemon-run-night-off" {
+			sc.intended = "a bay at brightness 0 (night off) stays dark when its disk is in standby; the shell clamped the dimmed value to 1 and lit it faintly"
+		}
 		list = append(list, sc)
 	}
 	_ = fmt.Sprint

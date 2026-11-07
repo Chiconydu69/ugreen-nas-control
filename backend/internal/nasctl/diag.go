@@ -61,7 +61,7 @@ func (a Anon) text(s string, ip bool) string {
 		}
 	}
 	s = macRe.ReplaceAllString(s, "<removed>")
-	s = ipv6Re.ReplaceAllString(s, "<removed>")
+	s = scrubIPv6(s)
 	if ip {
 		s = scrubIPv4(s)
 	}
