@@ -484,6 +484,9 @@ func diagChecks(f Facts) []string {
 	}
 	if led.Blocker == "" && r.LED.Probe == "failed" {
 		out = append(out, "LED controller probe failed: "+orDash(r.LED.Error))
+		if h := led.I2C.ledHint(); h != "" && !led.GT {
+			out = append(out, "LED: "+h)
+		}
 	}
 	if led.Blocker == "" && r.LED.Probe == "failed" && !led.GT && led.Skipped == "" && led.ScanErr == "" && led.Scan != "" && !strings.Contains(strings.ToLower(led.Scan), "0x3a") {
 		out = append(out, "no I2C device answers at 0x3a")
