@@ -389,8 +389,7 @@ export const nl: Record<Key, string> = {
     'feedback.preview': 'Voorbeeld van alle gegevens',
     'feedback.send_issue': 'GitHub-issue maken',
     'feedback.send_bug': 'Probleem melden',
-    'feedback.send_hint':
-        'Eén klik kopieert de gegevens en opent een ingevulde GitHub-issue. Plak de gegevens in het veld „Device data” (Ctrl+V / Cmd+V) en klik op „Submit new issue”.',
+    'feedback.send_hint': 'Opent een ingevulde GitHub-issue; er wordt niets verstuurd tot je het daar indient.',
     'feedback.no_data': 'Nog geen gegevens verzameld: de issue bevat alleen je antwoorden.',
     'feedback.paste_line': 'De klik kopieert de apparaatgegevens: plak ze op GitHub in „Device data” (Ctrl+V / Cmd+V).',
     'feedback.copied': 'De gegevens staan op het klembord. Plak ze op GitHub in „Device data” (Ctrl+V / Cmd+V).',

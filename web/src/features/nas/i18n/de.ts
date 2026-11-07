@@ -388,8 +388,7 @@ export const de: Record<Key, string> = {
     'feedback.preview': 'Vorschau der vollständigen Daten',
     'feedback.send_issue': 'GitHub-Issue erstellen',
     'feedback.send_bug': 'Problem melden',
-    'feedback.send_hint':
-        'Ein Klick kopiert die Daten und öffnet ein vorausgefülltes GitHub-Issue. Füge die Daten dort ins Feld „Device data“ ein (Strg+V / Cmd+V) und klicke auf „Submit new issue“.',
+    'feedback.send_hint': 'Öffnet ein vorausgefülltes GitHub-Issue; gesendet wird erst, wenn du es dort abschickst.',
     'feedback.no_data': 'Noch keine Daten gesammelt: das Issue enthält nur deine Angaben.',
     'feedback.paste_line': 'Der Klick kopiert deine Gerätedaten: Füge sie auf GitHub ins Feld „Device data“ ein (Strg+V / Cmd+V).',
     'feedback.copied': 'Die Daten liegen in der Zwischenablage. Füge sie auf GitHub ins Feld „Device data“ ein (Strg+V / Cmd+V).',

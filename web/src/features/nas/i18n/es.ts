@@ -378,8 +378,7 @@ export const es: Record<Key, string> = {
     'feedback.preview': 'Vista previa de todos los datos',
     'feedback.send_issue': 'Crear issue en GitHub',
     'feedback.send_bug': 'Informar de un problema',
-    'feedback.send_hint':
-        'Un clic copia los datos y abre un issue de GitHub rellenado. Pega los datos en el campo «Device data» (Ctrl+V / Cmd+V) y pulsa «Submit new issue».',
+    'feedback.send_hint': 'Abre un issue de GitHub rellenado; no se envía nada hasta que lo envíes allí.',
     'feedback.no_data': 'Aún no hay datos recopilados: el issue solo llevará tus respuestas.',
     'feedback.paste_line': 'El clic copia los datos del equipo: pégalos en «Device data» en GitHub (Ctrl+V / Cmd+V).',
     'feedback.copied': 'Los datos están en el portapapeles. Pégalos en «Device data» en GitHub (Ctrl+V / Cmd+V).',
