@@ -1,6 +1,6 @@
 # Front panel: buttons and beeper
 
-`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); today only the DXP8800 Plus (issue #165).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action; nothing reboots or shuts down.
+`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); the DXP8800 Plus (issue #165) and, for the beeper only, the DXP4800 Plus (issue #266).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action; nothing reboots or shuts down.
 
 ## Commands
 
@@ -51,7 +51,7 @@ Vendor press rules, which `--watch` follows:
 
 No other model has a beeper path (DXP4800 GT, DXP2800 GT, DX4600, Ultra models): refused.
 
-The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound right after the click (issue [#165](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165)).
+The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound right after the click (issue [#165](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165)) and on the DXP4800 Plus ([#266](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/266)).
 
 - PC speaker: timer command 0xB6 to port 0x43, divisor low and high byte to port 0x42, bits 0-1 of port 0x61 set to start and cleared to stop (through `/dev/port`). The vendor divisor is 0x0944 (about 503 Hz) and is the default; `--freq` sets 1193182 / Hz instead.
 - EC register: ACPI EC ports 0x62 (data) and 0x66 (command); write command 0x81, read command 0x80; the tool writes 1 or 0, reads back, retries up to 5 times and accepts a read-back of 2 after writing 1 (as the vendor does). It only ever writes the one register of the model. On the iDX6011 Pro 0xA5 is the backlight, so the Pro uses 0x9E and the tool never writes 0xA5 there.
@@ -63,6 +63,7 @@ The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound 
 
 ## Open on hardware
 
+- DXP4800 Plus buttons (issue #266): the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102) but the owner saw no button response; a `panel buttons --watch` test is requested.
 - Why the DXP8800 Plus pad registers read 0xFF on some boots only (issue #165), whether other models do the same, and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
 - Whether a speaker is wired on each PC speaker model, and whether the EC and pad beepers sound.
 - The power button on iDX6011/6012 and the 5 s press on the DXP2800 GT.

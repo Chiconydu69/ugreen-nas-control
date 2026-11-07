@@ -76,9 +76,10 @@ test('some untested: the capabilities are listed and the primary action is "conf
     expect(d.cta).toBe('confirm');
 });
 
-test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus, nothing elsewhere', () => {
+test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus and DXP4800 Plus, nothing elsewhere', () => {
     expect(panelEvidence('DXP8800 Plus')).toEqual({ state: 'users', by: 'Chiconydu69 (issue 165)' });
-    expect(panelEvidence('DXP4800 Plus')?.state).toBe('untested');
+    expect(panelEvidence('DXP4800 Plus')?.state).toBe('users');
+    expect(panelEvidence('DXP4800 GT')?.state).toBe('untested');
     expect(panelEvidence('DXP6800 Ultra')?.state).toBe('none');
     expect(panelEvidence('Something Else')).toBeNull();
 });
