@@ -13,6 +13,7 @@ import (
 	"slices"
 	"sort"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -573,6 +574,7 @@ func logSection(lines []string, err string) Section {
 
 // runTimeout runs a tool with a deadline and returns its stdout; the error holds its stderr or why it failed.
 func runTimeout(d time.Duration, path string, args ...string) (string, error) {
+	defer timed("tool", path+" "+strings.Join(args, " "))()
 	if dl := diagDeadline(); !dl.IsZero() {
 		left := time.Until(dl)
 		if left <= 0 {
@@ -697,22 +699,68 @@ func diagDeadline() time.Time {
 	return time.Time{}
 }
 
-// sections collects the output blocks; a panic or error stays in its own block.
+// sections collects the output blocks in the order they were added. A block added with async runs in the background
+// (at most maxParallel at once), so the slow tool calls overlap; the output order stays the order of the add calls.
 type sections struct {
-	list   []Section
-	failed []string // titles of the blocks that produced nothing but an error
+	slots []*asyncSection
+	sem   chan struct{}
 }
 
-func (s *sections) add(title string, fn func() Section) {
-	sec := section(title, fn)
-	if sec.Err != "" && sec.Body == "" {
-		s.failed = append(s.failed, title)
+// asyncSection is one block; done closes once sec is final.
+type asyncSection struct {
+	sec  Section
+	done chan struct{}
+}
+
+// maxParallel bounds the collectors (and so the tool processes) running at the same time.
+const maxParallel = 6
+
+func (a *asyncSection) wait() { <-a.done }
+
+// add runs fn now and waits for it.
+func (s *sections) add(title string, fn func() Section) *asyncSection {
+	a := &asyncSection{done: make(chan struct{})}
+	a.sec = section(title, fn)
+	close(a.done)
+	s.slots = append(s.slots, a)
+	return a
+}
+
+// async starts fn in the background once every block in after has finished. The caller returns after a slot is free,
+// so the blocks start in the order of the calls.
+func (s *sections) async(title string, fn func() Section, after ...*asyncSection) *asyncSection {
+	if s.sem == nil {
+		s.sem = make(chan struct{}, maxParallel)
 	}
-	s.list = append(s.list, sec)
+	a := &asyncSection{done: make(chan struct{})}
+	s.slots = append(s.slots, a)
+	s.sem <- struct{}{}
+	go func() {
+		defer close(a.done)
+		defer func() { <-s.sem }()
+		for _, d := range after {
+			d.wait()
+		}
+		a.sec = section(title, fn)
+	}()
+	return a
+}
+
+// finish waits for every block and returns them in order plus the titles of the blocks that produced nothing but an error.
+func (s *sections) finish() (list []Section, failed []string) {
+	for _, a := range s.slots {
+		a.wait()
+		if a.sec.Err != "" && a.sec.Body == "" {
+			failed = append(failed, a.sec.Title)
+		}
+		list = append(list, a.sec)
+	}
+	return list, failed
 }
 
 // section runs one collector; a panic or error stays in its own section.
 func section(title string, fn func() Section) (s Section) {
+	defer timed("section", title)()
 	defer func() {
 		if r := recover(); r != nil {
 			s = Section{Title: title, Err: fmt.Sprint("internal error: ", r)}
@@ -852,13 +900,25 @@ func (c *Ctl) diag(asJSON bool) int {
 		in = Inputs{Env: c.Env, Blocker: c.ledBlocker(), Rivals: c.rivalList()}
 		in.Hardware = fan.ReadHardware()
 		in.BayPorts = fan.BayPorts(in.Hardware.Model)
-		if out, err := runTimeout(toolTimeout, c.Env.FanTool, "probe"); err == nil || out != "" {
-			in.FanProbe = []byte(out)
-		}
+		// The fan and the LED probe are different tools and different registers; they run side by side.
+		var wg sync.WaitGroup
+		var fanPanic any
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			defer func() { fanPanic = recover() }()
+			if out, err := runTimeout(toolTimeout, c.Env.FanTool, "probe"); err == nil || out != "" {
+				in.FanProbe = []byte(out)
+			}
+		}()
 		if in.Blocker != "model" {
 			in.LEDRan = true
 			out, err := runTimeout(toolTimeout, c.Env.LEDI2C, "probe")
 			in.LEDOK, in.LEDProbe = err == nil, []byte(out)
+		}
+		wg.Wait()
+		if fanPanic != nil {
+			panic(fanPanic)
 		}
 		rep = Build(in)
 	}); msg != "" {
@@ -876,15 +936,15 @@ func (c *Ctl) diag(asJSON bool) int {
 		secs.add("Environment facts", func() Section { return Section{Title: "Environment facts", Err: msg} })
 	}
 
-	secs.add("DMI", func() Section { return dmiSection(c.Env.DMIDir) })
-	secs.add("LED", func() Section {
+	secs.async("DMI", func() Section { return dmiSection(c.Env.DMIDir) })
+	ledSec := secs.async("LED", func() Section {
 		facts.LED = c.ledDiag(rep, in.Hardware)
 		facts.LED.anonymize(anon)
 		return ledSection(facts.LED)
 	})
-	secs.add("Front panel pads", func() Section { return padsSection(c.padsDiag(model)) })
-	secs.add("NVMe", func() Section { return nvmeSection(c.nvmeDiag(in.Hardware)) })
-	secs.add("Fans", func() Section {
+	secs.async("Front panel pads", func() Section { return padsSection(c.padsDiag(model)) })
+	secs.async("NVMe", func() Section { return nvmeSection(c.nvmeDiag(in.Hardware)) })
+	fanSec := secs.async("Fans", func() Section {
 		facts.Fan = c.fanDiag(model)
 		facts.FanDaemonDown = !facts.Fan.DaemonRunning
 		var st fanStatus
@@ -893,25 +953,26 @@ func (c *Ctl) diag(asJSON bool) int {
 		}
 		return fanSection(facts.Fan)
 	})
-	secs.add("Other fan and LED tools", func() Section {
+	rivalSec := secs.async("Other fan and LED tools", func() Section {
 		facts.Rivals = c.rivalDiag(facts.FanSt)
 		return rivalSection(facts.Rivals)
-	})
-	secs.add("Features", func() Section {
+	}, fanSec)
+	// The features table reads what the LED, fan and rival blocks found.
+	secs.async("Features", func() Section {
 		return featuresSection(c.featureInputs(model, facts))
-	})
-	secs.add("Drives", func() Section {
+	}, ledSec, fanSec, rivalSec)
+	secs.async("Drives", func() Section {
 		data, err := os.ReadFile(c.Env.DisksINI)
 		return drivesSection(data, err, isFile(filepath.Join(c.Env.PluginsBoot, "unassigned.devices.plg")))
 	})
-	secs.add("Settings", func() Section {
+	secs.async("Settings", func() Section {
 		fanCfg, e1 := os.ReadFile(c.Env.FanCfg)
 		ledCfg, e2 := os.ReadFile(c.Env.LEDCfg)
 		return settingsSection(fanCfg, ledCfg, e1, e2, c.running(c.Env.PubPidFile))
 	})
 	var syslog string
 	guard(func() { syslog = tail(c.Env.Syslog, 1<<20) })
-	secs.add("Plugin state", func() Section {
+	secs.async("Plugin state", func() Section {
 		st := StateDiag{Version: rep.PluginVersion, OwnFiles: facts.Env.OwnFiles, CronPresent: isFile(c.Env.LEDCron)}
 		if data, err := os.ReadFile(filepath.Join(c.Env.PluginsBoot, "ugreen-nas-control.plg")); err == nil {
 			if m := entityRe("pluginURL").FindSubmatch(data); m != nil {
@@ -924,28 +985,28 @@ func (c *Ctl) diag(asJSON bool) int {
 		st.InstallLines = pluginLines(anon, syslog, now)
 		return stateSection(st)
 	})
-	secs.add("Environment", func() Section { return envSection(facts.Env) })
-	secs.add("hwmon", func() Section { return hwmonSection(c.Env.Hwmon) })
-	secs.add("I/O ports", func() Section { return ioportsSection(c.Env.Proc) })
-	secs.add("PCI", func() Section {
+	secs.async("Environment", func() Section { return envSection(facts.Env) })
+	secs.async("hwmon", func() Section { return hwmonSection(c.Env.Hwmon) })
+	secs.async("I/O ports", func() Section { return ioportsSection(c.Env.Proc) })
+	secs.async("PCI", func() Section {
 		out, err := runTimeout(toolTimeout, "lspci", "-nn")
 		return lspciSection(anon, out, errString(err))
 	})
-	secs.add("dmesg", func() Section {
+	secs.async("dmesg", func() Section {
 		out, err := runTimeout(toolTimeout, "dmesg")
 		return dmesgSection(anon, out, errString(err))
 	})
-	secs.add("Log", func() Section {
+	secs.async("Log", func() Section {
 		if syslog == "" {
 			return logSection(nil, "cannot read the syslog")
 		}
 		return logSection(logLines(anon, syslog, 50), "")
 	})
-	facts.Failed = secs.failed
+	list, failed := secs.finish()
+	facts.Failed = failed
 
 	var checks []string
 	var ev Evidence
-	list := secs.list
 	if msg := guard(func() {
 		var reg *RegModel
 		if models, err := loadRegistry(modelsJSON); err == nil {
