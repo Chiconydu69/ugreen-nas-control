@@ -1,0 +1,10 @@
+# Linux/x86 6.18.58 Kernel Configuration
+# Relevant lines of /usr/src/linux-6.18.58-Unraid/config (Unraid 7.3.4); kernel-canary.test.ts
+CONFIG_X86_IOPL_IOPERM=y
+CONFIG_DEVMEM=y
+CONFIG_I2C_CHARDEV=m
+CONFIG_I2C_I801=m
+# CONFIG_I2C_DESIGNWARE_CORE is not set
+CONFIG_SENSORS_IT87=m
+CONFIG_MFD_INTEL_LPSS_PCI=m
+# CONFIG_STRICT_DEVMEM is not set

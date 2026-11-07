@@ -26,6 +26,7 @@
     "tools/check-i18n.ts",
     "tools/check-models.ts",
     "tools/lint.ts",
+    "../scripts/kernel-canary*.ts",
     "../docs/site/*.ts",
     "../docs/tools/*.ts"
   ]

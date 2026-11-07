@@ -20,6 +20,8 @@ Depends on: no kernel lockdown. Unraid 7.3.4 (kernel 6.18.58-Unraid) has `# CONF
 
 Revisit if: Unraid enables lockdown or `IO_STRICT_DEVMEM`; Unraid ships drivers for this hardware in its kernel (then use them); the plugin model changes with Unraid 8.
 
+Watched by: the kernel canary (`just kernel-canary [version]`, `.github/workflows/kernel-canary.yml`, every Monday). It reads `.config` from the newest `<ver>-Unraid` release of ich777/unraid_kernel (Lime Technology publishes no kernel repo) and checks the options in `scripts/kernel-canary-rules.ts`: `DEVMEM`, `X86_IOPL_IOPERM`, `I2C_CHARDEV`, `I2C_I801` present, `IO_STRICT_DEVMEM` and lockdown (forced level or `lockdown` in `CONFIG_LSM`) absent. A broken rule opens one issue per kernel version labelled `bug`; a change of `STRICT_DEVMEM`, the DesignWare I2C and LPSS options or `SENSORS_IT87` opens one labelled `enhancement`. The run also fails when an option name is missing from the Kconfig of the kernel series, or the archive has no `./.config`.
+
 ## Rust rewrite of the Go tools
 
 Verdict: none for `backend/internal/fan` and `backend/internal/led/chip`.
