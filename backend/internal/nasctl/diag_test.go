@@ -2,10 +2,13 @@ package nasctl
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 	"unicode/utf8"
@@ -561,8 +564,9 @@ func TestPanickingSectionKeepsTheRest(t *testing.T) {
 	var s sections
 	s.add("a", func() Section { panic("boom") })
 	s.add("b", func() Section { return Section{Title: "b", Body: "ok"} })
-	if len(s.list) != 2 || s.list[1].Body != "ok" || !strings.Contains(s.list[0].Err, "boom") || len(s.failed) != 1 {
-		t.Errorf("%+v", s)
+	list, failed := s.finish()
+	if len(list) != 2 || list[1].Body != "ok" || !strings.Contains(list[0].Err, "boom") || len(failed) != 1 {
+		t.Errorf("%+v %v", list, failed)
 	}
 	if guard(func() { panic("x") }) == "" {
 		t.Error("guard swallowed the panic silently")
@@ -830,5 +834,76 @@ func TestAnonKeepsLabelKeysThatEqualTheHostName(t *testing.T) {
 	hdr := a.Meta(diagHeader(time.Unix(0, 0), "6.18.58-Unraid", Report{UnraidVersion: "7.3.4"}))
 	if !strings.Contains(hdr, "\nunraid: 7.3.4\n") {
 		t.Errorf("header:\n%s", hdr)
+	}
+}
+
+// Blocks that start in the background finish in any order, yet the list keeps the order of the calls, a block that
+// waits for another sees its result, and no more than maxParallel run at once.
+func TestAsyncSectionsKeepTheOrderOfTheCalls(t *testing.T) {
+	for range 20 {
+		var s sections
+		var running, peak, first atomic.Int32
+		work := func(title string, d time.Duration) func() Section {
+			return func() Section {
+				n := running.Add(1)
+				for {
+					p := peak.Load()
+					if n <= p || peak.CompareAndSwap(p, n) {
+						break
+					}
+				}
+				time.Sleep(d)
+				running.Add(-1)
+				return Section{Title: title, Body: title}
+			}
+		}
+		a := s.async("a", func() Section {
+			time.Sleep(20 * time.Millisecond)
+			first.Store(1)
+			return Section{Title: "a", Body: "a"}
+		})
+		s.async("b", work("b", 0))
+		s.add("sync", work("sync", 0))
+		s.async("dep", func() Section {
+			return Section{Title: "dep", Body: fmt.Sprint("first=", first.Load())}
+		}, a)
+		s.async("boom", func() Section { panic("boom") })
+		for i := range 20 {
+			s.async(fmt.Sprint("n", i), work(fmt.Sprint("n", i), time.Millisecond))
+		}
+		list, failed := s.finish()
+		var got []string
+		for _, x := range list {
+			got = append(got, x.Title)
+		}
+		want := []string{"a", "b", "sync", "dep", "boom"}
+		for i := range 20 {
+			want = append(want, fmt.Sprint("n", i))
+		}
+		if !slices.Equal(got, want) {
+			t.Fatalf("order %v", got)
+		}
+		if list[3].Body != "first=1" {
+			t.Errorf("dependent ran before its input: %q", list[3].Body)
+		}
+		if len(failed) != 1 || failed[0] != "boom" || !strings.Contains(list[4].Err, "boom") {
+			t.Errorf("failed %v, %+v", failed, list[4])
+		}
+		if peak.Load() > maxParallel {
+			t.Errorf("%d collectors at once, limit %d", peak.Load(), maxParallel)
+		}
+	}
+}
+
+// Slow tools overlap: four 200 ms blocks take about 200 ms, not 800 ms.
+func TestAsyncSectionsOverlap(t *testing.T) {
+	var s sections
+	start := time.Now()
+	for i := range 4 {
+		s.async(fmt.Sprint(i), func() Section { time.Sleep(200 * time.Millisecond); return Section{Body: "x"} })
+	}
+	s.finish()
+	if d := time.Since(start); d > 600*time.Millisecond {
+		t.Errorf("blocks ran one after the other: %s", d)
 	}
 }
