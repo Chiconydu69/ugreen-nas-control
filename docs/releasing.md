@@ -12,7 +12,7 @@ For maintainers. Contributors only need [CONTRIBUTING.md](../.github/CONTRIBUTIN
 ## When to release
 
 - Next: built on every merge to `next`, for anyone who wants to try it.
-- Stable: about every two weeks, with everything merged since the last one. Not per merged PR.
+- Stable: about every week, with everything merged since the last one. Not per merged PR.
 - In between, a patch only when stable breaks something or writes hardware wrongly (fans, LEDs, a crash on a supported model). That one ships right away.
 - Before each stable release, the maintainers install the next build on their boxes and check it briefly ([Re-test the maintainer boxes](#re-test-the-maintainer-boxes)). Outside testers are welcome; no release waits for them.
 
