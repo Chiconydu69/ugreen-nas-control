@@ -18,6 +18,7 @@ const usage = `Usage:
   ugreen-led-i2c [--bus /dev/i2c-N] scan [all]
   ugreen-led-i2c [--bus /dev/i2c-N] [--force] dxp480t white
   ugreen-led-i2c cs201x [restore]
+  ugreen-led-i2c lpss-probe [--write]
   ugreen-led-i2c [--speed 0-4] [--reverse] [--idle-only] effect <rainbow|temperature> <led[,led...]|all>
 
 LEDs:     power, netdev, disk1 ... disk8
@@ -31,6 +32,11 @@ dxp480t   DXP480T Plus: the power LED (controller at 0x26) to static white
 cs201x    DXP2800 GT: dump the ARGB registers of the four LEDs (read only); "restore" writes
           back the state saved before the first write. The LED backend of this model is off
           until cs201x_leds="1" is set in leds.cfg
+lpss-probe DXP2800 SUB2 boards: the LED controller sits behind an Intel LPSS I2C controller without a
+          kernel driver. Read only by default: prints every check (ACPI path, PCI function, driver, power state,
+          BAR0, DesignWare type) and stops before any write. With --write it then sets up the controller
+          (writes controller registers, never an LED frame) and reads the chip id. Needs no opt-in; LED
+          control on this path is off until lpss_leds="1" is set in leds.cfg
 
 --bus     the SMBus device (default: the "SMBus I801 adapter")
 --force   use the address even while a kernel driver (led_ugreen) holds it
@@ -112,12 +118,19 @@ func (c *cli) run(args []string) int {
 	}
 	args = flags.Args()
 
-	if len(args) == 0 || (args[0] != "probe" && args[0] != "scan" && args[0] != "cs201x" && len(args) < 2) {
+	if len(args) == 0 || (args[0] != "probe" && args[0] != "scan" && args[0] != "cs201x" && args[0] != "lpss-probe" && len(args) < 2) {
 		return c.usageError()
 	}
 
 	if args[0] == "cs201x" {
 		return c.runCS201x(args[1:])
+	}
+
+	if args[0] == "lpss-probe" {
+		if len(args) > 2 || (len(args) == 2 && args[1] != "--write") {
+			return c.usageError()
+		}
+		return c.runLPSSProbe(len(args) == 2)
 	}
 
 	if args[0] == "scan" {

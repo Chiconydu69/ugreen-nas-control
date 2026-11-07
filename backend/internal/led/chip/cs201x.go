@@ -46,8 +46,11 @@ func isCS201xProduct(product string) bool { return strings.HasPrefix(product, "D
 
 var cfgLineRe = regexp.MustCompile(`^([A-Za-z0-9_]+)="(.*)"$`)
 
-// cs201xOptIn: cs201x_leds="1" in leds.cfg (the last such line wins), the same settings file ugreen-led-ctl reads.
-func cs201xOptIn() bool {
+// cs201xOptIn: cs201x_leds="1" in leds.cfg.
+func cs201xOptIn() bool { return optIn(optInKey) }
+
+// optIn: key="1" in leds.cfg (the last such line wins), the same settings file ugreen-led-ctl reads.
+func optIn(key string) bool {
 	path := csPaths.config
 	if path == "" {
 		path = testenv.Get("UGREEN_LED_CONFIG")
@@ -61,7 +64,7 @@ func cs201xOptIn() bool {
 	}
 	on := false
 	for _, line := range strings.Split(string(data), "\n") {
-		if m := cfgLineRe.FindStringSubmatch(line); m != nil && m[1] == optInKey {
+		if m := cfgLineRe.FindStringSubmatch(line); m != nil && m[1] == key {
 			on = m[2] == "1"
 		}
 	}
