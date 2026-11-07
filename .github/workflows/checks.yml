@@ -114,7 +114,7 @@ jobs:
           restore-keys: ${{ runner.os }}-go-lint-
       - run: nix develop .#go -c just go-lint go-vet
 
-  go-test:
+  go-test-slow:
     needs: changes
     if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-latest
@@ -130,6 +130,10 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
+        with:
+          primary-key: nix-${{ runner.os }}-gotest-${{ hashFiles('flake.lock', 'flake.nix') }}
+          gc-max-store-size-linux: 3G
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
@@ -138,9 +142,38 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/go-build
-          key: ${{ runner.os }}-go-test-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
-          restore-keys: ${{ runner.os }}-go-test-
-      - run: nix develop .#gotest -c just go-test-plain
+          key: ${{ runner.os }}-go-test-slow-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-slow-
+      - run: nix develop .#gotest -c just go-test-plain-slow
+
+  go-test-rest:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
+      - uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-test-rest-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-rest-
+      - run: nix develop .#gotest -c just go-test-plain-rest
 
   go-test-race-slow:
     needs: changes
@@ -158,6 +191,10 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
+        with:
+          primary-key: nix-${{ runner.os }}-gotest-${{ hashFiles('flake.lock', 'flake.nix') }}
+          gc-max-store-size-linux: 3G
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
@@ -186,6 +223,7 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
@@ -417,7 +455,7 @@ jobs:
   # `changes` itself must succeed, so a skip caused by a failed or cancelled upstream job still fails. Everything that ran must succeed.
   ci-ok:
     if: always()
-    needs: [changes, check, go-lint, go-test, go-test-race-slow, go-test-race-rest, parity, shell, web, plugin, guard, release, workflows]
+    needs: [changes, check, go-lint, go-test-slow, go-test-rest, go-test-race-slow, go-test-race-rest, parity, shell, web, plugin, guard, release, workflows]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions: {}
@@ -428,6 +466,6 @@ jobs:
         run: |
           echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
           echo "$NEEDS" | jq -e '
-            def skippable: ["go-lint","go-test","go-test-race-slow","go-test-race-rest","parity","shell","web","workflows","guard","release"];
+            def skippable: ["go-lint","go-test-slow","go-test-rest","go-test-race-slow","go-test-race-rest","parity","shell","web","workflows","guard","release"];
             (.changes.result == "success") and
             ([to_entries[] | select(.value.result != "success" and (.value.result != "skipped" or (.key | IN(skippable[]) | not)))] | length == 0)' >/dev/null

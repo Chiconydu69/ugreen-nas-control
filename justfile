@@ -8,7 +8,7 @@ set shell := ["bash", "-c", "if [ -n \"${IN_NIX_SHELL:-}\" ] || ! command -v nix
 shell_files := "plugin/event/stopping plugin/tools/install-dev.sh web/tools/harness/fake-led-i2c web/tools/harness/fake-led-ctl backend/internal/led/parity/testdata/bin/* .github/hooks/pre-commit"
 xml_files := "ca_profile.xml plugins/ugreen-nas-control.xml"
 
-# Go packages with the longest tests, split off so the race run finishes in two halves: go-test-race-slow runs these, go-test-race-rest everything else
+# Go packages with the longest tests, split off so each test run finishes in two halves: the -slow recipes (and CI jobs) run these, the -rest ones everything else
 slow_pkgs := "/internal/(fan|led/chip|led/parity)$"
 
 [private]
@@ -66,7 +66,7 @@ go-lint:
 [group('go')]
 go-test: go-test-race go-test-plain
 
-# Parallel jobs in CI (checks.yml: go-test-race-slow, go-test-race-rest, go-test)
+# Parallel jobs in CI (checks.yml: go-test-slow, go-test-rest, go-test-race-slow, go-test-race-rest)
 [group('go')]
 go-test-race: go-test-race-slow go-test-race-rest
 
@@ -88,8 +88,17 @@ go-vet:
 
 [group('go')]
 [working-directory: 'backend']
-go-test-plain:
-    go test -count=1 ./...
+go-test-plain: go-test-plain-slow go-test-plain-rest
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-slow:
+    pkgs=$(go list ./... | grep -E '{{ slow_pkgs }}'); go test -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-rest:
+    pkgs=$(go list ./... | grep -vE '{{ slow_pkgs }}'); go test -count=1 $pkgs
 
 # The one multicall binary of the plugin (the tool names are symlinks to it in the archive): .build/bin/ugreen-nas
 [group('go')]
