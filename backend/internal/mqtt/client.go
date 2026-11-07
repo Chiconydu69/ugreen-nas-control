@@ -9,8 +9,10 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"strings"
 	"sync"
 	"time"
+	"unicode/utf8"
 )
 
 // A small MQTT 3.1.1 client: connect with user and password and a last will, publish with QoS 0 (retained
@@ -175,6 +177,9 @@ func (c *client) subscribe(topic string) error {
 
 // session connects once and serves the connection until it breaks.
 func (c *client) session(quit <-chan struct{}) error {
+	if err := c.validate(); err != nil {
+		return err
+	}
 	d := net.Dialer{Timeout: 10 * time.Second}
 	var conn net.Conn
 	var err error
@@ -323,4 +328,19 @@ func connackReason(code byte) string {
 		return "not authorized (code 5)"
 	}
 	return fmt.Sprintf("unknown return code %d", code)
+}
+
+// validate refuses what encodeString cannot carry: more than 65535 bytes (section 1.5.3, 2-byte length prefix) and,
+// for the text fields, ill-formed UTF-8 or U+0000 ([MQTT-1.5.3-1], [MQTT-1.5.3-2]). The password is binary data and
+// only limited in size.
+func (c *client) validate() error {
+	for name, s := range map[string]string{"client ID": c.clientID, "user name": c.user, "will topic": c.willTopic} {
+		if len(s) > 65535 || !utf8.ValidString(s) || strings.ContainsRune(s, 0) {
+			return fmt.Errorf("mqtt: invalid %s (too long, not UTF-8 or contains NUL)", name)
+		}
+	}
+	if len(c.pass) > 65535 || len(c.willPayload) > 65535 {
+		return errors.New("mqtt: invalid password or will payload (longer than 65535 bytes)")
+	}
+	return nil
 }
