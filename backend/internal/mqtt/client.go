@@ -257,6 +257,10 @@ func (c *client) session(quit <-chan struct{}) error {
 		if err != nil {
 			return err
 		}
+		if typ == mqttSuback && len(body) >= 3 && body[2] == 0x80 { // 0x80 = Failure (section 3.9.3): refused, e.g. by an ACL
+			logf("mqtt: subscription refused by the broker (SUBACK 0x80); remote commands will not arrive")
+			continue
+		}
 		if typ != mqttPublish || len(body) < 2 {
 			continue
 		}
