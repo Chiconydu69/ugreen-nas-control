@@ -216,6 +216,7 @@ type LEDDiag struct {
 	Adapters                                    []string // names of the I2C adapters
 	Status, StatusErr                           string   // ugreen-led-ctl status
 	StatusSkipped                               string
+	I2C                                         I2CDiag
 }
 
 func ledSection(d LEDDiag) Section {
@@ -223,6 +224,7 @@ func ledSection(d LEDDiag) Section {
 	l = append(l, fmt.Sprintf("enabled: %t  supported: %t  untested model: %t  daemon running: %t", d.Enabled, d.Supported, d.Untested, d.DaemonRunning))
 	l = append(l, fmt.Sprintf("blocker: %s  warning: %s", orDash(d.Blocker), orDash(d.Warning)))
 	l = append(l, "i2c adapters: "+orDash(strings.Join(d.Adapters, "; ")))
+	l = append(l, d.I2C.lines()...)
 	for i, b := range d.Bays {
 		slot := "-"
 		if i < len(d.Slots) {
@@ -747,7 +749,7 @@ func (c *Ctl) ledDiag(r Report, h fan.Hardware) LEDDiag {
 	model := c.ledModel()
 	d := LEDDiag{Enabled: c.ledEnabled(), Supported: r.LED.Supported, Untested: ledUntested(model),
 		DaemonRunning: c.running(c.Env.LEDPidFile), Blocker: c.ledBlocker(), Warning: c.ledWarning(),
-		Bays: r.Bays, Slots: slotNames(h), GT: strings.HasPrefix(model, "DXP2800 GT"), Adapters: c.i2cAdapters()}
+		Bays: r.Bays, Slots: slotNames(h), GT: strings.HasPrefix(model, "DXP2800 GT"), Adapters: c.i2cAdapters(), I2C: c.i2cDiag()}
 	if d.Blocker == "model" {
 		d.Skipped = "not a UGREEN model"
 		d.StatusSkipped = d.Skipped

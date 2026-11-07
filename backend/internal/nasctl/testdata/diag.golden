@@ -63,6 +63,12 @@ open points in the registry: -
 enabled: true  supported: true  untested model: false  daemon running: true
 blocker: -  warning: -
 i2c adapters: -
+i2c controllers (PCI class 0c80 Serial IO, 0c05 SMBus; read only):
+  -
+acpi devices HT32* (LED MCU):
+  -
+designware modules for kernel -:
+  -
 bay 1: ata1  hdd  slot parity
 bay 2: ata2  empty  slot -
 loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)

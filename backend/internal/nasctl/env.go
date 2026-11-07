@@ -37,6 +37,9 @@ type Env struct {
 	SysI2C       string // UGREEN_SYS_I2C
 	Panel        string // UGREEN_NAS_PANEL: the multi-call binary; diag runs `panel buttons` (read only) through it
 	SensorsDir   string // UGREEN_SENSORS_D: the scripts a fan input may run
+	SysPCI       string // UGREEN_SYS_PCI
+	SysACPI      string // UGREEN_SYS_ACPI
+	LibModules   string // UGREEN_LIB_MODULES
 }
 
 func orDefault(get func(string) string, key, def string) string {
@@ -81,5 +84,8 @@ func EnvFromGetenv(get func(string) string, here string) Env {
 		SysI2C:       orDefault(get, "UGREEN_SYS_I2C", "/sys/bus/i2c/devices"),
 		Panel:        orDefault(get, "UGREEN_NAS_PANEL", here+"/ugreen-nas"),
 		SensorsDir:   orDefault(get, "UGREEN_SENSORS_D", boot+"/sensors.d"),
+		SysPCI:       orDefault(get, "UGREEN_SYS_PCI", "/sys/bus/pci/devices"),
+		SysACPI:      orDefault(get, "UGREEN_SYS_ACPI", "/sys/bus/acpi/devices"),
+		LibModules:   orDefault(get, "UGREEN_LIB_MODULES", "/lib/modules"),
 	}
 }
