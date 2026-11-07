@@ -24,7 +24,8 @@ func newFakeITE() *fakeITE {
 	f.hwm[0x0f], f.hwm[0x1a] = 0xb6, 0x03
 	f.hwm[0x80], f.hwm[0x81] = 0xd7, 0x03
 	f.hwm[0x6b], f.hwm[0x73], f.hwm[0x7b] = 0x50, 0x50, 0x50
-	f.hwm[0x7f] = 0x50
+	f.hwm[0x1e] = 0x50
+	f.hwm[0x7f] = 0xa5 // not header 4's control register: nothing may touch it
 	f.hwm[0x29], f.hwm[0x2a], f.hwm[0x2b] = 0x3c, 0x21, 0x80
 	return f
 }
@@ -197,11 +198,71 @@ func TestRestoreContinuesAfterAFailedChannel(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	snap := Snapshot{"fan2": {0x80, 0x20}, "fan3": {0x80, 0x20}, "fan4": {0x80, 0x20}}
+	snap := Snapshot{"fan2": {0x80, 0x20}, "fan3": {0x80, 0x20}, "fan4@1e": {0x80, 0x20}}
 	if err := chip.Restore(snap); err == nil {
 		t.Fatal("restore of the failing channel reported no error")
 	}
-	if f.hwm[0x17] != 0x80 || f.hwm[0x7f] != 0x80 {
-		t.Fatalf("fan3 ctrl 0x%02x, fan4 ctrl 0x%02x: not handed back to auto", f.hwm[0x17], f.hwm[0x7f])
+	if f.hwm[0x17] != 0x80 || f.hwm[0x1e] != 0x80 {
+		t.Fatalf("fan3 ctrl 0x%02x, fan4 ctrl 0x%02x: not handed back to auto", f.hwm[0x17], f.hwm[0x1e])
+	}
+}
+
+// Header 4 is driven through 0x1e like UGREEN's driver (ug_it86x-cpufan.c:82-83,199-209@c75c5ab): bit 7 clear is
+// manual mode, and 0x7f is never touched.
+func TestHeader4UsesRegister1e(t *testing.T) {
+	f := newFakeITE()
+	chip, _ := Detect(f)
+	ch, _ := chip.Channel("fan4")
+	if ch.Ctrl != 0x1e || ch.Duty != 0x7b {
+		t.Fatalf("fan4 ctrl %#x duty %#x", ch.Ctrl, ch.Duty)
+	}
+	f.hwm[0x1e] = 0x80
+	if err := chip.SetPWM(ch, 100); err != nil {
+		t.Fatal(err)
+	}
+	if f.hwm[0x1e] != 0x00 || f.hwm[0x7b] != 100 || f.hwm[0x7f] != 0xa5 {
+		t.Fatalf("0x1e %#x, 0x7b %#x, 0x7f %#x", f.hwm[0x1e], f.hwm[0x7b], f.hwm[0x7f])
+	}
+	if _, auto, _ := chip.PWM(ch); auto {
+		t.Fatal("fan4 still reads as automatic")
+	}
+}
+
+// A snapshot written by a build that used 0x7f holds fan4 under the plain id: its control byte must not reach 0x1e,
+// the header goes back to automatic mode and the duty is restored.
+func TestRestoreIgnoresControlByteOfOldHeader4Snapshot(t *testing.T) {
+	f := newFakeITE()
+	chip, _ := Detect(f)
+	f.hwm[0x1e], f.hwm[0x7b] = 0x00, 0x99 // manual, as the daemon leaves it
+	old := Snapshot{"fan4": {0x33, 0x40}} // 0x33 was read from 0x7f
+	if err := chip.Restore(old); err != nil {
+		t.Fatal(err)
+	}
+	if f.hwm[0x1e] != 0x80 || f.hwm[0x7b] != 0x40 || f.hwm[0x7f] != 0xa5 {
+		t.Fatalf("0x1e %#x (want 0x80), 0x7b %#x, 0x7f %#x", f.hwm[0x1e], f.hwm[0x7b], f.hwm[0x7f])
+	}
+}
+
+// A new snapshot keeps header 4 apart from the old key, and an old build cannot misread it as 0x7f state.
+func TestSnapshotKeysHeader4ByRegister(t *testing.T) {
+	f := newFakeITE()
+	chip, _ := Detect(f)
+	f.hwm[0x1e] = 0x81
+	snap, err := chip.Snapshot()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, plain := snap["fan4"]; plain {
+		t.Fatal("snapshot holds the 0x1e state under the id an old snapshot used for 0x7f")
+	}
+	if snap["fan4@1e"] != [2]byte{0x81, 0x50} || snap["fan3"][0] != 0x00 {
+		t.Fatalf("snapshot %v", snap)
+	}
+	f.hwm[0x1e] = 0x00
+	if err := chip.Restore(snap); err != nil {
+		t.Fatal(err)
+	}
+	if f.hwm[0x1e] != 0x81 {
+		t.Fatalf("0x1e %#x after restore", f.hwm[0x1e])
 	}
 }

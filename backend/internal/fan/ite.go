@@ -37,13 +37,19 @@ const (
 )
 
 // IT8613E channels as wired on the DXP6800 Pro, where each PWM output was
-// raised on its own to see which fan follows. Headers 1 and 5 are unused. Header 4's control register is
-// unconfirmed: we use 0x7f, UGREEN's driver names 0x1e (ug_it86x-cpufan.c:82-83@c75c5ab; its tach 0x80/0x81 and duty
-// 0x7b agree with ours). Not changed until read on a device.
+// raised on its own to see which fan follows. Headers 1 and 5 are unused.
+//
+// Header 4's control register is 0x1e as in UGREEN's driver (dxp480t/ug_it86x-cpufan.c:76-83,199-209@c75c5ab: bit 7
+// clear = manual, set = automatic; tach 0x80/0x81 and duty 0x7b agree with ours). Mainline it87.c:252 (v6.18) has 0x7f
+// as the fourth PWM control register, but that table is for chips such as the it8620/it8628 and mainline has no
+// IT8613 entry. On a DXP8800 Plus (issue 165) clearing bit 7 of 0x7f left the header in automatic mode (`auto true`,
+// hwmon pwm4_enable=2) while headers 2 and 3 went manual.
+const iteCtrlHeader4 = 0x1e
+
 var it8613Channels = []Channel{
 	{ID: "fan2", TachLow: 0x0e, TachHigh: 0x19, Duty: 0x6b, Ctrl: 0x16},
 	{ID: "fan3", TachLow: 0x0f, TachHigh: 0x1a, Duty: 0x73, Ctrl: 0x17},
-	{ID: "fan4", TachLow: 0x80, TachHigh: 0x81, Duty: 0x7b, Ctrl: 0x7f},
+	{ID: "fan4", TachLow: 0x80, TachHigh: 0x81, Duty: 0x7b, Ctrl: iteCtrlHeader4},
 }
 
 // Temperature inputs of the chip; 0x80 (-128) means no sensor.
@@ -188,17 +194,39 @@ func (c *Chip) Snapshot() (Snapshot, error) {
 		if err != nil {
 			return nil, err
 		}
-		s[ch.ID] = [2]byte{ctrl, duty}
+		s[snapKey(ch)] = [2]byte{ctrl, duty}
 	}
 	return s, nil
+}
+
+// snapKey names a channel in a Snapshot. Header 4 used register 0x7f as control before; a snapshot from that build
+// holds the 0x7f byte under the plain id. The key of the 0x1e state differs, so the two never mix.
+func snapKey(ch Channel) string {
+	if ch.Ctrl == iteCtrlHeader4 {
+		return ch.ID + "@1e"
+	}
+	return ch.ID
 }
 
 // Restore writes every channel it can: one that fails does not keep the others in manual mode.
 func (c *Chip) Restore(s Snapshot) error {
 	var errs []error
 	for _, ch := range c.Channels {
-		v, ok := s[ch.ID]
-		if !ok {
+		v, ok := s[snapKey(ch)]
+		if !ok && ch.Ctrl == iteCtrlHeader4 {
+			// Older snapshot: its duty (0x7b) is valid, its control byte belonged to 0x7f and is never written to 0x1e.
+			// The header goes back to automatic mode, which is how UGREEN's driver hands it over too.
+			old, found := s[ch.ID]
+			if !found {
+				continue
+			}
+			cur, err := c.Read(ch.Ctrl)
+			if err != nil {
+				errs = append(errs, err)
+				continue
+			}
+			v = [2]byte{cur | ctrlAuto, old[1]}
+		} else if !ok {
 			continue
 		}
 		if err := c.Write(ch.Duty, v[1]); err != nil {

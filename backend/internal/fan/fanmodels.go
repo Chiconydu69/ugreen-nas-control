@@ -65,8 +65,7 @@ func isProbeModel(model string) bool {
 // only the DXP6800 Pro is verified, the others are probed. DXP6800 Ultra and DXP6800S have no model file with fans
 // and stay without fan control.
 //
-// Header 4 is unconfirmed: UGREEN's driver names 0x1e as its control register (ug_it86x-cpufan.c:82-83@c75c5ab), we
-// write 0x7f (it8613Headers). Until a device settles it, no new model gets to write header 4 (isProbeModel).
+// Header 4 uses UGREEN's control register 0x1e (ug_it86x-cpufan.c:82-83@c75c5ab, it8613Headers).
 type probeHint struct {
 	Wiring []FanMapOutput // ID is left empty: the probe's ids come from allocateIDs
 }
