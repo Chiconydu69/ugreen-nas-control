@@ -210,6 +210,51 @@ func readTachs() (any, error) {
 	return map[string]any{"ok": true, "tachs": out}, err
 }
 
+// HasIT8613E says whether the model's fans sit on an IT8613E: the models whose fans sit on an IT8613E (the verified DXP6800 Pro and every probe model except the
+// DXP2800 GT).
+func HasIT8613E(model string) bool {
+	return model == "DXP6800 Pro" || (isProbeModel(model) && !isDXP2800GT(model))
+}
+
+// iteCtrlRegs are the two candidates for header 4's control register: UGREEN's (iteCtrlHeader4) and the byte
+// mainline it87 uses for a fourth PWM (it87.c:252, v6.18).
+var iteCtrlRegs = []byte{iteCtrlHeader4, 0x7f}
+
+// readCtrlRegs reads both candidates raw and writes nothing, so a diag shows the real state of the chip.
+func readCtrlRegs() (any, error) {
+	model := productName()
+	if !HasIT8613E(model) {
+		return nil, fmt.Errorf("%s has no IT8613E", orUnknown(model))
+	}
+	ports, err := hw.OpenPorts()
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = ports.Close() }()
+	var out map[string]string
+	err = withLock(func() error {
+		c, err := Detect(ports)
+		if err != nil {
+			return err
+		}
+		out, err = ctrlRegValues(c)
+		return err
+	})
+	return map[string]any{"ok": true, "ctrl": out}, err
+}
+
+func ctrlRegValues(c *Chip) (map[string]string, error) {
+	out := map[string]string{}
+	for _, reg := range iteCtrlRegs {
+		v, err := c.Read(reg)
+		if err != nil {
+			return nil, err
+		}
+		out[fmt.Sprintf("0x%02x", reg)] = fmt.Sprintf("0x%02x", v)
+	}
+	return out, nil
+}
+
 func parseChoice(args []string) (map[string]string, error) {
 	choice := map[string]string{}
 	for _, a := range args {
@@ -268,6 +313,12 @@ func ProbeCommand(args []string) {
 	case "tachs":
 		refuseWhileRival()
 		out, err := readTachs()
+		if err != nil {
+			fail(err)
+		}
+		printJSON(out)
+	case "regs":
+		out, err := readCtrlRegs()
 		if err != nil {
 			fail(err)
 		}

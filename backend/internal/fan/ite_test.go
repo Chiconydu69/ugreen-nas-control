@@ -266,3 +266,29 @@ func TestSnapshotKeysHeader4ByRegister(t *testing.T) {
 		t.Fatalf("0x1e %#x after restore", f.hwm[0x1e])
 	}
 }
+
+// The diag reads 0x1e and 0x7f raw and writes nothing.
+func TestCtrlRegValuesReadOnly(t *testing.T) {
+	f := newFakeITE()
+	chip, _ := Detect(f)
+	f.hwm[0x1e] = 0x80
+	before := f.writes
+	got, err := ctrlRegValues(chip)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 2 || got["0x1e"] != "0x80" || got["0x7f"] != "0xa5" {
+		t.Fatalf("regs %v", got)
+	}
+	if f.writes != before {
+		t.Fatalf("writes went from %d to %d", before, f.writes)
+	}
+}
+
+func TestHasIT8613E(t *testing.T) {
+	for model, want := range map[string]bool{"DXP8800 Plus": true, "DXP6800 Pro": true, "DXP2800": true, "DXP2800 GT": false, "DXP4800 GT": false, "iDX6011 Pro": false} {
+		if got := HasIT8613E(model); got != want {
+			t.Errorf("%s: %v", model, got)
+		}
+	}
+}
