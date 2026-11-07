@@ -154,7 +154,7 @@
           "status": "community",
           "by": "users, DanielRuppen",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/214",
-          "note": "Reported working by users. SUB2 boards (BIOS EM_DXP2800S_SUB2_V1.0.11) only: the LED MCU sits behind Intel LPSS I2C1 and works with the opt-in lpss_leds=\"1\" (5.5.0-next.000133, 2026-11-07, DanielRuppen, #214); bay order confirmed with Identify, reboot not yet tested. Boards from December 2025 (V1.2, rev 251215) use LED chip 0xc5b2, which ignores the DX/DXP write frame (miskcoo issue 128). The driver UGREEN ships serves this model with the frame without LED ID, so the plugin tries that frame when the first one is not acknowledged. An owner confirmed the LEDs of a V1.2 board with miskcoo's tool and that SMBus block frame (issue 128; his README marks V1.2 experimental); not yet run with this plugin."
+          "note": "Reported working by users. SUB2 boards (BIOS EM_DXP2800S_SUB2_V1.0.11) only: the LED MCU sits behind Intel LPSS I2C1 and works by default (5.5.0-next.000133, 2026-11-07, DanielRuppen, #214; lpss_leds=\"0\" turns it off); bay order confirmed with Identify, reboot confirmed (#214). Boards from December 2025 (V1.2, rev 251215) use LED chip 0xc5b2, which ignores the DX/DXP write frame (miskcoo issue 128). The driver UGREEN ships serves this model with the frame without LED ID, so the plugin tries that frame when the first one is not acknowledged. An owner confirmed the LEDs of a V1.2 board with miskcoo's tool and that SMBus block frame (issue 128; his README marks V1.2 experimental); not yet run with this plugin."
         },
         "fans": {
           "status": "expected",
@@ -166,7 +166,7 @@
         },
         "sensors": { "status": "expected" }
       },
-      "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: LEDs there need lpss_leds=\"1\" in leds.cfg; LEDs confirmed on a SUB2 board (#214), bay order right, reboot not yet tested; ugreen-led-i2c lpss-probe checks the board without changing an LED."
+      "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: the plugin drives them by default (lpss_leds=\"0\" in leds.cfg turns that off); LEDs confirmed on a SUB2 board (#214), bay order right, reboot confirmed; ugreen-led-i2c lpss-probe checks the board without changing an LED."
     },
     {
       "id": "dxp2800-gt",
