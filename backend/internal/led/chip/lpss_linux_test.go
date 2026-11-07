@@ -3,6 +3,7 @@
 package chip
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -20,12 +21,16 @@ type fakeDW struct {
 	rx     []byte
 	resp   []byte
 	nak    bool
-	stuck  bool // ENABLE_STATUS never drops to 0
+	stuck  bool   // ENABLE_STATUS never drops to 0
+	hang   bool   // commands are swallowed: no data, no stop, no abort
+	abrt   uint32 // IC_TX_ABRT_SOURCE of an abort other than a NAK
+	roErr  error  // the read only mapping fails
 	raw    uint32
 	log    []string // "r<off>" and "w<off>"
 	writes int
 	rwMaps int
 	roMaps int
+	unmaps int
 }
 
 func newFakeDW() *fakeDW {
@@ -75,6 +80,14 @@ func (f *fakeDW) store(reg int, v uint32) {
 		if !f.enable {
 			return
 		}
+		if f.hang {
+			return
+		}
+		if f.abrt != 0 {
+			f.raw |= 1 << 6
+			f.regs[dwTxAbrtSource] = f.abrt
+			return
+		}
 		if f.nak {
 			f.raw |= 1 << 6
 			f.regs[dwTxAbrtSource] = 1
@@ -103,6 +116,8 @@ type sysOpts struct {
 	noMCU        bool
 	vendor       string
 	class        string
+	resource     string // BAR0 line of sysfs resource
+	fwNode       string // firmware node path of the MCU controller function
 }
 
 func config(o sysOpts) []byte {
@@ -144,16 +159,22 @@ func fakeSys(t *testing.T, o sysOpts) {
 		put("bus/acpi/devices/HT32F522:00/path", []byte("\\_SB_.PC00.I2C1.MCU0\n"))
 		put("bus/acpi/devices/HT32F522:00/status", []byte("15\n"))
 	}
+	if o.resource == "" {
+		o.resource = "0x0000000040171000 0x0000000040171fff 0x0000000000040200"
+	}
+	if o.fwNode == "" {
+		o.fwNode = `\_SB_.PC00.I2C1`
+	}
 	pci := func(bdf, device, fw string) {
 		base := "bus/pci/devices/" + bdf + "/"
 		put(base+"vendor", []byte(o.vendor+"\n"))
 		put(base+"device", []byte(device+"\n"))
 		put(base+"class", []byte(o.class+"\n"))
 		put(base+"firmware_node/path", []byte(fw+"\n"))
-		put(base+"resource", []byte("0x0000000040171000 0x0000000040171fff 0x0000000000040200\n0x0 0x0 0x0\n"))
+		put(base+"resource", []byte(o.resource+"\n0x0 0x0 0x0\n"))
 		put(base+"config", config(o))
 	}
-	pci("0000:00:15.0", "0x54e8", "\\_SB_.PC00.I2C1")
+	pci("0000:00:15.0", "0x54e8", o.fwNode)
 	pci("0000:00:15.1", "0x54e9", "\\_SB_.PC00.I2C2")
 	if o.otherMatches {
 		pci("0000:00:19.0", "0x54c5", "\\_SB_.PC00.I2C1")
@@ -175,12 +196,15 @@ func fakeMem(t *testing.T, f *fakeDW) {
 		if phys != 0x40171000 {
 			t.Errorf("mapped 0x%x, want BAR0 0x40171000", phys)
 		}
+		if !write && f.roErr != nil {
+			return nil, nil, f.roErr
+		}
 		if write {
 			f.rwMaps++
 		} else {
 			f.roMaps++
 		}
-		return f, func() {}, nil
+		return f, func() { f.unmaps++ }, nil
 	}
 	t.Cleanup(func() { lpssMapMem = old })
 }
@@ -283,6 +307,11 @@ func TestLPSSRefusals(t *testing.T) {
 	}{
 		{"no MCU", sysOpts{noMCU: true}, nil, "HT32"},
 		{"two functions on the path", sysOpts{otherMatches: true}, nil, "exactly one"},
+		{"no function on the path", sysOpts{fwNode: `\_SB_.PC00.I2C9`}, nil, "0 PCI functions"},
+		{"BAR0 is I/O space", sysOpts{resource: "0x0000000040171000 0x0000000040171fff 0x0000000000040101"}, nil, "BAR0"},
+		{"BAR0 under 4 KiB", sysOpts{resource: "0x0000000040171000 0x00000000401717ff 0x0000000000040200"}, nil, "at least 4 KiB"},
+		{"BAR0 empty", sysOpts{resource: "0x0 0x0 0x0"}, nil, "at least 4 KiB"},
+		{"read only map fails", sysOpts{}, func(f *fakeDW) { f.roErr = errors.New("operation not permitted") }, "cannot map BAR0 read only"},
 		{"driver bound", sysOpts{driver: true}, nil, "intel-lpss is bound"},
 		{"wrong vendor", sysOpts{vendor: "0x1022"}, nil, "not an Intel LPSS"},
 		{"wrong class", sysOpts{class: "0x060400"}, nil, "not an Intel LPSS"},
@@ -303,6 +332,9 @@ func TestLPSSRefusals(t *testing.T) {
 			r, err := probe(t, c.o, f)
 			if err == nil || !strings.Contains(err.Error(), c.want) {
 				t.Fatalf("want a refusal with %q, got %v", c.want, err)
+			}
+			if f.unmaps != f.roMaps {
+				t.Errorf("%d read only maps, %d unmaps", f.roMaps, f.unmaps)
 			}
 			if f.writes != 0 || f.rwMaps != 0 {
 				t.Errorf("%d writes, %d writable maps before a refusal:\n%v", f.writes, f.rwMaps, f.log)
@@ -411,5 +443,71 @@ func TestLPSSDisableFailureReported(t *testing.T) {
 	text := strings.Join(r.lines, "\n")
 	if !strings.Contains(text, "disable:") || !strings.Contains(text, "may still be enabled") {
 		t.Errorf("report does not say the controller could not be disabled:\n%s", text)
+	}
+}
+
+// A chip id read that fails halfway still leaves the controller disabled and unmapped.
+func TestLPSSChipIDReadFailures(t *testing.T) {
+	cases := []struct {
+		name string
+		mod  func(*fakeDW)
+		want string
+	}{
+		{"timeout", func(f *fakeDW) { f.hang = true }, "timed out"},
+		{"abort that is not a NAK", func(f *fakeDW) { f.abrt = 1 << 12 }, "aborted (0x1000)"},
+		{"abort with a NAK bit among others", func(f *fakeDW) { f.abrt = 1 << 3 }, "no acknowledge"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f := newFakeDW()
+			c.mod(f)
+			_, err := probe(t, sysOpts{}, f)
+			if err == nil || !strings.Contains(err.Error(), c.want) {
+				t.Fatalf("want %q, got %v", c.want, err)
+			}
+			if f.enable || f.regs[dwEnable]&1 != 0 {
+				t.Errorf("IC_ENABLE is 0x%x after the failure", f.regs[dwEnable])
+			}
+			if f.rwMaps != 1 || f.roMaps != 1 || f.unmaps != 2 {
+				t.Errorf("maps ro %d rw %d, unmaps %d, want 1, 1, 2", f.roMaps, f.rwMaps, f.unmaps)
+			}
+		})
+	}
+}
+
+// The default lpss-probe stops after the read only checks: no register write, no writable mapping.
+func TestLPSSProbeCommandReadOnly(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	fakeSys(t, sysOpts{})
+	fakeMem(t, f)
+	lpssReports = filepath.Join(t.TempDir(), "probe")
+	t.Cleanup(func() { lpssReports = lpssReportFile })
+	if lock, err := acquireLock(); err != nil {
+		t.Skip("no lock file:", err)
+	} else {
+		_ = lock.Close()
+	}
+
+	var out, errOut strings.Builder
+	if rc := Run([]string{"lpss-probe"}, &out, &errOut); rc != 0 {
+		t.Fatalf("rc %d: %s %s", rc, out.String(), errOut.String())
+	}
+	t.Log("\n" + out.String())
+	if f.writes != 0 || f.rwMaps != 0 || f.roMaps != 1 || f.unmaps != 1 {
+		t.Errorf("writes %d, writable maps %d, read only maps %d, unmaps %d:\n%v", f.writes, f.rwMaps, f.roMaps, f.unmaps, f.log)
+	}
+	lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+	if last := lines[len(lines)-1]; !strings.HasPrefix(last, "next:") || !strings.Contains(last, "--write") {
+		t.Errorf("last line %q", last)
+	}
+	if strings.Contains(out.String(), "chip_id") {
+		t.Error("the default probe must not read the chip id")
+	}
+	if saved, _ := os.ReadFile(lpssReports); string(saved) != out.String() {
+		t.Error("saved report differs")
+	}
+	if rc := Run([]string{"lpss-probe", "--bogus"}, &out, &errOut); rc != 2 {
+		t.Errorf("unknown argument: rc %d, want 2", rc)
 	}
 }
