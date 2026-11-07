@@ -384,7 +384,7 @@ func modelSection(reg *RegModel, ev Evidence) (Section, []string) {
 		}
 		if rc != nil && (rc.Status == "expected" || rc.Status == "partial") && name != "watchdog" {
 			if rc.Status == "expected" {
-				checks = append(checks, fmt.Sprintf("%s: untested on this model (expected), please confirm via About, Confirm my device", areaLabel[name]))
+				checks = append(checks, fmt.Sprintf("%s: untested on this model (expected), please confirm it on the Feedback page", areaLabel[name]))
 			} else {
 				checks = append(checks, fmt.Sprintf("%s: only partly confirmed on this model: %s", areaLabel[name], short(rc.Note, 160)))
 			}
