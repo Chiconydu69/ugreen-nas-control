@@ -51,6 +51,8 @@ Vendor press rules, which `--watch` follows:
 
 No other model has a beeper path (DXP4800 GT, DXP2800 GT, DX4600, Ultra models): refused.
 
+The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound right after the click (issue [#165](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165)).
+
 - PC speaker: timer command 0xB6 to port 0x43, divisor low and high byte to port 0x42, bits 0-1 of port 0x61 set to start and cleared to stop (through `/dev/port`). The vendor divisor is 0x0944 (about 503 Hz) and is the default; `--freq` sets 1193182 / Hz instead.
 - EC register: ACPI EC ports 0x62 (data) and 0x66 (command); write command 0x81, read command 0x80; the tool writes 1 or 0, reads back, retries up to 5 times and accepts a read-back of 2 after writing 1 (as the vendor does). It only ever writes the one register of the model. On the iDX6011 Pro 0xA5 is the backlight, so the Pro uses 0x9E and the tool never writes 0xA5 there.
 - EC beep guards (same read-only checks as the fan code): refused while a rival fan writer runs (`conflict` package, severity block), while the kernel's ACPI EC driver is bound (`PNP0C09:*/driver` under `/sys/bus/acpi/devices`), and when the chip id behind ports 0x4E/0x4F is not 0x5571 (on the plain iDX6011/6012 a foreign id is only noted, as in the fan code). Every EC exchange (the chip id read, each write plus read-back) runs under the flock shared with the fan daemon and the LED backend, `UGREEN_FAN_LOCK` (default `/var/run/ugreen-nas-control.lock`, same in every binary). The lock is taken per exchange: on, off and each retry, never held while the beep sounds. The PC speaker ports (0x42, 0x43, 0x61) and the pad words are used by no other tool here and take no lock.
