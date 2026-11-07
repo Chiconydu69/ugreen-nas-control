@@ -43,13 +43,14 @@ const area = `  - type: dropdown
       required: true`;
 
 const DIAG_PLACEHOLDER = 'Paste the copied device data here (Ctrl+V / Cmd+V)';
+const BUG_DIAG_PLACEHOLDER = "Paste the copied device data, or write why it's not possible.";
 
-const diag = (description: string, required: boolean): string => `  - type: textarea
+const diag = (description: string, required: boolean, placeholder = DIAG_PLACEHOLDER): string => `  - type: textarea
     id: ${FIELD.diag}
     attributes:
       label: Device data (diag)
       description: ${q(description)}
-      placeholder: ${q(DIAG_PLACEHOLDER)}${
+      placeholder: ${q(placeholder)}${
           required
               ? `
     validations:
@@ -125,7 +126,7 @@ ${area}
       label: Steps to reproduce
 ${results(false)}
 ${summary}
-${diag(DIAG_HOW, false)}
+${diag(DIAG_HOW, true, BUG_DIAG_PLACEHOLDER)}
   - type: markdown
     attributes:
       value: Remove serial numbers and IP addresses from anything else you paste.

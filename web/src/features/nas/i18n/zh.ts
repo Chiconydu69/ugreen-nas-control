@@ -381,6 +381,7 @@ export const zh: Record<Key, string> = {
     'feedback.copy_failed': '浏览器不允许复制。请在此复制数据或下载，然后粘贴到 issue 中。',
     'feedback.copy': '复制',
     'feedback.download': '下载 diag.md',
+    'feedback.download_hint': '或者下载数据，并将文件附加到 issue 中。',
     'feedback.summary_dropped': '链接过长：表单中没有包含摘要。',
     'feedback.comment_cut': '链接过长：你的备注已被缩短。',
     'feedback.privacy':

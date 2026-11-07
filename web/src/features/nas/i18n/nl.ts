@@ -397,6 +397,7 @@ export const nl: Record<Key, string> = {
     'feedback.copy_failed': 'De browser stond kopiëren niet toe. Kopieer de gegevens hier of download ze en plak ze in de issue.',
     'feedback.copy': 'Kopiëren',
     'feedback.download': 'diag.md downloaden',
+    'feedback.download_hint': 'Of download de gegevens en voeg het bestand toe aan de issue.',
     'feedback.summary_dropped': 'De link was te lang: de samenvatting staat niet in het formulier.',
     'feedback.comment_cut': 'De link was te lang: je opmerking is ingekort.',
     'feedback.privacy':

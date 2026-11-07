@@ -396,6 +396,7 @@ export const it: Record<Key, string> = {
     'feedback.copy_failed': 'Il browser non ha permesso di copiare. Copia i dati qui o scaricali, poi incollali nella issue.',
     'feedback.copy': 'Copia',
     'feedback.download': 'Scarica diag.md',
+    'feedback.download_hint': 'Oppure scarica i dati e allega il file alla issue.',
     'feedback.summary_dropped': 'Il link era troppo lungo: il riepilogo non è nel modulo.',
     'feedback.comment_cut': 'Il link era troppo lungo: il tuo commento è stato accorciato.',
     'feedback.privacy':

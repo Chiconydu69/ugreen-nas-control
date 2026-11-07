@@ -392,6 +392,7 @@ export const en = {
     'feedback.copy_failed': 'The browser did not allow copying. Copy the data here or download it, then paste it into the issue.',
     'feedback.copy': 'Copy',
     'feedback.download': 'Download diag.md',
+    'feedback.download_hint': 'Or download the data and attach the file to the issue.',
     'feedback.summary_dropped': 'The link was too long: the summary is left out of the form.',
     'feedback.comment_cut': 'The link was too long: your comment was shortened.',
     'feedback.privacy':

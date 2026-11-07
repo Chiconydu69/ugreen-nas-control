@@ -398,6 +398,7 @@ export const fr: Record<Key, string> = {
     'feedback.copy_failed': 'Le navigateur n’a pas autorisé la copie. Copiez les données ici ou téléchargez-les, puis collez-les dans le ticket.',
     'feedback.copy': 'Copier',
     'feedback.download': 'Télécharger diag.md',
+    'feedback.download_hint': 'Ou téléchargez les données et joignez le fichier au ticket.',
     'feedback.summary_dropped': 'Le lien était trop long : le résumé n’est pas dans le formulaire.',
     'feedback.comment_cut': 'Le lien était trop long : votre remarque a été raccourcie.',
     'feedback.privacy':

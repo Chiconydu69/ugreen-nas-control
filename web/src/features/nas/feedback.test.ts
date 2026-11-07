@@ -85,10 +85,10 @@ test('every registry capability has a row text and a results line, and the forms
     expect(form('model')).toMatch(/id: results[\s\S]*?required: true/);
 });
 
-test('the model form needs the device data and tells where it comes from; the report field is gone', () => {
+test('the model and bug forms need the device data and tell where it comes from; the report field is gone', () => {
     const model = form('model');
     expect(model).toMatch(/id: diag[\s\S]*?placeholder: [\s\S]*?required: true/);
     expect(model).not.toContain('id: report');
     expect(form('bug')).not.toContain('id: report');
-    expect(form('bug')).not.toMatch(/id: diag[\s\S]*?required: true/);
+    expect(form('bug')).toMatch(/id: diag[\s\S]*?placeholder: "Paste the copied device data, or write why it's not possible\."[\s\S]*?required: true/);
 });
