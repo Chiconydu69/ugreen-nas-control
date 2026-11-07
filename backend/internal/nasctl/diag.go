@@ -217,6 +217,7 @@ type LEDDiag struct {
 	Status, StatusErr                           string   // ugreen-led-ctl status
 	StatusSkipped                               string
 	I2C                                         I2CDiag
+	Net                                         NetDiag
 }
 
 func ledSection(d LEDDiag) Section {
@@ -225,6 +226,7 @@ func ledSection(d LEDDiag) Section {
 	l = append(l, fmt.Sprintf("blocker: %s  warning: %s", orDash(d.Blocker), orDash(d.Warning)))
 	l = append(l, "i2c adapters: "+orDash(strings.Join(d.Adapters, "; ")))
 	l = append(l, d.I2C.lines()...)
+	l = append(l, d.Net.lines()...)
 	for i, b := range d.Bays {
 		slot := "-"
 		if i < len(d.Slots) {
@@ -753,6 +755,7 @@ func (c *Ctl) ledDiag(r Report, h fan.Hardware) LEDDiag {
 	if d.Blocker == "model" {
 		d.Skipped = "not a UGREEN model"
 		d.StatusSkipped = d.Skipped
+		d.Net = c.netDiag("")
 		return d
 	}
 	d.Modprobe = c.i2cDev()
@@ -774,6 +777,7 @@ func (c *Ctl) ledDiag(r Report, h fan.Hardware) LEDDiag {
 	} else {
 		d.Status, d.StatusErr = errText(runTimeout(scanTimeout, c.Env.LEDCtl, "status"))
 	}
+	d.Net = c.netDiag(d.Status)
 	return d
 }
 
@@ -873,8 +877,11 @@ func (c *Ctl) diag() int {
 	secs.add("DMI", func() Section { return dmiSection(c.Env.DMIDir) })
 	secs.add("LED", func() Section {
 		facts.LED = c.ledDiag(rep, in.Hardware)
+		facts.LED.anonymize(anon)
 		return ledSection(facts.LED)
 	})
+	secs.add("Front panel pads", func() Section { return padsSection(c.padsDiag(model)) })
+	secs.add("NVMe", func() Section { return nvmeSection(c.nvmeDiag(in.Hardware)) })
 	secs.add("Fans", func() Section {
 		facts.Fan = c.fanDiag(model)
 		facts.FanDaemonDown = !facts.Fan.DaemonRunning
@@ -906,13 +913,13 @@ func (c *Ctl) diag() int {
 		st := StateDiag{Version: rep.PluginVersion, OwnFiles: facts.Env.OwnFiles, CronPresent: isFile(c.Env.LEDCron)}
 		if data, err := os.ReadFile(filepath.Join(c.Env.PluginsBoot, "ugreen-nas-control.plg")); err == nil {
 			if m := entityRe("pluginURL").FindSubmatch(data); m != nil {
-				st.PluginURL = scrub(string(m[1]))
+				st.PluginURL = pluginURLKind(string(m[1]))
 			}
 		}
 		st.Daemons = []string{c.daemonLine("fan daemon", c.Env.PidFile), c.daemonLine("led daemon", c.Env.LEDPidFile), c.daemonLine("mqtt publisher", c.Env.PubPidFile)}
-		for _, l := range filterLines(syslog, pluginLineRe, 10) {
-			st.InstallLines = append(st.InstallLines, anon.Line(l))
-		}
+		c.fillState(&st)
+		st.CronLines, st.CronD = anon.lines(st.CronLines), anon.lines(st.CronD)
+		st.InstallLines = pluginLines(anon, syslog, now)
 		return stateSection(st)
 	})
 	secs.add("Environment", func() Section { return envSection(facts.Env) })
@@ -960,7 +967,8 @@ func (c *Ctl) diag() int {
 	return 0
 }
 
-var pluginLineRe = regexp.MustCompile(`(?i)plugin: .*ugreen-nas-control|ugreen-nas-control.*plugin`)
+// pluginLineRe: the plugin manager's own lines and what the plugin's tools log on install, start and stop.
+var pluginLineRe = regexp.MustCompile(`(?i)plugin: .*ugreen-nas-control|ugreen-nas-control.*plugin|\bugreen-[a-z0-9-]+(\[\d+\])?: .*(install|start|stop|restart|reboot|shutdown|exit)`)
 
 // guard runs fn and returns the panic as text, "" when fn returned normally.
 func guard(fn func()) (msg string) {

@@ -387,6 +387,9 @@ type StateDiag struct {
 	Version, PluginURL string
 	OwnFiles           []string
 	CronPresent        bool
+	Cached             []string
+	TreeAt, PlgAt      time.Time
+	CronLines, CronD   []string
 	Daemons            []string
 	InstallLines       []string
 }
@@ -395,11 +398,20 @@ func stateSection(s StateDiag) Section {
 	l := []string{
 		fmt.Sprintf("installed version: %s  channel: %s", orDash(s.Version), pluginChannel(s.Version)),
 		"pluginURL: " + orDash(s.PluginURL),
+		"installed files written: " + stamp(s.TreeAt) + "  .plg on flash written: " + stamp(s.PlgAt) + "  cached archives: " + orDash(strings.Join(s.Cached, " ")),
+		"installed files vs .plg: " + versionVerdict(s.Version, s.Cached, s.TreeAt, s.PlgAt),
 		"files in /boot/config/plugins/ugreen-nas-control: " + orDash(strings.Join(s.OwnFiles, " ")),
 		fmt.Sprintf("cron file present: %t", s.CronPresent),
 	}
+	if s.CronPresent {
+		l = append(l, "cron file contents:")
+		for _, x := range s.CronLines {
+			l = append(l, "  "+x)
+		}
+	}
+	l = append(l, "/etc/cron.d/*ugreen* written: "+orDash(strings.Join(s.CronD, ", ")))
 	l = append(l, s.Daemons...)
-	l = append(l, "plugin lines in the syslog:")
+	l = append(l, "plugin install, start and stop lines in the syslog (last 24 h, at most 40):")
 	for _, x := range s.InstallLines {
 		l = append(l, "  "+x)
 	}
