@@ -100,6 +100,7 @@
               "golangci-lint"
               "govulncheck"
             ];
+            gotest = [ "go" ];
             web = [
               "bun"
               "php"
@@ -119,7 +120,8 @@
               "go"
               "xz"
               "xmllint"
-            ];
+            ]
+            ++ pkgs.lib.optional isLinux "chromium";
             plugin = [
               "go"
               "bun"
@@ -159,8 +161,10 @@
         pkgs.lib.mapAttrs (_: names: mkDevShell pkgs.mkShellNoCC names { }) shells
         // {
           e2e = mkDevShell pkgs.mkShellNoCC shells.e2e chromeEnv;
-          # `go test -race` needs cgo, so a C compiler: this shell keeps the stdenv toolchain.
+          site = mkDevShell pkgs.mkShellNoCC shells.site chromeEnv;
+          # `go test -race` needs cgo, so a C compiler: these shells keep the stdenv toolchain. gotest is `go` without the linters (tests, parity).
           go = mkDevShell pkgs.mkShell shells.go { };
+          gotest = mkDevShell pkgs.mkShell shells.gotest { };
           default = mkDevShell pkgs.mkShell (
             [
               "go"

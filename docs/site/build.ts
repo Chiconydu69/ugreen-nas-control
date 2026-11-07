@@ -6,6 +6,7 @@
 //   bun docs/site/build.ts
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { FORUM_TESTERS, MAINTAINERS, TESTERS } from '../tools/testers';
 import { loadModels } from '../../web/models/index';
 import { CAPABILITIES, type Capability, type Check, type Evidence, type Model, SERIES, monthYear, overallStatus } from '../../web/models/schema';
 import {
@@ -39,6 +40,7 @@ import {
     WATCHDOG,
     checkText
 } from './content';
+import { LANG_COUNT, NO_KERNEL_MODULE, UNRAID_OR_NEWER, UNRAID_PLUS, andList, withEvidence } from './facts';
 import { ISLAND_SCRIPT, island } from './islands';
 import { demoModal } from '../../web/demo/site-modal';
 import { CAPABILITY_ICON, capIcon, icon, statusIcon } from './icons';
@@ -116,7 +118,7 @@ function modelChips(listed: Model[], selected = DEFAULT_MODEL): string {
 function trustLine(listed: Model[]): string {
     const names = listed.filter(m => overallStatus(m) === 'verified').map(m => m.name);
     const who = names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names.at(-1)}` : (names[0] ?? '');
-    return `<p class="trust">Free, MIT, open source. Unraid 7.2+.${who ? ` LEDs, fans and case view verified on ${esc(who)}.` : ''}</p>`;
+    return `<p class="trust">Free, MIT, open source. Unraid ${UNRAID_PLUS}.${who ? ` LEDs, fans and case view verified on ${esc(who)}.` : ''}</p>`;
 }
 
 /** The opt-in layer: a collapsed block (native details, keyboard and screen reader ready) with short points and a link to the exact docs. */
@@ -254,7 +256,7 @@ const capTags = (listed: Model[], cap: Capability, dated = true) =>
         })
         .join('');
 
-/** One line per feature, counted from the registry: "Verified on DXP6800 Pro. Community-tested on 6 models. All models". Expected stays in the matrix. */
+/** One line per feature, counted from the registry: "Verified on DXP6800 Pro. Community-tested on several models. All models". Expected stays in the matrix. */
 function capLine(listed: Model[], cap: Capability): string {
     const by = (k: Evidence) => listed.filter(m => m.verified[cap].status === k).map(m => m.name);
     const parts = (['verified', 'partial', 'community'] as const).flatMap(k => {
@@ -301,7 +303,7 @@ function caseText(listed: Model[]): string {
     return `<section class="band casetext" id="case" aria-labelledby="case-h">
   <h2 id="case-h">See inside your box.</h2>
   <p class="sub">UGREEN built the case. We built the dashboard for it.</p>
-  <p>Every bay shows drive temperature and LED colour. The rear shows ports and LAN link speed. On the DXP6800 Pro and DXP4800 GT you see inside too.</p>
+  <p>Every bay shows drive temperature and LED colour. The rear shows ports and LAN link speed. On the ${esc(andList(withEvidence('case', 'verified', listed)))} you see inside too.</p>
   ${capLine(listed, 'case')}
   ${more('case')}
   <p class="acts"><a class="textlink" data-demo-link data-page="case" data-view="" href="./demo/?model=${m.id}&page=case">Open the case view in the demo</a></p>
@@ -438,12 +440,12 @@ function sections(listed: Model[]): Record<'fans' | 'history' | 'leds' | 'dashbo
 const COMPARE: [string, string, string][] = [
     [
         'Fan chips without an extra kernel driver',
-        'Yes (verified on DXP6800 Pro, DXP4800 GT)',
+        `Yes (verified on ${withEvidence('fans', 'verified').join(', ')})`,
         'No for FanCtrl Plus 2, Dynamix Auto Fan and the UGREEN fan driver (it87). Yes for the iDX6011 plugin'
     ],
     ['Case view drawn per model', 'Yes', 'No in FanCtrl Plus 2, Dynamix Auto Fan and the UGREEN fan driver. Yes in the iDX6011 plugin'],
-    ['Languages', '7', 'None of the others documents translations'],
-    ['LEDs without a kernel module built per Unraid release', 'Yes', 'No for the ich777 LED driver and the single-model LED projects'],
+    ['Languages', String(LANG_COUNT), 'None of the others documents translations'],
+    [`LEDs without a ${NO_KERNEL_MODULE.replace('No ', '')} built per Unraid release`, 'Yes', 'No for the ich777 LED driver and the single-model LED projects'],
     ['Multi-point fan curves', 'Yes', 'No in FanCtrl Plus 2 and Dynamix Auto Fan; partial in two others'],
     ['Fan calibration (rpm per duty)', 'Yes', 'No'],
     ['Fan inputs: GPU, HBA, NIC, custom script', 'Yes', 'Same in FanCtrl Plus 2; no in the others'],
@@ -504,7 +506,7 @@ function support(models: Model[], rel: string): string {
 function install(m: Model): string {
     return `<section class="band" id="install" aria-labelledby="ins">
   <h2 id="ins">Install in 60 seconds.</h2>
-  <p class="intro">Unraid 7.2 or newer. ${esc(ARM_NOTE)}</p>
+  <p class="intro">${UNRAID_OR_NEWER}. ${esc(ARM_NOTE)}</p>
   <div class="getit"><p>${installHint}</p>${copyBox()}</div>
   <ol class="steps">
     <li><h3>Paste the URL</h3><p>Plugins, Install Plugin, paste, Install.</p></li>
@@ -522,6 +524,17 @@ function helpProject(): string {
   <p class="intro">${esc(HELP.intro)}</p>
   <ul class="help-list"><li>${esc(HELP.test)}</li><li>${esc(HELP.lend)}</li></ul>
   <p class="acts"><a class="btn quiet" href="${HELP.url}" rel="noopener">${icon('github', 16)}${esc(HELP.button)}</a></p>
+</section>`;
+}
+
+function credits(): string {
+    const link = (login: string) => `<a href="https://github.com/${login}" rel="noopener">${esc(login)}</a>`;
+    const who = MAINTAINERS.map(m => `<a href="https://github.com/${m.login}" rel="noopener">${esc(m.name)}</a>`).join(' and ');
+    return `<section class="band" id="credits" aria-labelledby="crd">
+  <h2 id="crd">Credits.</h2>
+  <p class="intro">Maintained by ${who}. Everyone below tested on their own box, sent data or helped otherwise.</p>
+  <ul class="credit-list">${TESTERS.map(t => `<li>${link(t.login)}<span>${esc(t.did)}</span></li>`).join('')}</ul>
+  <p class="foot-note">On the Unraid forum: ${FORUM_TESTERS.map(esc).join(', ')}.</p>
 </section>`;
 }
 
@@ -574,6 +587,7 @@ ${comparison()}
 ${support(listed, rel)}
 ${install(def)}
 ${helpProject()}
+${credits()}
 ${techies()}`;
     return layout({
         title: 'UGREEN NAS Control: Unraid plugin for UGREEN NAS, with the real UI live in your browser',
@@ -589,7 +603,7 @@ ${techies()}`;
             '@type': 'SoftwareApplication',
             name: 'UGREEN NAS Control',
             applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Unraid 7.2 or newer',
+            operatingSystem: UNRAID_OR_NEWER,
             description: META_DESC,
             license: 'https://opensource.org/license/mit',
             url: SITE_URL,

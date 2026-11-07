@@ -9,6 +9,8 @@ import (
 	"sort"
 	"strings"
 	"time"
+
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 )
 
 // models.json is the model registry (web/models/*.ts) as docs/tools/gen-docs.ts renders it; `just docs` rewrites
@@ -266,6 +268,15 @@ func BuildEvidence(in EvInputs) Evidence {
 	}
 	area("sensors", status("sensors"), cpuT)
 
+	// panel: the registry offers it exactly where the backend has a button map or a beeper
+	tables := EvCheck{ID: "panel_tables"}
+	if reg != nil {
+		tables.Expected = reg.Verified["panel"].Status != "unsupported"
+		tables.Detected = panel.ButtonsFor(r.Machine.Product) != nil || panel.BeeperFor(r.Machine.Product) != nil
+		tables.OK = tri(tables.Expected == tables.Detected)
+	}
+	area("panel", status("panel"), tables)
+
 	// watchdog
 	wd := EvCheck{ID: "watchdog_state"}
 	wst := "none"
@@ -294,9 +305,9 @@ func BuildEvidence(in EvInputs) Evidence {
 	return ev
 }
 
-var areaOrder = []string{"leds", "fans", "case", "sensors", "watchdog"}
+var areaOrder = []string{"leds", "fans", "case", "sensors", "panel", "watchdog"}
 
-var areaLabel = map[string]string{"leds": "LEDs", "fans": "fans", "case": "case", "sensors": "sensors", "watchdog": "watchdog"}
+var areaLabel = map[string]string{"leds": "LEDs", "fans": "fans", "case": "case", "sensors": "sensors", "panel": "front panel", "watchdog": "watchdog"}
 
 func checkLine(c RegCheck) string {
 	parts := []string{c.Status}
@@ -441,4 +452,39 @@ func m2SlotsMatch(expected, detected []string, pcieSlot bool) bool {
 		free = slices.Delete(free, i, i+1)
 	}
 	return pcieSlot || loose <= len(free)
+}
+
+var issueRefRe = regexp.MustCompile(`/(?:issues|pull)/(\d+)$`)
+
+// PanelStatus is how well the front panel (buttons and beeper) is known on the model, from the registry's panel check
+// (web/models/*.ts), for `ugreen-nas panel` and the diag: "confirmed by users, #165" or "vendor source, not yet confirmed".
+func PanelStatus(product string) string {
+	unconfirmed := panel.Unconfirmed
+	models, err := loadRegistry(modelsJSON)
+	if err != nil {
+		return unconfirmed
+	}
+	reg := matchModel(models, product)
+	if reg == nil {
+		return unconfirmed
+	}
+	c, ok := reg.Verified["panel"]
+	if !ok {
+		return unconfirmed
+	}
+	var text string
+	switch c.Status {
+	case "verified":
+		text = "verified by a maintainer"
+	case "community":
+		text = "confirmed by users"
+	case "partial":
+		text = "partly confirmed by users"
+	default:
+		return unconfirmed
+	}
+	if m := issueRefRe.FindStringSubmatch(c.Ref); m != nil {
+		text += ", #" + m[1]
+	}
+	return text
 }

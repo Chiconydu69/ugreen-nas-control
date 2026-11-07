@@ -26,7 +26,8 @@ export default {
             status: 'expected',
             note: "Drawn after the DXP4800 Plus (UGREEN's chassis, front and back from NASCompares' photos of the Plus; the S itself was not photographed). One RAM slot as the reveal article lists it; slot numbering assumed. The rear draws one or two 2.5G LAN ports as the system finds them."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://nascompares.com/2025/11/14/new-ugreen-dxp4800-pro-and-dxp4800s-nas-revealed/'],
     note: 'Four bays, two M.2 slots. Sources disagree on the LAN ports (one or two 2.5G); the rear shows as many as the system finds. Nobody has reported this model yet.',

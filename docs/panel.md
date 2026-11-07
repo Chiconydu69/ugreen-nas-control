@@ -1,6 +1,6 @@
 # Front panel: buttons and beeper
 
-`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source, not yet confirmed on hardware.** Needs root. No press triggers an action; nothing reboots or shuts down.
+`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); today only the DXP8800 Plus (issue #165).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action; nothing reboots or shuts down.
 
 ## Commands
 
@@ -30,7 +30,7 @@ Read-only: `/dev/mem` is opened read-only and one page-aligned page is mapped pe
 
 `*` = prefix match, as the vendor driver does. `DXP6800 Ultra` and `DXP8800 Ultra` are newer than the vendor source and are refused. The vendor reads the DXP4800 GT at the unaligned addresses 0xFED81526 and 0xFED81522, bit 0; the tool reads the aligned word, which is the same bit.
 
-Unreadable registers: a pad register that reads as 0xFFFFFFFF is not a pad value (real pad registers have reserved bits that read 0); it is what a bus read nobody answers returns. The tool then reports that button as unreadable instead of released: `panel buttons` prints `power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)` and `power unreadable, reset unreadable`, `--watch` exits with an error, the API (`panel_buttons`) returns `"unreadable"` for that button, the Front panel page shows "Not readable on this box" and `diag` marks `panel.buttons` as not readable. On the DXP8800 Plus (BIOS 5.27, Unraid 7.3.4) both registers read as 0xFF on some boots; on others the same addresses return real values (issue #165: 0x84000100 from 0xFD6A0B40, power and reset events seen). The cause is unknown. The vendor driver maps and reads the same fixed addresses without any P2SB setup that `/dev/mem` lacks (`ug_gpio_btn.c:129@c75c5ab`). On boots where the registers read 0xFF the button state is not available; the entries of that model stay vendor source.
+Unreadable registers: a pad register that reads as 0xFFFFFFFF is not a pad value (real pad registers have reserved bits that read 0); it is what a bus read nobody answers returns. The tool then reports that button as unreadable instead of released: `panel buttons` prints `power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)` and `power unreadable, reset unreadable`, `--watch` exits with an error, the API (`panel_buttons`) returns `"unreadable"` for that button, the Front panel page shows "Not readable on this box" and `diag` marks `panel.buttons` as not readable. On the DXP8800 Plus (BIOS 5.27, Unraid 7.3.4) both registers read as 0xFF on some boots; on others the same addresses return real values (issue #165: 0x84000100 from 0xFD6A0B40, power and reset events seen). The cause is unknown. The vendor driver maps and reads the same fixed addresses without any P2SB setup that `/dev/mem` lacks (`ug_gpio_btn.c:129@c75c5ab`). On boots where the registers read 0xFF the button state is not available. Confirmed by a user on 5.4.0 (issue #165): the pads read power 0x84000100 at 0xFD6A0B40 and reset 0x84000102 at 0xFD6D0A10, and `panel buttons --watch` showed power down, press and up (held 0.20 s) twice and reset down and up (held 0.40 s).
 
 Vendor press rules, which `--watch` follows:
 
@@ -50,6 +50,8 @@ Vendor press rules, which `--watch` follows:
 | `DXP480T Plus*`                                                                                                            | pad register 0xFD6E07E0 | `dxp480t/ug-beeper-dxp480t.c:41-49,118-134`                                |
 
 No other model has a beeper path (DXP4800 GT, DXP2800 GT, DX4600, Ultra models): refused.
+
+The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound right after the click (issue [#165](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165)).
 
 - PC speaker: timer command 0xB6 to port 0x43, divisor low and high byte to port 0x42, bits 0-1 of port 0x61 set to start and cleared to stop (through `/dev/port`). The vendor divisor is 0x0944 (about 503 Hz) and is the default; `--freq` sets 1193182 / Hz instead.
 - EC register: ACPI EC ports 0x62 (data) and 0x66 (command); write command 0x81, read command 0x80; the tool writes 1 or 0, reads back, retries up to 5 times and accepts a read-back of 2 after writing 1 (as the vendor does). It only ever writes the one register of the model. On the iDX6011 Pro 0xA5 is the backlight, so the Pro uses 0x9E and the tool never writes 0xA5 there.

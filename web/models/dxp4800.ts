@@ -43,7 +43,8 @@ export default {
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/184',
             note: "Front and rear confirmed by a Plus owner. The two M.2 slots of the underside panel are printed M2-KEYM1 (next to the RAM) and M2-KEYM3 on the board, shown as M.2-1 and M.2-3 (UGREEN's photos agree); the third slot, M2-KEYM2, is inside the case. Inside view otherwise after UGREEN's manual, the Pro was not compared."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: [
         'https://ai.ugreen.com/products/ugreen-nasync-dxp4800-plus-nas-storage',

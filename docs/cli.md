@@ -13,7 +13,7 @@ Run them as root on the NAS.
 
 ## ugreen-nas-fan
 
-Talks to the fan chip, runs the curves every 2 s, reads sensors. Subcommands: `info`, `hardware`, `conflicts`, `cs201x`, `probe`, `probe-fans`, `backlight`, `power-on-ac`, `status`, `history`, `set`, `calibrate`, `restore`, `daemon`, and `publish` (the MQTT publisher, [mqtt.md](mqtt.md)). Background: [fan.md](fan.md), [conflicts.md](conflicts.md), [watchdog.md](watchdog.md).
+Talks to the fan chip, runs the curves every 2 s, reads sensors. Subcommands: `info`, `hardware`, `conflicts`, `cs201x`, `probe`, `probe-fans` (`run`, `status`, `confirm`, `forget`, `restore`, `tachs`, `regs`), `backlight`, `power-on-ac`, `status`, `history`, `set`, `calibrate`, `restore`, `daemon`, and `publish` (the MQTT publisher, [mqtt.md](mqtt.md)). Background: [fan.md](fan.md), [conflicts.md](conflicts.md), [watchdog.md](watchdog.md).
 
 ```
 /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan status
@@ -46,7 +46,7 @@ Without the map the daemon does not start on this model.
 
 ## ugreen-nas panel
 
-Front-panel buttons and beeper, from UGREEN's driver facts, not yet confirmed on hardware ([panel.md](panel.md)).
+Front-panel buttons and beeper, from UGREEN's driver facts. `buttons` prints how well the model is known: `confirmed by users, #165` or `vendor source, not yet confirmed` (the registry's `panel` check, [panel.md](panel.md)).
 
 - `buttons [--watch]`: power and reset button state; `--watch` prints press and release events. Read only.
 - `beep [--freq Hz] [--ms N]`: one tone, 20 to 2000 ms; the speaker is always switched off afterwards.

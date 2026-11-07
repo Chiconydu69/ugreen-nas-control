@@ -27,6 +27,7 @@ Feature PRs target `next`; `main` holds releases only. Branch roles: [docs/relea
 ## Rules
 
 - Never edit `plugin/ugreen-nas-control.plg`, `CHANGELOG.md` or a version number. The release workflow writes them; CI rejects PRs that touch them.
+- Credit reporters and testers in the fragment as `[login](https://github.com/login)`, never `@login` (it notifies them), and add them to `docs/tools/testers.ts`; `just docs-check` enforces it.
 - Never commit generated files (JS bundles, PNG icons, `.build/`, the models tables by hand): [docs/development.md](../docs/development.md#generated-files).
 - New texts need keys in every language: [docs/translations.md](../docs/translations.md).
 - Scripts are TypeScript on Bun. No Python, no Node.
@@ -37,7 +38,7 @@ Feature PRs target `next`; `main` holds releases only. Branch roles: [docs/relea
 
 ## What CI checks
 
-Everything `just check` runs (format, PHP syntax, XML, docs links, models, generated files, plus the parts below). Go: lint, tests with `-race`, static build, the Go tools against the recorded goldens. Shell: shellcheck, shfmt on the few remaining files. Frontend: format, lint, types, tests, i18n parity, the sources build. Plugin: manifest, `.plg` render, fragments. Models registry. Generated files: none tracked outside `.gitattributes`. Workflows: actionlint, zizmor. Guard: no `.plg` or `CHANGELOG.md` in the PR, fragment present. Release PR: the rebuild equals the draft release. The single required check is `ci-ok`.
+Everything `just check` runs (format, PHP syntax, XML, docs links, models, generated files, plus the parts below). Go: lint and `go vet` (one job), tests, tests with `-race` (two jobs: `go-test-race-slow` runs the packages named in `slow_pkgs` in the justfile, `go-test-race-rest` all others), static build, the Go tools against the recorded goldens. The Go jobs restore the Go build cache (and the golangci-lint cache) with `actions/cache`, keyed per job on `flake.lock`, `go.mod` and the ISO week. Shell: shellcheck, shfmt on the few remaining files. Frontend: format, lint, types, tests, i18n parity, the sources build. Plugin: manifest, `.plg` render, fragments. Models registry. Generated files: none tracked outside `.gitattributes`. Workflows: actionlint, zizmor. Guard: no `.plg` or `CHANGELOG.md` in the PR, fragment present. Release PR: the rebuild equals the draft release. The single required check is `ci-ok`.
 
 ## Report a new model
 

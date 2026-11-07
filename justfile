@@ -8,13 +8,16 @@ set shell := ["bash", "-c", "if [ -n \"${IN_NIX_SHELL:-}\" ] || ! command -v nix
 shell_files := "plugin/event/stopping plugin/tools/install-dev.sh web/tools/harness/fake-led-i2c web/tools/harness/fake-led-ctl backend/internal/led/parity/testdata/bin/* .github/hooks/pre-commit"
 xml_files := "ca_profile.xml plugins/ugreen-nas-control.xml"
 
+# Go packages with the longest tests, split off so each test run finishes in two halves: the -slow recipes (and CI jobs) run these, the -rest ones everything else
+slow_pkgs := "/internal/(fan|led/chip|led/parity)$"
+
 [private]
 default:
     just --list --unsorted
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
+check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -37,7 +40,7 @@ fmt-check: _deps
     nixfmt --check flake.nix
 
 [group('check')]
-lint: go-lint sh-lint php-lint xml-lint workflows-lint
+lint: go-lint go-vet sh-lint php-lint xml-lint workflows-lint
 
 # PHP syntax (php -l); the .page files are checked after their header block
 [group('check')]
@@ -63,18 +66,39 @@ go-lint:
 [group('go')]
 go-test: go-test-race go-test-plain
 
-# Parallel jobs in CI (checks.yml: go-test-race and go-test)
+# Parallel jobs in CI (checks.yml: go-test-slow, go-test-rest, go-test-race-slow, go-test-race-rest)
 [group('go')]
-[working-directory: 'backend']
-go-test-race:
-    go test -race -tags testhooks -count=1 ./...
+go-test-race: go-test-race-slow go-test-race-rest
 
 [group('go')]
 [working-directory: 'backend']
-go-test-plain:
+go-test-race-slow:
+    pkgs=$(go list ./... | grep -E '{{ slow_pkgs }}'); go test -race -tags testhooks -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-test-race-rest:
+    pkgs=$(go list ./... | grep -vE '{{ slow_pkgs }}'); go test -race -tags testhooks -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-vet:
     go vet ./...
     go vet -tags testhooks ./...
-    go test -count=1 ./...
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain: go-test-plain-slow go-test-plain-rest
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-slow:
+    pkgs=$(go list ./... | grep -E '{{ slow_pkgs }}'); go test -count=1 $pkgs
+
+[group('go')]
+[working-directory: 'backend']
+go-test-plain-rest:
+    pkgs=$(go list ./... | grep -vE '{{ slow_pkgs }}'); go test -count=1 $pkgs
 
 # The one multicall binary of the plugin (the tool names are symlinks to it in the archive): .build/bin/ugreen-nas
 [group('go')]
@@ -83,11 +107,11 @@ go-build:
     mkdir -p ../.build/bin
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -trimpath -buildvcs=false -ldflags "-s -w" -o ../.build/bin/ugreen-nas ./cmd/ugreen-nas
 
-# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"
+# The Go tools against the goldens recorded from the shell scripts they replaced (internal/led/parity/testdata/golden); prints the lines starting with "parity:"; `just parity 0/2` and `just parity 1/2` each run half of the scenarios (CI jobs parity-0, parity-1)
 [group('go')]
 [working-directory: 'backend']
-parity:
-    LEDCTL_PARITY=1 go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
+parity shard='':
+    LEDCTL_PARITY=1 LEDCTL_PARITY_SHARD={{ shard }} go test -tags testhooks -v -count=1 -run 'TestParity$|TestNasCtl$' ./internal/led/parity | grep '^parity:'
 
 [group('shell')]
 sh-lint:
@@ -142,13 +166,23 @@ harness model='dxp6800-pro': web-build
 shots *args: web-build
     bun web/tools/shots.ts {{ args }}
 
-# The 4 Community Applications store screenshots (DXP6800 Pro, dark) and the README hero (overview, light) into docs/ca/; rerun after a visible UI change
-[group('dev')]
-ca-shots: web-build
+# Renders the 5 fixed UI images (DXP6800 Pro fixture: overview, fans, case, leds dark; overview light) into .build/ca-shots/dxp6800-pro/
+[private]
+_ca-render: web-build
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview,fans,case,leds --theme dark --no-social
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview --theme light --no-social
+
+# The 5 Community Applications store screenshots and README hero images into docs/ca/ (the CA listing still loads them from main)
+[group('dev')]
+ca-shots: _ca-render
     mkdir -p docs/ca
     cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png docs/ca/
+
+# The same images into .build/site/shots/ (served by Pages, linked from the README); run after the site build, which clears .build/site
+[group('dev')]
+site-shots: _ca-render
+    mkdir -p .build/site/shots
+    cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png .build/site/shots/
 
 # The site demo (the real plugin UI on sample data, model switcher) into .build/demo; checked against the PHP harness
 [group('dev')]
@@ -161,6 +195,7 @@ demo: web-build
 site: web-build demo
     bun web/tools/check-models.ts
     bun docs/site/build.ts
+    just site-shots
 
 # Installs the locked JS dependencies (bun types, formatters); a no-op when node_modules is current
 [private]
@@ -172,16 +207,17 @@ _deps:
 models-check:
     bun web/tools/check-models.ts
 
-# Regenerate the models tables in README.md and docs/hardware.md and the issue forms in .github/ISSUE_TEMPLATE from web/models/
+# Regenerate the models tables and derived facts (languages, Unraid minimum, kernel claim) in README.md, docs/hardware.md and the CA overview in plugins/ugreen-nas-control.xml, and the issue forms in .github/ISSUE_TEMPLATE, from web/models/ and docs/site/facts.ts
 [group('docs')]
 docs:
     bun docs/tools/gen-docs.ts
     bun docs/tools/gen-templates.ts
 
-# Fail when the generated docs are out of date or a link, path or just recipe in the docs is broken
+# Fail when the generated docs are out of date, prose types a derived fact (docs/tools/facts-lint.ts) or a link, path or just recipe in the docs is broken
 [group('docs')]
 docs-check:
     bun docs/tools/gen-docs.ts --check
+    bun test docs/tools
     bun docs/tools/gen-templates.ts --check
 
 # Fail when a generated file is tracked, a tracked file is gitignored, a generator writes to a tracked path, or the web build writes outside .build/

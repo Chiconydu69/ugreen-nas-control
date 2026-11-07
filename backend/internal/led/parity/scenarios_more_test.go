@@ -22,6 +22,9 @@ func more() []scenario {
 		if p == "iDX6011 Pro" {
 			s.intended = "the Pro lists netdev2, its second LAN LED (register 2, leds-mcu.c:104-108@c75c5ab); the shell has no such LED"
 		}
+		if p == "DXP2800" {
+			s.intended = "mapping is tested: the bay order was confirmed with Identify on a SUB2 board (#214); the shell said reported"
+		}
 		if p == "DXP480T Plus" {
 			s.intended = "the model has no bays; the shell listed 8"
 		}
@@ -345,6 +348,9 @@ func more() []scenario {
 		}
 		if d.name == "daemon-run-night-off" {
 			sc.intended = "a bay at brightness 0 (night off) stays dark when its disk is in standby; the shell clamped the dimmed value to 1 and lit it faintly"
+		}
+		if d.name == "daemon-run-netdev-gateway-down" {
+			sc.intended = "one silent gateway no longer turns the network LED red: it takes 3 failed probes (about 90 s) after 2 pings each; the shell turned red on the first single ping"
 		}
 		list = append(list, sc)
 	}

@@ -41,7 +41,8 @@ export default {
             date: '2026-10-24',
             note: 'Inside view (M.2 slots on CPU and chipset, system slot, PCIe slot) and the rear drawn after the device.'
         },
-        sensors: { status: 'verified', by: BY, version: '0.1.0', date: '2026-10-06' }
+        sensors: { status: 'verified', by: BY, version: '0.1.0', date: '2026-10-06' },
+        panel: { status: 'expected' }
     },
     sources: ['https://wundertech.net/best-ugreen-nas/'],
     note: 'Six bays, two M.2 slots plus the internal system slot, a PCIe slot, two 10G LAN ports. Fan control through the IT8613E; the reference model of the plugin.',

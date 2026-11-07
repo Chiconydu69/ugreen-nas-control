@@ -23,13 +23,14 @@ export default {
         },
         fans: {
             status: 'expected',
-            note: "Same IT8613E as the DXP6800 Pro. UGREEN's own fan driver wires the whole DXP6800 family like the Pro (cpu on header 2, case fans on headers 3 and 4; header 4 control register unconfirmed), but this model is probed first: fan control stays off until you confirm the result of the fan probe. Not run on this model yet."
+            note: "Same IT8613E as the DXP6800 Pro. UGREEN's own fan driver wires the whole DXP6800 family like the Pro (cpu on header 2, case fans on headers 3 and 4; header 4 is switched through UGREEN's register 0x1e, not yet checked on this model), but this model is probed first: fan control stays off until you confirm the result of the fan probe. Not run on this model yet."
         },
         case: {
             status: 'expected',
             note: 'Drawn like the DXP6800 Pro, as the plugin does for every model without a drawing of its own; not compared on a device.'
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: "Six bays. UGREEN's driver sources list the DXP6800 and a DXP6800+; nobody has reported either to this plugin yet. Fan control after a fan probe.",

@@ -875,6 +875,9 @@ func (c *Ctl) fanDiag(model string) FanDiag {
 	case fan.FanKind(model) == fan.KindProbe:
 		extra("probe-fans tachs (every tach input, read only)", "tachs", "probe-fans", "tachs")
 	}
+	if fan.HasIT8613E(model) {
+		extra("IT8613E header 4 control registers 0x1e (UGREEN) and 0x7f (mainline it87), raw, read only", "ite-ctrl", "probe-fans", "regs")
+	}
 	extra("power-on-ac (read)", "power-on-ac", "power-on-ac")
 	d.Aux = append(d.Aux, run(c.Env.FanTool, "history", "history", "history", "1h"), run(c.Env.FanTool, "profile sources", "profiles", "profile", "sources"))
 	if panel.ButtonsFor(model) != nil && c.Env.Panel != "" {
@@ -1019,8 +1022,8 @@ func (c *Ctl) diag(asJSON bool) int {
 
 	var checks []string
 	var ev Evidence
+	var reg *RegModel
 	if msg := guard(func() {
-		var reg *RegModel
 		if models, err := loadRegistry(modelsJSON); err == nil {
 			reg = matchModel(models, model)
 		}
@@ -1044,7 +1047,7 @@ func (c *Ctl) diag(asJSON bool) int {
 			ev.Model = EvModel{ID: "unknown", Name: rep.Machine.Product}
 			ev.PluginVersion, ev.UnraidVersion = rep.PluginVersion, rep.UnraidVersion
 		}
-		_, _ = c.Out.Write(BuildFeedback(anon, ev, rep, facts.LED.I2C, kernelVersion(c.Env.Proc), out, time.Since(started)).JSON())
+		_, _ = c.Out.Write(BuildFeedback(anon, ev, reg, rep, facts.LED.I2C, kernelVersion(c.Env.Proc), out, time.Since(started)).JSON())
 		return 0
 	}
 	c.out("%s", out)

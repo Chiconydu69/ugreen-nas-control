@@ -4,6 +4,8 @@ export const panelEs: Record<keyof typeof panelEn, string> = {
     'nav.panel': 'Panel frontal',
     'sub.panel': 'Botón de encendido y de reinicio y el zumbador, según el código fuente de los controladores de UGREEN.',
     'panel.unconfirmed': 'Según el código fuente de los controladores de UGREEN, aún sin confirmar en tu hardware.',
+    'panel.confirmed': 'Confirmado por usuarios en este modelo.',
+    'panel.confirmed_by': 'Confirmado por usuarios en este modelo: {by}.',
     'panel.buttons_title': 'Botones',
     'panel.buttons_hint': 'Lee el botón de encendido y el de reinicio una vez. Pulsarlos no hace nada: el plugin solo lee.',
     'panel.power': 'Encendido',

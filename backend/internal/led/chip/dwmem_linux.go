@@ -103,9 +103,12 @@ type dwTiming struct{ hcnt, lcnt, sdaHold uint32 }
 // aoac) or Intel LPSS (lpss_linux.go).
 type dwI2C struct {
 	mem     dwRegs
-	unmap   func() // releases the mappings and the file
-	aoac    []byte // AMD: power registers
-	power   int    // AMD: offset of this controller's AOAC register in aoac
+	unmap   func()                           // releases the mappings and the file
+	release func()                           // LPSS: restores the PCI power/control value once the controller is disabled
+	trace   func(format string, args ...any) // --debug: one line per transfer; nil when off
+	verify  func() error                     // LPSS: runs before each transfer, re-runs the bring-up when the controller lost its setup
+	aoac    []byte                           // AMD: power registers
+	power   int                              // AMD: offset of this controller's AOAC register in aoac
 	timing  dwTiming
 	addr    uint8
 	txDepth int
@@ -198,6 +201,9 @@ func openDW(addr uint8) (*dwI2C, error) {
 func (d *dwI2C) shutdown() error {
 	err := d.disable()
 	d.unmap()
+	if d.release != nil {
+		d.release()
+	}
 	return err
 }
 
@@ -297,9 +303,42 @@ func (d *dwI2C) disable() error {
 	return errors.New("I2C controller does not disable")
 }
 
-// xfer runs the messages as one transfer. The deferred disable aborts a stuck one; abort
-// and disable leave the configuration from init alone, so no re-init is needed.
+// xfer runs the messages as one transfer (with the optional context check and trace of the LPSS path).
 func (d *dwI2C) xfer(msgs []dwMsg) error {
+	if d.verify != nil {
+		if err := d.verify(); err != nil {
+			if d.trace != nil {
+				d.trace("xfer 0x%02x: setup check failed: %v", d.addr, err)
+			}
+			return err
+		}
+	}
+	err := d.xferOnce(msgs)
+	if d.trace != nil {
+		var parts []string
+		for _, m := range msgs {
+			dir := "w"
+			if m.read {
+				dir = "r"
+			}
+			if err != nil && m.read {
+				parts = append(parts, fmt.Sprintf("r%d", len(m.buf)))
+			} else {
+				parts = append(parts, fmt.Sprintf("%s[% x]", dir, m.buf))
+			}
+		}
+		result := "ok"
+		if err != nil {
+			result = "FAILED: " + err.Error()
+		}
+		d.trace("xfer 0x%02x %s: %s", d.addr, strings.Join(parts, " "), result)
+	}
+	return err
+}
+
+// xferOnce runs the messages as one transfer. The deferred disable aborts a stuck one; abort
+// and disable leave the configuration from init alone, so no re-init is needed.
+func (d *dwI2C) xferOnce(msgs []dwMsg) error {
 	start := time.Now()
 	for d.rd(dwStatus)&1 != 0 {
 		if time.Since(start) > 20*time.Millisecond {

@@ -10,14 +10,14 @@ import "fmt"
 // input (0x82/0x4c) but no PWM output is written: its registers are not confirmed, so the probe reads that tach only.
 // Header 1 and the tach of 5 are not confirmed on a device with this plugin. UGREEN's drivers have no header 1 and
 // declare PWM 5 (control 0x1f, duty 0xa3) without ever using it (ug_it86x-cpufan.c:85-86@c75c5ab). Header 4's control
-// register is unconfirmed: ours 0x7f, UGREEN's 0x1e (ug_it86x-cpufan.c:82-83@c75c5ab).
+// register is UGREEN's 0x1e (dxp480t/ug_it86x-cpufan.c:82-83@c75c5ab), see it8613Channels.
 type iteHeader struct{ tachLow, tachHigh, duty, ctrl byte }
 
 var it8613Headers = [...]iteHeader{
 	{0x0d, 0x18, 0x63, 0x15},
 	{0x0e, 0x19, 0x6b, 0x16},
 	{0x0f, 0x1a, 0x73, 0x17},
-	{0x80, 0x81, 0x7b, 0x7f},
+	{0x80, 0x81, 0x7b, iteCtrlHeader4},
 	{0x82, 0x4c, 0, 0},
 }
 

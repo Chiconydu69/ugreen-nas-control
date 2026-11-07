@@ -39,6 +39,11 @@ var (
 
 func TestMain(m *testing.M) {
 	full = os.Getenv("LEDCTL_PARITY") == "1"
+	var shardErr error
+	if shardIdx, shardN, shardErr = parseShard(os.Getenv("LEDCTL_PARITY_SHARD")); shardErr != nil {
+		fmt.Fprintln(os.Stderr, "parity:", shardErr)
+		os.Exit(1)
+	}
 
 	wd, _ := os.Getwd()
 	root := filepath.Join(wd, "..", "..", "..")
@@ -107,8 +112,8 @@ func TestParity(t *testing.T) {
 	if !enabled {
 		t.Skip("parity needs bash >= 4 (nix develop): " + skipReason)
 	}
-	for _, s := range scenarios() {
-		if !full && !s.fast {
+	for i, s := range scenarios() {
+		if !inShard(i) || !full && !s.fast {
 			continue
 		}
 		t.Run(s.name, func(t *testing.T) {
@@ -147,6 +152,12 @@ func TestParity(t *testing.T) {
 			}
 			if want == got {
 				equal.Add(1)
+				return
+			}
+			// The gateway probe sends 2 pings where the shell sent 1 (see daemon-run-netdev-gateway-down); that line is the only difference.
+			if strings.ReplaceAll(want, "ping -c 1 -W 2 ", "ping -c 2 -W 2 ") == got {
+				intendedDiff.Add(1)
+				t.Logf("intended difference: the gateway probe pings twice")
 				return
 			}
 			different.Add(1)

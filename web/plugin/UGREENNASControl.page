@@ -420,14 +420,16 @@ window.UGREEN_LED_THEME = <?= json_encode($unc_theme) ?>;
         <div class="unc-fb-step">
             <div data-unc="sechead" data-unc-title="feedback.step_send"></div>
             <p class="unc-muted" data-i18n="feedback.send_hint">Ein Klick kopiert die Daten und öffnet ein vorausgefülltes GitHub-Issue.</p>
+            <p class="unc-fb-paste" id="unc-fb-paste" data-i18n="feedback.paste_line" hidden>Der Klick kopiert deine Gerätedaten: Füge sie auf GitHub ins Feld „Device data“ ein (Strg+V / Cmd+V).</p>
             <div class="unc-actions">
                 <span data-unc="btn" data-unc-label="feedback.send_issue" data-unc-ico="check" data-unc-tone="primary" id="unc-fb-issue"></span>
                 <span data-unc="btn" data-unc-label="feedback.send_bug" data-unc-ico="alert" id="unc-fb-bug"></span>
+                <span data-unc="btn" data-unc-label="feedback.download" data-unc-ico="download" id="unc-fb-download" hidden></span>
             </div>
+            <p class="unc-muted" id="unc-fb-download-hint" data-i18n="feedback.download_hint" hidden>Oder lade die Daten herunter und hänge die Datei ans Issue an.</p>
             <p class="unc-muted" id="unc-fb-note" role="status" aria-live="polite" hidden></p>
             <div class="unc-actions" id="unc-fb-fallback" hidden>
                 <span data-unc="btn" data-unc-label="feedback.copy" data-unc-ico="copy" id="unc-fb-copy"></span>
-                <span data-unc="btn" data-unc-label="feedback.download" data-unc-ico="download" id="unc-fb-download"></span>
             </div>
             <p class="unc-note" data-i18n="feedback.privacy">Es wird erst etwas gesendet, wenn du auf GitHub abschickst.</p>
         </div>
@@ -491,7 +493,7 @@ window.UGREEN_LED_THEME = <?= json_encode($unc_theme) ?>;
         <dl class="unc-facts">
             <dt data-i18n="about.how">Funktionsweise</dt><dd data-i18n="about.how_text">Spricht den Lüfter-Chip direkt über I/O-Ports an (ITE IT8613E beim DXP6800 Pro, Embedded Controller IT5571 beim DXP4800 GT) und den LED-Controller über I²C, ohne Kernel-Modul. Beim Stoppen oder Deinstallieren bekommen die Lüfter die Werte des BIOS zurück.</dd>
             <dt data-i18n="about.maintainers">Maintainer</dt><dd><a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander Schubert</a>, <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">Jens Thomas</a></dd>
-            <dt data-i18n="about.thanks">Dank an</dt><dd data-i18n-html="about.thanks_text"><a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und alle, die auf ihrem Modell getestet haben</dd>
+            <dt data-i18n="about.thanks">Dank an</dt><dd data-i18n-html="about.thanks_text"><a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und <a data-site="#credits" target="_blank" rel="noopener">alle, die getestet haben</a></dd>
         </dl>
     </article>
 </section>

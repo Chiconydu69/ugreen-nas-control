@@ -23,7 +23,8 @@ export default {
             status: 'expected',
             note: "Front and rear after UGREEN's product renders. No photo of the inside exists: drawn after the DXP6800 Pro, slot positions and numbering assumed."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'unsupported', note: "Newer than UGREEN's driver source, which names no button or beeper path for it." }
     },
     sources: [
         'https://ai.ugreen.com/products/ugreen-nasync-dxp6800-ultra-nas-storage',

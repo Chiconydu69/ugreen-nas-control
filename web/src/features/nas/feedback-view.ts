@@ -116,6 +116,9 @@ export function createFeedback(ctx: FeedbackCtx) {
         q<HTMLButtonElement>('#unc-fb-collect').disabled = running;
         label('#unc-fb-collect', s.phase === 'done' ? 'feedback.collect_again' : s.phase === 'error' ? 'feedback.retry' : 'feedback.collect');
         q('#unc-fb-result').hidden = !s.result;
+        q('#unc-fb-paste').hidden = !s.result;
+        q('#unc-fb-download').hidden = !s.result;
+        q('#unc-fb-download-hint').hidden = !s.result;
         q('#unc-fb-summary').textContent = s.result?.summary ?? '';
         q('#unc-fb-diag').textContent = s.result?.diag_markdown ?? '';
         const note = q('#unc-fb-note');
@@ -174,8 +177,7 @@ export function createFeedback(ctx: FeedbackCtx) {
             caps: feedbackCaps(ctx.product()),
             answers: s.answers,
             summary: s.result?.summary ?? '',
-            comment: q<HTMLTextAreaElement>('#unc-fb-comment').value,
-            hasDiag: Boolean(s.result)
+            comment: q<HTMLTextAreaElement>('#unc-fb-comment').value
         };
     }
 

@@ -34,6 +34,7 @@ type I2CDiag struct {
 	Modules     []I2CModule
 	Release     string
 	Probe       []string // report of the last ugreen-led-i2c lpss-probe, empty when it was not run
+	State       string   // state of the default LPSS LED path in this boot ("ok", "refused: <reason>"), empty before the first use
 }
 
 var (
@@ -158,6 +159,7 @@ func (c *Ctl) i2cModules(release string) []I2CModule {
 func (c *Ctl) i2cDiag() I2CDiag {
 	rel := sysfsLine(filepath.Join(c.Env.Proc, "sys/kernel/osrelease"))
 	d := I2CDiag{Release: rel, Controllers: c.i2cControllers(), MCUs: c.i2cMCUs()}
+	d.State = strings.TrimSpace(readAll(c.Env.LPSSState))
 	if probe := strings.TrimSpace(readAll(c.Env.LPSSProbe)); probe != "" {
 		d.Probe = strings.Split(probe, "\n")
 	}
@@ -179,7 +181,7 @@ func (d I2CDiag) unbound() string {
 
 // ledHint is the one factual line for a failed 0x3a probe: the MCU is probably behind a controller without a driver.
 func (d I2CDiag) ledHint() string {
-	const tail = "the LED controller probably sits behind it (DXP2800 SUB2 boards: experimental, run ugreen-led-i2c lpss-probe, then set lpss_leds=\"1\" in leds.cfg)"
+	const tail = "the LED controller probably sits behind it (DXP2800 SUB2 boards: the plugin tries that Intel LPSS controller by itself; ugreen-led-i2c lpss-probe shows each check, lpss_leds=\"0\" in leds.cfg turns it off)"
 	if b := d.unbound(); b != "" {
 		return "no LED controller at 0x3a on the SMBus; the I2C controller " + b + " has no driver bound, " + tail
 	}
@@ -218,6 +220,9 @@ func (d I2CDiag) lines() []string {
 	}
 	if len(d.Modules) == 0 {
 		l = append(l, "  -")
+	}
+	if d.State != "" {
+		l = append(l, "lpss led path (this boot): "+d.State)
 	}
 	if len(d.Probe) > 0 {
 		l = append(l, "lpss-probe (last run):")

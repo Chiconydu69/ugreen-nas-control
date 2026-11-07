@@ -487,7 +487,7 @@ func TestEvidenceSectionIsValidJSON(t *testing.T) {
 	ev, _ := evidenceFixture(t)
 	var got Evidence
 	body := evidenceSection(ev).Body
-	if err := json.Unmarshal([]byte(body), &got); err != nil || got.Schema != "diag/1" || len(got.Areas) != 5 {
+	if err := json.Unmarshal([]byte(body), &got); err != nil || got.Schema != "diag/1" || len(got.Areas) != 6 {
 		t.Errorf("%v\n%s", err, body)
 	}
 	if lines := strings.Count(body, "\n"); lines > 20 {

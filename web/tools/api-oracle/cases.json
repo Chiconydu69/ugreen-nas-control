@@ -251,7 +251,7 @@
       "nas": [
         {
           "args": ["panel", "buttons"],
-          "out": "model: DXP4800 Plus (vendor source, not yet confirmed on hardware)\npower released, reset held\n"
+          "out": "model: DXP4800 Plus (vendor source, not yet confirmed)\npower released, reset held\n"
         },
         {
           "args": ["panel", "beep"]
@@ -723,7 +723,7 @@
       "nas": [
         {
           "args": ["panel", "buttons"],
-          "out": "model: iDX6011 (vendor source, not yet confirmed on hardware)\npower: not readable by address\npower released, reset released\n"
+          "out": "model: iDX6011 (vendor source, not yet confirmed)\npower: not readable by address\npower released, reset released\n"
         }
       ]
     },

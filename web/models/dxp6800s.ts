@@ -26,7 +26,8 @@ export default {
             status: 'expected',
             note: "Drawn after the DXP6800 Pro; this model's hardware is not known, so ports, PCIe slot and slot numbering are assumed."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://github.com/ugreen-opensource/kernel-6.12'],
     note: 'Known from the name in UGREEN driver sources only; hardware details are not known, the case view is drawn after the DXP6800 Pro. LEDs are enabled but nobody has confirmed them.',

@@ -1,11 +1,12 @@
 // The Front panel page: the state of the power and reset button (one read per click, never a watch) and a test beep.
 // The tool and its model tables are backend/internal/panel; which model has what is panel-models.ts. Every reading is
-// UGREEN driver source, not yet confirmed on hardware, and the page says so.
+// UGREEN driver source; the page says per model whether users confirmed it (the registry's panel check, model-info.ts).
 import { errorMessage } from '../../../core/api';
 import type { StatusResponse } from '../../../core/contract';
 import type { PanelButtonsResponse } from '../../../core/contract-fan-probe';
 import { berlin } from '../../../core/format';
 import { escapeHtml } from '../../../core/html';
+import { panelEvidence } from '../model-info';
 import { hasBeeper, hasButtons, powerDoubtful } from '../panel-models';
 import { registerFanModule, type FanCtx } from './module';
 
@@ -17,6 +18,23 @@ export const beeperVisible = (status: StatusResponse): boolean => hasBeeper(mode
 const state = { read: null as PanelButtonsResponse | null, error: '', loading: false, asked: false, shown: '' };
 
 const onScreen = (ctx: FanCtx): boolean => ctx.el.closest('.unc-view')?.classList.contains('active') === true;
+
+/** The note on top of a card: confirmed by users on this model, or vendor source only. */
+function drawEvidence(status: StatusResponse, ctx: FanCtx): void {
+    const slot = ctx.el.querySelector('[data-evidence]');
+    if (!slot) return;
+    const found = panelEvidence(modelOf(status));
+    const confirmed = found?.state === 'users' || found?.state === 'confirmed';
+    const html = confirmed
+        ? ctx.ui.note(escapeHtml(ctx.t(found.by ? 'panel.confirmed_by' : 'panel.confirmed', { by: found.by })), {
+              tone: 'info',
+              box: true,
+              tag: 'div',
+              ico: 'check'
+          })
+        : ctx.ui.note(escapeHtml(ctx.t('panel.unconfirmed')), { tone: 'info', box: true, tag: 'div', ico: 'info' });
+    if (slot.innerHTML !== html) slot.innerHTML = html;
+}
 
 function drawButtons(ctx: FanCtx): void {
     const body = ctx.el.querySelector('[data-body]');
@@ -71,7 +89,7 @@ registerFanModule({
     render: ctx => `<article class="unc-card">
         ${ctx.ui.cardHead(ctx.t('panel.buttons_title'), { ico: 'power' })}
         <p class="unc-muted">${escapeHtml(ctx.t('panel.buttons_hint'))}</p>
-        ${ctx.ui.note(escapeHtml(ctx.t('panel.unconfirmed')), { tone: 'info', box: true, tag: 'div', ico: 'info' })}
+        <div data-evidence></div>
         <div class="unc-fan-tools-body" data-body></div>
     </article>`,
     bind: ctx => {
@@ -79,7 +97,8 @@ registerFanModule({
             if ((event.target as Element | null)?.closest('[data-act="read"]')) void load(ctx);
         });
     },
-    update: (_status, ctx) => {
+    update: (status, ctx) => {
+        drawEvidence(status, ctx);
         // The first look at the page reads once; after that only the button reads.
         if (!state.asked && onScreen(ctx)) void load(ctx);
         else drawButtons(ctx);
@@ -94,9 +113,10 @@ registerFanModule({
     render: ctx => `<article class="unc-card">
         ${ctx.ui.cardHead(ctx.t('panel.beeper_title'), { ico: 'bell' })}
         <p class="unc-muted">${escapeHtml(ctx.t('panel.beeper_hint'))}</p>
-        ${ctx.ui.note(escapeHtml(ctx.t('panel.unconfirmed')), { tone: 'info', box: true, tag: 'div', ico: 'info' })}
+        <div data-evidence></div>
         <div class="unc-fan-tools-actions">${ctx.ui.btn({ label: ctx.t('panel.beep'), ico: 'bell', attrs: 'data-act="beep"' })}</div>
     </article>`,
+    update: drawEvidence,
     bind: ctx => {
         ctx.el.addEventListener('click', event => {
             const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-act="beep"]');

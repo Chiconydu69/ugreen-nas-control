@@ -5,7 +5,9 @@ name: 'Checks (lint, tests, build)'
 # `changes` skips the Go, web, shell and workflow jobs on PRs into next that do not touch their paths (see its comment); `plugin` (build, plg, changes-check,
 # the generated-files check), `check` and `guard` always run. They add the plg artifact, the guard and the release verification.
 # Nix installer: DeterminateSystems/nix-installer-action. It enables flakes by default and is quick on ephemeral
-# runners. No Nix cache action: every shell is built by cache.nixos.org already (nothing local to cache), the GHA-backed magic-nix-cache gets throttled (HTTP 418).
+# runners. No Nix cache action: every shell is built by cache.nixos.org already (nothing local to cache); the GHA-backed magic-nix-cache gets throttled (HTTP 418, measured: jobs 2-3x slower).
+# Go jobs restore ~/.cache/go-build (go-lint: also the golangci-lint cache) with actions/cache, keyed per job on flake.lock, go.mod and the ISO week, and
+# pre-build their dev shell while it restores. Compiled artifacts are content-addressed, so a stale cache is still correct.
 # Required status check for branch protection: `ci-ok`.
 on:
   pull_request:
@@ -78,6 +80,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#fmt -c just fmt-check php-lint xml-lint models-check docs-check
 
   go-lint:
@@ -94,9 +98,23 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
-      - run: nix develop .#go -c just go-lint
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#go -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/.cache/golangci-lint
+          key: ${{ runner.os }}-go-lint-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-lint-
+      - run: nix develop .#go -c just go-lint go-vet
 
-  go-test:
+  go-test-slow:
     needs: changes
     if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-latest
@@ -110,9 +128,21 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
-      - run: nix develop .#go -c just go-test-plain
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-test-slow-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-slow-
+      - run: nix develop .#gotest -c just go-test-plain-slow
 
-  go-test-race:
+  go-test-rest:
     needs: changes
     if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-latest
@@ -126,9 +156,77 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
-      - run: nix develop .#go -c just go-test-race
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-test-rest-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-rest-
+      - run: nix develop .#gotest -c just go-test-plain-rest
 
-  parity:
+  go-test-race-slow:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-test-race-slow-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-race-slow-
+      - run: nix develop .#gotest -c just go-test-race-slow
+
+  go-test-race-rest:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-go-test-race-rest-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-go-test-race-rest-
+      - run: nix develop .#gotest -c just go-test-race-rest
+
+  parity-0:
     needs: changes
     if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-latest
@@ -142,7 +240,47 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
-      - run: nix develop .#go -c just parity
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-parity-0-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-parity-
+      - run: nix develop .#gotest -c just parity 0/2
+
+  parity-1:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
+      # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
+      - id: cache-key
+        run: |
+          nohup nix develop .#gotest -c true >/dev/null 2>&1 &
+          echo "week=$(date -u +%G-%V)" >>"$GITHUB_OUTPUT"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/go-build
+          key: ${{ runner.os }}-parity-1-${{ hashFiles('flake.lock', 'backend/go.mod') }}-${{ steps.cache-key.outputs.week }}
+          restore-keys: ${{ runner.os }}-parity-
+      - run: nix develop .#gotest -c just parity 1/2
 
   shell:
     needs: changes
@@ -158,6 +296,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#lint -c just sh-lint
 
   web:
@@ -174,6 +314,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#web -c just web-check
 
   # Hangs on Linux so far (Chrome logs dbus errors until the timeout); manual only (workflow_dispatch input e2e), not in ci-ok.
@@ -190,6 +332,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#e2e -c just e2e --jobs 1 --out .build/e2e
       - run: nix develop .#e2e -c just shots dxp4800-gt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -214,6 +358,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#plugin -c just plg-check
       - run: nix develop .#plugin -c just changes-check
       - run: nix develop .#plugin -c just generated-check
@@ -280,6 +426,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - run: nix develop .#lint -c actionlint
       - run: nix develop .#lint -c zizmor --offline .github/workflows
 
@@ -302,6 +450,8 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+          summarize: false
+          diagnostic-endpoint: ''
       - name: Rebuild and compare with the draft
         env:
           GH_TOKEN: ${{ github.token }}
@@ -323,7 +473,24 @@ jobs:
   # `changes` itself must succeed, so a skip caused by a failed or cancelled upstream job still fails. Everything that ran must succeed.
   ci-ok:
     if: always()
-    needs: [changes, check, go-lint, go-test, go-test-race, parity, shell, web, plugin, guard, release, workflows]
+    needs:
+      [
+        changes,
+        check,
+        go-lint,
+        go-test-slow,
+        go-test-rest,
+        go-test-race-slow,
+        go-test-race-rest,
+        parity-0,
+        parity-1,
+        shell,
+        web,
+        plugin,
+        guard,
+        release,
+        workflows
+      ]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions: {}
@@ -334,6 +501,6 @@ jobs:
         run: |
           echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
           echo "$NEEDS" | jq -e '
-            def skippable: ["go-lint","go-test","go-test-race","parity","shell","web","workflows","guard","release"];
+            def skippable: ["go-lint","go-test-slow","go-test-rest","go-test-race-slow","go-test-race-rest","parity-0","parity-1","shell","web","workflows","guard","release"];
             (.changes.result == "success") and
             ([to_entries[] | select(.value.result != "success" and (.value.result != "skipped" or (.key | IN(skippable[]) | not)))] | length == 0)' >/dev/null

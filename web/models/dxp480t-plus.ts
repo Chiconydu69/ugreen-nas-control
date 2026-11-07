@@ -31,7 +31,8 @@ export default {
             status: 'expected',
             note: "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp480t-plus-nas-storage', 'https://github.com/miskcoo/ugreen_leds_controller/issues/6'],
     note: 'All-flash model: no SATA bays, four M.2 slots (shown as drives in the case view), one 10G LAN port. Only the power LED works.',

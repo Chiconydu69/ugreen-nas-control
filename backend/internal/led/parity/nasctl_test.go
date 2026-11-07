@@ -430,7 +430,10 @@ func TestNasCtl(t *testing.T) {
 	if !enabled {
 		t.Skip("parity needs bash >= 4 (nix develop): " + skipReason)
 	}
-	for _, s := range nasScenarios() {
+	for i, s := range nasScenarios() {
+		if !inShard(i) {
+			continue
+		}
 		t.Run(s.name, func(t *testing.T) {
 			t.Parallel()
 			limiter <- struct{}{}

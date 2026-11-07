@@ -329,8 +329,11 @@ func (c *Ctl) status() int {
 	netdevMode := c.netdevStatus()
 	netOK, netWhy := "null", ""
 	if c.daemonRunning() {
-		if v := catState(c.Env.NetState); v == "ok" {
+		if v := catState(c.Env.NetState); v == "ok" || strings.HasPrefix(v, "ok (") {
 			netOK = "true"
+			if v != "ok" {
+				netWhy = v
+			}
 		} else if why, ok := strings.CutPrefix(v, "fail: "); ok {
 			netOK, netWhy = "false", why
 		}

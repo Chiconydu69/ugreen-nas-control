@@ -79,7 +79,7 @@ const ICON_TABLE: Record<string, string> = { ...LED_ICONS, ...NAS_ICONS, ...SITE
 document.querySelectorAll<HTMLElement>('[data-icon]').forEach(el => {
     el.innerHTML = svgIcon(ICON_TABLE[el.dataset.icon ?? ''] ?? '', 16, '');
 });
-const CAP_ICON = { leds: 'bulb', fans: 'fan', case: 'box', sensors: 'thermo' } as const;
+const CAP_ICON = { leds: 'bulb', fans: 'fan', case: 'box', sensors: 'thermo', panel: 'panel' } as const;
 
 const OVERALL_CHIP = { verified: 'Verified on this model', partial: 'Partly confirmed', community: 'Community-tested', expected: 'Expected' } as const;
 const statusBtn = $<HTMLButtonElement>('status-btn');

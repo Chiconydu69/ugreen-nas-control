@@ -6,11 +6,19 @@ name: 'Website (GitHub Pages)'
 #   /next/  branch next (development)
 # A branch that does not exist or has no docs/site/build.ts is skipped. Needs Pages enabled with Source = "GitHub Actions".
 #
-# Runs on every push to the two branches and on demand. A release calls this workflow (release.yml, job `pages`) with
+# Runs on every push to the two branches, on demand and, as a dry run that deploys nothing, on pull requests touching the site, web or this workflow. A release calls this workflow (release.yml, job `pages`) with
 # `ref` = the release commit, which replaces main in the root stream. The demo shows each stream's own plugin.
 on:
   push:
     branches: [main, next]
+  # Dry run: builds the PR (as the next stream) and uploads the rendered shots/ as an artifact; deploys nothing
+  pull_request:
+    paths:
+      - 'web/**'
+      - 'docs/site/**'
+      - justfile
+      - 'flake.*'
+      - .github/workflows/website.yml
   workflow_dispatch:
     inputs:
       ref:
@@ -28,8 +36,8 @@ permissions: {}
 
 # Queued, not cancelled: a release waits on its call of this workflow, cancelling it would leave the release a draft
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.number) || 'pages' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -42,6 +50,7 @@ jobs:
     env:
       MAIN_REF: ${{ inputs.ref }}
       REPO: ${{ github.repository }}
+      EVENT: ${{ github.event_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -53,8 +62,12 @@ jobs:
         run: |
           set -euo pipefail
           fetch() { git fetch --quiet --depth=1 origin "$1" 2>/dev/null && git worktree add --quiet --detach "$RUNNER_TEMP/wt/$2" FETCH_HEAD && [ -f "$RUNNER_TEMP/wt/$2/docs/site/build.ts" ]; }
-          fetch "${MAIN_REF:-main}" main || rm -rf "$RUNNER_TEMP/wt/main"
-          fetch next next || rm -rf "$RUNNER_TEMP/wt/next"
+          if [ "$EVENT" = pull_request ]; then # the PR itself is the only stream
+            git worktree add --quiet --detach "$RUNNER_TEMP/wt/next" HEAD
+          else
+            fetch "${MAIN_REF:-main}" main || rm -rf "$RUNNER_TEMP/wt/main"
+            fetch next next || rm -rf "$RUNNER_TEMP/wt/next"
+          fi
           ls "$RUNNER_TEMP/wt"
       # No magic-nix-cache: its post step spent 2m26s uploading store paths; the lean shell downloads from cache.nixos.org in seconds
       - name: Build the streams
@@ -77,7 +90,7 @@ jobs:
       # Next channel: the plg, its archive and checksums go into /next/ of this deployment (only the current build is hosted).
       # Off unless the repository variable NEXT_CHANNEL_ENABLED is "true". Version X.(Y+1).0-next.<run number>: Unraid compares as text, so run numbers only go up.
       - name: Build the next channel
-        if: vars.NEXT_CHANNEL_ENABLED == 'true'
+        if: github.event_name != 'pull_request' && vars.NEXT_CHANNEL_ENABLED == 'true'
         run: |
           # shellcheck disable=SC2016
           nix develop .#site -c bash -euo pipefail -c '
@@ -93,18 +106,26 @@ jobs:
           '
       # An attestation hiccup must not block the site deploy
       - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        if: vars.NEXT_CHANNEL_ENABLED == 'true'
+        if: github.event_name != 'pull_request' && vars.NEXT_CHANNEL_ENABLED == 'true'
         continue-on-error: true
         with:
           subject-path: |
             ${{ runner.temp }}/pages/next/ugreen-nas-control-*.tar.xz
             ${{ runner.temp }}/pages/next/ugreen-nas-control.plg
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        if: github.event_name != 'pull_request'
         with:
           path: ${{ runner.temp }}/pages
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: github.event_name == 'pull_request'
+        with:
+          name: site-shots
+          path: ${{ runner.temp }}/pages/next/shots/
+          if-no-files-found: error
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:

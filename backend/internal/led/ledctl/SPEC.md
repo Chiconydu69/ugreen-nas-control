@@ -117,7 +117,7 @@ sync state, night mode; decide each bay `off | steady | breath | pulse` (error >
 or own colour; standby dims/pulses); write only what differs from the last write; netdev by link/gateway/speed or
 hands off when `manual`. Every 30 s (tick 150, not at 0): compare with `get all` and rewrite LEDs that differ,
 foreign-monitor check (also at tick 0). Every tick: blink a bay/netdev while its counters move. SIGTERM: log
-`status daemon stopped`, end the activity blink of bays and netdev (back to steady `on`), exit 0; `daemon stop` then applies the saved settings to all LEDs (netdev included). Exit 4 of the chip tool (controller rejects everything): log once, no more writes, probe again after 30 s, doubling to 10 min. The network check (ping) runs in its own goroutine in Go; in the script it blocks the loop.
+`status daemon stopped`, end the activity blink of bays and netdev (back to steady `on`), exit 0; `daemon stop` then applies the saved settings to all LEDs (netdev included). Exit 4 of the chip tool (controller rejects everything): log once, no more writes, probe again after 30 s, doubling to 10 min. The network check (link, then 2 pings, red after 3 failed probes in a row) runs in its own goroutine in Go; in the script it blocks the loop.
 
 ## Not covered by parity
 

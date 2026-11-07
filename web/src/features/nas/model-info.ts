@@ -4,9 +4,6 @@ import registry from '../../../../backend/internal/nasctl/models.json';
 import type { Vars } from '../../core/i18n';
 import type { Key } from './i18n/en';
 
-/** The models list on the project website. */
-export const MODELS_URL = 'https://ugreen-nas-control.github.io/ugreen-nas-control/#models';
-
 export type LedKind = 'bays' | 'power' | 'none';
 export type FanKind = 'fixed' | 'probe' | 'confirm' | 'none';
 export type ViewKind = 'full' | 'front-rear' | 'none';
@@ -53,7 +50,7 @@ export function modelBox(model: string, facts: ModelFacts | null, t: T): string 
 /** The phrase of the empty case view. */
 export const caseText = (t: T): string => t(VIEWS.none);
 
-export type DeviceCap = 'leds' | 'fans' | 'case' | 'sensors';
+export type DeviceCap = 'leds' | 'fans' | 'case' | 'sensors' | 'panel';
 /** confirmed = verified by a maintainer; users = confirmed or partly confirmed by users. */
 export type DeviceState = 'confirmed' | 'users' | 'untested' | 'none';
 export type Cta = 'confirm' | 'recheck' | 'tell';
@@ -79,11 +76,11 @@ interface DeviceEntry {
     name: string;
     series: string;
     dmiPattern: string;
-    verified: Record<string, { status: string; note?: string }>;
+    verified: Record<string, { status: string; by?: string; note?: string }>;
 }
 
 const STATE: Record<string, DeviceState> = { verified: 'confirmed', community: 'users', partial: 'users', expected: 'untested', unsupported: 'none' };
-const CAPS: DeviceCap[] = ['leds', 'fans', 'case', 'sensors'];
+const CAPS: DeviceCap[] = ['leds', 'fans', 'case', 'sensors', 'panel'];
 
 /** The "Your device" card of About: one row per capability the registry tracks for the model. Null for an unknown model. */
 export function deviceInfo(product: string, models: readonly DeviceEntry[] = registry.models as unknown as DeviceEntry[]): Device | null {
@@ -95,4 +92,14 @@ export function deviceInfo(product: string, models: readonly DeviceEntry[] = reg
     });
     const untested = rows.filter(r => r.state === 'untested').map(r => r.cap);
     return { name: hit.name, series: hit.series, rows, untested, cta: untested.length ? 'confirm' : 'recheck' };
+}
+
+/** The registry's front-panel check (buttons and beeper) of the model: the state and who confirmed it. Null for an unknown model. */
+export function panelEvidence(
+    product: string,
+    models: readonly DeviceEntry[] = registry.models as unknown as DeviceEntry[]
+): { state: DeviceState; by: string } | null {
+    const hit = models.find(m => new RegExp(m.dmiPattern).test(product));
+    const c = hit?.verified.panel;
+    return c ? { state: STATE[c.status] ?? 'untested', by: c.by ?? '' } : null;
 }

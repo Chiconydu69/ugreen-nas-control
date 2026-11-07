@@ -3,9 +3,9 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "ugreen-nas-control">
 <!ENTITY author    "Alexander Schubert, Jens Thomas">
-<!ENTITY version   "5.4.0">
+<!ENTITY version   "5.5.0">
 <!ENTITY launch    "Settings/UGREENNASControl">
-<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.4.0">
+<!ENTITY releaseURL "https://github.com/ugreen-nas-control/ugreen-nas-control/releases/download/v5.5.0">
 <!ENTITY pluginURL "https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plugin/ugreen-nas-control.plg">
 <!ENTITY bootDIR   "/boot/config/plugins/&name;">
 <!ENTITY srcDIR    "&bootDIR;/&version;">
@@ -23,6 +23,21 @@
 >
 
 <CHANGES>
+
+### 5.5.0
+- DXP2800 SUB2 boards: LED control through the Intel I2C controller is on by default, no `lpss_leds="1"` needed; the LEDs also came back by themselves after a cold reboot. `lpss_leds="0"` in `leds.cfg` turns it off. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- Front panel is a checked capability per model: the Front panel page, the About "Your device" card, the Feedback page and `panel buttons` say whether users confirmed buttons and beeper on your model. The DXP8800 Plus is the first. Thanks to [Chiconydu69](https://github.com/Chiconydu69).
+- LEDs on DXP2800 SUB2: the LPSS path also works when Unraid's intel-lpss driver holds the controller without an I2C driver; the plugin keeps the controller awake while it talks to it. Reported by DanielRuppen.
+- Diagnostics: boxes with an IT8613E fan chip list the raw values of registers 0x1e and 0x7f, so header 4's mode can be checked (read only). Reported by Chiconydu69.
+- Fans: the fan on IT8613E header 4 (second case fan of the DXP6800 and DXP8800 family) is switched to manual through UGREEN's register 0x1e, so it follows the curve instead of staying in automatic mode. Reported by Chiconydu69.
+- Feedback: the bug form asks for the device data, and "Download diag.md" stays next to the issue buttons once the data is collected.
+- Feedback: the model form needs the device data and no longer comes with a text in that field, the page says before the click where to paste it, the check summary is no longer cut mid-word and counts the LEDs the model has.
+- DXP2800 SUB2: a chip id of 0x0000 after the controller wakes is retried once after a fresh bring-up, the setup is checked before every transfer, and `ugreen-led-i2c --debug` prints a trace of the path.
+- Network LED: a single lost gateway ping no longer turns it red. The probe pings twice, and the LED turns red only after three failed probes in a row (about 90 s); a lost link or carrier is still red at once. Reported by [Chiconydu69](https://github.com/Chiconydu69).
+- DXP2800: fan control, case view and sensors confirmed by a user on a SUB2 board. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- DXP2800 SUB2 boards: LED control through the Intel I2C controller confirmed on hardware, bay order verified. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- DXP8800 Plus: the beeper test is confirmed by a user. Thanks to [Chiconydu69](https://github.com/Chiconydu69).
+- DXP8800 Plus: front-panel buttons and fan header 4 (register 0x1e) confirmed on hardware. Reported by [Chiconydu69](https://github.com/Chiconydu69).
 
 ### 5.4.0
 - About now shows a "Your device" card instead of the full models table: your model, each capability with its status (confirmed, confirmed by users, untested, not supported) and a "Confirm my device" button that opens the Feedback page. The list of all models is one link away on the project website.
@@ -168,19 +183,16 @@
 ### 3.2
 - About, Supported models: "Confirm my device": tick what works on your model (LEDs, bay order, case view, inside, fan control, temperatures) and open a pre-filled GitHub issue with the model, the versions and your ticks (no serial numbers, IP addresses or drive names). Nothing is sent from the plugin; you submit the issue yourself
 
-### 3.1
-- About: a table of every UGREEN NASync model with what the plugin does for it (LEDs, case view, fan control); your model is highlighted; the models are sorted by series (DX, DXP, iDX, DH) and the card is folded away until you open it. The same table is in the README
-
 </CHANGES>
 
 <!-- All plugin files in one archive (web files, the one Go binary and the links to it at their install-relative paths), cached on
      the boot device (/boot: USB flash drive or SSD) per version so a reboot needs no network.
      The plugin manager checks the SHA256 of the download (MD5 is kept for Community Applications). -->
 
-<FILE Name="&srcDIR;/ugreen-nas-control-5.4.0.tar.xz">
-<URL>&releaseURL;/ugreen-nas-control-5.4.0.tar.xz</URL>
-<SHA256>b27a4429888b89309f8f22cf2812f7f568c2776cc899a01db67b775a858dcdd3</SHA256>
-<MD5>aa091560877a5915a73a582c50eddcfb</MD5>
+<FILE Name="&srcDIR;/ugreen-nas-control-5.5.0.tar.xz">
+<URL>&releaseURL;/ugreen-nas-control-5.5.0.tar.xz</URL>
+<SHA256>49b6fc3eae8104a873c7c8062636c0d1b9f2f40b8901a6171e663519f465b3f9</SHA256>
+<MD5>4df34ada165af2da719d0e7facd2d800</MD5>
 </FILE>
 
 <!-- ========================================================= -->
@@ -193,7 +205,7 @@
 NAME="&name;"
 VERSION="&version;"
 BOOT_DIR="&bootDIR;"
-ARCHIVE="&srcDIR;/ugreen-nas-control-5.4.0.tar.xz"
+ARCHIVE="&srcDIR;/ugreen-nas-control-5.5.0.tar.xz"
 EXEC_FILES="backend/ugreen-nas event/stopping"
 DATA_FILES="api.php UGREENNASControl.page UGREENNASDashboard.page images/ugreen-nas-control.png icons/ugreen-nas-control.png README.md LICENSE third-party.md include/diag.php include/lang.php include/fan_v2.php include/fan_schedule.php include/fan_history.php include/fan_inputs.php include/fan_profile.php include/fan_probe.php include/fan_backlight.php include/panel.php include/power_ac.php css/app.css css/fan-inputs.css css/fan-schedule.css css/fan-history.css css/fan-tools.css js/i18n.js js/app.js js/ledfx.js js/dash.js led/api.php led/css/app.css led/js/app.js led/js/i18n.js led/include/views.php css/led-embed.css led/images/ugreen-led-control.png"
 # Symbolic links, "path=target": the tool names are links to the one binary backend/ugreen-nas.

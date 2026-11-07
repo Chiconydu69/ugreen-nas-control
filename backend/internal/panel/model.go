@@ -1,6 +1,6 @@
 // Package panel reads the front-panel buttons and drives the beeper of UGREEN NAS models. Facts come from UGREEN's
 // GPL-2.0-only drivers (drivers/ugreen/ @c75c5ab, cited as file:line@c75c5ab); the code is our own. Every table
-// entry is vendor source, not yet confirmed on hardware.
+// entry is vendor source; which model users confirmed is in the model registry (web/models, docs/panel.md).
 package panel
 
 import "strings"

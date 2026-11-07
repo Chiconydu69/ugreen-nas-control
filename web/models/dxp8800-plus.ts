@@ -37,7 +37,7 @@ export default {
             version: '5.2.0',
             date: '2026-11-05',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
-            note: 'Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. Header 4 (pwm4) control register unconfirmed: the diag shows it in automatic mode.'
+            note: "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. On 5.2.0 header 4 (pwm4) stayed in automatic mode in the diag. Control register 0x1e of UGREEN's driver confirmed on 5.5.0-next.000133 (2026-11-07, #165): after a restart fan4 ran manual (48 %, 901 rpm, 0x1e = 0x08, bit 7 clear), where 5.4.0 showed it automatic at about 1061 rpm."
         },
         case: {
             status: 'community',
@@ -49,11 +49,19 @@ export default {
         },
         sensors: {
             status: 'community',
-            by: 'users',
+            by: 'Chiconydu69 (issue 165)',
             version: '5.1.0',
             date: '2026-11-05',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
             note: 'Temperatures and the dashboard tile confirmed by a user; a one-off -21 °C board reading from the ACPI thermal zone is ignored since 5.1.1.'
+        },
+        panel: {
+            status: 'community',
+            by: 'Chiconydu69 (issue 165)',
+            version: '5.4.0',
+            date: '2026-11-07',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
+            note: 'Buttons: the pad registers read 0x84000100 (power) and 0x84000102 (reset), and panel buttons --watch showed power down, press and up and reset down and up. Beeper: the beeper test sounded right after the click. On some boots the BIOS hides the pad registers (0xFF).'
         }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp8800-plus-nas-storage'],

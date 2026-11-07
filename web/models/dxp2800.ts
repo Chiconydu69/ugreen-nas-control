@@ -27,18 +27,29 @@ export default {
     verified: {
         leds: {
             status: 'community',
-            by: 'users',
-            note: "Reported working by users. Boards from December 2025 (V1.2, rev 251215) use LED chip 0xc5b2, which ignores the DX/DXP write frame (miskcoo issue 128). The driver UGREEN ships serves this model with the frame without LED ID, so the plugin tries that frame when the first one is not acknowledged. An owner confirmed the LEDs of a V1.2 board with miskcoo's tool and that SMBus block frame (issue 128; his README marks V1.2 experimental); not yet run with this plugin."
+            by: 'users, DanielRuppen',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/214',
+            note: 'Reported working by users. SUB2 boards (BIOS EM_DXP2800S_SUB2_V1.0.11) only: the LED MCU sits behind Intel LPSS I2C1 and works by default (5.5.0-next.000133, 2026-11-07, DanielRuppen, #214; lpss_leds="0" turns it off); bay order confirmed with Identify, reboot confirmed (#214). Boards from December 2025 (V1.2, rev 251215) use LED chip 0xc5b2, which ignores the DX/DXP write frame (miskcoo issue 128). The driver UGREEN ships serves this model with the frame without LED ID, so the plugin tries that frame when the first one is not acknowledged. An owner confirmed the LEDs of a V1.2 board with miskcoo\'s tool and that SMBus block frame (issue 128; his README marks V1.2 experimental); not yet run with this plugin.'
         },
         fans: {
-            status: 'expected',
-            note: "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. One fan was reported on tach 3 (1726 rpm), none on tach 2; UGREEN's own driver also drives only header 3."
+            status: 'community',
+            by: 'DanielRuppen',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/244',
+            note: "Reported working by a user on a SUB2 board (5.5.0-next.000133, 2026-11-07, #244): IT8613 found, fan headers and spinning fans checked ok. Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. One fan was reported on tach 3 (1726 rpm), none on tach 2; UGREEN's own driver also drives only header 3."
         },
         case: {
-            status: 'expected',
-            note: "Drawn after UGREEN's manual and photos (front, rear with 12V inlet, two M.2 slots on the inner left wall of the cage); one SO-DIMM socket in the bottom panel; M.2 slot numbering assumed. Not compared on a device."
+            status: 'community',
+            by: 'DanielRuppen',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/244',
+            note: "Reported working by a user on a SUB2 board (5.5.0-next.000133, 2026-11-07, #244): bays, M.2 slots and LAN ports checked ok. Drawn after UGREEN's manual and photos (front, rear with 12V inlet, two M.2 slots on the inner left wall of the cage); one SO-DIMM socket in the bottom panel."
         },
-        sensors: { status: 'expected' }
+        sensors: {
+            status: 'community',
+            by: 'DanielRuppen',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/244',
+            note: 'Reported working by a user on a SUB2 board (5.5.0-next.000133, 2026-11-07, #244): CPU temperature checked ok.'
+        },
+        panel: { status: 'expected' }
     },
     sources: [
         'https://datacenterdisk.com/nas-devices/ugreen',
@@ -47,6 +58,6 @@ export default {
         'https://github.com/miskcoo/ugreen_leds_controller/issues/133',
         'https://github.com/IT-Kuny/UGREEN-DXP-FAN-NAS-Driver'
     ],
-    note: 'Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo\'s tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: LEDs there need lpss_leds="1" in leds.cfg and are untested; ugreen-led-i2c lpss-probe checks the board without changing an LED.',
+    note: 'Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo\'s tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: the plugin drives them by default (lpss_leds="0" in leds.cfg turns that off); LEDs confirmed on a SUB2 board (#214), bay order right, reboot confirmed; ugreen-led-i2c lpss-probe checks the board without changing an LED.',
     shots: true
 } satisfies Model;

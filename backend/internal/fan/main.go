@@ -53,7 +53,7 @@ func usage() {
                       set a fan speed by hand (the daemon overrides it)
   restore             write back the fan settings the BIOS made
   calibrate           measure rpm per speed for every fan, about 4 minutes (the daemon must run)
-  probe-fans run|status|confirm <pwmN=cpu|case>...|forget|restore|tachs
+  probe-fans run|status|confirm <pwmN=cpu|case>...|forget|restore|tachs|regs
                       find which output drives which fan on an IT8613E model without a known map (JSON, run: about 1 minute)
   backlight [set <0-100>]
                       iDX6011 Pro LCD brightness: read, or set (JSON)
