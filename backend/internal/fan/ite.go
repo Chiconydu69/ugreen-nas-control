@@ -193,20 +193,20 @@ func (c *Chip) Snapshot() (Snapshot, error) {
 	return s, nil
 }
 
+// Restore writes every channel it can: one that fails does not keep the others in manual mode.
 func (c *Chip) Restore(s Snapshot) error {
+	var errs []error
 	for _, ch := range c.Channels {
 		v, ok := s[ch.ID]
 		if !ok {
 			continue
 		}
 		if err := c.Write(ch.Duty, v[1]); err != nil {
-			return err
+			errs = append(errs, err)
 		}
-		if err := c.Write(ch.Ctrl, v[0]); err != nil {
-			return err
-		}
+		errs = append(errs, c.Write(ch.Ctrl, v[0]))
 	}
-	return nil
+	return errors.Join(errs...)
 }
 
 func (c *Chip) Name() string { return fmt.Sprintf("IT%04X", c.ID) }

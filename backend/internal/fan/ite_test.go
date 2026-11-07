@@ -1,6 +1,9 @@
 package fan
 
-import "testing"
+import (
+	"errors"
+	"testing"
+)
 
 // fakeITE answers like the IT8613E of the DXP6800 Pro (register dump from 2026-10-06).
 type fakeITE struct {
@@ -171,5 +174,34 @@ func TestRPMFromCountNoReading(t *testing.T) {
 	}
 	if r := rpmFromCount(0x0fff - 1); r == 0 {
 		t.Error("neighbouring count must still read")
+	}
+}
+
+// failPorts wraps a fakeITE and fails every hardware-monitor write to the registers in bad.
+type failPorts struct {
+	*fakeITE
+	bad map[byte]bool
+}
+
+func (f failPorts) Out(port uint16, v byte) error {
+	if port == 0x0a36 && f.bad[f.hwmIndex] {
+		return errors.New("port write failed")
+	}
+	return f.fakeITE.Out(port, v)
+}
+
+// One channel that cannot be written must not keep the others in manual mode: restore hands back all it can.
+func TestRestoreContinuesAfterAFailedChannel(t *testing.T) {
+	f := newFakeITE()
+	chip, err := Detect(failPorts{f, map[byte]bool{0x6b: true}}) // fan2 duty
+	if err != nil {
+		t.Fatal(err)
+	}
+	snap := Snapshot{"fan2": {0x80, 0x20}, "fan3": {0x80, 0x20}, "fan4": {0x80, 0x20}}
+	if err := chip.Restore(snap); err == nil {
+		t.Fatal("restore of the failing channel reported no error")
+	}
+	if f.hwm[0x17] != 0x80 || f.hwm[0x7f] != 0x80 {
+		t.Fatalf("fan3 ctrl 0x%02x, fan4 ctrl 0x%02x: not handed back to auto", f.hwm[0x17], f.hwm[0x7f])
 	}
 }
