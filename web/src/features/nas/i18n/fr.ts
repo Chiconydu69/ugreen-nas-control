@@ -368,6 +368,17 @@ export const fr: Record<Key, string> = {
     'about.maintainers': 'Mainteneurs',
     'about.thanks_text':
         '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocole et correspondance des baies du contrôle des LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traduction espagnole) et tous ceux qui ont testé sur leur modèle',
+    'channel.now_stable': 'Canal : stable. Passez à next pour essayer les changements avant leur publication.',
+    'channel.now_next': 'Canal : next (versions de test). Revenez à stable pour la version publiée.',
+    'channel.to_next': 'Passer à next (versions de test)',
+    'channel.to_stable': 'Retour à stable',
+    'channel.confirm_next':
+        'Next reçoit chaque changement fusionné avant une version et peut planter. Vos réglages restent et vous pouvez revenir à tout moment. Passer à next ?',
+    'channel.confirm_stable': 'Ceci installe la dernière version stable. Vos réglages restent et vous pouvez repasser à next à tout moment. Revenir à stable ?',
+    'channel.title_next': 'Passer au canal next',
+    'channel.title_stable': 'Retour au canal stable',
+    'channel.cmd_next': 'Pour passer à next, exécutez cette commande dans le terminal Unraid :',
+    'channel.cmd_stable': 'Pour revenir à stable, exécutez cette commande dans le terminal Unraid :',
     'language.label': 'Langue de l’interface',
     'language.auto': 'Comme Unraid',
     'theme.label': 'Thème de couleurs',
