@@ -37,6 +37,12 @@ type Env struct {
 	SysI2C       string // UGREEN_SYS_I2C
 	Panel        string // UGREEN_NAS_PANEL: the multi-call binary; diag runs `panel buttons` (read only) through it
 	SensorsDir   string // UGREEN_SENSORS_D: the scripts a fan input may run
+	SysPCI       string // UGREEN_SYS_PCI
+	SysNet       string // UGREEN_SYS_NET
+	SysNVMe      string // UGREEN_SYS_NVME
+	SysACPI      string // UGREEN_SYS_ACPI
+	LPSSProbe    string // UGREEN_LPSS_PROBE: the report of the last ugreen-led-i2c lpss-probe
+	LibModules   string // UGREEN_LIB_MODULES
 }
 
 func orDefault(get func(string) string, key, def string) string {
@@ -81,5 +87,11 @@ func EnvFromGetenv(get func(string) string, here string) Env {
 		SysI2C:       orDefault(get, "UGREEN_SYS_I2C", "/sys/bus/i2c/devices"),
 		Panel:        orDefault(get, "UGREEN_NAS_PANEL", here+"/ugreen-nas"),
 		SensorsDir:   orDefault(get, "UGREEN_SENSORS_D", boot+"/sensors.d"),
+		SysPCI:       orDefault(get, "UGREEN_SYS_PCI", "/sys/bus/pci/devices"),
+		SysNet:       orDefault(get, "UGREEN_SYS_NET", "/sys/class/net"),
+		SysNVMe:      orDefault(get, "UGREEN_SYS_NVME", "/sys/class/nvme"),
+		SysACPI:      orDefault(get, "UGREEN_SYS_ACPI", "/sys/bus/acpi/devices"),
+		LPSSProbe:    orDefault(get, "UGREEN_LPSS_PROBE", "/var/run/ugreen-nas-control.lpss-probe"),
+		LibModules:   orDefault(get, "UGREEN_LIB_MODULES", "/lib/modules"),
 	}
 }

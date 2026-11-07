@@ -126,6 +126,36 @@ func (s *ButtonSpec) ReadState(m MemReader) (State, error) {
 	return st, nil
 }
 
+// PadWord is one pad register as read: the aligned physical address and its raw 32-bit value.
+type PadWord struct {
+	Name  string // "power" or "reset"
+	Addr  uint64
+	Value uint32
+	Err   error
+}
+
+// ErrNoPad is the Err of a pad the model has no address for.
+var ErrNoPad = errors.New("not readable by address")
+
+// ReadWords reads the raw word of each pad, for diagnostics. Read only: MemReader has no write. A value of 0xFFFFFFFF
+// means the box does not answer there (the buttons are then unreadable).
+func (s *ButtonSpec) ReadWords(m MemReader) []PadWord {
+	var out []PadWord
+	for _, b := range []struct {
+		name string
+		p    *Pad
+	}{{"power", s.Power}, {"reset", s.Reset}} {
+		if b.p == nil {
+			out = append(out, PadWord{Name: b.name, Err: ErrNoPad})
+			continue
+		}
+		w := PadWord{Name: b.name, Addr: b.p.word()}
+		w.Value, w.Err = m.Read32(w.Addr)
+		out = append(out, w)
+	}
+	return out
+}
+
 // Event names a Tracker emits.
 const (
 	EvDown    = "down"    // pad went active

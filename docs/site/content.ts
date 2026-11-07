@@ -15,7 +15,7 @@ export const FORUM = 'https://forums.unraid.net/topic/201044-plugin-ugreen-nas-c
 export const HELP = {
     title: 'Help the project.',
     intro: 'The project takes no money for now. It needs test reports and test hardware.',
-    test: 'Test on your model: in the plugin open About, "Confirm my device", and send the prefilled report.',
+    test: 'Test on your model: in the plugin open Feedback, answer, collect the data, and send the prefilled report.',
     lend: 'Lend or donate a test device (DXP2800 GT, DXP480T Plus, DXP8800 Plus, iDX6011 Pro, DXP2800 V1.2 board).',
     button: 'Test hardware wanted',
     url: 'https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134'
@@ -89,7 +89,8 @@ export const TECH = {
         items: [
             'Sensors for CPU, board, iGPU, NVMe and disks, each marked with the fan it steers.',
             'An optional MQTT publisher feeds displays and Home Assistant. Read only, off until you set a broker in fan.cfg.',
-            'The interface comes in 7 languages.'
+            'The interface comes in 7 languages.',
+            'About switches between stable and next (test builds) through the Unraid install dialog; settings stay.'
         ],
         doc: 'mqtt.md'
     }

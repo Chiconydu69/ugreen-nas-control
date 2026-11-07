@@ -217,6 +217,7 @@ func EffectiveSettings(c Config) map[string]string {
 		out[prefix+"up_step"] = strconv.Itoa(g.UpStep)
 		out[prefix+"down_step"] = strconv.Itoa(g.DownStep)
 		out[prefix+"on_missing"] = g.OnMissing
+		out[prefix+"allow_off"] = b01(g.AllowOff)
 		if curve {
 			out[prefix+"curve"] = g.Curve.String()
 		}

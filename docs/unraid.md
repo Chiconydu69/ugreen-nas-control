@@ -114,6 +114,8 @@ Preparation on every build: note `cat /etc/unraid-version`, `php -v`, the server
 1. With stable installed, `plugin install <next url>`. Pass: the install replaces stable in place, the Plugins page shows exactly one entry, the page shows `X.Y.0-next.NNNNNN`, settings kept.
 2. `plugin install <stable url> forced`. Pass: as in B; one entry, icon and README shown (same plugin `name`).
 3. Update check: with next installed, "Check for updates" shows no update unless a newer next build or a newer stable exists.
+4. About page: the button "Switch to next" opens Unraid's install dialog with the next command; with next installed it reads "Back to stable" and runs the forced stable command. Pass: both finish, settings kept. The confirm text before "Back to stable" and the page show the command that returns to next.
+5. Feedback page: answer a row, "Collect data" shows progress and a summary, "Create GitHub issue" opens the model report form with the answers filled in and the data in the clipboard (on plain http the old copy path is used; if it fails, "Copy" and "Download diag.md" appear). Pass: paste fills the _Device data_ field.
 
 Switching rules: [releasing.md](releasing.md).
 

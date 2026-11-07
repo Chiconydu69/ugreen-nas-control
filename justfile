@@ -14,7 +14,7 @@ default:
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check
+check: _deps fmt-check go-lint go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -172,15 +172,17 @@ _deps:
 models-check:
     bun web/tools/check-models.ts
 
-# Regenerate the models tables in README.md and docs/hardware.md from web/models/
+# Regenerate the models tables in README.md and docs/hardware.md and the issue forms in .github/ISSUE_TEMPLATE from web/models/
 [group('docs')]
 docs:
     bun docs/tools/gen-docs.ts
+    bun docs/tools/gen-templates.ts
 
 # Fail when the generated docs are out of date or a link, path or just recipe in the docs is broken
 [group('docs')]
 docs-check:
     bun docs/tools/gen-docs.ts --check
+    bun docs/tools/gen-templates.ts --check
 
 # Fail when a generated file is tracked, a tracked file is gitignored, a generator writes to a tracked path, or the web build writes outside .build/
 [group('check')]
@@ -202,3 +204,13 @@ setup:
 [group('dev')]
 site-preview *args: web-build
     bun docs/site/preview.ts {{ args }}
+
+# Unit tests of the kernel canary (rules and config parser, no network)
+[group('check')]
+kernel-canary-test:
+    bun test scripts/kernel-canary.test.ts
+
+# Newest Unraid kernel config against what the plugin relies on (docs/decisions.md); needs network; --issue opens or updates the GitHub issue (weekly in kernel-canary.yml)
+[group('check')]
+kernel-canary *args:
+    bun scripts/kernel-canary.ts {{ args }}

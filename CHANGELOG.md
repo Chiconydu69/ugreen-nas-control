@@ -2,6 +2,32 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.4.0
+
+- About now shows a "Your device" card instead of the full models table: your model, each capability with its status (confirmed, confirmed by users, untested, not supported) and a "Confirm my device" button that opens the Feedback page. The list of all models is one link away on the project website.
+- About: switch between the stable and the next channel (test builds) with one button, through Unraid's install dialog.
+- Diagnostics add the network LED state, the raw front panel pad words, installed files against the flash plugin version, the cron files, 24 hours of plugin start and stop lines and the PCI chain of each NVMe drive, and no longer print the user name of a fork's plugin URL.
+- Diagnostics list the I2C controllers, the HT32 LED controller device and the DesignWare modules, and say when the LED controller probably sits behind a controller without a driver.
+- The diagnosis can run from the web page: `diag --json` returns a scrubbed, structured result, and a box named "Unraid" no longer turns the `unraid:` line of the report into `<host>:`.
+- New Feedback page: say per capability what works on your model, collect the scrubbed device data in one step, and open a pre-filled GitHub issue (or bug report) with one click. About keeps the supported models table, always shown. The issue forms are generated from the model registry. "Back to stable" now shows the command that returns to next.
+- DXP2800 SUB2 boards: LED control through the Intel LPSS I2C controller, off until you set `lpss_leds="1"` in `leds.cfg`; `ugreen-led-i2c lpss-probe` checks the board first without writing (`--write` adds the chip id read) (not yet confirmed on hardware).
+- Falling fan curves round to the nearest percent.
+- diag and report also remove shortened IPv6 addresses and MAC addresses written with dashes.
+- Diagnostics no longer wait 30 s on graphics I2C buses: the scan skips them, lists each as skipped, keeps the SMBus result when it still times out, and `diag --full-scan` scans them too.
+- Diagnostics: `diag` runs its tool calls side by side and finishes in about 60 % of the time.
+- On the DXP4800 GT and iDX6011 Pro, stopping fan control while another fan tool is active now also stops the hardware watchdog the plugin was feeding, so the box no longer resets about 5 minutes later.
+- On the DXP2800 GT, quiet hours and per-fan minimums respect the 25 % hardware floor, so the recorded speed matches what runs.
+- If handing one fan back to the BIOS fails, the other fans are still handed back.
+- Switching the LEDs on now reports an error when the setting can't be saved on the flash drive.
+- MQTT: the plugin closes the connection and reconnects when the broker sends a packet the protocol forbids, and answers a QoS 2 message with PUBREC and PUBCOMP.
+- MQTT: a refused connection says why in the log (protocol version, client identifier, server unavailable, user name or password, not authorized).
+- MQTT: a user name, client ID or will topic that is not valid UTF-8, or a string over 65535 bytes, is refused with a clear message instead of sending a corrupt CONNECT.
+- The MQTT publisher no longer stops when a parity check runs very slowly.
+- MQTT: the log says when the broker refuses the command subscription (SUBACK failure), for example because of its access rules.
+- Fan detection run over ssh puts the fans back when the connection drops.
+- Exported fan profiles keep the 'fan may stop' setting.
+- A bay LED switched off (or dark at night) no longer glows faintly when its disk spins down.
+
 ## 5.3.1
 
 - DXP8800 Plus: each NVMe shows in its real slot (M.2-1, M.2-2, the internal system slot); the factory SSD no longer appears in the PCIe slot. Reported by Chiconydu69.

@@ -86,6 +86,7 @@ func newRig(t *testing.T, impl, product string) *rig {
 	e["UGREEN_PHASE_PREFIX"] = r.path("run/phase-")
 	e["UGREEN_SHUTDOWN_MARK"] = r.path("run/shutdown")
 	e["UGREEN_BUS_CACHE"] = r.path("run/bus")
+	e["UGREEN_NET_STATE"] = r.path("net-state") // outside run/: the recorded shell never wrote it
 	e["UGREEN_MAXSPEED_CACHE"] = r.path("run/maxspeed")
 
 	r.defaultSystem()
@@ -244,7 +245,9 @@ func (r *rig) sleeper(pidfile string) {
 var (
 	reNow  = regexp.MustCompile(`"now_ms": [0-9]+`)
 	reSent = regexp.MustCompile(`"sent_ms": [0-9]+`)
-	rePid  = regexp.MustCompile(`\(pid [0-9]+\)`)
+	// The shell status had no network verdict.
+	reNetVerdict = regexp.MustCompile(`(?m)^  "network_(?:ok|reason)": .*\n`)
+	rePid        = regexp.MustCompile(`\(pid [0-9]+\)`)
 )
 
 func (r *rig) normalize(s string) string {
@@ -252,6 +255,7 @@ func (r *rig) normalize(s string) string {
 	s = reNow.ReplaceAllString(s, `"now_ms": <MS>`)
 	s = reSent.ReplaceAllString(s, `"sent_ms": <MS>`)
 	s = rePid.ReplaceAllString(s, "(pid <PID>)")
+	s = reNetVerdict.ReplaceAllString(s, "")
 	return s
 }
 

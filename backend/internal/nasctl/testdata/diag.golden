@@ -63,6 +63,19 @@ open points in the registry: -
 enabled: true  supported: true  untested model: false  daemon running: true
 blocker: -  warning: -
 i2c adapters: -
+i2c controllers (PCI class 0c80 Serial IO, 0c05 SMBus; read only):
+  -
+acpi devices HT32* (LED MCU):
+  -
+designware modules for kernel -:
+  -
+network (what colours the network LED; read only, nothing is pinged):
+  LED network device: bond0
+  LED daemon verdict: not ok: gateway ping failed
+  bond0: operstate up  carrier 1  slaves eth0 eth1
+  eth0: operstate up  carrier 1
+  eth1: operstate down  carrier 0
+  default route: yes via bond0
 bay 1: ata1  hdd  slot parity
 bay 2: ata2  empty  slot -
 loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)
@@ -138,6 +151,26 @@ LED blocker: -
 
 </details>
 
+<details><summary>Front panel pads</summary>
+
+```
+raw 32-bit pad registers (read only; 0xFFFFFFFF means not readable):
+  power: 0xFD6A0980 = 0x00000002
+  reset: 0xFD6D0A10 = 0xFFFFFFFF  (not readable)
+```
+
+</details>
+
+<details><summary>NVMe</summary>
+
+```
+PCI chain per NVMe controller, root port first (no model, no serial):
+  nvme0: 0000:00:1d.0 > 0000:03:00.0  slot pcie  (root port 0000:00:1d.0 is in no slot of this model's table)
+  nvme1: 0000:00:06.0  slot m2-1
+```
+
+</details>
+
 <details><summary>Fans</summary>
 
 ```
@@ -202,6 +235,25 @@ files in the plugin's own folder: fan.cfg leds.cfg
 loaded modules: it87 i2c_dev
 i2c devices: i2c-4
 hwmon: hwmon1=it8613
+```
+
+</details>
+
+<details><summary>Plugin state</summary>
+
+```
+installed version: 5.3.1  channel: stable
+pluginURL: official next
+installed files written: 2026-11-03 08:30 UTC  .plg on flash written: 2026-11-04 09:00 UTC  cached archives: 5.3.0 5.3.1
+installed files vs .plg: MISMATCH: cached archive(s) 5.3.0, 5.3.1 do not match the .plg 5.3.1; the .plg is newer than the installed files (update pending a reboot or reinstall)
+files in /boot/config/plugins/ugreen-nas-control: fan.cfg leds.cfg
+cron file present: true
+cron file contents:
+  * * * * * /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl led-schedule
+/etc/cron.d/*ugreen* written: ugreen-nas-control 2026-11-03 08:30 UTC
+fan daemon: running pid 123, up 1h0m0s
+plugin install, start and stop lines in the syslog (last 24 h, at most 40):
+  Nov  4 09:00:00 <host> root: plugin: installing: ugreen-nas-control.plg
 ```
 
 </details>

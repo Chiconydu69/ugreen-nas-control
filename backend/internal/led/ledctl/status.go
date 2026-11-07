@@ -327,6 +327,14 @@ func (c *Ctl) status() int {
 	identify := c.identifyingLEDs()
 	netDev := c.networkDevice()
 	netdevMode := c.netdevStatus()
+	netOK, netWhy := "null", ""
+	if c.daemonRunning() {
+		if v := catState(c.Env.NetState); v == "ok" {
+			netOK = "true"
+		} else if why, ok := strings.CutPrefix(v, "fail: "); ok {
+			netOK, netWhy = "false", why
+		}
+	}
 
 	var sb strings.Builder
 	p := func(format string, a ...any) { fmt.Fprintf(&sb, format, a...) }
@@ -373,6 +381,8 @@ func (c *Ctl) status() int {
 	p("  \"disk_error_color\": \"%s\",\n", c.colorCfg("disk_error_color", defaultErrorColor))
 	p("  \"saved_brightness\": %s,\n", c.savedBrightnessJSON())
 	p("  \"network_device\": \"%s\",\n", netDev)
+	p("  \"network_ok\": %s,\n", netOK)
+	p("  \"network_reason\": \"%s\",\n", netWhy)
 	p("  \"netdev_speed\": %s,\n", c.linkSpeed(netDev, 0))
 	p("  \"network_ports\": %s,\n", c.networkPortsJSON())
 	p("  \"netdev_speed_enabled\": %t,\n", c.bool1("netdev_speed_enabled"))

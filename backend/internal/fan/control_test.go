@@ -495,3 +495,22 @@ func TestChipTempsDropImplausible(t *testing.T) {
 		}
 	}
 }
+
+// A falling segment rounds like a rising one: 40:100,60:0 at 41 °C is exactly 95 %, not 96 %.
+func TestCurveFallingSegmentRounding(t *testing.T) {
+	c, err := ParseCurve("40:100,60:0")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for temp, want := range map[float64]int{41: 95, 45: 75, 50: 50, 55: 25, 59: 5, 40.5: 97} {
+		if got := c.At(temp); got != want {
+			t.Errorf("At(%v) = %d, want %d", temp, got, want)
+		}
+	}
+	up, _ := ParseCurve("40:0,60:100")
+	for temp, want := range map[float64]int{41: 5, 45: 25, 50: 50, 55: 75, 59: 95, 40.5: 3} {
+		if got := up.At(temp); got != want {
+			t.Errorf("rising At(%v) = %d, want %d", temp, got, want)
+		}
+	}
+}

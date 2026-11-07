@@ -2,16 +2,20 @@ package nasctl
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 	"unicode/utf8"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 )
 
 func TestAnonRemovesWhatIdentifies(t *testing.T) {
@@ -143,7 +147,9 @@ func goldenDiag(t *testing.T) string {
 	 "watchdog": {"armed": true, "timeout": 60, "interval": 20, "last_pet": 990, "time": 1000, "state": "armed"}, "conflicts": [{"kind":"module","id":"it87","severity":"warn"}]}`
 	led := LEDDiag{Enabled: true, Supported: true, DaemonRunning: true, Bays: rep.Bays, Slots: slotNames(h),
 		Modprobe: "loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)",
-		Get:      "power on 255 255 255 255 0 0\ndisk1 on 255 0 255 0 0 0\n", Scan: "/dev/i2c-4: 0x3a\n"}
+		Get:      "power on 255 255 255 255 0 0\ndisk1 on 255 0 255 0 0 0\n", Scan: "/dev/i2c-4: 0x3a\n",
+		Net: NetDiag{Dev: "bond0", Verdict: "not ok: gateway ping failed", DefaultVia: "bond0", Ifaces: []NetIface{
+			{Name: "bond0", Oper: "up", Carrier: "1", Slaves: "eth0 eth1"}, {Name: "eth0", Oper: "up", Carrier: "1"}, {Name: "eth1", Oper: "down", Carrier: "0"}}}}
 	ev, reg := evidenceFixture(t)
 	modelSec, _ := modelSection(reg, ev)
 	js := evidenceSection(ev)
@@ -154,11 +160,17 @@ func goldenDiag(t *testing.T) string {
 		ledSection(led),
 		featuresSection(featureFixture(t, "DXP4800 Plus")),
 		rivalSection(RivalDiag{Procs: []RivalProc{{Name: "FanCtrl Plus", Program: "fanctrlplus_loop.sh", PID: 7, Up: "1h0m0s", Controls: "fan"}}, FanOn: true}),
+		padsSection(PadsDiag{Model: "DXP4800 Plus", Words: []panel.PadWord{{Name: "power", Addr: 0xFD6A0980, Value: 2}, {Name: "reset", Addr: 0xFD6D0A10, Value: 0xFFFFFFFF}}}),
+		nvmeSection([]NVMeDev{{ID: "nvme0", Chain: []string{"0000:00:1d.0", "0000:03:00.0"}, Slot: "pcie"}, {ID: "nvme1", Chain: []string{"0000:00:06.0"}, Slot: "m2-1"}}),
 		fanSection(FanDiag{Status: []byte(status), DaemonRunning: true}),
 		dmiSection(goldenDMI(t)),
 		drivesSection([]byte(disksINI), nil, false),
 		settingsSection([]byte("mode=\"auto\"\nmqtt_host=\"broker.lan\"\nmqtt_enabled=\"1\"\nfoo=\"bar\"\n"), []byte("mode=\"status\"\ndisk1_color=\"255 160 0\"\nbay1_serial=\"X\"\n"), nil, nil, false),
 		envSection(EnvDiag{Plugins: []string{"ugreen-nas-control/", "ugreenleds-driver/"}, OwnFiles: []string{"fan.cfg", "leds.cfg"}, Modules: []string{"it87", "i2c_dev"}, Hwmon: []string{"hwmon1=it8613"}, DevI2C: []string{"i2c-4"}}),
+		stateSection(StateDiag{Version: "5.3.1", PluginURL: "official next", OwnFiles: []string{"fan.cfg", "leds.cfg"}, CronPresent: true,
+			Cached: []string{"5.3.0", "5.3.1"}, TreeAt: time.Date(2026, 11, 3, 8, 30, 0, 0, time.UTC), PlgAt: time.Date(2026, 11, 4, 9, 0, 0, 0, time.UTC),
+			CronLines: []string{"* * * * * /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl led-schedule"}, CronD: []string{"ugreen-nas-control 2026-11-03 08:30 UTC"},
+			Daemons: []string{"fan daemon: running pid 123, up 1h0m0s"}, InstallLines: []string{"Nov  4 09:00:00 <host> root: plugin: installing: ugreen-nas-control.plg"}}),
 		logSection([]string{"Nov  4 10:00:00 <host> ugreen-nas-ctl[1]: fan daemon started"}, ""),
 		js,
 	}
@@ -552,8 +564,9 @@ func TestPanickingSectionKeepsTheRest(t *testing.T) {
 	var s sections
 	s.add("a", func() Section { panic("boom") })
 	s.add("b", func() Section { return Section{Title: "b", Body: "ok"} })
-	if len(s.list) != 2 || s.list[1].Body != "ok" || !strings.Contains(s.list[0].Err, "boom") || len(s.failed) != 1 {
-		t.Errorf("%+v", s)
+	list, failed := s.finish()
+	if len(list) != 2 || list[1].Body != "ok" || !strings.Contains(list[0].Err, "boom") || len(failed) != 1 {
+		t.Errorf("%+v %v", list, failed)
 	}
 	if guard(func() { panic("x") }) == "" {
 		t.Error("guard swallowed the panic silently")
@@ -777,5 +790,120 @@ func TestWatchdogNotCountingIsNotAMismatch(t *testing.T) {
 		if got == nil || *got != ok {
 			t.Errorf("%s: ok = %v, want %v", state, got, ok)
 		}
+	}
+}
+
+// Compressed IPv6 addresses (::) and dash-separated MACs got through; plain text with "::" or times stays.
+func TestAnonRemovesCompressedIPv6AndDashMAC(t *testing.T) {
+	a := Anon{}
+	for _, c := range []struct{ in, gone string }{
+		{"lease 2001:db8::8a2e:370:7334 up", "8a2e"},
+		{"addr fe80::1 scope link", "fe80"},
+		{"dial tcp [2001:db8:85a3::8a2e:370:7334]:1883: refused", "db8"},
+		{"peer ::ffff:192.168.1.5 ok", "192.168"},
+		{"2a02:8071:1234:5678::1 gw", "2a02"},
+		{"link aa-bb-cc-dd-ee-ff on eth0", "aa-bb-cc"},
+	} {
+		if got := a.Text(c.in); strings.Contains(got, c.gone) {
+			t.Errorf("%q -> %q still has %q", c.in, got, c.gone)
+		}
+	}
+	for _, keep := range []string{"std::string failed", "at 12:34:56 done", "Foo::bar", "key: value", "mode:: x"} {
+		if got := a.Text(keep); got != keep {
+			t.Errorf("%q became %q", keep, got)
+		}
+	}
+	if got := scrub("fe80::1"); strings.Contains(got, "fe80") {
+		t.Errorf("scrub: %q", got)
+	}
+}
+
+// A box called "Unraid" keeps the label of its header line.
+func TestAnonKeepsLabelKeysThatEqualTheHostName(t *testing.T) {
+	a := Anon{Hostnames: []string{"Unraid"}}
+	for in, want := range map[string]string{
+		"plugin: 5.4.0\nunraid: 7.3.4\nkernel: 6.18.58-Unraid": "plugin: 5.4.0\nunraid: 7.3.4\nkernel: 6.18.58-Unraid",
+		"Nov  4 10:00:00 Unraid kernel: eth0 up":               "Nov  4 10:00:00 <host> kernel: eth0 up",
+		"connected to Unraid: ok":                              "connected to <host>: ok",
+		"unraid: 7.3.4 on Unraid":                              "unraid: 7.3.4 on <host>",
+	} {
+		if got := a.Text(in); got != want {
+			t.Errorf("%q -> %q, want %q", in, got, want)
+		}
+	}
+	hdr := a.Meta(diagHeader(time.Unix(0, 0), "6.18.58-Unraid", Report{UnraidVersion: "7.3.4"}))
+	if !strings.Contains(hdr, "\nunraid: 7.3.4\n") {
+		t.Errorf("header:\n%s", hdr)
+	}
+}
+
+// Blocks that start in the background finish in any order, yet the list keeps the order of the calls, a block that
+// waits for another sees its result, and no more than maxParallel run at once.
+func TestAsyncSectionsKeepTheOrderOfTheCalls(t *testing.T) {
+	for range 20 {
+		var s sections
+		var running, peak, first atomic.Int32
+		work := func(title string, d time.Duration) func() Section {
+			return func() Section {
+				n := running.Add(1)
+				for {
+					p := peak.Load()
+					if n <= p || peak.CompareAndSwap(p, n) {
+						break
+					}
+				}
+				time.Sleep(d)
+				running.Add(-1)
+				return Section{Title: title, Body: title}
+			}
+		}
+		a := s.async("a", func() Section {
+			time.Sleep(20 * time.Millisecond)
+			first.Store(1)
+			return Section{Title: "a", Body: "a"}
+		})
+		s.async("b", work("b", 0))
+		s.add("sync", work("sync", 0))
+		s.async("dep", func() Section {
+			return Section{Title: "dep", Body: fmt.Sprint("first=", first.Load())}
+		}, a)
+		s.async("boom", func() Section { panic("boom") })
+		for i := range 20 {
+			s.async(fmt.Sprint("n", i), work(fmt.Sprint("n", i), time.Millisecond))
+		}
+		list, failed := s.finish()
+		var got []string
+		for _, x := range list {
+			got = append(got, x.Title)
+		}
+		want := []string{"a", "b", "sync", "dep", "boom"}
+		for i := range 20 {
+			want = append(want, fmt.Sprint("n", i))
+		}
+		if !slices.Equal(got, want) {
+			t.Fatalf("order %v", got)
+		}
+		if list[3].Body != "first=1" {
+			t.Errorf("dependent ran before its input: %q", list[3].Body)
+		}
+		if len(failed) != 1 || failed[0] != "boom" || !strings.Contains(list[4].Err, "boom") {
+			t.Errorf("failed %v, %+v", failed, list[4])
+		}
+		if peak.Load() > maxParallel {
+			t.Errorf("%d collectors at once, limit %d", peak.Load(), maxParallel)
+		}
+	}
+}
+
+// Slow tools overlap: four 200 ms blocks take about 200 ms, not 800 ms.
+func TestAsyncSectionsOverlap(t *testing.T) {
+	var s sections
+	start := time.Now()
+	for i := range 4 {
+		s.async(fmt.Sprint(i), func() Section { time.Sleep(200 * time.Millisecond); return Section{Body: "x"} })
+	}
+	s.finish()
+	if d := time.Since(start); d > 600*time.Millisecond {
+		t.Errorf("blocks ran one after the other: %s", d)
 	}
 }

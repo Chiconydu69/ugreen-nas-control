@@ -46,10 +46,15 @@ func (c *Ctl) networkDevice() string {
 	return dev
 }
 
-func (c *Ctl) networkOK(dev string) bool {
+// networkCheck is the verdict the network LED follows: the link is up and the gateway answers a ping. The reason
+// says which of the two failed.
+func (c *Ctl) networkCheck(dev string) (bool, string) {
 	state, _ := readLine(c.Env.SysNet + "/" + dev + "/operstate")
 	if state != "up" {
-		return false
+		if state == "" {
+			state = "unreadable"
+		}
+		return false, "operstate " + state
 	}
 	gateway := ""
 	for _, line := range c.ipRouteDefault() {
@@ -59,10 +64,12 @@ func (c *Ctl) networkOK(dev string) bool {
 		}
 	}
 	if gateway == "" {
-		return true
+		return true, ""
 	}
-	_, code := c.Run.Output("ping", "-c", "1", "-W", "2", gateway)
-	return code == 0
+	if _, code := c.Run.Output("ping", "-c", "1", "-W", "2", gateway); code != 0 {
+		return false, "gateway ping failed"
+	}
+	return true, ""
 }
 
 // linkSpeed is the negotiated speed in Mbit/s as printed, "0" when unknown (no link, or the

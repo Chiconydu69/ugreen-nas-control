@@ -149,3 +149,31 @@ func TestDaemonNeverArmsWatchdog(t *testing.T) {
 		t.Fatal("0x98 set")
 	}
 }
+
+// A stop while a rival tool owns the fans must still clear the enable byte of a timer this process fed: nobody else
+// feeds it, so it would reset the box after its timeout. The fans stay as the rival has them.
+func TestStopWithRivalDisarmsFedECWatchdog(t *testing.T) {
+	isolate(t, "DXP4800 GT")
+	dir := t.TempDir()
+	oldLock, oldState := lockPath, statePath
+	lockPath, statePath = filepath.Join(dir, "lock"), filepath.Join(dir, "state.json")
+	t.Cleanup(func() { lockPath, statePath = oldLock, oldState })
+
+	f := armedEC()
+	chip, err := detectFans(f, "DXP4800 GT")
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := &Petter{}
+	petWatchdog(p, chip, time.Now(), t.Logf)
+	if pets, _ := wdtWrites(f); pets != 1 {
+		t.Fatalf("%d feeds, want 1", pets)
+	}
+	endFanControl(chip, Snapshot{}, p, rival(), t.Logf)
+	if f.regs[ecRegWdtEnable] != 0 {
+		t.Fatal("watchdog still armed after the stop; nobody feeds it any more")
+	}
+	if f.regs[0xb0] != 0 || f.regs[0xb4] != 0 {
+		t.Fatal("fan mode registers written although a rival owns the fans")
+	}
+}

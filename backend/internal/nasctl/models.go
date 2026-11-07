@@ -362,7 +362,11 @@ func modelSection(reg *RegModel, ev Evidence) (Section, []string) {
 				mark = "ok"
 				if !*c.OK {
 					mark = "MISMATCH"
-					checks = append(checks, fmt.Sprintf("MISMATCH: %s: registry expects %s, detected %s", c.ID, shown(c.Expected), shown(c.Detected)))
+					hint := ""
+					if c.ID == "nvme_slots" {
+						hint = " (the NVMe section lists the PCI chain of each drive)"
+					}
+					checks = append(checks, fmt.Sprintf("MISMATCH: %s: registry expects %s, detected %s%s", c.ID, shown(c.Expected), shown(c.Detected), hint))
 				}
 			}
 			l = append(l, fmt.Sprintf("  %s: expected %s, detected %s [%s]", c.ID, shown(c.Expected), shown(c.Detected), mark))

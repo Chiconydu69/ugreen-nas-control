@@ -113,6 +113,17 @@ func (p *netProbe) set(ok bool, speed int64) {
 	p.mu.Unlock()
 }
 
+// probeNetwork runs the check, hands the verdict to the loop and writes it where `status` reads it.
+func (c *Ctl) probeNetwork(p *netProbe, dev string) {
+	ok, why := c.networkCheck(dev)
+	p.set(ok, atoiOr(c.linkSpeed(dev, 0), 0))
+	if ok {
+		writeState(c.Env.NetState, "ok")
+	} else {
+		writeState(c.Env.NetState, "fail: "+why)
+	}
+}
+
 func (p *netProbe) get() (bool, int64) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
@@ -131,6 +142,7 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 
 	bays := c.bays
 	netDev := c.networkDevice()
+	defer func() { _ = os.Remove(c.Env.NetState) }()
 	probe := &netProbe{ok: true}
 
 	applied := make([]string, bays+1)
@@ -146,7 +158,7 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 
 	// Link and speed right away, so the first 5 s don't show the wrong colour.
 	if netDev != "" {
-		probe.set(c.networkOK(netDev), atoiOr(c.linkSpeed(netDev, 0), 0))
+		c.probeNetwork(probe, netDev)
 	}
 
 	name := netDev
@@ -168,7 +180,7 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 					return
 				case <-time.After(wait):
 				}
-				probe.set(c.networkOK(netDev), atoiOr(c.linkSpeed(netDev, 0), 0))
+				c.probeNetwork(probe, netDev)
 				wait = 150 * c.Tick
 			}
 		})

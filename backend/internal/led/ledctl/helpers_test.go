@@ -190,7 +190,7 @@ func newRig(t *testing.T, product string) *rig {
 		SysBlock: p("sys/block"), SysNet: p("sys/net"), SysATA: p("sys/ata"), SysPCI: p("sys/pci"),
 		PidFile: p("run/pid"), ScheduleState: p("run/schedule"), FxPidFile: p("run/fx.pid"), FxLog: p("run/fx.log"),
 		IdentifyPrefix: p("run/identify-"), AlertState: p("run/alert"), PhasePrefix: p("run/phase-"),
-		ShutdownMark: p("run/shutdown"), BusCache: p("run/bus"), DynamixCfg: p("dynamix.cfg"), UdevData: p("udev"),
+		ShutdownMark: p("run/shutdown"), BusCache: p("run/bus"), NetState: p("run/net"), DynamixCfg: p("dynamix.cfg"), UdevData: p("udev"),
 		MaxspeedCache: p("run/maxspeed"), NotifyDir: p("notify"), Now: "1200", Product: product,
 		DMIProduct: p("dmi"), OSRelease: p("osrelease"), ProcIomem: p("iomem"), ProcModules: p("modules"), SysI2C: p("sys/i2c"),
 	}

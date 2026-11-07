@@ -107,7 +107,7 @@ export const PAGES: Page[] = [
     { id: 'sensors', nav: 'sensors', applies: () => true },
     { id: 'leds', nav: 'led:overview', applies: m => m.led !== 'none' },
     { id: 'settings', nav: 'settings', applies: () => true },
-    { id: 'about', nav: 'about', applies: () => true, prepare: `(() => { const f = document.querySelector('#unc-models-fold'); if (f) f.open = true; })()` },
+    { id: 'about', nav: 'about', applies: () => true },
     { id: 'dashboard', dash: true, applies: () => true }
 ];
 

@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"net/netip"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -99,15 +100,15 @@ type Inputs struct {
 }
 
 var (
-	macRe  = regexp.MustCompile(`(?i)\b[0-9a-f]{2}(?::[0-9a-f]{2}){5}\b`)
-	ipv4Re = regexp.MustCompile(`[0-9A-Za-z.]*\d{1,3}(?:\.\d{1,3}){3}[0-9A-Za-z.]*`)
-	ipv6Re = regexp.MustCompile(`(?i)\b(?:[0-9a-f]{1,4}:){3,7}[0-9a-f]{1,4}\b`)
+	macRe      = regexp.MustCompile(`(?i)\b[0-9a-f]{2}(?:([:-])[0-9a-f]{2}){5}\b`)
+	ipv4Re     = regexp.MustCompile(`[0-9A-Za-z.]*\d{1,3}(?:\.\d{1,3}){3}[0-9A-Za-z.]*`)
+	ipv6CandRe = regexp.MustCompile(`[0-9A-Fa-f:.]*:[0-9A-Fa-f:.]*`)
 )
 
 // scrub is the last line of defence: a MAC or IP address in any text value is cut out.
 func scrub(s string) string {
 	s = macRe.ReplaceAllString(s, "<removed>")
-	s = ipv6Re.ReplaceAllString(s, "<removed>")
+	s = scrubIPv6(s)
 	s = scrubIPv4(s)
 	return strings.TrimSpace(s)
 }
@@ -291,4 +292,39 @@ func isIPv4(tok string) bool {
 		}
 	}
 	return true
+}
+
+// scrubIPv6 replaces IPv6 addresses in any notation, including the compressed "::" form. A candidate is a run of hex
+// digits, colons and dots that net/netip accepts as an address and that does not sit inside a longer word
+// (std::string, Foo::bar).
+func scrubIPv6(s string) string {
+	var b strings.Builder
+	last := 0
+	for _, m := range ipv6CandRe.FindAllStringIndex(s, -1) {
+		start, end := m[0], m[1]
+		cand := s[start:end]
+		if _, err := netip.ParseAddr(cand); err != nil {
+			// A sentence's colon or full stop right behind the address.
+			trimmed := strings.TrimRight(cand, ".:")
+			if trimmed == cand || trimmed == "" || strings.HasSuffix(cand, "::") {
+				continue
+			}
+			if _, err := netip.ParseAddr(trimmed); err != nil {
+				continue
+			}
+			end = start + len(trimmed)
+		}
+		if cand == "::" || (start > 0 && isWordByte(s[start-1])) || (end < len(s) && isWordByte(s[end])) {
+			continue
+		}
+		b.WriteString(s[last:start])
+		b.WriteString("<removed>")
+		last = end
+	}
+	b.WriteString(s[last:])
+	return b.String()
+}
+
+func isWordByte(c byte) bool {
+	return c == '_' || c >= '0' && c <= '9' || c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'
 }

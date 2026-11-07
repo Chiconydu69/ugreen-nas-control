@@ -1,4 +1,4 @@
-// The model registry: one file per UGREEN model row (also the rows of About → Supported models), validated by
+// The model registry: one file per UGREEN model row (also the source of the About "Your device" card), validated by
 // web/tools/check-models.ts. Adding a model = adding one file here; the harness, the screenshots, the docs and the site follow.
 //
 // Two kinds of facts, kept apart:

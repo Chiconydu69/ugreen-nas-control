@@ -9,13 +9,20 @@ For maintainers. Contributors only need [CONTRIBUTING.md](../.github/CONTRIBUTIN
 - `main` also serves the installs: The installed plugin reads `plugin/ugreen-nas-control.plg` from `main` (raw URL), and the Community Applications entry points there too.
 - Feature PRs never touch `plugin/ugreen-nas-control.plg` or `CHANGELOG.md`; the CI `guard` job fails them unless the branch is `release/*`. Each PR adds one fragment `.changes/<slug>.md` ([format](../.changes/README.md)) or carries the label `no-changelog`.
 
+## When to release
+
+- Next: built on every merge to `next`, for anyone who wants to try it.
+- Stable: about every week, with everything merged since the last one. Not per merged PR.
+- In between, a patch only when stable breaks something or writes hardware wrongly (fans, LEDs, a crash on a supported model). That one ships right away.
+- Before each stable release, the maintainers install the next build on their boxes and check it briefly ([Re-test the maintainer boxes](#re-test-the-maintainer-boxes)). Outside testers are welcome; no release waits for them.
+
 ## Versions
 
 Unraid compares plugin versions as text: `strcmp` in `dynamix.plugin.manager/scripts/plugin` (install, update, updateall; `version_compare` only checks Min/Max of the Unraid version). `5.0.10` would sort below `5.0.9`, so every number stays one digit. `plugin/tools/version.ts` implements the scheme; `changes.ts release`, `plg.ts check` and `version.test.ts` enforce it.
 
 - Stable `X.Y.Z`, one digit each, always three parts (`5.0.0`, never `5.0`). A release is exactly one step after the newest `CHANGELOG.md` heading: patch (`5.0.0` to `5.0.1`), minor (`5.0.3` to `5.1.0`), major (`5.4.2` to `6.0.0`). After `5.0.9` the next fix ships as `5.1.0`. Headings up to `4.x` are two-part and count as `X.Y.0`: `5.0.0` is the major step after `4.2`, `4.3.0` the minor step.
-- Patch: fixes only. The maintainer decides when a fix is worth a release; not per PR.
-- Minor: features and models. They collect on `next` (testers use the next channel) and ship together when the maintainer decides the set is ready; no release per merged PR.
+- Patch: fixes only. Ships with the next stable release, or right away for breakage ([When to release](#when-to-release)).
+- Minor: features and models. They collect on `next` (testers use the next channel) and ship in the next stable release.
 - Major: breaking changes only (a config migration that cannot be undone, a dropped Unraid version). `next` becomes `5.0.0` when it replaces `main`.
 - Fragment types map to the size: `fix` patch, `feat` and `model` minor, `docs` and `chore` none. `changes.ts release` refuses a patch version while a `feat` or `model` fragment is pending. The version stays the manual input of the Release workflow.
 - Next channel `X.(Y+1).0-next.NNNNNN`: X.Y.Z is the newest stable heading, N the CI run, zero-padded. With `5.0.3` newest: `5.1.0-next.000017`, above every `5.0.Z`, below `5.2.0`. A stable `5.1.0` sorts just below its own next builds; harmless, next builds then move on to `5.2.0-next`. Until `5.0.0` is out (newest heading `4.2`) builds are `4.3.0-next.N`; they sort above the earlier two-part `4.3-next.N` (`-` is below `.`).
@@ -34,6 +41,7 @@ Switching. Unraid compares versions as text (strcmp) and refuses a lower or equa
 - Next to stable, next to local, local to stable: `plugin install <stable url> forced` (or the local URL printed by `just plg-serve`, plus `forced`). On the Plugins page the same needs the command line; the page's Install button has no forced option.
 - Stable to local: plain, a test build sorts above its stable.
 - Once stable `X.(Y+1).0` is out, a box still on `X.(Y+1).0-next.N` needs `forced` to take it; next builds then move on to `X.(Y+2).0-next.N`.
+- Both directions are one button on the plugin's About page: it hands the fixed command above to Unraid's install dialog (`openPlugin`); without that function (older Unraid) the page shows the command to copy.
 - Settings stay in every case. A box that ran the old `ugreen-nas-control-next.plg` removes it once (Plugins page) and installs the new URL.
 
 Each deployment replaces the whole site, so only the current archive is hosted: a box that lost its boot cache cannot fetch an older next version, it installs the current one. Deployments run one after the other (concurrency group `pages`), so run numbers rise; if the workflow is ever recreated, its run numbers restart and Unraid will not offer the lower version until `plugin install <url> forced`. The old `next-build` prerelease and the asset `ugreen-nas-control-next.plg` are gone. The next channel is announced in the forum thread, Discussions and the README, not in Community Applications.

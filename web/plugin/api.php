@@ -5,6 +5,7 @@ declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 
 require_once __DIR__ . '/include/lang.php';
+require_once __DIR__ . '/include/diag.php';
 require_once __DIR__ . '/include/fan_v2.php';
 require_once __DIR__ . '/include/fan_schedule.php';
 require_once __DIR__ . '/include/fan_history.php';
@@ -243,6 +244,9 @@ if ($method === 'GET') {
     }
     if ($action === 'power_ac_get') {
         power_ac_get();
+    }
+    if ($action === 'diag_status') {
+        diag_status();
     }
 
     if ($action !== 'status') {
@@ -621,6 +625,10 @@ if ($action === 'fan_control') {
     }
 
     respond(['ok' => true]);
+}
+
+if ($action === 'diag_start') {
+    diag_start();
 }
 
 // Measures the rpm of every fan at fixed speeds (about 4 minutes). The measurement runs in the background; the

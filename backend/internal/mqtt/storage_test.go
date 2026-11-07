@@ -97,3 +97,13 @@ func TestReadParity(t *testing.T) {
 		t.Fatal("a stopped array runs nothing")
 	}
 }
+
+// A nearly stalled check (under one byte per second) made Speed 0 and the ETA division panic the publisher.
+func TestReadParitySubByteSpeedDoesNotPanic(t *testing.T) {
+	p := filepath.Join(t.TempDir(), "var.ini")
+	writeFile(t, p, "mdState=\"STARTED\"\nmdResync=\"1000\"\nmdResyncPos=\"500\"\nmdResyncSize=\"1000\"\nmdResyncAction=\"check P\"\nmdResyncDb=\"1\"\nmdResyncDt=\"2000\"\n")
+	r := readParity(p)
+	if r == nil || r.Speed != 0 || r.ETA != 0 {
+		t.Fatalf("got %+v", r)
+	}
+}

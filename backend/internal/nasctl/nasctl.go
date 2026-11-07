@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -17,6 +18,7 @@ import (
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan/conflict"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fsx"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/proc"
 )
 
@@ -32,6 +34,8 @@ const usageText = `Usage:
   ugreen-nas-ctl report                      anonymised JSON for a model report
   ugreen-nas-ctl diag                        anonymised read-only diagnostics as Markdown for a bug report
                                              (no hardware writes; the only system change is modprobe i2c-dev, if missing)
+                                             diag --json: the same as one JSON object (schema feedback/1) for the Feedback page
+                                             diag --full-scan: the I2C scan includes the display (graphics) buses, up to 30 s more
   ugreen-nas-ctl event stopping              array stop hook: signals shutdown on the power LED
 `
 
@@ -43,6 +47,11 @@ type Ctl struct {
 	// Replaced in tests.
 	Sleep  func(time.Duration)
 	Detect func() []conflict.Conflict
+	// OpenMem opens /dev/mem for diag; nil means panel.OpenMem. Always called read-only.
+	OpenMem func(write bool) (panel.Mem, error)
+
+	// FullScan makes diag scan the display buses too (diag --full-scan).
+	FullScan bool
 
 	found   []conflict.Conflict
 	scanned bool
@@ -124,7 +133,8 @@ func (c *Ctl) Main(args []string) int {
 	case "report":
 		return c.report()
 	case "diag":
-		return c.diag()
+		c.FullScan = slices.Contains(args[1:], "--full-scan")
+		return c.diag(slices.Contains(args[1:], "--json"))
 	case "event":
 		if len(args) > 1 && args[1] == "stopping" {
 			c.eventStopping()
@@ -566,8 +576,14 @@ func (c *Ctl) ledEnable() int {
 		return 1
 	}
 
-	_ = os.MkdirAll(filepath.Dir(c.Env.LEDFlag), 0o755)
-	_ = fsx.WriteFile(c.Env.LEDFlag, nil, 0o644)
+	if err := os.MkdirAll(filepath.Dir(c.Env.LEDFlag), 0o755); err != nil {
+		c.errf("ERROR: The LEDs cannot be switched on: %v\n", err)
+		return 1
+	}
+	if err := fsx.WriteFile(c.Env.LEDFlag, nil, 0o644); err != nil {
+		c.errf("ERROR: The LEDs cannot be switched on: %v\n", err)
+		return 1
+	}
 
 	// First use with an installed UGREEN LED Control: start with its settings instead of the defaults.
 	if _, err := os.Stat(c.Env.LEDCfg); err != nil && nonEmpty(c.Env.LEDImportSrc) {

@@ -84,11 +84,29 @@ func dwCommands(msgs []dwMsg) []uint32 {
 	return cmds
 }
 
+// dwRegs is the register window of a controller; tests replace it with a fake.
+type dwRegs interface {
+	load(reg int) uint32
+	store(reg int, v uint32)
+}
+
+// mmio is a live /dev/mem mapping.
+type mmio []byte
+
+func (m mmio) load(reg int) uint32     { return atomic.LoadUint32((*uint32)(unsafe.Pointer(&m[reg]))) } //nolint:gosec // live MMIO mapping, reg is a fixed offset
+func (m mmio) store(reg int, v uint32) { atomic.StoreUint32((*uint32)(unsafe.Pointer(&m[reg])), v) }    //nolint:gosec // live MMIO mapping, reg is a fixed offset
+
+// dwTiming is what a platform sets before the first transfer; zero keeps what the firmware left.
+type dwTiming struct{ hcnt, lcnt, sdaHold uint32 }
+
+// dwI2C is the DesignWare transfer code shared by the platforms; only the power-up differs: AMD FCH (powerOn,
+// aoac) or Intel LPSS (lpss_linux.go).
 type dwI2C struct {
-	fd      *os.File
-	mem     []byte // controller registers
-	aoac    []byte // power registers
-	power   int    // offset of this controller's AOAC register in aoac
+	mem     dwRegs
+	unmap   func() // releases the mappings and the file
+	aoac    []byte // AMD: power registers
+	power   int    // AMD: offset of this controller's AOAC register in aoac
+	timing  dwTiming
 	addr    uint8
 	txDepth int
 	rxDepth int
@@ -125,6 +143,11 @@ func mapPhys(f *os.File, phys int64) ([]byte, error) {
 	return syscall.Mmap(int(f.Fd()), phys, 4096, syscall.PROT_READ|syscall.PROT_WRITE, syscall.MAP_SHARED)
 }
 
+// mapPhysRO maps a page read only: a write through it faults instead of reaching the device.
+func mapPhysRO(f *os.File, phys int64) ([]byte, error) {
+	return syscall.Mmap(int(f.Fd()), phys, 4096, syscall.PROT_READ, syscall.MAP_SHARED)
+}
+
 // openDW returns the controller that answers at addr.
 func openDW(addr uint8) (*dwI2C, error) {
 	names, bases := dwControllers()
@@ -145,9 +168,16 @@ func openDW(addr uint8) (*dwI2C, error) {
 	err = errors.New("no device answered")
 	for i, name := range names {
 		n, _ := strconv.Atoi(name[strings.IndexByte(name, ':')+1:])
-		d := &dwI2C{fd: f, aoac: aoac, power: aoacOffset + 2*n, addr: addr}
-		if d.mem, err = mapPhys(f, bases[i]); err != nil {
+		d := &dwI2C{aoac: aoac, power: aoacOffset + 2*n, addr: addr}
+		regs, mapErr := mapPhys(f, bases[i])
+		if err = mapErr; err != nil {
 			continue
+		}
+		d.mem = mmio(regs)
+		d.unmap = func() {
+			_ = syscall.Munmap(regs)
+			_ = syscall.Munmap(aoac)
+			_ = f.Close()
 		}
 		if err = d.powerOn(); err == nil {
 			if err = d.init(); err == nil {
@@ -156,7 +186,7 @@ func openDW(addr uint8) (*dwI2C, error) {
 				}
 			}
 		}
-		_ = syscall.Munmap(d.mem)
+		_ = syscall.Munmap(regs)
 	}
 
 	_ = syscall.Munmap(aoac)
@@ -164,15 +194,21 @@ func openDW(addr uint8) (*dwI2C, error) {
 	return nil, fmt.Errorf("%s: %w", names[len(names)-1], err)
 }
 
-func (d *dwI2C) close() {
-	_ = d.disable()
-	_ = syscall.Munmap(d.mem)
-	_ = syscall.Munmap(d.aoac)
-	_ = d.fd.Close()
+// shutdown disables the controller and releases the mappings, even when the disable fails.
+func (d *dwI2C) shutdown() error {
+	err := d.disable()
+	d.unmap()
+	return err
 }
 
-func (d *dwI2C) rd(reg int) uint32    { return atomic.LoadUint32((*uint32)(unsafe.Pointer(&d.mem[reg]))) } //nolint:gosec // mem is a live MMIO mapping, reg is a fixed offset
-func (d *dwI2C) wr(reg int, v uint32) { atomic.StoreUint32((*uint32)(unsafe.Pointer(&d.mem[reg])), v) }    //nolint:gosec // mem is a live MMIO mapping, reg is a fixed offset
+func (d *dwI2C) close() {
+	if err := d.shutdown(); err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "ugreen-led-i2c:", err)
+	}
+}
+
+func (d *dwI2C) rd(reg int) uint32    { return d.mem.load(reg) }
+func (d *dwI2C) wr(reg int, v uint32) { d.mem.store(reg, v) }
 
 // powerOn does what the ACPI _PS0 method of the controller does: D0, power domain on,
 // and for a controller that was off, a reset.
@@ -204,18 +240,30 @@ func (d *dwI2C) checkType() error {
 	return nil
 }
 
-// init sets standard mode (100 kHz) as a master, keeping the timings the firmware left.
+// init sets standard mode (100 kHz) as a master; d.timing replaces the timings the firmware left.
 func (d *dwI2C) init() error {
 	if err := d.disable(); err != nil {
 		return err
 	}
 
-	if d.rd(dwSSHcnt) == 0 || d.rd(dwSSLcnt) == 0 { // for the 150 MHz input clock
+	if d.timing.hcnt != 0 {
+		d.wr(dwSSHcnt, d.timing.hcnt)
+		d.wr(dwSSLcnt, d.timing.lcnt)
+	} else if d.rd(dwSSHcnt) == 0 || d.rd(dwSSLcnt) == 0 { // for the 150 MHz input clock
 		d.wr(dwSSHcnt, 642)
 		d.wr(dwSSLcnt, 749)
 	}
-	if hold := d.rd(dwSDAHold); d.rd(dwCompVersion) >= dwSDAHoldVers && hold>>16&0xff == 0 {
-		d.wr(dwSDAHold, hold|1<<16)
+	if cur := d.rd(dwSDAHold); d.rd(dwCompVersion) >= dwSDAHoldVers {
+		hold := cur
+		if d.timing.sdaHold != 0 {
+			hold = hold&^0xffff | d.timing.sdaHold
+		}
+		if hold>>16&0xff == 0 {
+			hold |= 1 << 16
+		}
+		if hold != cur {
+			d.wr(dwSDAHold, hold)
+		}
 	}
 
 	params := d.rd(dwCompParam1)
