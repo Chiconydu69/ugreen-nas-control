@@ -94,12 +94,15 @@ func TestQoS2PublishIsAcknowledged(t *testing.T) {
 	}
 	defer ln.Close()
 	got := make(chan [2]byte, 4)
+	serverDone := make(chan struct{})
+	defer close(serverDone)
 	go func() {
 		conn, err := ln.Accept()
 		if err != nil {
 			return
 		}
 		defer conn.Close()
+		defer func() { <-serverDone }()
 		r := bufio.NewReader(conn)
 		_, _, _, _ = readPacket(r)
 		conn.Write([]byte{mqttConnack << 4, 2, 0, 0})
