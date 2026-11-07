@@ -352,7 +352,7 @@ export const it: Record<Key, string> = {
     'about.thanks': 'Ringraziamenti',
     'about.maintainers': 'Manutentori',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocollo e mappatura dei vani del controllo LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traduzione spagnola) e tutti coloro che hanno provato sul proprio modello',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocollo e mappatura dei vani del controllo LED), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (traduzione spagnola) e <a data-site="#credits" target="_blank" rel="noopener">tutti coloro che hanno provato</a>',
     'channel.now_stable': 'Canale: stable. Passa a next per provare le modifiche prima del rilascio.',
     'channel.now_next': 'Canale: next (versioni di prova). Torna a stable per la versione rilasciata.',
     'channel.to_next': 'Passa a next (versioni di prova)',

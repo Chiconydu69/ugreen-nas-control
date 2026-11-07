@@ -348,7 +348,7 @@ export const en = {
     'about.thanks': 'Thanks to',
     'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and <a data-site="#credits" target="_blank" rel="noopener">everyone who tested</a>',
     'channel.now_stable': 'Channel: stable. Switch to next to try changes before they are released.',
     'channel.now_next': 'Channel: next (test builds). Go back to stable for the released version.',
     'channel.to_next': 'Switch to next (test builds)',

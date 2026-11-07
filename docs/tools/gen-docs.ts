@@ -10,6 +10,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { loadModels } from '../../web/models/index';
 import { ALL_OUTPUTS, CA_XML, DOC_FILES, REGISTRY_JSON } from '../../scripts/generated';
 import { LANGUAGES, NO_KERNEL_MODULE, SITE, UNRAID_PLUS, caOverview } from '../site/facts';
+import { lintCredits } from './credits-lint';
 import { lintFacts } from './facts-lint';
 import { FORUM_TESTERS, MAINTAINERS, TESTERS } from './testers';
 import { format } from '../../scripts/format';
@@ -153,7 +154,7 @@ function testers(): string {
     const named = TESTERS.map(t => `[${t.login}](https://github.com/${t.login}) (${t.did})`);
     const last = named.length - 1;
     const list = last > 0 ? `${named.slice(0, last).join(', ')} and ${named[last]}` : named.join('');
-    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to ${list} for testing and translating. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
+    return `Maintained by ${a} and ${b}.\n\n${grid}\n\nThanks to ${list} for testing, translating and research. And on the Unraid forum: ${FORUM_TESTERS.join(', ')}.`;
 }
 
 function splice(text: string, body: string, name = 'models', source = 'web/models/'): string {
@@ -330,6 +331,25 @@ for (const [file, render] of Object.entries(RENDER)) {
     const linted = ['README.md', ...markdownFiles().filter(f => f.startsWith('docs/')), 'docs/site/content.ts', 'docs/site/build.ts', CA_XML];
     const sources = [...new Set(linted)].map(file => ({ file, text: readFileSync(join(root, file), 'utf8') }));
     errors.push(...lintFacts(sources, readFileSync(join(root, 'docs/tools/facts-allow.txt'), 'utf8')));
+}
+
+// Credits: every credited login is in docs/tools/testers.ts (docs/tools/credits-lint.ts).
+{
+    const read = (dir: string, ext: string) =>
+        readdirSync(join(root, dir))
+            .filter(f => f.endsWith(ext))
+            .sort()
+            .map(f => ({ file: `${dir}/${f}`, text: readFileSync(join(root, dir, f), 'utf8') }));
+    const one = (file: string) => ({ file, text: readFileSync(join(root, file), 'utf8') });
+    const fragments = read('.changes', '.md').filter(f => f.file !== '.changes/README.md');
+    errors.push(
+        ...lintCredits(
+            read('web/models', '.ts'),
+            [...fragments, one('CHANGELOG.md')],
+            [...fragments, one('README.md'), ...read('docs/site', '.ts')],
+            [...TESTERS.map(t => t.login), ...MAINTAINERS.map(m => m.login)]
+        )
+    );
 }
 
 const known = recipes();

@@ -353,7 +353,7 @@ export const nl: Record<Key, string> = {
     'about.thanks': 'Met dank aan',
     'about.maintainers': 'Maintainers',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en <a data-site="#credits" target="_blank" rel="noopener">iedereen die heeft getest</a>',
     'channel.now_stable': 'Kanaal: stable. Schakel over naar next om wijzigingen vóór de release uit te proberen.',
     'channel.now_next': 'Kanaal: next (testversies). Ga terug naar stable voor de uitgebrachte versie.',
     'channel.to_next': 'Overschakelen naar next (testversies)',
