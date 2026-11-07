@@ -26,9 +26,10 @@ const (
 	smbusByte     = 1
 	smbusByteData = 2
 	smbusBlockMax = 32
-
-	lockFile = "/var/run/ugreen-led-i2c.lock"
 )
+
+// lockFile is replaced in tests.
+var lockFile = "/var/run/ugreen-led-i2c.lock"
 
 // struct i2c_smbus_ioctl_data: u8 read_write, u8 command, u32 size, union i2c_smbus_data *data.
 type smbusIoctlData struct {

@@ -465,7 +465,9 @@ func TestLPSSProbeCommand(t *testing.T) {
 	fakeMem(t, f)
 	lpssReports = filepath.Join(t.TempDir(), "probe")
 	t.Cleanup(func() { lpssReports = lpssReportFile })
-	// The lock file path is fixed; skip when it cannot be created.
+	oldLock := lockFile
+	lockFile = filepath.Join(t.TempDir(), "lock")
+	t.Cleanup(func() { lockFile = oldLock })
 	if lock, err := acquireLock(); err != nil {
 		t.Skip("no lock file:", err)
 	} else {
@@ -556,6 +558,9 @@ func TestLPSSProbeCommandReadOnly(t *testing.T) {
 	fakeMem(t, f)
 	lpssReports = filepath.Join(t.TempDir(), "probe")
 	t.Cleanup(func() { lpssReports = lpssReportFile })
+	oldLock := lockFile
+	lockFile = filepath.Join(t.TempDir(), "lock")
+	t.Cleanup(func() { lockFile = oldLock })
 	if lock, err := acquireLock(); err != nil {
 		t.Skip("no lock file:", err)
 	} else {
