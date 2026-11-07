@@ -362,6 +362,17 @@ export const en = {
     'about.maintainers': 'Maintainers',
     'about.thanks_text':
         '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol and bay mapping of the LED control), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spanish translation) and everyone who tested on their model',
+    'channel.now_stable': 'Channel: stable. Switch to next to try changes before they are released.',
+    'channel.now_next': 'Channel: next (test builds). Go back to stable for the released version.',
+    'channel.to_next': 'Switch to next (test builds)',
+    'channel.to_stable': 'Back to stable',
+    'channel.confirm_next':
+        'Next gets every merged change before a release and may break. Your settings stay, and you can switch back any time. Switch to next?',
+    'channel.confirm_stable': 'This installs the latest stable version. Your settings stay, and you can switch to next again any time. Go back to stable?',
+    'channel.title_next': 'Switch to the next channel',
+    'channel.title_stable': 'Back to the stable channel',
+    'channel.cmd_next': 'To switch to next, run this command in the Unraid terminal:',
+    'channel.cmd_stable': 'To go back to stable, run this command in the Unraid terminal:',
     'language.label': 'Interface language',
     'language.auto': 'Same as Unraid',
     'theme.label': 'Colour scheme',

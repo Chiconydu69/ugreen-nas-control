@@ -127,7 +127,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3e150ff3b2d5"
+        "text": "56911dec968d"
       },
       "language es": {
         "requests": [
@@ -196,7 +196,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "18ae2e89f977"
+        "text": "49bde9d4adaa"
       },
       "language fr": {
         "requests": [
@@ -265,7 +265,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "bb161af8a4b8"
+        "text": "fc565de582d9"
       },
       "language it": {
         "requests": [
@@ -334,7 +334,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b169a909986c"
+        "text": "5b28626d4787"
       },
       "language nl": {
         "requests": [
@@ -403,7 +403,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "e7010cb935e0"
+        "text": "593f5186a7e8"
       },
       "language zh": {
         "requests": [
@@ -472,7 +472,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b45bf5519e4e"
+        "text": "58de96a8236d"
       },
       "language auto": {
         "requests": [
@@ -556,7 +556,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "bad1cd7d4146"
+        "text": "7eb9218fe2cf"
       }
     },
     "led-drives": {
@@ -1140,7 +1140,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "bad1cd7d4146"
+        "text": "7eb9218fe2cf"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -1155,7 +1155,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "bad1cd7d4146"
+        "text": "7eb9218fe2cf"
       }
     },
     "poll": {
@@ -1209,7 +1209,7 @@
         "events": [
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20Plus&body=Model%3A%20DXP4800%20Plus%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20none%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "d89c5180275f"
+        "text": "0d8f8855b142"
       }
     },
     "theme": {
@@ -1815,7 +1815,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "db28261c557a"
+        "text": "4216e2eff434"
       },
       "language es": {
         "requests": [
@@ -1895,7 +1895,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0211f0017864"
+        "text": "578730b43543"
       },
       "language fr": {
         "requests": [
@@ -1975,7 +1975,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6b05ed41a030"
+        "text": "62c3274c8716"
       },
       "language it": {
         "requests": [
@@ -2055,7 +2055,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "89ce8aee8381"
+        "text": "d5fca0de1e11"
       },
       "language nl": {
         "requests": [
@@ -2135,7 +2135,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5408590bd7c6"
+        "text": "0d71323f24a7"
       },
       "language zh": {
         "requests": [
@@ -2215,7 +2215,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6cce3302e814"
+        "text": "ca8e8c68d64a"
       },
       "language auto": {
         "requests": [
@@ -2311,7 +2311,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "63366edbd2b3"
+        "text": "c23fe4a0d164"
       }
     },
     "led-drives": {
@@ -2912,7 +2912,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "63366edbd2b3"
+        "text": "c23fe4a0d164"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -2927,7 +2927,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "63366edbd2b3"
+        "text": "c23fe4a0d164"
       }
     },
     "poll": {
@@ -3048,7 +3048,7 @@
         "events": [
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP4800%20GT&body=Model%3A%20DXP4800%20GT%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20blin"
         ],
-        "text": "0cd5254a87b5"
+        "text": "4626a1e621fe"
       }
     },
     "theme": {
@@ -3655,7 +3655,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "357451e422ea"
+        "text": "881d4ea5bb11"
       },
       "language es": {
         "requests": [
@@ -3735,7 +3735,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "01945b84e7c6"
+        "text": "cc776849bc75"
       },
       "language fr": {
         "requests": [
@@ -3815,7 +3815,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "63886aaf3de3"
+        "text": "267d5b6ebd21"
       },
       "language it": {
         "requests": [
@@ -3895,7 +3895,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "58f5b5ac1550"
+        "text": "880b408ec121"
       },
       "language nl": {
         "requests": [
@@ -3975,7 +3975,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6420f6050272"
+        "text": "ff0fc31b14f5"
       },
       "language zh": {
         "requests": [
@@ -4055,7 +4055,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9680ebce2010"
+        "text": "ebbab25e981c"
       },
       "language auto": {
         "requests": [
@@ -4151,7 +4151,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9f72fd92120b"
+        "text": "73709efa6e63"
       }
     },
     "led-drives": {
@@ -4752,7 +4752,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9f72fd92120b"
+        "text": "73709efa6e63"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -4767,7 +4767,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9f72fd92120b"
+        "text": "73709efa6e63"
       }
     },
     "poll": {
@@ -4888,7 +4888,7 @@
         "events": [
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20DXP6800%20Pro&body=Model%3A%20DXP6800%20Pro%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT8613%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "d96a020edf05"
+        "text": "d128b32dc6d5"
       }
     },
     "theme": {
@@ -5504,7 +5504,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "245f3f78190a"
+        "text": "5e6e60f81094"
       },
       "language es": {
         "requests": [
@@ -5585,7 +5585,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "77db780ca54e"
+        "text": "d7155e07786c"
       },
       "language fr": {
         "requests": [
@@ -5666,7 +5666,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5e85fcf76182"
+        "text": "73235e32dc90"
       },
       "language it": {
         "requests": [
@@ -5747,7 +5747,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6e4348e888c9"
+        "text": "a332a414b879"
       },
       "language nl": {
         "requests": [
@@ -5828,7 +5828,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "e0359a87cee7"
+        "text": "d46066731259"
       },
       "language zh": {
         "requests": [
@@ -5909,7 +5909,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2da49bad189a"
+        "text": "96509dcd0289"
       },
       "language auto": {
         "requests": [
@@ -6007,7 +6007,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "07209f15a143"
+        "text": "97349693f60e"
       }
     },
     "led-drives": {
@@ -6615,7 +6615,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "07209f15a143"
+        "text": "97349693f60e"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -6630,7 +6630,7 @@
       "about: fold models": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "07209f15a143"
+        "text": "97349693f60e"
       }
     },
     "poll": {
@@ -6764,7 +6764,7 @@
         "events": [
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=model-report&title=Model%20report%3A%20iDX6011%20Pro&body=Model%3A%20iDX6011%20Pro%0APlugin%3A%200.0.0%0AUnraid%3A%207.3.2%2C%20kernel%206.18.38-Unraid%0AFan%20chip%3A%20IT5571%3B%20LED%20controller%3A%20I2C%200x3a%0A%0A-%20%5Bx%5D%20LEDs%3A%20colours%20and%20effects%20work%0A-%20%5B%20%5D%20LEDs%3A%20the%20right%20bay%20bl"
         ],
-        "text": "2164135af86c"
+        "text": "5ca21736ebda"
       }
     },
     "theme": {

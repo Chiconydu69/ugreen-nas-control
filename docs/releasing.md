@@ -41,6 +41,7 @@ Switching. Unraid compares versions as text (strcmp) and refuses a lower or equa
 - Next to stable, next to local, local to stable: `plugin install <stable url> forced` (or the local URL printed by `just plg-serve`, plus `forced`). On the Plugins page the same needs the command line; the page's Install button has no forced option.
 - Stable to local: plain, a test build sorts above its stable.
 - Once stable `X.(Y+1).0` is out, a box still on `X.(Y+1).0-next.N` needs `forced` to take it; next builds then move on to `X.(Y+2).0-next.N`.
+- Both directions are one button on the plugin's About page: it hands the fixed command above to Unraid's install dialog (`openPlugin`); without that function (older Unraid) the page shows the command to copy.
 - Settings stay in every case. A box that ran the old `ugreen-nas-control-next.plg` removes it once (Plugins page) and installs the new URL.
 
 Each deployment replaces the whole site, so only the current archive is hosted: a box that lost its boot cache cannot fetch an older next version, it installs the current one. Deployments run one after the other (concurrency group `pages`), so run numbers rise; if the workflow is ever recreated, its run numbers restart and Unraid will not offer the lower version until `plugin install <url> forced`. The old `next-build` prerelease and the asset `ugreen-nas-control-next.plg` are gone. The next channel is announced in the forum thread, Discussions and the README, not in Community Applications.

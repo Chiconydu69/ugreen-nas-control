@@ -368,6 +368,18 @@ export const nl: Record<Key, string> = {
     'about.maintainers': 'Maintainers',
     'about.thanks_text':
         '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (protocol en bay-indeling van de LED-besturing), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (Spaanse vertaling) en iedereen die op zijn eigen model heeft getest',
+    'channel.now_stable': 'Kanaal: stable. Schakel over naar next om wijzigingen vóór de release uit te proberen.',
+    'channel.now_next': 'Kanaal: next (testversies). Ga terug naar stable voor de uitgebrachte versie.',
+    'channel.to_next': 'Overschakelen naar next (testversies)',
+    'channel.to_stable': 'Terug naar stable',
+    'channel.confirm_next':
+        'Next krijgt elke samengevoegde wijziging vóór een release en kan kapotgaan. Je instellingen blijven behouden en je kunt altijd terugschakelen. Overschakelen naar next?',
+    'channel.confirm_stable':
+        'Dit installeert de nieuwste stabiele versie. Je instellingen blijven behouden en je kunt altijd weer naar next overschakelen. Terug naar stable?',
+    'channel.title_next': 'Overschakelen naar kanaal next',
+    'channel.title_stable': 'Terug naar kanaal stable',
+    'channel.cmd_next': 'Voer deze opdracht uit in de Unraid-terminal om naar next over te schakelen:',
+    'channel.cmd_stable': 'Voer deze opdracht uit in de Unraid-terminal om terug te gaan naar stable:',
     'language.label': 'Interfacetaal',
     'language.auto': 'Zoals Unraid',
     'theme.label': 'Kleurenschema',

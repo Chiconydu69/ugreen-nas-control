@@ -63,7 +63,7 @@ https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plu
 
 3. Open **Settings, UGREEN NAS Control**. It names the model it found.
 
-Update: **Plugins, Check for Updates**. Next build (latest head of `next`, not for production): install `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`; it keeps your settings. [Channels and going back →](docs/releasing.md) · [Unraid versions →](docs/unraid.md)
+Update: **Plugins, Check for Updates**. Next build (latest head of `next`, not for production): install `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`; it keeps your settings. **About, Switch to next** does the same in one click, **Back to stable** returns. [Channels and going back →](docs/releasing.md) · [Unraid versions →](docs/unraid.md)
 
 ## Help
 

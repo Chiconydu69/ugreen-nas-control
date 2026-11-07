@@ -60,6 +60,7 @@ import { type Key, t, tEnum, tRaw } from './text';
 import './fan/index';
 import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
+import { pluginChannel, switchTarget, SWITCH_COMMANDS } from './channel';
 import { caseText, modelBox, modelFacts, modelRows } from './model-info';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
@@ -779,6 +780,25 @@ function main(root: HTMLElement): void {
         box.innerHTML = CONFIRMS.filter(([, , when]) => when())
             .map(([key, text]) => chipCheck(`data-confirm="${key}"`, ticked.has(key), escapeHtml(t(text))))
             .join('');
+    }
+
+    // Unraid's own install dialog (global openPlugin of the page layout); without it the commands are shown to copy.
+    function renderChannel(): void {
+        const channel = pluginChannel(window.UGREEN_NAS_VERSION);
+        const target = switchTarget(channel);
+        const canOpen = typeof window.openPlugin === 'function';
+        q('#unc-channel-text').textContent = t(channel === 'next' ? 'channel.now_next' : 'channel.now_stable');
+        q('#unc-channel-to-next').hidden = !canOpen || target !== 'next';
+        q('#unc-channel-to-stable').hidden = !canOpen || target !== 'stable';
+        q('#unc-channel-cmd').hidden = canOpen;
+        q('#unc-channel-cmd-hint').textContent = t(target === 'next' ? 'channel.cmd_next' : 'channel.cmd_stable');
+        q('#unc-channel-cmd-text').textContent = SWITCH_COMMANDS[target];
+    }
+
+    function switchChannel(target: 'next' | 'stable'): void {
+        if (typeof window.openPlugin !== 'function') return;
+        if (!window.confirm(t(target === 'next' ? 'channel.confirm_next' : 'channel.confirm_stable'))) return;
+        window.openPlugin(SWITCH_COMMANDS[target], t(target === 'next' ? 'channel.title_next' : 'channel.title_stable'));
     }
 
     function openConfirmIssue() {
@@ -3600,6 +3620,8 @@ function main(root: HTMLElement): void {
 
         bindModelsFold();
         q('#unc-confirm-send').addEventListener('click', openConfirmIssue);
+        q('#unc-channel-to-next').addEventListener('click', () => switchChannel('next'));
+        q('#unc-channel-to-stable').addEventListener('click', () => switchChannel('stable'));
 
         q('#unc-conflicts').addEventListener('click', event => {
             const what = hit(event)?.closest<HTMLElement>('[data-conflict-off]')?.dataset.conflictOff;
@@ -3705,6 +3727,7 @@ function main(root: HTMLElement): void {
         bindEvents();
 
         q('#unc-version').textContent = window.UGREEN_NAS_VERSION || '';
+        renderChannel();
         q<HTMLSelectElement>('#unc-language').value = window.UGREEN_NAS_LANG_SETTING || 'auto';
 
         try {

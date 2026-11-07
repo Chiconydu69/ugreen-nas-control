@@ -42,6 +42,7 @@ declare global {
         UNCLedFx: LedFxApi;
         UGREEN_NAS_CSRF_TOKEN?: string;
         UGREEN_NAS_VERSION?: string;
+        openPlugin?: (command: string, title: string) => void;
         UGREEN_NAS_LANG?: string;
         UGREEN_NAS_LANG_SETTING?: string;
         UGREEN_NAS_THEME?: string;
