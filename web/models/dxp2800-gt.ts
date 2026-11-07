@@ -23,7 +23,7 @@ export default {
         },
         fans: {
             status: 'community',
-            by: 'users',
+            by: '321chills (issue 95)',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/95',
             note: "Fan control stays off until you run `/usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-fan cs201x confirm`. A community tester (2026-10-31, next channel) saw both fans follow the modes and a custom curve, 1834 rpm (CPU) and 603 rpm (case) at 25 %, and the BIOS speed (about 60 %) back after removing the plugin. Registers and fan roles are from UGREEN's own CS201x driver. 25 % floor, stall point not measured."
         },

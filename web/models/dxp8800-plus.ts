@@ -49,7 +49,7 @@ export default {
         },
         sensors: {
             status: 'community',
-            by: 'users',
+            by: 'Chiconydu69 (issue 165)',
             version: '5.1.0',
             date: '2026-11-05',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
