@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import registry from '../../../../backend/internal/nasctl/models.json';
 import { CAPABILITIES, CAPABILITY_LABEL } from '../../../models/schema';
 import { en } from './i18n/en';
-import { ANSWER_LABEL, buildIssueUrl, DIAG_NOTE, feedbackCaps, FIELD, neutralise, type Report, resultLines, TEMPLATE, URL_LIMIT } from './feedback';
+import { ANSWER_LABEL, buildIssueUrl, feedbackCaps, FIELD, neutralise, type Report, resultLines, TEMPLATE, URL_LIMIT } from './feedback';
 
 const base: Report = {
     kind: 'model',
@@ -13,21 +13,20 @@ const base: Report = {
     caps: ['leds', 'fans', 'case', 'sensors'],
     answers: { leds: 'works', fans: 'fails' },
     summary: 'LED controller found, fan chip found',
-    comment: 'looks fine',
-    hasDiag: true
+    comment: 'looks fine'
 };
 const query = (url: string): URLSearchParams => new URL(url).searchParams;
 const form = (kind: 'model' | 'bug'): string => readFileSync(join(import.meta.dir, '../../../../.github/ISSUE_TEMPLATE', TEMPLATE[kind]), 'utf8');
 const ids = (text: string): string[] => [...text.matchAll(/^\s+id: (\S+)$/gm)].map(m => m[1] as string);
 
-test('the issue link carries the template, the model, the answers, the summary and the diag note', () => {
+test('the issue link carries the template, the model, the answers, the summary; the diag field stays empty', () => {
     const { url } = buildIssueUrl(base);
     const q = query(url);
     expect(url.startsWith('https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&')).toBe(true);
     expect(q.get(FIELD.model)).toBe('DXP4800 Plus');
     expect(q.get(FIELD.results)).toBe('LEDs: works\nFan control: does not work\nCase view: not tried\nSensors: not tried');
     expect(q.get(FIELD.summary)).toBe(base.summary);
-    expect(q.get(FIELD.diag)).toBe(DIAG_NOTE);
+    expect(q.has(FIELD.diag)).toBe(false);
 });
 
 test('the bug link keeps the same data in the bug form fields', () => {
@@ -84,4 +83,12 @@ test('every registry capability has a row text and a results line, and the forms
         expect(have.filter(id => id.startsWith('cap_'))).toEqual([]);
     }
     expect(form('model')).toMatch(/id: results[\s\S]*?required: true/);
+});
+
+test('the model form needs the device data and tells where it comes from; the report field is gone', () => {
+    const model = form('model');
+    expect(model).toMatch(/id: diag[\s\S]*?placeholder: [\s\S]*?required: true/);
+    expect(model).not.toContain('id: report');
+    expect(form('bug')).not.toContain('id: report');
+    expect(form('bug')).not.toMatch(/id: diag[\s\S]*?required: true/);
 });

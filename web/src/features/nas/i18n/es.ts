@@ -381,7 +381,8 @@ export const es: Record<Key, string> = {
     'feedback.send_hint':
         'Un clic copia los datos y abre un issue de GitHub rellenado. Pega los datos en el campo «Device data» (Ctrl+V / Cmd+V) y pulsa «Submit new issue».',
     'feedback.no_data': 'Aún no hay datos recopilados: el issue solo llevará tus respuestas.',
-    'feedback.copied': 'Los datos están en el portapapeles. Pégalos en el issue (Ctrl+V / Cmd+V).',
+    'feedback.paste_line': 'El clic copia los datos del equipo: pégalos en «Device data» en GitHub (Ctrl+V / Cmd+V).',
+    'feedback.copied': 'Los datos están en el portapapeles. Pégalos en «Device data» en GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'El navegador no permitió copiar. Copia los datos aquí o descárgalos y pégalos en el issue.',
     'feedback.copy': 'Copiar',
     'feedback.download': 'Descargar diag.md',

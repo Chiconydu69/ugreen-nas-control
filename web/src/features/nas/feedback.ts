@@ -16,7 +16,7 @@ export const ANSWER_LABEL: Record<Answer, string> = { works: 'works', fails: 'do
 export type Kind = 'model' | 'bug';
 export const TEMPLATE: Record<Kind, string> = { model: 'model-report.yml', bug: 'bug.yml' };
 
-/** Field ids of the issue forms. GitHub pre-fills text fields only, so the answers go into one textarea, a line per capability. */
+/** Field ids of the issue forms. GitHub pre-fills text fields only, so the answers go into one textarea, a line per capability. `diag` is never pre-filled: an empty field is what GitHub blocks on (required) and what its placeholder explains. */
 export const FIELD = {
     model: 'model',
     versions: 'versions',
@@ -26,8 +26,6 @@ export const FIELD = {
     results: 'results',
     diag: 'diag'
 } as const;
-
-export const DIAG_NOTE = 'Paste the copied diag here (Ctrl+V / Cmd+V).';
 
 /** Capabilities with a row for this DMI product name: what the registry offers on the model, all of them for an unknown model. */
 export function feedbackCaps(
@@ -50,8 +48,6 @@ export interface Report {
     /** Check summary of the collected data; empty before it ran. */
     summary: string;
     comment: string;
-    /** The full diag is in the clipboard: the form's diag field says where to paste it. */
-    hasDiag: boolean;
 }
 
 export interface Built {
@@ -73,7 +69,6 @@ function link(r: Report, summary: string, comment: string): string {
     fields.push([FIELD.results, resultLines(r).join('\n')]);
     if (summary) fields.push([FIELD.summary, summary]);
     if (note) fields.push([r.kind === 'model' ? FIELD.notes : FIELD.what, note]);
-    if (r.hasDiag) fields.push([FIELD.diag, DIAG_NOTE]);
     // Pre-filling issue-form fields: https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue
     // (query parameter template=<file> plus <field id>=<value>; a link above the server limit answers 414).
     return `${ISSUES_NEW}?${fields.map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;

@@ -391,7 +391,8 @@ export const it: Record<Key, string> = {
     'feedback.send_hint':
         'Un clic copia i dati e apre una issue GitHub precompilata. Incolla i dati nel campo «Device data» (Ctrl+V / Cmd+V) e clicca «Submit new issue».',
     'feedback.no_data': 'Nessun dato raccolto: la issue conterrà solo le tue risposte.',
-    'feedback.copied': 'I dati sono negli appunti. Incollali nella issue (Ctrl+V / Cmd+V).',
+    'feedback.paste_line': 'Il clic copia i dati del dispositivo: incollali in «Device data» su GitHub (Ctrl+V / Cmd+V).',
+    'feedback.copied': 'I dati sono negli appunti. Incollali in «Device data» su GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'Il browser non ha permesso di copiare. Copia i dati qui o scaricali, poi incollali nella issue.',
     'feedback.copy': 'Copia',
     'feedback.download': 'Scarica diag.md',

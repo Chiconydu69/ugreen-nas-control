@@ -387,7 +387,8 @@ export const en = {
     'feedback.send_hint':
         'One click copies the data and opens a pre-filled GitHub issue. Paste the data into its "Device data" field (Ctrl+V / Cmd+V) and click "Submit new issue".',
     'feedback.no_data': 'No data collected yet: the issue will hold your answers only.',
-    'feedback.copied': 'The data is in your clipboard. Paste it into the issue (Ctrl+V / Cmd+V).',
+    'feedback.paste_line': 'The click copies your device data: paste it into "Device data" on GitHub (Ctrl+V / Cmd+V).',
+    'feedback.copied': 'The data is in your clipboard. Paste it into "Device data" on GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'The browser did not allow copying. Copy the data here or download it, then paste it into the issue.',
     'feedback.copy': 'Copy',
     'feedback.download': 'Download diag.md',
