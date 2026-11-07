@@ -201,7 +201,7 @@ func (c *client) session(quit <-chan struct{}) error {
 		return errors.New("mqtt: no CONNACK")
 	}
 	if body[1] != 0 {
-		return fmt.Errorf("mqtt: connection refused (code %d)", body[1])
+		return fmt.Errorf("mqtt: connection refused: %s", connackReason(body[1]))
 	}
 	_ = conn.SetDeadline(time.Time{})
 
@@ -302,4 +302,21 @@ func (c *client) run(stop <-chan struct{}) {
 			wait *= 2
 		}
 	}
+}
+
+// connackReason names a CONNACK return code (MQTT 3.1.1 section 3.2.2.3, table 3.1; codes 6 to 255 are reserved).
+func connackReason(code byte) string {
+	switch code {
+	case 1:
+		return "unacceptable protocol version (code 1)"
+	case 2:
+		return "client identifier rejected (code 2)"
+	case 3:
+		return "server unavailable (code 3)"
+	case 4:
+		return "bad user name or password (code 4)"
+	case 5:
+		return "not authorized (code 5)"
+	}
+	return fmt.Sprintf("unknown return code %d", code)
 }
