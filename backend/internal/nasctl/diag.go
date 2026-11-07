@@ -248,6 +248,11 @@ func ledSection(d LEDDiag) Section {
 	}
 	l = appendResult(l, "per-LED state (name mode brightness R G B on_ms off_ms)", d.Get, d.GetErr)
 	l = appendResult(l, "i2c scan all", scanText(d.Scan), d.ScanErr)
+	if d.ScanErr != "" {
+		if left := unscannedBuses(d.Adapters, d.Scan); len(left) > 0 {
+			l = append(l, "  not scanned (the scan did not get to them): "+strings.Join(left, ", "))
+		}
+	}
 	switch {
 	case d.StatusSkipped != "":
 		l = append(l, "ugreen-led-ctl status skipped: "+d.StatusSkipped)
@@ -276,11 +281,13 @@ func appendResult(l []string, title, out, err string) []string {
 // scanText: one line per bus, "/dev/i2c-2: 0x44 0x4a ..." (busy: addresses a kernel driver holds).
 func scanText(s string) string {
 	var m map[string]struct {
-		Answer []string `json:"answer"`
-		Busy   []string `json:"busy"`
-		Error  string   `json:"error"`
+		Answer  []string `json:"answer"`
+		Busy    []string `json:"busy"`
+		Error   string   `json:"error"`
+		Name    string   `json:"name"`
+		Skipped string   `json:"skipped"`
 	}
-	if json.Unmarshal([]byte(s), &m) != nil {
+	if json.Unmarshal([]byte(completeScan(s)), &m) != nil {
 		return s
 	}
 	buses := make([]string, 0, len(m))
@@ -291,6 +298,10 @@ func scanText(s string) string {
 	var out []string
 	for _, b := range buses {
 		v := m[b]
+		if v.Skipped != "" {
+			out = append(out, b+" ("+v.Name+"): skipped, "+v.Skipped)
+			continue
+		}
 		line := b + ": " + orDash(strings.Join(v.Answer, " "))
 		if len(v.Busy) > 0 {
 			line += "  busy: " + strings.Join(v.Busy, " ")
@@ -683,9 +694,10 @@ func hostnames() []string {
 	return []string{h}
 }
 
+var scanTimeout = 30 * time.Second
+
 const (
 	toolTimeout = 15 * time.Second
-	scanTimeout = 30 * time.Second
 	diagBudget  = 60 * time.Second // all tool calls of one diag run together
 )
 
@@ -808,7 +820,7 @@ func (c *Ctl) ledDiag(r Report, h fan.Hardware) LEDDiag {
 	}
 	d.Modprobe = c.i2cDev()
 	d.Get, d.GetErr = errText(runTimeout(toolTimeout, c.Env.LEDI2C, "--plain", "get", "all"))
-	d.Scan, d.ScanErr = errText(runTimeout(scanTimeout, c.Env.LEDI2C, "scan", "all"))
+	d.Scan, d.ScanErr = c.i2cScan()
 	if d.GT {
 		d.CS201x, d.CS201xErr = errText(runTimeout(toolTimeout, c.Env.LEDI2C, "cs201x"))
 	}
@@ -1120,4 +1132,45 @@ func (c *Ctl) diagNote(asJSON bool, format string, a ...any) {
 	if !asJSON {
 		c.errf("diag: "+format+"\n", a...)
 	}
+}
+
+// i2cScan runs "scan all" (display buses skipped) or, with --full-scan, "scan all --include-display". The tool
+// prints one bus per line as it finishes, so a timeout keeps the output of every finished bus.
+func (c *Ctl) i2cScan() (string, string) {
+	args := []string{"scan", "all"}
+	if c.FullScan {
+		args = append(args, "--include-display")
+	}
+	return errText(runTimeout(scanTimeout, c.Env.LEDI2C, args...))
+}
+
+// completeScan closes the JSON object of a scan that was cut off: the tool writes one finished bus per line.
+func completeScan(s string) string {
+	s = strings.TrimRight(s, "\n ,")
+	if json.Valid([]byte(s)) {
+		return s
+	}
+	if json.Valid([]byte(s + "\n}")) {
+		return s + "\n}"
+	}
+	if i := strings.LastIndex(s, "\n"); i > 0 {
+		return strings.TrimRight(s[:i], ", ") + "\n}"
+	}
+	return s
+}
+
+// unscannedBuses names the adapters (from "i2c-N=name") that have no line in the scan output.
+func unscannedBuses(adapters []string, scan string) []string {
+	var m map[string]json.RawMessage
+	if json.Unmarshal([]byte(completeScan(scan)), &m) != nil {
+		return nil
+	}
+	var out []string
+	for _, a := range adapters {
+		id, name, _ := strings.Cut(a, "=")
+		if _, ok := m["/dev/"+id]; !ok {
+			out = append(out, "/dev/"+id+" ("+name+")")
+		}
+	}
+	return out
 }

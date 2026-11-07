@@ -37,7 +37,7 @@ Without the map the daemon does not start on this model.
 - `mqtt-start`, `mqtt-stop`, `mqtt-status`: the MQTT publisher.
 - `led-status`, `led-enable`, `led-disable`, `led-import`, `led-boot`, `led-stop`: the LED switch ([led.md](led.md)).
 - `report`: anonymised JSON for a model report (below).
-- `diag`: one anonymised, read-only diagnostics block for a bug report ([Diagnostics](#diagnostics)).
+- `diag`: one anonymised, read-only diagnostics block for a bug report ([Diagnostics](#diagnostics)); `diag --full-scan` also scans the display buses.
 - `event stopping`: called by the Unraid event script at shutdown.
 
 ```
@@ -76,6 +76,8 @@ The _Model_ section compares what was detected with the model registry (`web/mod
 `diag` runs its independent reads side by side (at most 6 at once, the output order is fixed): the fan and LED probes together, then the LED, fan, PCI, dmesg and file sections. The I2C tools of the LED section stay one after the other, so no bus sees two transactions at once, and the fan and LED tools keep taking the hardware lock for each access. `UNC_DIAG_TIMING=1 ugreen-nas-ctl diag` prints the run time of every section and tool call to stderr (profiling; off by default).
 
 In the text mode `diag` prints two progress lines to stderr (`diag: collecting, this takes up to a minute (I2C scan)...` at the start, `diag: done in N s` at the end), because the report only appears when every section is read; stdout is the report alone, so a redirect or pipe is unchanged. `--json` prints no progress.
+
+The I2C scan (`ugreen-led-i2c scan all`) lists every `/dev/i2c-N`, SMBus (I801) first, then DesignWare, then the rest, and prints one line per bus as soon as it is done. Graphics buses are not scanned: adapters named `i915 gmbus …`, `AUX …`, `AMDGPU DM …`, `AMDGPU i2c …`, `Radeon i2c …` or `nvkm-…` (DisplayPort AUX channels and display DDC of i915, xe, amdgpu, radeon and nouveau; names from the kernel source). No UGREEN device sits there, UGREEN's own driver skips every adapter not named `SMBus` or `Synopsys`, and a boot-time scan of 14 such buses took more than 30 s. Each one stays in the output as `/dev/i2c-3 (i915 gmbus dpc): skipped, display bus …`. An adapter with an unknown name is scanned. `ugreen-led-i2c scan all --include-display` and `diag --full-scan` scan the display buses too (30 s limit, as before). If the scan still times out, `diag` prints the buses finished so far and lists the ones it did not reach.
 
 No hardware writes: no LED, fan, EC or Super-I/O register is written. The pad words are read through `/dev/mem` opened read-only (`0xFFFFFFFF` means the box does not answer there); the network block reads sysfs and `/proc/net/route` and sends nothing, the LED daemon's own probe supplies the ping verdict. The only system change is `modprobe i2c-dev` when the module is missing, because the I2C scan needs `/dev/i2c-*`; the tools it runs keep their own lock and cache files as in normal use. The output says so (`loaded i2c-dev for the scan`). When the LED probe fails and an I2C controller has no driver bound or an `HT32` ACPI device exists, _Checks_ adds one line saying the LED controller probably sits behind that controller. The new reads only list sysfs and `/proc/modules`; nothing is loaded or sent on any bus. `diag` does not load `i2c_i801`: without the SMBus adapter it skips `ugreen-led-ctl status` and says why.
 
