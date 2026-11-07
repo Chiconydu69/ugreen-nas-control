@@ -1,6 +1,6 @@
 // Policy lint for .github/workflows/*.yml (`just workflows-policy`, part of `just workflows-lint`). actionlint checks syntax and
 // zizmor checks security patterns (it also rejects `uses:` not pinned to a commit SHA, so that is not repeated here); this checks the repo's own rules:
-//   1. every job carries the repository guard in its `if:`, so forks skip it (workflows in FORK_WORKFLOWS run in forks on purpose)
+//   1. every job's `if:` is the repository guard alone or `guard && (...)` (guard leftmost, no top-level `||`, no negation), so forks skip it (workflows in FORK_WORKFLOWS run in forks on purpose)
 //   2. a workflow triggered by pull_request_target or workflow_run has no actions/checkout and passes PR/issue text through `env:`, never inline in `run:`
 //   3. the workflow has a top-level `permissions: {}` (jobs add what they need)
 import { readdirSync, readFileSync } from 'node:fs';
@@ -15,6 +15,25 @@ type Obj = Record<string, any>;
 
 const INLINE_EVENT_TEXT = /github\.event\.pull_request\.head\.|github\.event\.[\w.]*\.(body|title)\b/;
 
+/** True when `cond` is the guard alone or the guard as the leftmost operand of a top-level `&&` (no `||` outside parentheses after it, no negation). */
+export function guarded(cond: unknown): boolean {
+    let s = String(cond ?? '').trim();
+    const m = /^\$\{\{([\s\S]*)\}\}$/.exec(s);
+    if (m) s = m[1].trim();
+    if (s === GUARD) return true;
+    if (!s.startsWith(`${GUARD} &&`)) return false;
+    let depth = 0;
+    let quote = '';
+    for (const c of s.slice(GUARD.length)) {
+        if (quote) quote = c === quote ? '' : quote;
+        else if (c === "'") quote = c;
+        else if (c === '(') depth++;
+        else if (c === ')') depth--;
+        else if (c === '|' && depth === 0) return false;
+    }
+    return depth === 0;
+}
+
 /** Problems of one workflow file as "file: job: message (fix)" lines. */
 export function lint(file: string, text: string, doc: Obj = Bun.YAML.parse(text) as Obj): string[] {
     const out: string[] = [];
@@ -27,7 +46,7 @@ export function lint(file: string, text: string, doc: Obj = Bun.YAML.parse(text)
 
     if (!FORK_WORKFLOWS.has(file)) {
         for (const [name, job] of Object.entries<Obj>(jobs)) {
-            if (!String(job?.if ?? '').includes(GUARD)) {
+            if (!guarded(job?.if)) {
                 out.push(
                     `${file}: job ${name}: no repository guard (add \`if: \${{ ${GUARD} }}\`, combined with \`&&\` if it has an \`if:\`; forks skip the job)`
                 );
