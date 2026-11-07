@@ -54,6 +54,14 @@ export default {
             date: '2026-11-05',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
             note: 'Temperatures and the dashboard tile confirmed by a user; a one-off -21 °C board reading from the ACPI thermal zone is ignored since 5.1.1.'
+        },
+        panel: {
+            status: 'community',
+            by: 'Chiconydu69 (issue 165)',
+            version: '5.4.0',
+            date: '2026-11-07',
+            ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
+            note: 'Buttons: the pad registers read 0x84000100 (power) and 0x84000102 (reset), and panel buttons --watch showed power down, press and up and reset down and up. Beeper: the beeper test sounded right after the click. On some boots the BIOS hides the pad registers (0xFF).'
         }
     },
     sources: ['https://ai.ugreen.com/products/ugreen-nasync-dxp8800-plus-nas-storage'],

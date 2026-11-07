@@ -34,7 +34,8 @@ export default {
             status: 'expected',
             note: "The rear is drawn after the Plus and shows two LAN ports; this model has one 2.5G port. Inside after UGREEN's manual; slot numbering assumed."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: ['https://nascompares.com/2025/11/14/new-ugreen-dxp4800-pro-and-dxp4800s-nas-revealed/'],
     note: 'Four bays, two M.2 slots, one 2.5G LAN port. Fan control after a fan probe.',

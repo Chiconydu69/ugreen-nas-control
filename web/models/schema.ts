@@ -5,8 +5,11 @@
 //   - what the model is (cpu, bays, m2Slots, lan), from the store page or a named review (`sources`);
 //   - what is known to work with this plugin, per capability (`verified`), each with its evidence.
 
-export type Capability = 'leds' | 'fans' | 'case' | 'sensors';
-export const CAPABILITIES: Capability[] = ['leds', 'fans', 'case', 'sensors'];
+export type Capability = 'leds' | 'fans' | 'case' | 'sensors' | 'panel';
+export const CAPABILITIES: Capability[] = ['leds', 'fans', 'case', 'sensors', 'panel'];
+
+/** Not part of the model-level roll-up (`overallStatus`): the front panel is a read-only extra (power/reset button, beeper), so it never lowers a model that has everything else verified. */
+export const OUTSIDE_OVERALL: Capability[] = ['panel'];
 
 /**
  * How well one capability is known to work on the model.
@@ -97,13 +100,15 @@ export const offered = (m: Model): Capability[] => CAPABILITIES.filter(c => m.ve
 
 /**
  * Model-level state, derived (never stored):
- *   verified   every offered capability is verified
+ *   verified   every offered capability is verified (the front panel does not count)
  *   partial    at least one offered capability is verified, the rest is not
  *   community  none verified, at least one confirmed by users (or partial)
  *   expected   nothing confirmed yet
  */
 export function overallStatus(m: Model): Overall {
-    const ranks = offered(m).map(c => RANK[m.verified[c].status]);
+    const ranks = offered(m)
+        .filter(c => !OUTSIDE_OVERALL.includes(c))
+        .map(c => RANK[m.verified[c].status]);
     if (ranks.length > 0 && ranks.every(r => r === 3)) return 'verified';
     if (ranks.includes(3)) return 'partial';
     if (ranks.includes(2)) return 'community';
@@ -122,7 +127,7 @@ export function whenText(c: Check): string {
     return parts.length ? parts.join(', ') : '';
 }
 
-export const CAPABILITY_LABEL: Record<Capability, string> = { leds: 'LEDs', fans: 'Fan control', case: 'Case view', sensors: 'Sensors' };
+export const CAPABILITY_LABEL: Record<Capability, string> = { leds: 'LEDs', fans: 'Fan control', case: 'Case view', sensors: 'Sensors', panel: 'Front panel' };
 
 export const EVIDENCE_LABEL: Record<Evidence, string> = {
     verified: 'Verified',
@@ -202,7 +207,13 @@ export function validate(m: Model, fileId: string): string[] {
     if (m.shots && m.led === 'none') bad.push('shots: a model without LEDs is not offered by the plugin');
     if (!Array.isArray(m.sources) || m.sources.length === 0 || m.sources.some(s => !/^https:\/\//.test(s))) bad.push('sources: https URLs, at least one');
 
-    const offeredBy: Record<Capability, boolean> = { leds: m.led !== 'none', fans: m.fan !== null, case: m.caseView !== 'none', sensors: true };
+    const offeredBy: Record<Capability, boolean> = {
+        leds: m.led !== 'none',
+        fans: m.fan !== null,
+        case: m.caseView !== 'none',
+        sensors: true,
+        panel: m.verified?.panel?.status !== 'unsupported'
+    }; // panel: panel-models.test.ts checks the registry against the backend tables
     for (const cap of CAPABILITIES) {
         const c = m.verified?.[cap];
         const at = `verified.${cap}`;

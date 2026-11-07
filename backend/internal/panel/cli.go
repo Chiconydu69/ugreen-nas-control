@@ -27,7 +27,12 @@ type Env struct {
 	Lock      func(fn func() error) error
 	ACPIDir   string
 	Conflicts func() []conflict.Conflict
+	// Status says how well the panel is known on a model (the model registry, nasctl.PanelStatus); default: not confirmed.
+	Status func(product string) string
 }
+
+// Unconfirmed is the status of a model nobody confirmed the panel on.
+const Unconfirmed = "vendor source, not yet confirmed"
 
 func (e Env) withDefaults() Env {
 	if e.DMIDir == "" {
@@ -58,13 +63,16 @@ func (e Env) withDefaults() Env {
 	if e.Now == nil {
 		e.Now = time.Now
 	}
+	if e.Status == nil {
+		e.Status = func(string) string { return Unconfirmed }
+	}
 	return e
 }
 
 const usage = `Usage: ugreen-nas panel <command>
   buttons [--watch]            read the power and reset button (read only); --watch prints presses until Ctrl-C
   beep [--freq Hz] [--ms N]    sound the beeper for N ms (default 200, at most 2000); --freq only on PC speaker models
-Needs root. Vendor source for every model, not yet confirmed on hardware (docs/panel.md).`
+Needs root. The facts are UGREEN's driver source; which model users confirmed is in docs/panel.md.`
 
 // Main runs `ugreen-nas panel ...` and returns the exit code. ctx ends on SIGINT/SIGTERM.
 func Main(ctx context.Context, env Env, args []string, stdout, stderr io.Writer) int {
@@ -130,7 +138,7 @@ func runButtons(ctx context.Context, env Env, args []string, stdout, stderr io.W
 		return fmt.Errorf("open /dev/mem: %w (needs root; a kernel with STRICT_DEVMEM may refuse the pad registers)", err)
 	}
 	defer func() { _ = m.Close() }()
-	say(stdout, "model: %s (vendor source, not yet confirmed on hardware)", model)
+	say(stdout, "model: %s (%s)", model, env.Status(model))
 	if spec.Power == nil {
 		say(stdout, "power: not readable by address")
 	}

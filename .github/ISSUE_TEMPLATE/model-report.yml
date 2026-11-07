@@ -22,7 +22,7 @@ body:
     id: results
     attributes:
       label: What works on your device
-      description: "One line per capability: LEDs, Fan control, Case view, Sensors. Say works, does not work or not tried. The plugin's Feedback page fills this in."
+      description: "One line per capability: LEDs, Fan control, Case view, Sensors, Front panel. Say works, does not work or not tried. The plugin's Feedback page fills this in."
     validations:
       required: true
   - type: textarea

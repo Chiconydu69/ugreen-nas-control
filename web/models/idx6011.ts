@@ -36,7 +36,8 @@ export default {
             status: 'expected',
             note: "Drawn after photos, inside after UGREEN's manual; slot numbering assumed. Not compared on a device. The iDX6012 is the pre-launch name of the iDX6011 as far as known."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected' }
     },
     sources: [
         'https://ai.ugreen.com/products/ugreen-idx6011-32gb-ai-nas',

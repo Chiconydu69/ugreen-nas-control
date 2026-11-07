@@ -8,7 +8,7 @@ const EXTRA = { chevron: '<path d="m6 9 6 6 6-6"/>', download: '<path d="M12 4v1
 const ALL: Record<string, string> = { ...LED_ICONS, ...NAS_ICONS, ...SITE_ICONS, ...EXTRA };
 
 /** Capability -> the plugin icon its page uses in the sidebar (UGREENNASControl.page). */
-export const CAPABILITY_ICON: Record<Capability, string> = { leds: 'bulb', fans: 'fan', case: 'box', sensors: 'thermo' };
+export const CAPABILITY_ICON: Record<Capability, string> = { leds: 'bulb', fans: 'fan', case: 'box', sensors: 'thermo', panel: 'panel' };
 
 export const icon = (name: string, size = 20): string => svgIcon(ALL[name] ?? '', size);
 export const statusIcon = (status: Evidence, size = 14): string => svgIcon(STATUS_ICONS[status], size, 'ico st-glyph');

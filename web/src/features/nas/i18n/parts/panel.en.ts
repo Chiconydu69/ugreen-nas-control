@@ -3,6 +3,8 @@ export const panelEn = {
     'nav.panel': 'Front panel',
     'sub.panel': 'Power and reset button and the beeper, from the source of UGREEN’s drivers.',
     'panel.unconfirmed': 'From UGREEN’s driver source, not yet confirmed on your hardware.',
+    'panel.confirmed': 'Confirmed by users on this model.',
+    'panel.confirmed_by': 'Confirmed by users on this model: {by}.',
     'panel.buttons_title': 'Buttons',
     'panel.buttons_hint': 'Reads the power and reset button once. A press does nothing: the plugin only reads.',
     'panel.power': 'Power',

@@ -70,60 +70,60 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       },
       "answer: first row works": {
         "requests": [],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       },
       "answer: second row does not work": {
         "requests": [],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       },
       "comment": {
         "requests": [],
         "events": [],
-        "text": "416f5fa1937f"
+        "text": "207c8f23d326"
       },
       "issue without data": {
         "requests": [],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&notes=thanks%20%40%E2%80%8Dalex%2C%20see%20%23%E2%"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&notes=thanks%20%4"
         ],
-        "text": "68d8f57273c4"
+        "text": "1e25f4386bc8"
       },
       "collect: refused": {
         "requests": ["nas POST {\"action\":\"diag_start\"}"],
         "events": [],
-        "text": "73d84c005801"
+        "text": "b2d89311e35a"
       },
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "73283984e5b7"
+        "text": "f9a4a8bb3a42"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "73283984e5b7"
+        "text": "f9a4a8bb3a42"
       },
       "create issue": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [132 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20Plus%20recognised"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Mo"
         ],
-        "text": "1c709a3ca699"
+        "text": "70ad3f0a6526"
       },
       "report a problem": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [132 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20Plus%20recognised.%205%20of%205"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20DXP4800%"
         ],
-        "text": "1c709a3ca699"
+        "text": "70ad3f0a6526"
       }
     },
     "language": {
@@ -195,12 +195,12 @@
       "de nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0e2d54df7394"
+        "text": "df8244466a3d"
       },
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5f8f991f3b94"
+        "text": "6970270cb70e"
       },
       "language es": {
         "requests": [
@@ -269,12 +269,12 @@
       "es nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0c8dd82fc5ad"
+        "text": "622aeba1d019"
       },
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ff557feefbd0"
+        "text": "5f98a26e3394"
       },
       "language fr": {
         "requests": [
@@ -343,12 +343,12 @@
       "fr nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3cb133833fd2"
+        "text": "4f338afcf9a3"
       },
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "66c51d349828"
+        "text": "d5af1ef88340"
       },
       "language it": {
         "requests": [
@@ -417,12 +417,12 @@
       "it nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6b4bd3cc6aef"
+        "text": "7252909dc8fb"
       },
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d3fad0109f73"
+        "text": "64e8aa84211b"
       },
       "language nl": {
         "requests": [
@@ -491,12 +491,12 @@
       "nl nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0f71d5b6159f"
+        "text": "ad54da178f6e"
       },
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "cdfc23cdb341"
+        "text": "767d903d790a"
       },
       "language zh": {
         "requests": [
@@ -565,12 +565,12 @@
       "zh nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b69e071b057a"
+        "text": "6f6899f628b2"
       },
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2f73b0505729"
+        "text": "1eef006fc3ba"
       },
       "language auto": {
         "requests": [
@@ -654,12 +654,12 @@
       "en nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       },
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a6821e76e8e3"
+        "text": "fe4186898c25"
       }
     },
     "led-drives": {
@@ -1243,12 +1243,12 @@
       "nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       },
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a6821e76e8e3"
+        "text": "fe4186898c25"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -1263,12 +1263,12 @@
       "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "a6821e76e8e3"
+        "text": "fe4186898c25"
       },
       "about: confirm my device": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "ffab5be8515c"
+        "text": "6084620f5211"
       }
     },
     "poll": {
@@ -1854,60 +1854,60 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       },
       "answer: first row works": {
         "requests": [],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       },
       "answer: second row does not work": {
         "requests": [],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       },
       "comment": {
         "requests": [],
         "events": [],
-        "text": "3677cfaf03fa"
+        "text": "5025fe933037"
       },
       "issue without data": {
         "requests": [],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&notes=thanks%20%40%E2%80%8Dalex%2C%20see%20%23%E2%80%8"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&notes=thanks%20%40%E2"
         ],
-        "text": "ad29dcb6c3b7"
+        "text": "f7e532b105f8"
       },
       "collect: refused": {
         "requests": ["nas POST {\"action\":\"diag_start\"}"],
         "events": [],
-        "text": "e0b75ac1569e"
+        "text": "b29ae38618e9"
       },
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "d31ba47342c5"
+        "text": "c8cdd8ce08d0"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "d31ba47342c5"
+        "text": "c8cdd8ce08d0"
       },
       "create issue": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [130 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20GT%20recognised.%205%"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%"
         ],
-        "text": "8fb38002838b"
+        "text": "3c8416e50997"
       },
       "report a problem": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [130 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20GT%20recognised.%205%20of%205%20che"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20DXP4800%20GT"
         ],
-        "text": "8fb38002838b"
+        "text": "3c8416e50997"
       }
     },
     "language": {
@@ -1990,12 +1990,12 @@
       "de nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "402c787e03b5"
+        "text": "9885b7313f84"
       },
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "60d3a5f1cac5"
+        "text": "d92b75fcf2ff"
       },
       "language es": {
         "requests": [
@@ -2075,12 +2075,12 @@
       "es nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9e65a1d43407"
+        "text": "2316430e1572"
       },
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "7598ea273fc2"
+        "text": "e21257b46c5d"
       },
       "language fr": {
         "requests": [
@@ -2160,12 +2160,12 @@
       "fr nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "40a551330440"
+        "text": "386fe882bb4e"
       },
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "69feaac7cb84"
+        "text": "e6de32d6258f"
       },
       "language it": {
         "requests": [
@@ -2245,12 +2245,12 @@
       "it nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "dd2142b25f1f"
+        "text": "136f649a887a"
       },
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "cb0c77b72aa1"
+        "text": "85fa043ebaa7"
       },
       "language nl": {
         "requests": [
@@ -2330,12 +2330,12 @@
       "nl nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "21261c8af78e"
+        "text": "a708ca833ad8"
       },
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "4eea4871b254"
+        "text": "ad92c58a69db"
       },
       "language zh": {
         "requests": [
@@ -2415,12 +2415,12 @@
       "zh nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "8552d2ba1b5b"
+        "text": "487bcf4fbb89"
       },
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2d357d515421"
+        "text": "a63ad9bbf0e7"
       },
       "language auto": {
         "requests": [
@@ -2516,12 +2516,12 @@
       "en nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       },
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "15b32a1c72a0"
+        "text": "ebf8701ad793"
       }
     },
     "led-drives": {
@@ -3122,12 +3122,12 @@
       "nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       },
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "15b32a1c72a0"
+        "text": "ebf8701ad793"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -3142,12 +3142,12 @@
       "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "15b32a1c72a0"
+        "text": "ebf8701ad793"
       },
       "about: confirm my device": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c7ba79194042"
+        "text": "61ce417205d3"
       }
     },
     "poll": {
@@ -3801,60 +3801,60 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       },
       "answer: first row works": {
         "requests": [],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       },
       "answer: second row does not work": {
         "requests": [],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       },
       "comment": {
         "requests": [],
         "events": [],
-        "text": "77c4f25d45a4"
+        "text": "6c5242bd7b36"
       },
       "issue without data": {
         "requests": [],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&notes=thanks%20%40%E2%80%8Dalex%2C%20see%20%23%E2%80"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&notes=thanks%20%40%"
         ],
-        "text": "4a63e1008ddd"
+        "text": "679ffa88b453"
       },
       "collect: refused": {
         "requests": ["nas POST {\"action\":\"diag_start\"}"],
         "events": [],
-        "text": "ecf51b833e55"
+        "text": "914b4f8bfab2"
       },
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "0d5c66511059"
+        "text": "a1284c1123c6"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "0d5c66511059"
+        "text": "a1284c1123c6"
       },
       "create issue": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP6800%20Pro%20recognised.%2"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Mode"
         ],
-        "text": "0d01c8561e84"
+        "text": "ce88708dd874"
       },
       "report a problem": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP6800%20Pro%20recognised.%205%20of%205%20"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20DXP6800%20"
         ],
-        "text": "0d01c8561e84"
+        "text": "ce88708dd874"
       }
     },
     "language": {
@@ -3937,12 +3937,12 @@
       "de nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "4c81cbd8b7aa"
+        "text": "e4bb50b54098"
       },
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "59f6160af699"
+        "text": "46200edde63f"
       },
       "language es": {
         "requests": [
@@ -4022,12 +4022,12 @@
       "es nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "e1dfc328cc83"
+        "text": "cd4ebce8af97"
       },
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "16527489c972"
+        "text": "5b45999b907d"
       },
       "language fr": {
         "requests": [
@@ -4107,12 +4107,12 @@
       "fr nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "daffd40b41b2"
+        "text": "aec0a751d9bd"
       },
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2e143b81dd36"
+        "text": "0beccb86c3c6"
       },
       "language it": {
         "requests": [
@@ -4192,12 +4192,12 @@
       "it nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "d23f00123aea"
+        "text": "5d3cde4256dc"
       },
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "01efc05500db"
+        "text": "8bf4ba3abcf1"
       },
       "language nl": {
         "requests": [
@@ -4277,12 +4277,12 @@
       "nl nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "06ce851fcf7a"
+        "text": "95d407ec993e"
       },
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6b686debaed2"
+        "text": "8e7781a8884e"
       },
       "language zh": {
         "requests": [
@@ -4362,12 +4362,12 @@
       "zh nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "f6cf72949d0f"
+        "text": "83d7ea46c8a2"
       },
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5a04da9c488f"
+        "text": "add64e8e5b79"
       },
       "language auto": {
         "requests": [
@@ -4463,12 +4463,12 @@
       "en nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       },
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "db66d1e88943"
+        "text": "cf280d673611"
       }
     },
     "led-drives": {
@@ -5069,12 +5069,12 @@
       "nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       },
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "db66d1e88943"
+        "text": "cf280d673611"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -5089,12 +5089,12 @@
       "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "db66d1e88943"
+        "text": "cf280d673611"
       },
       "about: confirm my device": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fd712063a9d2"
+        "text": "fb3050bd55e9"
       }
     },
     "poll": {
@@ -5757,60 +5757,60 @@
           "nas GET {\"action\":\"status\"}"
         ],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       },
       "answer: first row works": {
         "requests": [],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       },
       "answer: second row does not work": {
         "requests": [],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       },
       "comment": {
         "requests": [],
         "events": [],
-        "text": "a906419004a8"
+        "text": "0de631638cf1"
       },
       "issue without data": {
         "requests": [],
         "events": [
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&notes=thanks%20%40%E2%80%8Dalex%2C%20see%20%23%E2%80"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.3.2%2C%20plugin%200.0.0%2C%20kernel%206.18.38-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&notes=thanks%20%40%"
         ],
-        "text": "8d53e31717bb"
+        "text": "a62f06577918"
       },
       "collect: refused": {
         "requests": ["nas POST {\"action\":\"diag_start\"}"],
         "events": [],
-        "text": "1fd17c01643a"
+        "text": "84c601591974"
       },
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "d045d1ff9e16"
+        "text": "f2a0025ade87"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "d045d1ff9e16"
+        "text": "f2a0025ade87"
       },
       "create issue": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20iDX6011%20Pro%20recognised.%2"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Mode"
         ],
-        "text": "7a4cdf03ce5e"
+        "text": "34fdf947bee0"
       },
       "report a problem": {
         "requests": [],
         "events": [
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
-          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20iDX6011%20Pro%20recognised.%205%20of%205%20"
+          "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20iDX6011%20"
         ],
-        "text": "7a4cdf03ce5e"
+        "text": "34fdf947bee0"
       }
     },
     "language": {
@@ -5894,12 +5894,12 @@
       "de nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2802a1683ef6"
+        "text": "1384109a673c"
       },
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "0cfaff972cb3"
+        "text": "625b686b2398"
       },
       "language es": {
         "requests": [
@@ -5980,12 +5980,12 @@
       "es nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "fe7aa020e6bb"
+        "text": "5459006cb2f5"
       },
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "4199726e5ff6"
+        "text": "83d72bd8530a"
       },
       "language fr": {
         "requests": [
@@ -6066,12 +6066,12 @@
       "fr nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "48927a9a0043"
+        "text": "ac7d28b5c31c"
       },
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "add58ccf4502"
+        "text": "db4bc0e42103"
       },
       "language it": {
         "requests": [
@@ -6152,12 +6152,12 @@
       "it nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "065d53de6771"
+        "text": "23ea261a977d"
       },
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "00e16867f5a2"
+        "text": "f0fca1c84fba"
       },
       "language nl": {
         "requests": [
@@ -6238,12 +6238,12 @@
       "nl nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3f915e7e6b51"
+        "text": "10297c9fc0e0"
       },
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "c18214e7bc1d"
+        "text": "b76989aa5d3a"
       },
       "language zh": {
         "requests": [
@@ -6324,12 +6324,12 @@
       "zh nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6131de11ecbe"
+        "text": "8ec9f6f3d01c"
       },
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2e9a217ac95b"
+        "text": "4b4998a38c05"
       },
       "language auto": {
         "requests": [
@@ -6427,12 +6427,12 @@
       "en nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       },
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5cd1ef122ced"
+        "text": "5cc1c0c7e7e7"
       }
     },
     "led-drives": {
@@ -7040,12 +7040,12 @@
       "nav feedback": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       },
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5cd1ef122ced"
+        "text": "5cc1c0c7e7e7"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -7060,12 +7060,12 @@
       "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "5cd1ef122ced"
+        "text": "5cc1c0c7e7e7"
       },
       "about: confirm my device": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "731a0f0f32f0"
+        "text": "280cc9edc1a7"
       }
     },
     "poll": {

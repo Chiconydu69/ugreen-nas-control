@@ -4,6 +4,8 @@ export const panelNl: Record<keyof typeof panelEn, string> = {
     'nav.panel': 'Voorpaneel',
     'sub.panel': "Aan/uit- en resetknop en de zoemer, volgens de broncode van de UGREEN-stuurprogramma's.",
     'panel.unconfirmed': "Volgens de broncode van de UGREEN-stuurprogramma's, nog niet bevestigd op jouw hardware.",
+    'panel.confirmed': 'Door gebruikers bevestigd op dit model.',
+    'panel.confirmed_by': 'Door gebruikers bevestigd op dit model: {by}.',
     'panel.buttons_title': 'Knoppen',
     'panel.buttons_hint': 'Leest de aan/uit- en de resetknop één keer. Indrukken doet niets: de plug-in leest alleen.',
     'panel.power': 'Aan/uit',

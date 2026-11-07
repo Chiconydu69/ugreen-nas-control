@@ -48,7 +48,8 @@ export default {
             by: 'DanielRuppen',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/244',
             note: 'Reported working by a user on a SUB2 board (5.5.0-next.000133, 2026-11-07, #244): CPU temperature checked ok.'
-        }
+        },
+        panel: { status: 'expected' }
     },
     sources: [
         'https://datacenterdisk.com/nas-devices/ugreen',

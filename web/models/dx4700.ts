@@ -28,7 +28,8 @@ export default {
             status: 'expected',
             note: "No photos or manual of this model found: drawn after the DX4600 Pro (four bays, two 2.5G LAN ports, two M.2 slots, same back); this model's hardware is not known."
         },
-        sensors: { status: 'expected' }
+        sensors: { status: 'expected' },
+        panel: { status: 'expected', note: "Buttons from UGREEN's driver source. The beeper only where the product name is exactly DX4700." }
     },
     sources: ['https://github.com/miskcoo/ugreen_leds_controller/issues/22'],
     note: "Four bays, no longer listed on the UGREEN store; the board reports its name as DX4700+. Case view drawn after the DX4600 Pro, as this model's hardware is not known. No fan control.",

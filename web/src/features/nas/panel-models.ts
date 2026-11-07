@@ -1,6 +1,6 @@
 // Which models have a readable power/reset button and a beeper, by DMI product_name. A mirror of the tables in
 // backend/internal/panel (buttons.go ButtonSpecs, beeper.go BeeperSpecs), which match the way UGREEN's drivers do: exact
-// name or name prefix. panel-models.test.ts keeps the two in step. Every entry is vendor source, not yet confirmed on hardware.
+// name or name prefix. panel-models.test.ts keeps the two in step. Every entry is vendor source; which model users confirmed is in the registry (web/models).
 
 interface Match {
     exact: string[];

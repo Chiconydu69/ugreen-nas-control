@@ -1,6 +1,6 @@
 # Front panel: buttons and beeper
 
-`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source, not yet confirmed on hardware, except the DXP8800 Plus (confirmed by a user, issue #165).** Needs root. No press triggers an action; nothing reboots or shuts down.
+`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); today only the DXP8800 Plus (issue #165).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action; nothing reboots or shuts down.
 
 ## Commands
 

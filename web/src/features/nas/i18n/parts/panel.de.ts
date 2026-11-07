@@ -4,6 +4,8 @@ export const panelDe: Record<keyof typeof panelEn, string> = {
     'nav.panel': 'Frontblende',
     'sub.panel': 'Ein-/Aus- und Reset-Taste sowie der Piepser, nach dem Quelltext der UGREEN-Treiber.',
     'panel.unconfirmed': 'Nach dem Quelltext der UGREEN-Treiber, auf deiner Hardware noch nicht bestätigt.',
+    'panel.confirmed': 'Auf diesem Modell von Nutzern bestätigt.',
+    'panel.confirmed_by': 'Auf diesem Modell von Nutzern bestätigt: {by}.',
     'panel.buttons_title': 'Tasten',
     'panel.buttons_hint': 'Liest die Ein-/Aus- und die Reset-Taste einmal. Ein Tastendruck löst nichts aus: das Plugin liest nur.',
     'panel.power': 'Ein/Aus',

@@ -616,7 +616,7 @@ func panelBeeper(in FeatureInputs) string {
 	if b == nil {
 		return na
 	}
-	return fmt.Sprintf("present, backend %v (never sounded by diag)", b.Kind)
+	return fmt.Sprintf("present, backend %v (never sounded by diag), %s", b.Kind, PanelStatus(in.Model))
 }
 
 func lcdBacklight(in FeatureInputs) string {

@@ -161,7 +161,7 @@ export type Cs201xConfirmResponse = ApiOk & { map: FanMap };
 
 /*
  * Front panel (web/plugin/include/panel.php, backend/internal/panel): button state and beeper, from UGREEN's driver
- * source, not yet confirmed on hardware.
+ * source; which model users confirmed is in the model registry (web/models).
  */
 
 /** GET panel_buttons: one read of the power and reset pads. */
