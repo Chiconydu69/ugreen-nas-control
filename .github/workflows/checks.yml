@@ -130,10 +130,6 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
-      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
-        with:
-          primary-key: nix-${{ runner.os }}-gotest-${{ hashFiles('flake.lock', 'flake.nix') }}
-          gc-max-store-size-linux: 3G
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
@@ -191,10 +187,6 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
-      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7
-        with:
-          primary-key: nix-${{ runner.os }}-gotest-${{ hashFiles('flake.lock', 'flake.nix') }}
-          gc-max-store-size-linux: 3G
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
