@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"syscall"
@@ -34,6 +35,7 @@ const usageText = `Usage:
   ugreen-nas-ctl diag                        anonymised read-only diagnostics as Markdown for a bug report
                                              (no hardware writes; the only system change is modprobe i2c-dev, if missing)
                                              diag --json: the same as one JSON object (schema feedback/1) for the Feedback page
+                                             diag --full-scan: the I2C scan includes the display (graphics) buses, up to 30 s more
   ugreen-nas-ctl event stopping              array stop hook: signals shutdown on the power LED
 `
 
@@ -47,6 +49,9 @@ type Ctl struct {
 	Detect func() []conflict.Conflict
 	// OpenMem opens /dev/mem for diag; nil means panel.OpenMem. Always called read-only.
 	OpenMem func(write bool) (panel.Mem, error)
+
+	// FullScan makes diag scan the display buses too (diag --full-scan).
+	FullScan bool
 
 	found   []conflict.Conflict
 	scanned bool
@@ -128,7 +133,8 @@ func (c *Ctl) Main(args []string) int {
 	case "report":
 		return c.report()
 	case "diag":
-		return c.diag(len(args) > 1 && args[1] == "--json")
+		c.FullScan = slices.Contains(args[1:], "--full-scan")
+		return c.diag(slices.Contains(args[1:], "--json"))
 	case "event":
 		if len(args) > 1 && args[1] == "stopping" {
 			c.eventStopping()
