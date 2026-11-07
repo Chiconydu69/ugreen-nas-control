@@ -813,3 +813,22 @@ func TestAnonRemovesCompressedIPv6AndDashMAC(t *testing.T) {
 		t.Errorf("scrub: %q", got)
 	}
 }
+
+// A box called "Unraid" keeps the label of its header line.
+func TestAnonKeepsLabelKeysThatEqualTheHostName(t *testing.T) {
+	a := Anon{Hostnames: []string{"Unraid"}}
+	for in, want := range map[string]string{
+		"plugin: 5.4.0\nunraid: 7.3.4\nkernel: 6.18.58-Unraid": "plugin: 5.4.0\nunraid: 7.3.4\nkernel: 6.18.58-Unraid",
+		"Nov  4 10:00:00 Unraid kernel: eth0 up":               "Nov  4 10:00:00 <host> kernel: eth0 up",
+		"connected to Unraid: ok":                              "connected to <host>: ok",
+		"unraid: 7.3.4 on Unraid":                              "unraid: 7.3.4 on <host>",
+	} {
+		if got := a.Text(in); got != want {
+			t.Errorf("%q -> %q, want %q", in, got, want)
+		}
+	}
+	hdr := a.Meta(diagHeader(time.Unix(0, 0), "6.18.58-Unraid", Report{UnraidVersion: "7.3.4"}))
+	if !strings.Contains(hdr, "\nunraid: 7.3.4\n") {
+		t.Errorf("header:\n%s", hdr)
+	}
+}
