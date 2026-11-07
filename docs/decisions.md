@@ -16,6 +16,8 @@ Cost: small parts of drivers live in our code (EC protocols, the DesignWare I2C 
 
 Rule: never race a kernel driver. When a driver owns the device, use its interface; direct access only when no driver is bound, and refuse when one is (`chip/smbus_linux.go` `findBus`; the LPSS path in PR #225 follows the same rule).
 
+Exception (DXP2800 SUB2): the MFD parent `intel-lpss` bound to the PCI function while no I2C driver exists below it (Unraid ships `intel-lpss-pci.ko` but no `i2c_designware`). Nothing uses the controller then, so the rule is not about racing a driver. Accepted only when no MFD child has a driver and no I2C adapter exists below the function; the plugin then holds `power/control` at `on` while it works and restores the saved value (`chip/lpss_pm_linux.go`, [LED chip](led.md)). Any other driver, or any child driver or adapter, is refused as before.
+
 Depends on: no kernel lockdown. Unraid 7.3.4 (kernel 6.18.58-Unraid) has `# CONFIG_STRICT_DEVMEM is not set` and no lockdown LSM (`/usr/src/linux-6.18.58-Unraid/config` on the maintainer box). `STRICT_DEVMEM` alone would still allow our accesses (it blocks RAM, not unclaimed device MMIO); lockdown (integrity or confidentiality) blocks `/dev/mem` and I/O ports and would stop fan, watchdog, EC and the `/dev/mem` LED paths.
 
 Revisit if: Unraid enables lockdown or `IO_STRICT_DEVMEM`; Unraid ships drivers for this hardware in its kernel (then use them); the plugin model changes with Unraid 8.
