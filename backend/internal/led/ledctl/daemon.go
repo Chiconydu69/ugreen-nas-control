@@ -105,6 +105,7 @@ type netProbe struct {
 	mu    sync.Mutex
 	ok    bool
 	speed int64
+	fails int // failed gateway probes in a row; only the probe goroutine touches it
 }
 
 func (p *netProbe) set(ok bool, speed int64) {
@@ -115,10 +116,13 @@ func (p *netProbe) set(ok bool, speed int64) {
 
 // probeNetwork runs the check, hands the verdict to the loop and writes it where `status` reads it.
 func (c *Ctl) probeNetwork(p *netProbe, dev string) {
-	ok, why := c.networkCheck(dev)
+	ok, why := c.networkCheck(dev, &p.fails)
 	p.set(ok, atoiOr(c.linkSpeed(dev, 0), 0))
 	if ok {
-		writeState(c.Env.NetState, "ok")
+		if why == "" {
+			why = "ok"
+		}
+		writeState(c.Env.NetState, why)
 	} else {
 		writeState(c.Env.NetState, "fail: "+why)
 	}

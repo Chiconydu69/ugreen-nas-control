@@ -555,17 +555,78 @@ func TestNetworkVerdictAndStatus(t *testing.T) {
 		{"link down", "down", 0, false, "operstate down"},
 		{"state unknown", "unknown", 0, false, "operstate unknown"},
 		{"no operstate", "", 0, false, "operstate unreadable"},
-		{"gateway silent", "up", 1, false, "gateway ping failed"},
 	} {
 		if tc.oper == "" {
 			_ = os.Remove(r.env.SysNet + "/eth0/operstate")
 		} else {
 			r.write("sys/net/eth0/operstate", tc.oper+"\n")
 		}
-		r.run.codes["ping -c 1 -W 2 10.0.0.1"] = tc.ping
+		r.run.codes["ping -c 2 -W 2 10.0.0.1"] = tc.ping
 		r.c.probeNetwork(probe, "eth0")
 		if got := verdict(); got["network_ok"] != tc.ok || got["network_reason"] != tc.reason {
 			t.Errorf("%s: network_ok=%v reason=%q", tc.name, got["network_ok"], got["network_reason"])
 		}
 	}
+
+	// A silent gateway counts: ok with the count in the reason, red on the third probe in a row, one answer resets.
+	r.write("sys/net/eth0/operstate", "up\n")
+	check := func(step string, ping int, ok bool, reason string) {
+		t.Helper()
+		r.run.codes["ping -c 2 -W 2 10.0.0.1"] = ping
+		r.c.probeNetwork(probe, "eth0")
+		if got := verdict(); got["network_ok"] != ok || got["network_reason"] != reason {
+			t.Errorf("%s: network_ok=%v reason=%q", step, got["network_ok"], got["network_reason"])
+		}
+	}
+	check("healthy", 0, true, "")
+	check("1st miss", 1, true, "ok (gateway ping failed 1 of 3)")
+	check("2nd miss", 1, true, "ok (gateway ping failed 2 of 3)")
+	check("answer resets", 0, true, "")
+	check("1st miss again", 1, true, "ok (gateway ping failed 1 of 3)")
+	check("2nd miss again", 1, true, "ok (gateway ping failed 2 of 3)")
+	check("3rd miss", 1, false, "gateway ping failed")
+	check("still silent", 1, false, "gateway ping failed")
+	check("answers again", 0, true, "")
+
+	// Link loss is red at once and clears the count.
+	check("miss", 1, true, "ok (gateway ping failed 1 of 3)")
+	r.write("sys/net/eth0/operstate", "down\n")
+	check("link down", 1, false, "operstate down")
+	r.write("sys/net/eth0/operstate", "up\n")
+	check("link back, count restarts", 1, true, "ok (gateway ping failed 1 of 3)")
+
+	// Carrier 0 on a bond and on all its ports is red at once; one port with a carrier keeps it green.
+	r.write("sys/net/eth0/carrier", "0\n")
+	check("no carrier", 0, false, "carrier 0")
+	_ = os.Symlink("../eth1", filepath.Join(r.dir, "sys/net/eth0/lower_eth1"))
+	r.write("sys/net/eth1/carrier", "1\n")
+	check("port with carrier", 0, true, "")
+	r.write("sys/net/eth1/carrier", "0\n")
+	check("all ports down", 0, false, "carrier 0")
+}
+
+// The LED itself: one lost ping leaves the network LED green, the third probe in a row turns it red, an answer
+// turns it green again.
+func TestDaemonNetdevGatewayHysteresis(t *testing.T) {
+	r := newRig(t, "DXP2800")
+	writeSystem(r)
+	r.config("disk_error_color=\"9 0 0\"\n")
+	r.run.codes["ping -c 2 -W 2 10.0.0.1"] = 1
+	r.c.Tick = 2 * time.Millisecond
+
+	ctx, cancel := context.WithCancel(t.Context())
+	done := make(chan int, 1)
+	go func() { done <- r.c.daemonRun(ctx) }()
+	defer func() { cancel(); <-done }()
+
+	waitFor(t, r, "green after the first miss", func() bool { return r.chip.get("netdev")[3] == "200" })
+	if s := r.chip.get("netdev"); s[2] != "0" || s[4] != "83" {
+		t.Errorf("one miss: netdev = %v, want green", s)
+	}
+	waitFor(t, r, "red after the third miss", func() bool { return r.chip.get("netdev")[2] == "9" })
+
+	r.run.mu.Lock()
+	r.run.codes["ping -c 2 -W 2 10.0.0.1"] = 0
+	r.run.mu.Unlock()
+	waitFor(t, r, "green after an answer", func() bool { return r.chip.get("netdev")[3] == "200" })
 }

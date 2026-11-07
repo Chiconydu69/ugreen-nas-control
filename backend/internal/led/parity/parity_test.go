@@ -154,6 +154,12 @@ func TestParity(t *testing.T) {
 				equal.Add(1)
 				return
 			}
+			// The gateway probe sends 2 pings where the shell sent 1 (see daemon-run-netdev-gateway-down); that line is the only difference.
+			if strings.ReplaceAll(want, "ping -c 1 -W 2 ", "ping -c 2 -W 2 ") == got {
+				intendedDiff.Add(1)
+				t.Logf("intended difference: the gateway probe pings twice")
+				return
+			}
 			different.Add(1)
 			t.Errorf("Go differs from the recorded shell (- golden, + go):\n%s", unifiedDiff(want, got))
 		})
