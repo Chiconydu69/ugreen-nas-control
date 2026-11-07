@@ -2,4 +2,4 @@
 type: fix
 ---
 
-Spanish: clearer wording on the fan history, fan input and front panel pages. Thanks to [ivolution](https://github.com/ivolution).
+Spanish: clearer wording on the fan history, fan input, front panel, power, schedule and tools pages. Thanks to [ivolution](https://github.com/ivolution).
