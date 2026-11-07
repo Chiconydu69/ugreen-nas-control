@@ -119,7 +119,8 @@
               "go"
               "xz"
               "xmllint"
-            ];
+            ]
+            ++ pkgs.lib.optional isLinux "chromium";
             plugin = [
               "go"
               "bun"
@@ -159,6 +160,7 @@
         pkgs.lib.mapAttrs (_: names: mkDevShell pkgs.mkShellNoCC names { }) shells
         // {
           e2e = mkDevShell pkgs.mkShellNoCC shells.e2e chromeEnv;
+          site = mkDevShell pkgs.mkShellNoCC shells.site chromeEnv;
           # `go test -race` needs cgo, so a C compiler: this shell keeps the stdenv toolchain.
           go = mkDevShell pkgs.mkShell shells.go { };
           default = mkDevShell pkgs.mkShell (
