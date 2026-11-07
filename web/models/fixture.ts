@@ -433,6 +433,8 @@ export function ledOutputs(m: Model) {
             disk_error_color: '#ff0000',
             saved_brightness: {},
             network_device: 'eth0',
+            network_ok: null,
+            network_reason: '',
             netdev_speed: m.lan?.maxMbit[0] ?? 2500,
             network_ports: (m.lan?.maxMbit ?? [2500]).map((max, i) => ({ name: `eth${i}`, link: i === 0, speed: i === 0 ? (max ?? 2500) : 0, max: max ?? 0 })),
             netdev_speed_enabled: true,

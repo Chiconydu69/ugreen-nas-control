@@ -17,6 +17,7 @@ import (
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan/conflict"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fsx"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/proc"
 )
 
@@ -43,6 +44,8 @@ type Ctl struct {
 	// Replaced in tests.
 	Sleep  func(time.Duration)
 	Detect func() []conflict.Conflict
+	// OpenMem opens /dev/mem for diag; nil means panel.OpenMem. Always called read-only.
+	OpenMem func(write bool) (panel.Mem, error)
 
 	found   []conflict.Conflict
 	scanned bool
