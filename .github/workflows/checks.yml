@@ -430,6 +430,7 @@ jobs:
           diagnostic-endpoint: ''
       - run: nix develop .#lint -c actionlint
       - run: nix develop .#lint -c zizmor --offline .github/workflows
+      - run: nix develop .#lint -c bash -c 'bun test scripts/workflows-policy.test.ts && bun scripts/workflows-policy.ts'
 
   # The release PR (release/X.Y.Z -> main): rebuild from the branch and compare with the draft release the
   # Release workflow created. The archive is reproducible, so any difference is a bad or tampered build.

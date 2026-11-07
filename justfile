@@ -17,7 +17,7 @@ default:
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
+check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint workflows-policy-test docs-check kernel-canary-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -155,6 +155,12 @@ changes-check:
 [group('plugin')]
 workflows-lint:
     if ls .github/workflows/*.yml >/dev/null 2>&1; then actionlint; else echo "skip: no .github/workflows"; fi
+    bun scripts/workflows-policy.ts
+
+# Tests of the workflow policy lint
+[group('check')]
+workflows-policy-test:
+    bun test scripts/workflows-policy.test.ts
 
 # Fake Unraid on php -S around the plugin files, API from the fixture of one model in web/models/: just harness dxp4800-gt
 [group('dev')]

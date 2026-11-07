@@ -33,7 +33,7 @@ concurrency:
 
 jobs:
   prepare:
-    if: github.event_name == 'workflow_dispatch'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Holds write and OIDC tokens: no nix cache in this job.
@@ -137,7 +137,7 @@ jobs:
           fi
 
   check:
-    if: github.event_name == 'push'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'push') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -168,7 +168,7 @@ jobs:
   # Re-runnable: a finished release is skipped, a draft is verified and attested.
   verify:
     needs: check
-    if: needs.check.outputs.changed == 'true'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (needs.check.outputs.changed == 'true') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -210,7 +210,7 @@ jobs:
   # Site deploy of the merge commit (website.yml). The release stays a draft until it succeeded; a re-run retries it.
   pages:
     needs: verify
-    if: needs.verify.outputs.state == 'draft'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (needs.verify.outputs.state == 'draft') }}
     uses: ./.github/workflows/website.yml # zizmor: ignore[self-repository] actionlint rejects the $/ form
     with:
       ref: ${{ github.sha }}
@@ -222,7 +222,7 @@ jobs:
 
   publish:
     needs: [check, verify, pages]
-    if: needs.verify.outputs.state == 'draft'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (needs.verify.outputs.state == 'draft') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -242,6 +242,7 @@ jobs:
         run: nix develop .#release -c bun plugin/tools/release.ts publish "$TAG" "$SHA"
 
   backmerge:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     needs: [check, publish]
     runs-on: ubuntu-latest
     timeout-minutes: 5
