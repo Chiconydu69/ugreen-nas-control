@@ -22,6 +22,7 @@ type fakeDW struct {
 	resp   []byte
 	nak    bool
 	stuck  bool   // ENABLE_STATUS never drops to 0
+	flipRW bool   // the component type reads wrong once the writable mapping exists
 	hang   bool   // commands are swallowed: no data, no stop, no abort
 	abrt   uint32 // IC_TX_ABRT_SOURCE of an abort other than a NAK
 	roErr  error  // the read only mapping fails
@@ -201,6 +202,9 @@ func fakeMem(t *testing.T, f *fakeDW) {
 		}
 		if write {
 			f.rwMaps++
+			if f.flipRW {
+				f.regs[dwCompTypeReg] = 0xffffffff
+			}
 		} else {
 			f.roMaps++
 		}
@@ -509,5 +513,22 @@ func TestLPSSProbeCommandReadOnly(t *testing.T) {
 	}
 	if rc := Run([]string{"lpss-probe", "--bogus"}, &out, &errOut); rc != 2 {
 		t.Errorf("unknown argument: rc %d, want 2", rc)
+	}
+}
+
+// Runtime PM between the D0 check and the first write: the component type is read again on the writable mapping.
+func TestLPSSRecheckBeforeFirstWrite(t *testing.T) {
+	f := newFakeDW()
+	f.flipRW = true
+	f.resp = []byte{0xb2, 0xc5}
+	r, err := probe(t, sysOpts{}, f)
+	if err == nil || !strings.Contains(err.Error(), "changed") {
+		t.Fatalf("want a refusal, got %v", err)
+	}
+	if f.writes != 0 || f.rwMaps != 1 || f.unmaps != 2 {
+		t.Errorf("%d writes, %d writable maps, %d unmaps, want 0, 1, 2:\n%v", f.writes, f.rwMaps, f.unmaps, f.log)
+	}
+	if last := r.lines[len(r.lines)-1]; !strings.Contains(last, "refused") {
+		t.Errorf("last line %q", last)
 	}
 }

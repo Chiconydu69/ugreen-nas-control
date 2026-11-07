@@ -252,6 +252,13 @@ func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
 	if err != nil {
 		return nil, r.refuse("cannot map BAR0: %v", err)
 	}
+	// PCI runtime PM could have changed the power state since the D0 check: read the component type again before
+	// the first write and leave the controller alone when it no longer answers. Nothing is written to undo it.
+	if t := regs.load(dwCompTypeReg); t != dwCompType {
+		unmap()
+		r.add("dw.comp_type", "0x%08x on the writable mapping (expected 0x%08x)", t, dwCompType)
+		return nil, r.refuse("component type changed to 0x%08x before the first write", t)
+	}
 	d := &dwI2C{mem: regs, unmap: unmap, addr: addr, timing: lpssTiming()}
 	// Teardown leaves RESETS as it is: intel_lpss_remove (intel-lpss.c:469-479.18) does not touch it either; only
 	// suspend writes 0 (:499-515). A failed disable is reported, not retried.
