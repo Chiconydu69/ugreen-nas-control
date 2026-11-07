@@ -251,6 +251,8 @@ func (c *Ctl) mappingSource() string {
 		return "tested"
 	case globMatch("DXP4800*GT*", c.product):
 		return "tested"
+	case c.product == "DXP2800":
+		return "tested"
 	case globAny(c.product, "DX4700*", "DXP2800*", "DXP4800*"):
 		return "reported"
 	}
