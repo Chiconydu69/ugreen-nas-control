@@ -3,6 +3,7 @@ package fan
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"regexp"
 	"sort"
@@ -215,7 +216,7 @@ func (c Curve) At(temp float64) int {
 				return b.Pct
 			}
 			f := (temp - float64(a.Temp)) / float64(b.Temp-a.Temp)
-			return a.Pct + int(f*float64(b.Pct-a.Pct)+0.5)
+			return a.Pct + int(math.Round(f*float64(b.Pct-a.Pct)))
 		}
 	}
 	return c[len(c)-1].Pct

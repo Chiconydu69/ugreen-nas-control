@@ -89,3 +89,22 @@ func TestApplyModelLimitsRaisesMinPctToTheHardwareFloor(t *testing.T) {
 		t.Fatalf("higher user value lost: %d", c.MinPct)
 	}
 }
+
+// The hardware floor of the DXP2800 GT (25 %) must reach the groups too: a quiet cap of 10 % with min_pct 10 would
+// otherwise record 10 % for a fan the chip runs at 25 %.
+func TestModelFloorReachesGroupMinRunAndQuietCap(t *testing.T) {
+	c := cfgFrom(t, v2Base+"min_pct=\"10\"\nquiet_enabled=\"1\"\nquiet_cap=\"10\"\nquiet_scope=\"all\"\nfan.fan3.deadband=\"1\"\n")
+	c = ApplyModelLimits(c, "DXP2800 GT")
+	for id, g := range map[string]Group{"cpu": c.CPU, "case": c.Case, "fan3": c.ForChannel("fan3")} {
+		if g.MinRun < csFloorPct {
+			t.Errorf("%s min_run %d below the hardware floor %d", id, g.MinRun, csFloorPct)
+		}
+	}
+	cold := sens(30, 25)
+	p := stepOnce(newController(), c, cold, mon3am, JobStatus{})
+	for _, id := range ids4 {
+		if p.Out[id] < csFloorPct {
+			t.Errorf("%s written as %d %%, the chip runs it at %d %%", id, p.Out[id], csFloorPct)
+		}
+	}
+}

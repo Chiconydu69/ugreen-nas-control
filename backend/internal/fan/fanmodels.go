@@ -115,6 +115,16 @@ func modelLimits(model string) (cpuCrit, diskCrit int, ok bool) {
 // are what runs.
 func ApplyModelLimits(c Config, model string) Config {
 	c.MinPct = max(c.MinPct, minPctFloor(model))
+	c.CPU.MinRun = max(c.CPU.MinRun, c.MinPct)
+	c.Case.MinRun = max(c.Case.MinRun, c.MinPct)
+	if c.Channels != nil {
+		ch := make(map[string]Group, len(c.Channels))
+		for id, g := range c.Channels {
+			g.MinRun = max(g.MinRun, c.MinPct)
+			ch[id] = g
+		}
+		c.Channels = ch
+	}
 	if cpu, disk, ok := modelLimits(model); ok {
 		c.CPUCrit = min(c.CPUCrit, cpu)
 		c.DiskCrit = min(c.DiskCrit, disk)

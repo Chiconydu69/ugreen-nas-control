@@ -207,7 +207,11 @@ var daemonSignals = []os.Signal{syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP,
 // over (writing then would override it).
 func endFanControl(chip Fans, bios Snapshot, pet *Petter, rivals []conflict.Conflict, logf func(string, ...any)) {
 	if len(rivals) > 0 {
-		_ = withLockStop(func() error { stopWatchdog(pet, chip, logf); return nil })
+		_ = withLockStop(func() error {
+			stopWatchdog(pet, chip, logf)
+			disarmFedEC(chip, logf)
+			return nil
+		})
 		_ = os.Remove(statePath)
 		logf("fan control stopped, fans left to %s", rivalNames(rivals))
 		return
@@ -762,4 +766,18 @@ func reportMissingInputs(last string, missing []string, logf func(string, ...any
 		"-d", fmt.Sprintf("No temperature from %s. The fans follow the on_missing rule of their group. Check the sensor, script or tool.", now),
 		"-i", "warning")
 	return now
+}
+
+// disarmFedEC clears the enable byte of an EC timer this process fed, for a stop that leaves the fans to a rival (EC.Restore
+// does it on the normal path): without a feeder the armed timer would reset the box. The caller holds the lock.
+func disarmFedEC(chip Fans, logf func(string, ...any)) {
+	ec, ok := chip.(*EC)
+	if !ok || !ec.fed || ec.sp().wdt == nil || ec.sp().readOnly {
+		return
+	}
+	if err := ec.DisarmWatchdog(); err != nil {
+		logf("watchdog could not be stopped: %v", err)
+		return
+	}
+	ec.fed = false
 }

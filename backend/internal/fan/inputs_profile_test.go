@@ -594,3 +594,23 @@ func TestProfileValuesPassPHPValidation(t *testing.T) {
 		t.Fatalf("expected 7 rejections, got %d: %s", n, out)
 	}
 }
+
+// allow_off is a v2 setting like the others: an export carries it and applying that export on another NAS restores it.
+func TestProfileExportCarriesAllowOff(t *testing.T) {
+	cfg := filepath.Join(t.TempDir(), "fan.cfg")
+	text := "cfg_version=\"2\"\nmode=\"standard\"\ncase_allow_off=\"1\"\nfan.fan2.allow_off=\"1\"\n"
+	if err := os.WriteFile(cfg, []byte(text), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	c := LoadConfig(cfg)
+	p := ExportProfile(c, "DXP6800 Pro", time.Now())
+	for _, k := range []string{"case_allow_off", "fan.fan2.allow_off"} {
+		if p.Fan[k] != "1" {
+			t.Errorf("export lacks %s: %v", k, p.Fan)
+		}
+	}
+	c2 := LoadConfig(writeFanCfg(t, p.Fan))
+	if !c2.Case.AllowOff || !c2.ForChannel("fan2").AllowOff {
+		t.Errorf("allow_off lost on the round trip: case %v fan2 %v", c2.Case.AllowOff, c2.ForChannel("fan2").AllowOff)
+	}
+}
