@@ -875,6 +875,9 @@ func (c *Ctl) fanDiag(model string) FanDiag {
 	case fan.FanKind(model) == fan.KindProbe:
 		extra("probe-fans tachs (every tach input, read only)", "tachs", "probe-fans", "tachs")
 	}
+	if fan.HasIT8613E(model) {
+		extra("IT8613E header 4 control registers 0x1e (UGREEN) and 0x7f (mainline it87), raw, read only", "ite-ctrl", "probe-fans", "regs")
+	}
 	extra("power-on-ac (read)", "power-on-ac", "power-on-ac")
 	d.Aux = append(d.Aux, run(c.Env.FanTool, "history", "history", "history", "1h"), run(c.Env.FanTool, "profile sources", "profiles", "profile", "sources"))
 	if panel.ButtonsFor(model) != nil && c.Env.Panel != "" {

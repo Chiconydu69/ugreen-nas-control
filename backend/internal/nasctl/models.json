@@ -416,7 +416,7 @@
         },
         "fans": {
           "status": "expected",
-          "note": "Same IT8613E as the DXP6800 Pro. UGREEN's own fan driver wires the whole DXP6800 family like the Pro (cpu on header 2, case fans on headers 3 and 4; header 4 control register unconfirmed), but this model is probed first: fan control stays off until you confirm the result of the fan probe. Not run on this model yet."
+          "note": "Same IT8613E as the DXP6800 Pro. UGREEN's own fan driver wires the whole DXP6800 family like the Pro (cpu on header 2, case fans on headers 3 and 4; header 4 is switched through UGREEN's register 0x1e, not yet checked on this model), but this model is probed first: fan control stays off until you confirm the result of the fan probe. Not run on this model yet."
         },
         "case": {
           "status": "expected",
@@ -548,7 +548,7 @@
         "leds": { "status": "expected", "note": "Same family as the DXP8800 Plus, which works; bay order guessed. Use Identify to confirm." },
         "fans": {
           "status": "expected",
-          "note": "Same IT8613E as the DXP8800 Plus: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 control register unconfirmed). Not run on this model yet."
+          "note": "Same IT8613E as the DXP8800 Plus: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. UGREEN's own driver expects cpu on header 2 and case fans on headers 3 and 4 (header 4 is switched through UGREEN's register 0x1e, not yet checked on this model). Not run on this model yet."
         },
         "case": { "status": "expected", "note": "inside after UGREEN's manual; slot numbering assumed" },
         "sensors": { "status": "expected" }
@@ -591,7 +591,7 @@
           "version": "5.2.0",
           "date": "2026-11-05",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165",
-          "note": "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. Header 4 (pwm4) control register unconfirmed: the diag shows it in automatic mode."
+          "note": "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. On 5.2.0 header 4 (pwm4) stayed in automatic mode in the diag; it now uses the control register 0x1e of UGREEN's driver, to be confirmed."
         },
         "case": {
           "status": "community",
