@@ -5,7 +5,7 @@ name: 'Checks (lint, tests, build)'
 # `changes` skips the Go, web, shell and workflow jobs on PRs into next that do not touch their paths (see its comment); `plugin` (build, plg, changes-check,
 # the generated-files check), `check` and `guard` always run. They add the plg artifact, the guard and the release verification.
 # Nix installer: DeterminateSystems/nix-installer-action. It enables flakes by default and is quick on ephemeral
-# runners. No Nix cache action: every shell is built by cache.nixos.org already (nothing local to cache), the GHA-backed magic-nix-cache gets throttled (HTTP 418).
+# runners. No Nix cache action: every shell is built by cache.nixos.org already (nothing local to cache); the GHA-backed magic-nix-cache gets throttled (HTTP 418, measured: jobs 2-3x slower).
 # Go jobs restore ~/.cache/go-build (go-lint: also the golangci-lint cache) with actions/cache, keyed per job on flake.lock, go.mod and the ISO week, and
 # pre-build their dev shell while it restores. Compiled artifacts are content-addressed, so a stale cache is still correct.
 # Required status check for branch protection: `ci-ok`.
@@ -158,7 +158,6 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
-      - uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
@@ -215,7 +214,6 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
-      - uses: DeterminateSystems/magic-nix-cache-action@84c0677f58dcedf3b91f8223ce36a9ea5b3c84b7 # v15
       # Pre-builds the dev shell while the Go caches restore. Weekly key: an exact hit never saves, so warm runs pay no upload.
       - id: cache-key
         run: |
