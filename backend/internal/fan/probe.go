@@ -8,7 +8,6 @@ import (
 	"slices"
 	"sort"
 	"sync/atomic"
-	"syscall"
 	"time"
 
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fsx"
@@ -457,7 +456,7 @@ func runProbe() error {
 
 	stop := make(chan struct{})
 	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGTERM, syscall.SIGINT)
+	signal.Notify(sig, daemonSignals...) // SIGHUP too (ssh drop): the fans must go back on every way out
 	defer signal.Stop(sig)
 	go func() {
 		<-sig
