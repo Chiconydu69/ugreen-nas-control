@@ -1,0 +1,6 @@
+# Prose that names a specific Unraid release for its own sake (a test box, a release that broke something), not the minimum.
+# Format: file | matched text | reason
+docs/panel.md | Unraid 7.3 | BIOS and register readings on a 7.3.x test box
+docs/competition.md | Unraid 7.3 | other projects broke on 7.3.x kernels
+docs/decisions.md | Unraid 7.3 | kernel modules broke on 7.3.x
+docs/unraid.md | Unraid 7.2 | CSS fact about the 7.2 tile layout, not the minimum

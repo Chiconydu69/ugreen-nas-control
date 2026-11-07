@@ -1,5 +1,6 @@
 // Words of the site. Facts come from web/models/ and the README; keep claims to what the plugin does.
 import { type Capability, type Model, offered } from '../../web/models/schema';
+import { KEYWORD_TERMS, LANGUAGES, NO_KERNEL_MODULE, andList, modelKeywords, withEvidence } from './facts';
 export { CAPABILITY_LABEL, EVIDENCE_HELP, EVIDENCE_LABEL, OVERALL_HELP, OVERALL_LABEL, checkText } from '../../web/models/schema';
 
 export const REPO = process.env.GITHUB_REPOSITORY ?? 'ugreen-nas-control/ugreen-nas-control';
@@ -18,30 +19,27 @@ export const HELP = {
     test: 'Test on your model: in the plugin open Feedback, answer, collect the data, and send the prefilled report.',
     lend: 'Lend or donate a test device (DXP2800 GT, DXP480T Plus, DXP8800 Plus, iDX6011 Pro, DXP2800 V1.2 board).',
     button: 'Test hardware wanted',
-    url: 'https://github.com/ugreen-nas-control/ugreen-nas-control/discussions/134'
+    url: `${GITHUB}/discussions/134`
 };
-export const DISCUSSIONS = 'https://github.com/ugreen-nas-control/ugreen-nas-control/discussions';
+export const DISCUSSIONS = `${GITHUB}/discussions`;
 /** Flip to true once the Community Applications entry is live: the Apps tab becomes the first install route. */
 export const CA_LIVE = false;
 
 /** Meta description and keywords: the one place besides the hero where the official line name appears for search. */
-export const META_DESC =
-    'The Unraid control plugin for UGREEN NAS (DX, DXP, iDX): fan curves, LEDs, case view, sensors, a dashboard tile, the hardware watchdog petted only when it is running, power on after AC loss and a read-only front-panel view. No kernel module. The page runs the real plugin interface on sample data.';
-export const KEYWORDS =
-    'UGREEN NAS, Unraid plugin, DXP6800 Pro, DXP4800, DXP8800, DXP2800 GT, iDX6011, fan control, LED control, watchdog, case view, Community Applications';
+export const META_DESC = `The Unraid control plugin for UGREEN NAS (DX, DXP, iDX): fan curves, LEDs, case view, sensors, a dashboard tile, the hardware watchdog petted only when it is running, power on after AC loss and a read-only front-panel view. ${NO_KERNEL_MODULE}. The page runs the real plugin interface on sample data.`;
+export const KEYWORDS = [KEYWORD_TERMS[0], KEYWORD_TERMS[1], ...modelKeywords(), ...KEYWORD_TERMS.slice(2)].join(', ');
 export const HEADLINE = 'The Unraid control plugin for UGREEN NAS. Fans, LEDs, watchdog.';
-export const SUBLINE =
-    'Your UGREEN is not a generic box. Quiet fans with a safe fallback, the hardware watchdog kept fed so a frozen box reboots itself, LEDs that say something, a live case view of every bay. One plugin, no kernel module. The box below is the real plugin: click it.';
+export const SUBLINE = `Your UGREEN is not a generic box. Quiet fans with a safe fallback, the hardware watchdog kept fed so a frozen box reboots itself, LEDs that say something, a live case view of every bay. One plugin, ${NO_KERNEL_MODULE.toLowerCase()}. The box below is the real plugin: click it.`;
 /** Headline of the social preview image: one short sentence per line, the card has room for 21 characters at three lines. */
 export const SOCIAL_HEAD = 'Unraid plugin. For UGREEN NAS. Fans, LEDs, watchdog.';
 /** Under the headline of the social preview image. */
-export const SOCIAL_SUB = "No kernel module. Built on UGREEN's published driver sources.";
+export const SOCIAL_SUB = `${NO_KERNEL_MODULE}. Built on UGREEN's published driver sources.`;
 
 /** Strip under the hero, the management overview: four reasons, one line each. */
 export const STRIP = [
     ['Quiet fans that fail safe.', 'Multi-point curves. Too hot: every fan to 100 percent. Plugin stops: BIOS values return.'],
     ['A frozen box reboots itself.', 'Keep the BIOS watchdog on. The plugin feeds it (supported models).'],
-    ['No kernel module.', 'Nothing to rebuild after an Unraid update. A weekly check watches the newest Unraid kernel for what the plugin relies on.'],
+    [`${NO_KERNEL_MODULE}.`, 'Nothing to rebuild after an Unraid update. A weekly check watches the newest Unraid kernel for what the plugin relies on.'],
     ['See your box.', 'Case view, bay LEDs and a dashboard tile, drawn for your model.']
 ] as const;
 
@@ -71,7 +69,7 @@ export const TECH = {
     },
     case: {
         items: [
-            'Front, rear and inside view (M.2, RAM, system, PCIe where the model has them) on every model. The DXP6800 Pro and DXP4800 GT are drawn after a real device (verified); the others after UGREEN manuals, product photos and renders, or after a sister model (expected).',
+            `Front, rear and inside view (M.2, RAM, system, PCIe where the model has them) on every model. The ${andList(withEvidence('case', 'verified'))} are drawn after a real device (verified); the others after UGREEN manuals, product photos and renders, or after a sister model (expected).`,
             "The demo above is the plugin's own interface on sample data, not a mockup."
         ],
         doc: 'hardware.md'
@@ -80,7 +78,7 @@ export const TECH = {
         items: [
             'Per bay: disk activity, errors, SMART warnings, standby and parity states. The network LED follows link speed, traffic or gateway. Identify a bay from the page.',
             'Night mode dims every LED. Settings from UGREEN LED Control import in one click.',
-            'No kernel module: the ich777 LED driver and the single-model LED projects need one built per Unraid release.',
+            `${NO_KERNEL_MODULE}: the ich777 LED driver and the single-model LED projects need one built per Unraid release.`,
             'Off until you switch them on. If a rival LED tool owns the same chip, the plugin steps aside and says so.'
         ],
         doc: 'led.md'
@@ -89,7 +87,7 @@ export const TECH = {
         items: [
             'Sensors for CPU, board, iGPU, NVMe and disks, each marked with the fan it steers.',
             'An optional MQTT publisher feeds displays and Home Assistant. Read only, off until you set a broker in fan.cfg.',
-            'The interface comes in 7 languages.',
+            `The interface comes in ${LANGUAGES}.`,
             'About switches between stable and next (test builds) through the Unraid install dialog; settings stay.'
         ],
         doc: 'mqtt.md'

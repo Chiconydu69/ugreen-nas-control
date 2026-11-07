@@ -6,6 +6,8 @@ plugin/ugreen-nas-control.plg linguist-generated=true
 # Model tables rendered from web/models/ by docs/tools/gen-docs.ts; GitHub shows the README, `just docs-check` keeps it current.
 README.md linguist-generated=true
 docs/hardware.md linguist-generated=true
+# Its <Overview> is rendered from docs/site/facts.ts by gen-docs.ts; Community Applications reads the file from main, `just docs-check` keeps it current.
+plugins/ugreen-nas-control.xml linguist-generated=true
 # Release history, written by plugin/tools/changes.ts at release.
 CHANGELOG.md linguist-generated=true
 # Recorded UI test snapshot, rewritten by `just e2e --update`.
