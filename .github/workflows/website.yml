@@ -41,6 +41,7 @@ concurrency:
 
 jobs:
   build:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -125,7 +126,7 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event_name != 'pull_request'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
@@ -142,6 +143,7 @@ jobs:
 
   # One environment per stream, so the Environments page links each one; the deployment itself is the single github-pages one above.
   streams:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     needs: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 5

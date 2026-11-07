@@ -9,6 +9,7 @@ permissions: {}
 
 jobs:
   govulncheck:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -22,6 +23,7 @@ jobs:
       - run: nix develop .#go -c bash -c 'cd backend && govulncheck ./...'
 
   zizmor:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -37,6 +39,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
   flake-update:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:

@@ -14,7 +14,7 @@ permissions: {}
 
 jobs:
   issue:
-    if: github.event_name == 'issues'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'issues') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -55,7 +55,7 @@ jobs:
           gh issue edit "$NUMBER" --add-label "$label"
 
   pull-request:
-    if: github.event_name == 'pull_request_target'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'pull_request_target') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

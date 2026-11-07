@@ -17,6 +17,7 @@ permissions: {}
 
 jobs:
   canary:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
