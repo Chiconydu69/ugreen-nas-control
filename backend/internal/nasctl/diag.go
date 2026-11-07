@@ -1022,8 +1022,8 @@ func (c *Ctl) diag(asJSON bool) int {
 
 	var checks []string
 	var ev Evidence
+	var reg *RegModel
 	if msg := guard(func() {
-		var reg *RegModel
 		if models, err := loadRegistry(modelsJSON); err == nil {
 			reg = matchModel(models, model)
 		}
@@ -1047,7 +1047,7 @@ func (c *Ctl) diag(asJSON bool) int {
 			ev.Model = EvModel{ID: "unknown", Name: rep.Machine.Product}
 			ev.PluginVersion, ev.UnraidVersion = rep.PluginVersion, rep.UnraidVersion
 		}
-		_, _ = c.Out.Write(BuildFeedback(anon, ev, rep, facts.LED.I2C, kernelVersion(c.Env.Proc), out, time.Since(started)).JSON())
+		_, _ = c.Out.Write(BuildFeedback(anon, ev, reg, rep, facts.LED.I2C, kernelVersion(c.Env.Proc), out, time.Since(started)).JSON())
 		return 0
 	}
 	c.out("%s", out)

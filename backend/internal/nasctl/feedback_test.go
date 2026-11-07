@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"unicode/utf8"
 )
 
 func feedbackFixture(t *testing.T) Feedback {
@@ -16,7 +17,7 @@ func feedbackFixture(t *testing.T) Feedback {
 		LED: LEDReport{Supported: true, Probe: "ok", Bus: "/dev/i2c-4", Address: "0x3a", LEDCount: 6},
 	}
 	ev.Model.ID, ev.Model.Name = "dxp4800-gt", "DXP4800 GT"
-	return BuildFeedback(Anon{Hostnames: []string{"tower"}}, ev, rep, I2CDiag{}, "6.12.24-Unraid", "## ugreen-nas-ctl diag\n\nChecks: <host>\n", 12345*time.Millisecond)
+	return BuildFeedback(Anon{Hostnames: []string{"tower"}}, ev, nil, rep, I2CDiag{}, "6.12.24-Unraid", "## ugreen-nas-ctl diag\n\nChecks: <host>\n", 12345*time.Millisecond)
 }
 
 func TestFeedbackJSONShape(t *testing.T) {
@@ -68,7 +69,7 @@ func TestFeedbackSummary(t *testing.T) {
 			"Fan chip it8613. LED probe failed. I2C controllers without driver: 0000:00:15.0."},
 	}
 	for _, c := range cases {
-		if got := feedbackSummary(c.checks, c.r, c.i2c); got != c.want {
+		if got := feedbackSummary(c.checks, c.r, c.i2c, -1); got != c.want {
 			t.Errorf("%s:\n got %q\nwant %q", c.name, got, c.want)
 		}
 	}
@@ -76,7 +77,7 @@ func TestFeedbackSummary(t *testing.T) {
 	for range 100 {
 		many = append(many, FBCheck{ID: "some_check_id", OK: okp(false)})
 	}
-	if got := feedbackSummary(many, Report{}, I2CDiag{}); len(got) > summaryMax+3 {
+	if got := feedbackSummary(many, Report{}, I2CDiag{}, -1); len(got) > summaryMax {
 		t.Errorf("summary has %d bytes", len(got))
 	}
 }
@@ -84,7 +85,7 @@ func TestFeedbackSummary(t *testing.T) {
 func TestFeedbackHasNoHostName(t *testing.T) {
 	ev, _ := evidenceFixture(t)
 	ev.Model.Name = "DXP4800 GT on tower"
-	f := BuildFeedback(Anon{Hostnames: []string{"tower"}}, ev, Report{}, I2CDiag{}, "6.12.24-Unraid", "", 0)
+	f := BuildFeedback(Anon{Hostnames: []string{"tower"}}, ev, nil, Report{}, I2CDiag{}, "6.12.24-Unraid", "", 0)
 	if strings.Contains(string(f.JSON()), "tower") {
 		t.Errorf("host name in %s", f.JSON())
 	}
@@ -105,5 +106,63 @@ func TestDiagProgressGoesToStderrInTextMode(t *testing.T) {
 	c.diagNote(true, "collecting")
 	if out.Len() != 0 || errw.Len() != 0 {
 		t.Errorf("--json printed %q %q", out.String(), errw.String())
+	}
+}
+
+func TestFeedbackSummaryFitsByConstruction(t *testing.T) {
+	var many []FBCheck
+	for range 100 {
+		many = append(many, FBCheck{ID: "some_check_id", OK: okp(true)})
+	}
+	many = append(many, FBCheck{ID: "bays", OK: okp(false)})
+	ctl := make([]I2CCtl, 40)
+	for i := range ctl {
+		ctl[i] = I2CCtl{BDF: "0000:00:1f.5", Driver: "none"}
+	}
+	r := Report{Fan: FanReport{Found: true, Chip: "IT8613"}, LED: LEDReport{Probe: "ok", Address: "0x3a"}}
+	got := feedbackSummary(many, r, I2CDiag{Controllers: ctl}, 4)
+	if len(got) > summaryMax {
+		t.Errorf("summary has %d bytes", len(got))
+	}
+	for _, want := range []string{"MISMATCH: bays.", "Fan chip IT8613.", "LED probe ok at 0x3a, 4 LEDs.", ", …."} {
+		if !strings.Contains(got, want) {
+			t.Errorf("missing %q in %q", want, got)
+		}
+	}
+	if !utf8.ValidString(got) || strings.HasSuffix(got, "contro") || !strings.HasSuffix(got, ".") {
+		t.Errorf("cut mid-clause: %q", got)
+	}
+}
+
+func TestModelLEDCount(t *testing.T) {
+	n := func(v int) *int { return &v }
+	for _, c := range []struct {
+		name    string
+		reg     *RegModel
+		product string
+		want    int
+		known   bool
+	}{
+		{"DXP2800 has power, netdev, disk1, disk2", &RegModel{LED: "bays", Bays: n(2)}, "DXP2800", 4, true},
+		{"DXP8800 Plus", &RegModel{LED: "bays", Bays: n(8)}, "DXP8800 Plus", 10, true},
+		{"iDX6011 Pro has a second LAN LED", &RegModel{LED: "bays", Bays: n(6)}, "iDX6011 Pro", 9, true},
+		{"power LED only", &RegModel{LED: "power", Bays: n(0)}, "DXP480T Plus", 1, true},
+		{"no LED controller", &RegModel{LED: "none", Bays: n(2)}, "DH2600", 0, true},
+		{"unknown model", nil, "Foo", 0, false},
+	} {
+		got, known := modelLEDCount(c.reg, c.product)
+		if got != c.want || known != c.known {
+			t.Errorf("%s: got %d, %t", c.name, got, known)
+		}
+	}
+}
+
+func TestFeedbackSummaryCountsTheModelsLEDs(t *testing.T) {
+	ev, _ := evidenceFixture(t)
+	bays := 2
+	rep := Report{Fan: FanReport{Found: true, Chip: "IT8613"}, LED: LEDReport{Probe: "ok", Address: "0x3a", LEDCount: 6}}
+	f := BuildFeedback(Anon{}, ev, &RegModel{LED: "bays", Bays: &bays}, rep, I2CDiag{}, "k", "", 0)
+	if !strings.Contains(f.Summary, "0x3a, 4 LEDs.") {
+		t.Errorf("summary %q", f.Summary)
 	}
 }
