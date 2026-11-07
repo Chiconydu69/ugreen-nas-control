@@ -57,3 +57,14 @@ test('rule 3: missing, non-empty or read-all permissions fail', () => {
     expect(lint('x.yml', ok.replace('permissions: {}', 'permissions: read-all')).length).toBe(1);
     expect(lint('x.yml', ok.replace('permissions: {}', 'permissions:\n  contents: read')).length).toBe(1);
 });
+
+test('rule 1: the guard must be the whole condition or the leftmost operand of a top-level &&', () => {
+    const withIf = (cond: string) => ok.replace(`\${{ ${G} }}`, cond);
+    expect(lint('x.yml', withIf(`\${{ ${G} && (github.event_name == 'push') }}`))).toEqual([]);
+    expect(lint('x.yml', withIf(`\${{ ${G} && github.ref == 'a' || github.ref == 'b' }}`))).toHaveLength(1);
+    expect(lint('x.yml', withIf(`\${{ ${G} && (github.ref == 'a' || github.ref == 'b') }}`))).toEqual([]);
+    expect(lint('x.yml', withIf(`\${{ ${G} || true }}`))).toHaveLength(1);
+    expect(lint('x.yml', withIf(`\${{ github.repository != 'ugreen-nas-control/ugreen-nas-control' }}`))).toHaveLength(1);
+    expect(lint('x.yml', withIf(`\${{ !(${G}) }}`))).toHaveLength(1);
+    expect(lint('x.yml', withIf(`\${{ true && ${G} }}`))).toHaveLength(1);
+});

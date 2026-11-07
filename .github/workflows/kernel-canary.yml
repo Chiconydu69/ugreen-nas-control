@@ -29,6 +29,8 @@ jobs:
           persist-credentials: false
           ref: next
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Check the kernel and open or update the issue
         env:
           GH_TOKEN: ${{ github.token }}
