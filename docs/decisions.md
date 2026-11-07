@@ -6,6 +6,20 @@ One open next step, then the ideas that were looked at and not taken. Reopen a d
 
 Today the fan daemon, the LED daemon and the PHP APIs reach the hardware through separate processes of the one `ugreen-nas` binary and take locks to avoid clashing. A single daemon, `ugreend`, would own the fan chip and the LED controller and answer a local API to the web UI and the CLIs. It maps to Unraid 8's declarative services ([unraid-8.md](unraid-8.md#preparation-we-can-do-now)). Needs verification on hardware (the DXP6800 Pro and the DXP4800 GT) before any code moves; `backend/internal/hw` and `backend/internal/led/chip` are the shared pieces it would build on.
 
+## No kernel module of our own
+
+Decided. The plugin builds and ships no kernel module; it talks to the hardware from user space (I/O ports for the Super-I/O and EC, `/dev/mem` for MMIO, `/dev/i2c-*` and hwmon where a kernel driver exists). In-tree modules Unraid already ships (`i2c_i801`, `i2c-dev`) may be loaded; nothing is compiled.
+
+Why: Unraid has no package manager or DKMS, and every release (point releases too) ships a new kernel, so a module has to be rebuilt and published per release; when that lags, LEDs and fans stop after an Unraid update. A user-space bug ends one process; a module bug can hang the NAS. Removal leaves nothing in the kernel.
+
+Cost: small parts of drivers live in our code (EC protocols, the DesignWare I2C controller over `/dev/mem` on the DXP4800 GT and the DXP2800 SUB2), polled rather than interrupt-driven.
+
+Rule: never race a kernel driver. When a driver owns the device, use its interface; direct access only when no driver is bound, and refuse when one is (`chip/smbus_linux.go` `findBus`; the LPSS path in PR #225 follows the same rule).
+
+Depends on: no kernel lockdown. Unraid 7.3.4 (kernel 6.18.58-Unraid) has `# CONFIG_STRICT_DEVMEM is not set` and no lockdown LSM (`/usr/src/linux-6.18.58-Unraid/config` on the maintainer box). `STRICT_DEVMEM` alone would still allow our accesses (it blocks RAM, not unclaimed device MMIO); lockdown (integrity or confidentiality) blocks `/dev/mem` and I/O ports and would stop fan, watchdog, EC and the `/dev/mem` LED paths.
+
+Revisit if: Unraid enables lockdown or `IO_STRICT_DEVMEM`; Unraid ships drivers for this hardware in its kernel (then use them); the plugin model changes with Unraid 8.
+
 ## Rust rewrite of the Go tools
 
 Verdict: none for `backend/internal/fan` and `backend/internal/led/chip`.
