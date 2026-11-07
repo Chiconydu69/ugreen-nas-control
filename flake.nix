@@ -144,6 +144,10 @@
               "nixfmt"
               "xmllint"
             ];
+            canary = [
+              "bun"
+              "xz"
+            ];
             lint = [
               "shellcheck"
               "shfmt"

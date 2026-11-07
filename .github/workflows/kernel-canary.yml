@@ -1,0 +1,38 @@
+name: 'Kernel canary'
+
+# Weekly: the newest Unraid kernel config against the kernel features the plugin relies on (docs/decisions.md, "No kernel
+# module of our own"). A broken must-hold rule opens an issue labelled `bug`, a changed informational option one labelled
+# `enhancement`; one issue per kernel version, found by its title prefix, so a rerun never duplicates it.
+on:
+  schedule:
+    - cron: '43 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Kernel version to check instead of the newest (for example 6.18.60)
+        required: false
+        type: string
+
+permissions: {}
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: next
+      - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+      - name: Check the kernel and open or update the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ inputs.version }}
+        # A broken must-hold rule exits 1 after the issue is filed: the run turns red as well.
+        run: nix develop .#canary -c just kernel-canary ${VERSION:+"$VERSION"} --issue
