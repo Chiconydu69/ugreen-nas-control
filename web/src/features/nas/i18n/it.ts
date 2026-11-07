@@ -388,14 +388,14 @@ export const it: Record<Key, string> = {
     'feedback.preview': 'Anteprima di tutti i dati',
     'feedback.send_issue': 'Crea issue su GitHub',
     'feedback.send_bug': 'Segnala un problema',
-    'feedback.send_hint':
-        'Un clic copia i dati e apre una issue GitHub precompilata. Incolla i dati nel campo «Device data» (Ctrl+V / Cmd+V) e clicca «Submit new issue».',
+    'feedback.send_hint': 'Apre una issue GitHub precompilata; non viene inviato nulla finché non la invii lì.',
     'feedback.no_data': 'Nessun dato raccolto: la issue conterrà solo le tue risposte.',
     'feedback.paste_line': 'Il clic copia i dati del dispositivo: incollali in «Device data» su GitHub (Ctrl+V / Cmd+V).',
     'feedback.copied': 'I dati sono negli appunti. Incollali in «Device data» su GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'Il browser non ha permesso di copiare. Copia i dati qui o scaricali, poi incollali nella issue.',
     'feedback.copy': 'Copia',
     'feedback.download': 'Scarica diag.md',
+    'feedback.download_hint': 'Oppure scarica i dati e allega il file alla issue.',
     'feedback.summary_dropped': 'Il link era troppo lungo: il riepilogo non è nel modulo.',
     'feedback.comment_cut': 'Il link era troppo lungo: il tuo commento è stato accorciato.',
     'feedback.privacy':

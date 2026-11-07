@@ -117,6 +117,8 @@ export function createFeedback(ctx: FeedbackCtx) {
         label('#unc-fb-collect', s.phase === 'done' ? 'feedback.collect_again' : s.phase === 'error' ? 'feedback.retry' : 'feedback.collect');
         q('#unc-fb-result').hidden = !s.result;
         q('#unc-fb-paste').hidden = !s.result;
+        q('#unc-fb-download').hidden = !s.result;
+        q('#unc-fb-download-hint').hidden = !s.result;
         q('#unc-fb-summary').textContent = s.result?.summary ?? '';
         q('#unc-fb-diag').textContent = s.result?.diag_markdown ?? '';
         const note = q('#unc-fb-note');

@@ -384,14 +384,14 @@ export const en = {
     'feedback.preview': 'Preview of the full data',
     'feedback.send_issue': 'Create GitHub issue',
     'feedback.send_bug': 'Report a problem',
-    'feedback.send_hint':
-        'One click copies the data and opens a pre-filled GitHub issue. Paste the data into its "Device data" field (Ctrl+V / Cmd+V) and click "Submit new issue".',
+    'feedback.send_hint': 'Opens a pre-filled GitHub issue; nothing is sent until you submit it there.',
     'feedback.no_data': 'No data collected yet: the issue will hold your answers only.',
     'feedback.paste_line': 'The click copies your device data: paste it into "Device data" on GitHub (Ctrl+V / Cmd+V).',
     'feedback.copied': 'The data is in your clipboard. Paste it into "Device data" on GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'The browser did not allow copying. Copy the data here or download it, then paste it into the issue.',
     'feedback.copy': 'Copy',
     'feedback.download': 'Download diag.md',
+    'feedback.download_hint': 'Or download the data and attach the file to the issue.',
     'feedback.summary_dropped': 'The link was too long: the summary is left out of the form.',
     'feedback.comment_cut': 'The link was too long: your comment was shortened.',
     'feedback.privacy':

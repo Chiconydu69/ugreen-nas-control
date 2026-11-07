@@ -390,14 +390,14 @@ export const fr: Record<Key, string> = {
     'feedback.preview': 'Aperçu de toutes les données',
     'feedback.send_issue': 'Créer un ticket GitHub',
     'feedback.send_bug': 'Signaler un problème',
-    'feedback.send_hint':
-        'Un clic copie les données et ouvre un ticket GitHub prérempli. Collez les données dans son champ « Device data » (Ctrl+V / Cmd+V) puis cliquez sur « Submit new issue ».',
+    'feedback.send_hint': 'Ouvre un ticket GitHub prérempli ; rien n’est envoyé tant que vous ne l’avez pas soumis là-bas.',
     'feedback.no_data': 'Aucune donnée collectée : le ticket ne contiendra que vos réponses.',
     'feedback.paste_line': 'Le clic copie les données de l’appareil : collez-les dans « Device data » sur GitHub (Ctrl+V / Cmd+V).',
     'feedback.copied': 'Les données sont dans le presse-papiers. Collez-les dans « Device data » sur GitHub (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'Le navigateur n’a pas autorisé la copie. Copiez les données ici ou téléchargez-les, puis collez-les dans le ticket.',
     'feedback.copy': 'Copier',
     'feedback.download': 'Télécharger diag.md',
+    'feedback.download_hint': 'Ou téléchargez les données et joignez le fichier au ticket.',
     'feedback.summary_dropped': 'Le lien était trop long : le résumé n’est pas dans le formulaire.',
     'feedback.comment_cut': 'Le lien était trop long : votre remarque a été raccourcie.',
     'feedback.privacy':
