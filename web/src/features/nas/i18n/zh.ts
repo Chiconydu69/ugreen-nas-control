@@ -321,6 +321,7 @@ export const zh: Record<Key, string> = {
     'device.st_users': '用户已确认',
     'device.st_untested': '未测试',
     'device.st_none': '不支持',
+    'device.details': '详情',
     'device.untested': '你的 {model} 上尚未确认：{list}。花两分钟就能帮到这款机型的所有用户。',
     'device.all_confirmed': '插件提供的所有功能均已在你的 {model} 上确认。',
     'device.confirm': '确认我的设备',

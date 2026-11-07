@@ -334,6 +334,7 @@ export const nl: Record<Key, string> = {
     'device.st_users': 'Bevestigd door gebruikers',
     'device.st_untested': 'Niet getest',
     'device.st_none': 'Niet ondersteund',
+    'device.details': 'Details',
     'device.untested': 'Nog niet bevestigd op jouw {model}: {list}. Twee minuten van je tijd helpen elke eigenaar van dit model.',
     'device.all_confirmed': 'Alles wat de plugin biedt is bevestigd op jouw {model}.',
     'device.confirm': 'Mijn apparaat bevestigen',

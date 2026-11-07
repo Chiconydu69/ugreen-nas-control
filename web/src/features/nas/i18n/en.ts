@@ -329,6 +329,7 @@ export const en = {
     'device.st_users': 'Confirmed by users',
     'device.st_untested': 'Untested',
     'device.st_none': 'Not supported',
+    'device.details': 'Details',
     'device.untested': 'Not yet confirmed on your {model}: {list}. Two minutes of your time helps every owner of this model.',
     'device.all_confirmed': 'Everything the plugin offers is confirmed on your {model}.',
     'device.confirm': 'Confirm my device',

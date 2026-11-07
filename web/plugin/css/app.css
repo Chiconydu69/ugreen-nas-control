@@ -3042,7 +3042,9 @@
 .unc-device-rows { display: grid; gap: 8px; margin-bottom: var(--sp-3); }
 .unc-device-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 12px; border: 1px solid var(--unc-border); border-radius: 8px; background: var(--unc-card-2); }
 .unc-device-cap { flex: 0 0 140px; font-weight: 600; font-size: 13px; }
-.unc-device-row small { flex: 1 1 260px; }
+.unc-device-details { flex: 1 1 260px; font-size: 12px; }
+.unc-device-details summary { cursor: pointer; color: var(--unc-accent); width: fit-content; }
+.unc-device-details p { margin: 6px 0 0; }
 #unc-device .unc-actions { margin: var(--sp-3) 0; }
 #unc-device .unc-btn, #unc-device a.unc-linkbtn { cursor: pointer; }
 

@@ -790,7 +790,7 @@ function main(root: HTMLElement): void {
                 <div class="unc-device-row">
                     <span class="unc-device-cap">${escapeHtml(t(`device.cap_${cap}`))}</span>
                     ${pill({ tone: TONE[state], ico: ICO[state], text: t(`device.st_${state}`) })}
-                    ${text ? `<small class="unc-muted">${escapeHtml(text)}</small>` : ''}
+                    ${text ? `<details class="unc-device-details"><summary>${escapeHtml(t('device.details'))}</summary><p class="unc-muted">${escapeHtml(text)}</p></details>` : ''}
                 </div>`
             )
             .join('');
