@@ -420,6 +420,7 @@ window.UGREEN_LED_THEME = <?= json_encode($unc_theme) ?>;
         <div class="unc-fb-step">
             <div data-unc="sechead" data-unc-title="feedback.step_send"></div>
             <p class="unc-muted" data-i18n="feedback.send_hint">Ein Klick kopiert die Daten und öffnet ein vorausgefülltes GitHub-Issue.</p>
+            <p class="unc-fb-paste" id="unc-fb-paste" data-i18n="feedback.paste_line" hidden>Der Klick kopiert deine Gerätedaten: Füge sie auf GitHub ins Feld „Device data“ ein (Strg+V / Cmd+V).</p>
             <div class="unc-actions">
                 <span data-unc="btn" data-unc-label="feedback.send_issue" data-unc-ico="check" data-unc-tone="primary" id="unc-fb-issue"></span>
                 <span data-unc="btn" data-unc-label="feedback.send_bug" data-unc-ico="alert" id="unc-fb-bug"></span>

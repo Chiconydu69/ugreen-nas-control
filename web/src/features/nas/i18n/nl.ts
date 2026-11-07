@@ -392,7 +392,8 @@ export const nl: Record<Key, string> = {
     'feedback.send_hint':
         'Eén klik kopieert de gegevens en opent een ingevulde GitHub-issue. Plak de gegevens in het veld „Device data” (Ctrl+V / Cmd+V) en klik op „Submit new issue”.',
     'feedback.no_data': 'Nog geen gegevens verzameld: de issue bevat alleen je antwoorden.',
-    'feedback.copied': 'De gegevens staan op het klembord. Plak ze in de issue (Ctrl+V / Cmd+V).',
+    'feedback.paste_line': 'De klik kopieert de apparaatgegevens: plak ze op GitHub in „Device data” (Ctrl+V / Cmd+V).',
+    'feedback.copied': 'De gegevens staan op het klembord. Plak ze op GitHub in „Device data” (Ctrl+V / Cmd+V).',
     'feedback.copy_failed': 'De browser stond kopiëren niet toe. Kopieer de gegevens hier of download ze en plak ze in de issue.',
     'feedback.copy': 'Kopiëren',
     'feedback.download': 'diag.md downloaden',

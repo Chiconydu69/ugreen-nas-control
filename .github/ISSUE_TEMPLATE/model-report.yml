@@ -39,12 +39,9 @@ body:
     attributes:
       label: Device data (diag)
       description: 'In the plugin open Feedback, collect the data and use the button there: it copies the data and opens this form. Paste it here. By hand: run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl diag as root on the Unraid box and paste the output. It is scrubbed (no serial numbers, IP or MAC addresses, host or drive names) and read only; what it collects: https://github.com/ugreen-nas-control/ugreen-nas-control/blob/next/docs/cli.md#diagnostics'
-  - type: textarea
-    id: report
-    attributes:
-      label: Output of ugreen-nas-ctl report
-      description: Only if you cannot use the plugin's Feedback page. Run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report as root and paste the JSON.
-      render: json
+      placeholder: 'Paste the copied device data here (Ctrl+V / Cmd+V)'
+    validations:
+      required: true
   - type: markdown
     attributes:
       value: Remove serial numbers and IP addresses from anything else you paste.

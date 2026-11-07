@@ -42,11 +42,14 @@ const area = `  - type: dropdown
     validations:
       required: true`;
 
+const DIAG_PLACEHOLDER = 'Paste the copied device data here (Ctrl+V / Cmd+V)';
+
 const diag = (description: string, required: boolean): string => `  - type: textarea
     id: ${FIELD.diag}
     attributes:
       label: Device data (diag)
-      description: ${q(description)}${
+      description: ${q(description)}
+      placeholder: ${q(DIAG_PLACEHOLDER)}${
           required
               ? `
     validations:
@@ -97,13 +100,7 @@ ${summary}
     id: ${FIELD.notes}
     attributes:
       label: What does not work, anything else
-${diag(DIAG_HOW, false)}
-  - type: textarea
-    id: report
-    attributes:
-      label: Output of ugreen-nas-ctl report
-      description: Only if you cannot use the plugin's Feedback page. Run /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report as root and paste the JSON.
-      render: json
+${diag(DIAG_HOW, true)}
   - type: markdown
     attributes:
       value: Remove serial numbers and IP addresses from anything else you paste.

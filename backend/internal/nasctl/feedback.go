@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/chip"
 )
 
 // Feedback is the result of `diag --json` (schema feedback/1): what the plugin's Feedback page shows and sends.
@@ -40,6 +42,7 @@ type FBCheck struct {
 	OK       *bool  `json:"ok"`
 }
 
+// summaryMax bounds the summary in bytes: the page puts it into a link of limited length.
 const summaryMax = 600
 
 // feedbackChecks flattens the evidence areas in their fixed order.
@@ -53,10 +56,51 @@ func feedbackChecks(ev Evidence) []FBCheck {
 	return out
 }
 
+// listClause is "label a, b, c." that fits room bytes: ids that do not fit are left out and the list ends in "…".
+// It is empty when not even the first id fits.
+func listClause(label string, ids []string, room int) string {
+	const more = ", …"
+	for n := len(ids); n > 0; n-- {
+		s := label + strings.Join(ids[:n], ", ")
+		if n < len(ids) {
+			s += more
+		}
+		if len(s)+1 <= room {
+			return s + "."
+		}
+	}
+	return ""
+}
+
+// modelLEDCount is how many LEDs the model has: power and network plus one per bay, the second LAN LED of the
+// iDX6011 Pro on top. The controller answers status for every slot, so the probe count says nothing about the model.
+// ok is false for a model the registry does not know.
+func modelLEDCount(reg *RegModel, product string) (n int, ok bool) {
+	if reg == nil {
+		return 0, false
+	}
+	switch reg.LED {
+	case "none":
+		return 0, true
+	case "power":
+		return 1, true
+	}
+	n = 2
+	if reg.Bays != nil {
+		n += *reg.Bays
+	}
+	if chip.IdxLayout(product) == "idx-pro" {
+		n++
+	}
+	return n, true
+}
+
 // feedbackSummary is the one-paragraph digest: MISMATCH, ok and not compared check ids, the fan chip, the LED probe
-// and the I2C controllers without a driver. Every check of the evidence flows in on its own.
-func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag) string {
-	var bad, good, open []string
+// and the I2C controllers without a driver. It is at most summaryMax bytes by construction: the fan chip and LED
+// clauses always stay, the id lists take what is left (MISMATCH first) and end in "…" where ids were left out.
+// leds is the model's LED count, or -1 to show what the probe answered.
+func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int) string {
+	var bad, good, open, none []string
 	for _, c := range checks {
 		switch {
 		case c.OK == nil:
@@ -67,46 +111,56 @@ func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag) string {
 			bad = append(bad, c.ID)
 		}
 	}
-	var p []string
-	if len(bad) > 0 {
-		p = append(p, "MISMATCH: "+strings.Join(bad, ", ")+".")
-	}
-	if len(good) > 0 {
-		p = append(p, "ok: "+strings.Join(good, ", ")+".")
-	}
-	if len(open) > 0 {
-		p = append(p, "not compared: "+strings.Join(open, ", ")+".")
-	}
+	fan := "Fan chip not found."
 	if r.Fan.Found {
-		p = append(p, "Fan chip "+r.Fan.Chip+".")
-	} else {
-		p = append(p, "Fan chip not found.")
+		fan = "Fan chip " + r.Fan.Chip + "."
 	}
 	led := "LED probe " + r.LED.Probe
 	if r.LED.Address != "" {
-		led += fmt.Sprintf(" at %s, %d LEDs", r.LED.Address, r.LED.LEDCount)
+		if leds < 0 {
+			leds = r.LED.LEDCount
+		}
+		led += fmt.Sprintf(" at %s, %d LEDs", r.LED.Address, leds)
 	}
-	p = append(p, led+".")
-	var none []string
+	led += "."
 	for _, x := range i2c.Controllers {
 		if x.Driver == "none" {
 			none = append(none, x.BDF)
 		}
 	}
-	if len(none) > 0 {
-		p = append(p, "I2C controllers without driver: "+strings.Join(none, ", ")+".")
+	room := summaryMax - len(fan) - len(led) - 2
+	take := func(label string, ids []string) string {
+		s := listClause(label, ids, room)
+		if s != "" {
+			room -= len(s) + 1
+		}
+		return s
 	}
-	return cut(strings.Join(p, " "), summaryMax)
+	sBad := take("MISMATCH: ", bad)
+	sOpen := take("not compared: ", open)
+	sNone := take("I2C controllers without driver: ", none)
+	sGood := take("ok: ", good)
+	var p []string
+	for _, s := range []string{sBad, sGood, sOpen, fan, led, sNone} {
+		if s != "" {
+			p = append(p, s)
+		}
+	}
+	return strings.Join(p, " ")
 }
 
 // BuildFeedback assembles the JSON result; diagMarkdown is the scrubbed text `diag` prints.
-func BuildFeedback(a Anon, ev Evidence, r Report, i2c I2CDiag, kernel, diagMarkdown string, took time.Duration) Feedback {
+func BuildFeedback(a Anon, ev Evidence, reg *RegModel, r Report, i2c I2CDiag, kernel, diagMarkdown string, took time.Duration) Feedback {
 	checks := feedbackChecks(ev)
+	leds, known := modelLEDCount(reg, r.Machine.Product)
+	if !known {
+		leds = -1
+	}
 	return Feedback{
 		Schema:       "feedback/1",
 		Model:        FBModel{ID: ev.Model.ID, Name: a.Meta(ev.Model.Name), Known: ev.Model.Known},
 		Versions:     FBVersions{Plugin: ev.PluginVersion, Unraid: ev.UnraidVersion, Kernel: kernel},
-		Summary:      a.Meta(feedbackSummary(checks, r, i2c)),
+		Summary:      a.Meta(feedbackSummary(checks, r, i2c, leds)),
 		Checks:       checks,
 		DiagMarkdown: diagMarkdown,
 		TookMS:       took.Milliseconds(),

@@ -102,12 +102,12 @@
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "a74edcdf9aa8"
+        "text": "d49d4a5510fe"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "a74edcdf9aa8"
+        "text": "d49d4a5510fe"
       },
       "create issue": {
         "requests": [],
@@ -115,7 +115,7 @@
           "clipboard: # ugreen-nas-ctl diag [132 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20Plus%20recognised"
         ],
-        "text": "2f4cf95a7a96"
+        "text": "d52ef1cd527e"
       },
       "report a problem": {
         "requests": [],
@@ -123,7 +123,7 @@
           "clipboard: # ugreen-nas-ctl diag [132 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20Plus&model=DXP4800%20Plus&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20Plus%20recognised.%205%20of%205"
         ],
-        "text": "2f4cf95a7a96"
+        "text": "d52ef1cd527e"
       }
     },
     "language": {
@@ -1886,12 +1886,12 @@
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "d0694b9d6cfd"
+        "text": "aa85e34f575c"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "d0694b9d6cfd"
+        "text": "aa85e34f575c"
       },
       "create issue": {
         "requests": [],
@@ -1899,7 +1899,7 @@
           "clipboard: # ugreen-nas-ctl diag [130 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20GT%20recognised.%205%"
         ],
-        "text": "b0fe83385dc1"
+        "text": "7c5e049efbf6"
       },
       "report a problem": {
         "requests": [],
@@ -1907,7 +1907,7 @@
           "clipboard: # ugreen-nas-ctl diag [130 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP4800%20GT&model=DXP4800%20GT&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP4800%20GT%20recognised.%205%20of%205%20che"
         ],
-        "text": "b0fe83385dc1"
+        "text": "7c5e049efbf6"
       }
     },
     "language": {
@@ -3833,12 +3833,12 @@
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "714102851226"
+        "text": "4d80229ef734"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "714102851226"
+        "text": "4d80229ef734"
       },
       "create issue": {
         "requests": [],
@@ -3846,7 +3846,7 @@
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP6800%20Pro%20recognised.%2"
         ],
-        "text": "2b8bc57bf619"
+        "text": "c75f336eae27"
       },
       "report a problem": {
         "requests": [],
@@ -3854,7 +3854,7 @@
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20DXP6800%20Pro%20recognised.%205%20of%205%20"
         ],
-        "text": "2b8bc57bf619"
+        "text": "c75f336eae27"
       }
     },
     "language": {
@@ -5789,12 +5789,12 @@
       "collect: try again, running, done": {
         "requests": ["nas POST {\"action\":\"diag_start\"}", "nas GET {\"action\":\"diag_status\",\"job\":\"0123456789abcdef\"}"],
         "events": [],
-        "text": "1fdcd02c3b5f"
+        "text": "2a25760f0904"
       },
       "preview": {
         "requests": [],
         "events": [],
-        "text": "1fdcd02c3b5f"
+        "text": "2a25760f0904"
       },
       "create issue": {
         "requests": [],
@@ -5802,7 +5802,7 @@
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=model-report.yml&title=Model%20report%3A%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20iDX6011%20Pro%20recognised.%2"
         ],
-        "text": "d128ea5907ad"
+        "text": "9f1603fff4e2"
       },
       "report a problem": {
         "requests": [],
@@ -5810,7 +5810,7 @@
           "clipboard: # ugreen-nas-ctl diag [131 chars]",
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried&summary=Model%20iDX6011%20Pro%20recognised.%205%20of%205%20"
         ],
-        "text": "d128ea5907ad"
+        "text": "9f1603fff4e2"
       }
     },
     "language": {
