@@ -2,7 +2,8 @@ import type { toolsEn } from './tools.en';
 
 export const toolsEs: Record<keyof typeof toolsEn, string> = {
     'profiles.title': 'Perfiles',
-    'profiles.intro': 'Exporta la configuración de los ventiladores a un archivo o lee lo de otra herramienta de ventiladores. Ves el resultado antes de aplicar algo.',
+    'profiles.intro':
+        'Exporta la configuración de los ventiladores a un archivo o lee lo de otra herramienta de ventiladores. Ves el resultado antes de aplicar algo.',
     'profiles.export': 'Exportar',
     'profiles.import_file': 'Importar archivo',
     'profiles.found': 'Encontrado en este NAS',
