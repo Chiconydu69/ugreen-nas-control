@@ -3037,27 +3037,16 @@
     padding: 0;
 }
 
-/* Supported models: one row per model, the one running here highlighted. */
-.unc-models td, .unc-models th { white-space: normal; }
-.unc-models tr.mine td { background: rgba(47, 124, 246, .12); }
-.unc .unc-models td.m-verified, .unc .unc-models td.m-confirmed, .unc .unc-models td.m-yes { color: var(--unc-green); font-weight: 600; }
-.unc .unc-models td.m-untested, .unc .unc-models td.m-power, .unc .unc-models td.m-none { color: var(--unc-muted); }
-
-.unc table.unc-table.unc-models tr.series th {
-    padding: 8px 12px;
-    border-left: 3px solid var(--unc-accent);
-    border-bottom: 0;
-    background: var(--unc-card-2) !important;
-    color: var(--unc-text);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .03em;
-    text-align: left;
-    text-transform: none;
-}
-
-.unc-models tr.series:not(:first-child) th { box-shadow: 0 -14px 0 0 var(--unc-card); }
-.unc-models tr.series + tr td { border-top: 0; }
+/* Your device: one row per capability. */
+.unc-device-name { margin: 0 0 var(--sp-3); font-size: 15px; }
+.unc-device-rows { display: grid; gap: 8px; margin-bottom: var(--sp-3); }
+.unc-device-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 8px 12px; border: 1px solid var(--unc-border); border-radius: 8px; background: var(--unc-card-2); }
+.unc-device-cap { flex: 0 0 140px; font-weight: 600; font-size: 13px; }
+.unc-device-details { flex: 1 1 260px; font-size: 12px; }
+.unc-device-details summary { cursor: pointer; color: var(--unc-accent); width: fit-content; }
+.unc-device-details p { margin: 6px 0 0; }
+#unc-device .unc-actions { margin: var(--sp-3) 0; }
+#unc-device .unc-btn, #unc-device a.unc-linkbtn { cursor: pointer; }
 
 .unc-about-help { margin: 14px 0 0; font-size: 13px; }
 .unc-channel { display: grid; gap: 10px; margin-top: 14px; }

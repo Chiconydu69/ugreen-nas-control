@@ -435,15 +435,14 @@ window.UGREEN_LED_THEME = <?= json_encode($unc_theme) ?>;
 </section>
 
 <section class="unc-view" data-view="about">
+    <article class="unc-card" id="unc-device-card">
+        <div data-unc="cardhead" data-unc-title="device.title" data-unc-ico="box"></div>
+        <div id="unc-device"></div>
+    </article>
+
     <article class="unc-card">
         <div data-unc="cardhead" data-unc-title="system.title" data-unc-ico="info"></div>
         <dl class="unc-facts" id="unc-system"></dl>
-    </article>
-
-    <article class="unc-card" id="unc-models-card">
-        <div data-unc="cardhead" data-unc-title="models.title" data-unc-ico="box"></div>
-        <p class="unc-muted" data-i18n="models.intro">Alle UGREEN-NAS-Modelle und was das Plugin für sie kann.</p>
-        <div id="unc-models"></div>
     </article>
 
     <article class="unc-card unc-about">
