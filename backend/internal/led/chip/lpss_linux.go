@@ -5,11 +5,14 @@ package chip
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync/atomic"
 	"syscall"
+	"time"
 )
 
 // DXP2800 "SUB2" boards (BIOS EM_DXP2800S_SUB2_*, miskcoo/ugreen_leds_controller#115, issue #214): the LED MCU
@@ -59,9 +62,10 @@ const (
 
 // Replaced in tests.
 var (
-	lpssSys     = "/sys"
-	lpssMapMem  = devMemMap
-	lpssReports = lpssReportFile
+	lpssSys       = "/sys"
+	lpssMapMem    = devMemMap
+	lpssReports   = lpssReportFile
+	lpssRetryWait = 20 * time.Millisecond // pause before the second bring-up after a 0x0000 chip id
 )
 
 var errLPSSOff = errors.New(`the DXP2800 SUB2 LED path is off: run "ugreen-led-i2c lpss-probe" and set lpss_leds="1" in leds.cfg to try it (untested on hardware)`)
@@ -94,11 +98,38 @@ func devMemMap(phys int64, write bool) (dwRegs, func(), error) {
 	return mmio(b), func() { _ = syscall.Munmap(b); _ = f.Close() }, nil
 }
 
-// lpssReport collects the probe output, one "name value" line per check.
-type lpssReport struct{ lines []string }
+// lpssDebugOut receives every step of an LPSS bring-up and transfer while --debug or UNC_LPSS_DEBUG=1 is set.
+var lpssDebugOut atomic.Pointer[io.Writer]
+
+// lpssDebugWriter is the --debug sink, or stderr with UNC_LPSS_DEBUG=1; nil when tracing is off.
+func lpssDebugWriter() io.Writer {
+	if w := lpssDebugOut.Load(); w != nil {
+		return *w
+	}
+	if os.Getenv("UNC_LPSS_DEBUG") == "1" {
+		return os.Stderr
+	}
+	return nil
+}
+
+// lpssReport collects the probe output, one "name value" line per check. With echo set (debug) every line is
+// also written there as it happens.
+type lpssReport struct {
+	lines []string
+	echo  io.Writer
+}
 
 func (r *lpssReport) add(name, format string, args ...any) {
-	r.lines = append(r.lines, fmt.Sprintf("%-18s %s", name+":", fmt.Sprintf(format, args...)))
+	line := fmt.Sprintf("%-18s %s", name+":", fmt.Sprintf(format, args...))
+	r.lines = append(r.lines, line)
+	r.trace("%s", line)
+}
+
+// trace writes to the debug sink only; the probe report stays as it is.
+func (r *lpssReport) trace(format string, args ...any) {
+	if r.echo != nil {
+		_, _ = fmt.Fprintf(r.echo, "lpss "+time.Now().Format("15:04:05.000")+" "+format+"\n", args...)
+	}
 }
 
 // refuse records the refusal and returns it.
@@ -160,6 +191,9 @@ func pciPowerState(cfg []byte) (state int, ok bool) {
 // done earlier is power/control "on"; it is restored on every exit: by the shutdown of the returned controller,
 // otherwise here.
 func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
+	if r.echo == nil {
+		r.echo = lpssDebugWriter()
+	}
 	pm := &lpssPM{r: r}
 	d, err := openLPSSChecked(r, addr, write, pm)
 	if d != nil {
@@ -311,30 +345,91 @@ func openLPSSChecked(r *lpssReport, addr uint8, write bool, pm *lpssPM) (*dwI2C,
 		return nil, r.refuse(format, args...)
 	}
 
-	if resets&(lpssResetsFunc|lpssResetsIDMA) != lpssResetsFunc|lpssResetsIDMA {
-		regs.store(lpssPrivResets, lpssResetsFunc|lpssResetsIDMA)
-		r.add("write.resets", "0x%08x -> 0x%08x", resets, regs.load(lpssPrivResets))
-		if t := regs.load(dwCompTypeReg); t != dwCompType {
-			return fail("component type is 0x%08x after taking the controller out of reset", t)
+	if r.echo != nil {
+		d.trace = func(format string, args ...any) { r.trace(format, args...) }
+	}
+
+	// bringUp is the whole setup: RESETS released, then the DesignWare registers. It runs again whenever the
+	// controller may have lost its context (runtime suspend writes RESETS 0, intel-lpss.c:514, which resets the
+	// DesignWare block).
+	initial := true
+	bringUp := func() error {
+		cur := resets
+		if !initial {
+			cur = regs.load(lpssPrivResets)
 		}
-	} else {
-		r.add("write.resets", "not needed")
+		if cur&(lpssResetsFunc|lpssResetsIDMA) != lpssResetsFunc|lpssResetsIDMA {
+			regs.store(lpssPrivResets, lpssResetsFunc|lpssResetsIDMA)
+			r.add("write.resets", "0x%08x -> 0x%08x", cur, regs.load(lpssPrivResets))
+			if t := regs.load(dwCompTypeReg); t != dwCompType {
+				return fmt.Errorf("component type is 0x%08x after taking the controller out of reset", t)
+			}
+		} else if initial {
+			r.add("write.resets", "not needed")
+		}
+		initial = false
+		if err := d.init(); err != nil {
+			return fmt.Errorf("controller setup: %w", err)
+		}
+		r.add("write.timing", "SS_SCL_HCNT %d, SS_SCL_LCNT %d, SDA_HOLD 0x%x (133 MHz, standard mode)", d.timing.hcnt, d.timing.lcnt, d.rd(dwSDAHold))
+		return nil
+	}
+	if err := bringUp(); err != nil {
+		return fail("%v", err)
 	}
 
-	if err := d.init(); err != nil {
-		return fail("controller setup: %v", err)
+	readID := func() (int, error) {
+		word := make([]byte, 2)
+		if err := d.xfer([]dwMsg{{buf: []byte{lpssChipReg}}, {read: true, buf: word}}); err != nil {
+			r.add("chip_id", "0x%02x register 0x%02x: %v", addr, lpssChipReg, err)
+			return 0, err
+		}
+		got := int(word[0]) | int(word[1])<<8
+		r.add("chip_id", "0x%04x (expected 0x%04x) at 0x%02x register 0x%02x", got, lpssChipID, addr, lpssChipReg)
+		return got, nil
 	}
-	r.add("write.timing", "SS_SCL_HCNT %d, SS_SCL_LCNT %d, SDA_HOLD 0x%x (133 MHz, standard mode)", d.timing.hcnt, d.timing.lcnt, d.rd(dwSDAHold))
-
-	word := make([]byte, 2)
-	if err := d.xfer([]dwMsg{{buf: []byte{lpssChipReg}}, {read: true, buf: word}}); err != nil {
-		r.add("chip_id", "0x%02x register 0x%02x: %v", addr, lpssChipReg, err)
+	got, err := readID()
+	if err != nil {
 		return fail("no chip id from 0x%02x: %v", addr, err)
 	}
-	got := int(word[0]) | int(word[1])<<8
-	r.add("chip_id", "0x%04x (expected 0x%04x) at 0x%02x register 0x%02x", got, lpssChipID, addr, lpssChipReg)
+	if got == 0 {
+		// 0x0000 is what a controller without its setup (or a silent chip) returns, not a different chip: one more
+		// bring-up from scratch before giving up.
+		r.add("retry", "chip id 0x0000: repeating the whole bring-up once")
+		time.Sleep(lpssRetryWait)
+		if err := bringUp(); err != nil {
+			return fail("%v", err)
+		}
+		if got, err = readID(); err != nil {
+			return fail("no chip id from 0x%02x after a second bring-up: %v", addr, err)
+		}
+		if got == 0 {
+			return fail("chip id 0x0000 twice, after a fresh bring-up: the controller or the LED chip returns no data (not a different chip); run again with --debug and send the trace")
+		}
+	}
 	if got != lpssChipID {
 		return fail("chip id 0x%04x is not 0x%04x", got, lpssChipID)
+	}
+
+	// From here every transfer of this handle first checks that the controller kept its setup; if not (suspended
+	// and resumed behind our back), power/control is forced on again and the bring-up repeats.
+	d.verify = func() error {
+		if bound {
+			if st := sysLine(filepath.Join(dev, "power/runtime_status")); st != "active" {
+				r.trace("runtime_status %q: waking the controller", st)
+				if err := pm.wake(dev); err != nil {
+					return err
+				}
+				return bringUp()
+			}
+		}
+		if d.rd(dwCompTypeReg) != dwCompType || d.rd(lpssPrivResets)&lpssResetsFunc != lpssResetsFunc ||
+			d.rd(dwSSHcnt) != d.timing.hcnt || d.rd(dwSSLcnt) != d.timing.lcnt || d.rd(dwCon)&0x7f != 0x63 {
+			r.add("verify", "controller lost its setup (IC_CON 0x%x, HCNT %d, LCNT %d, RESETS 0x%x): repeating the bring-up",
+				d.rd(dwCon), d.rd(dwSSHcnt), d.rd(dwSSLcnt), d.rd(lpssPrivResets))
+			return bringUp()
+		}
+		return nil
 	}
 	return d, nil
 }
@@ -400,4 +495,13 @@ func lpssI801Answers(path string) bool {
 // lpssNoDevice is true for the errors a missing device produces: a NAK on the address.
 func lpssNoDevice(err error) bool {
 	return errors.Is(err, syscall.ENXIO) || errors.Is(err, syscall.EREMOTEIO)
+}
+
+// setLPSSDebug turns the --debug trace of this process on (w) or off.
+func setLPSSDebug(on bool, w io.Writer) {
+	if !on {
+		lpssDebugOut.Store(nil)
+		return
+	}
+	lpssDebugOut.Store(&w)
 }

@@ -164,6 +164,23 @@ func (p *lpssPM) enable(dev, current string) error {
 		return fmt.Errorf("cannot set power/control of %s to on: %w", bdf, err)
 	}
 	p.r.add("write.power", "%s -> on (saved %s)", current, saved)
+	return p.wait(dev)
+}
+
+// wake writes "on" again and waits for "active": the hold is lost when something wrote power/control meanwhile or the
+// function suspended anyway.
+func (p *lpssPM) wake(dev string) error {
+	if !p.changed {
+		return nil
+	}
+	if err := lpssSysWrite(p.ctl, lpssPMOn); err != nil {
+		return fmt.Errorf("cannot set power/control of %s to on: %w", filepath.Base(dev), err)
+	}
+	return p.wait(dev)
+}
+
+func (p *lpssPM) wait(dev string) error {
+	bdf := filepath.Base(dev)
 	status, start := "", time.Now()
 	for {
 		if status = sysLine(filepath.Join(dev, "power/runtime_status")); status == "active" {
