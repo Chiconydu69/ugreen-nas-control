@@ -30,7 +30,7 @@ Read-only: `/dev/mem` is opened read-only and one page-aligned page is mapped pe
 
 `*` = prefix match, as the vendor driver does. `DXP6800 Ultra` and `DXP8800 Ultra` are newer than the vendor source and are refused. The vendor reads the DXP4800 GT at the unaligned addresses 0xFED81526 and 0xFED81522, bit 0; the tool reads the aligned word, which is the same bit.
 
-Unreadable registers: a pad register that reads as 0xFFFFFFFF is not a pad value (real pad registers have reserved bits that read 0); it is what a bus read nobody answers returns. The tool then reports that button as unreadable instead of released: `panel buttons` prints `power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)` and `power unreadable, reset unreadable`, `--watch` exits with an error, the API (`panel_buttons`) returns `"unreadable"` for that button, the Front panel page shows "Not readable on this box" and `diag` marks `panel.buttons` as not readable. On the DXP8800 Plus (BIOS 5.27, Unraid 7.3.4) both registers read as 0xFF: the BIOS hides the P2SB bridge after boot, so the Intel GPIO communities at 0xFD6A0000 and 0xFD6D0000 are not reachable through `/dev/mem`. The button state of that model is therefore not available; its entries stay vendor source.
+Unreadable registers: a pad register that reads as 0xFFFFFFFF is not a pad value (real pad registers have reserved bits that read 0); it is what a bus read nobody answers returns. The tool then reports that button as unreadable instead of released: `panel buttons` prints `power: not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)` and `power unreadable, reset unreadable`, `--watch` exits with an error, the API (`panel_buttons`) returns `"unreadable"` for that button, the Front panel page shows "Not readable on this box" and `diag` marks `panel.buttons` as not readable. On the DXP8800 Plus (BIOS 5.27, Unraid 7.3.4) both registers read as 0xFF on some boots; on others the same addresses return real values (issue #165: 0x84000100 from 0xFD6A0B40, power and reset events seen). The cause is unknown. The vendor driver maps and reads the same fixed addresses without any P2SB setup that `/dev/mem` lacks (`ug_gpio_btn.c:129@c75c5ab`). On boots where the registers read 0xFF the button state is not available; the entries of that model stay vendor source.
 
 Vendor press rules, which `--watch` follows:
 
@@ -61,6 +61,6 @@ No other model has a beeper path (DXP4800 GT, DXP2800 GT, DX4600, Ultra models):
 
 ## Open on hardware
 
-- Whether the BIOS hides the pad registers on other models too (confirmed on the DXP8800 Plus: all reads are 0xFF), and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
+- Why the DXP8800 Plus pad registers read 0xFF on some boots only (issue #165), whether other models do the same, and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
 - Whether a speaker is wired on each PC speaker model, and whether the EC and pad beepers sound.
 - The power button on iDX6011/6012 and the 5 s press on the DXP2800 GT.
