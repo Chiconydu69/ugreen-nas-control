@@ -60,8 +60,8 @@ import { type Key, t, tEnum, tRaw } from './text';
 import './fan/index';
 import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
-import { pluginChannel, switchTarget, SWITCH_COMMANDS } from './channel';
-import { caseText, deviceInfo, modelBox, modelFacts, MODELS_URL } from './model-info';
+import { pluginChannel, siteUrl, switchTarget, SWITCH_COMMANDS } from './channel';
+import { caseText, deviceInfo, modelBox, modelFacts } from './model-info';
 import { createFeedback } from './feedback-view';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
@@ -200,7 +200,8 @@ function main(root: HTMLElement): void {
     const navLink = (nav: string, key: Key): string => linkBtn(t(key), `data-nav="${nav}"`);
 
     // "All models": the website's model list, in a new tab.
-    const modelsLink = (): string => `<a class="unc-linkbtn" href="${MODELS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('model.all'))}</a>`;
+    const modelsLink = (): string =>
+        `<a class="unc-linkbtn" href="${siteUrl('#models', window.UGREEN_NAS_VERSION)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('model.all'))}</a>`;
     const modelNote = (text: string): string => `${escapeHtml(text)} ${modelsLink()}`;
 
     // Static spots in the page that hold a component: <span data-unc="btn" data-unc-label="<i18n key>" …>. Parameters are
@@ -774,7 +775,7 @@ function main(root: HTMLElement): void {
         const ICO = { confirmed: 'check', users: 'check', untested: 'alert', none: 'info' } as const;
         const TONE = { confirmed: 'ok', users: 'ok', untested: 'warn', none: 'plain' } as const;
         const go = (label: string, tone: string, ico: Ico) => `<div class="unc-actions">${btn({ label, ico, tone, attrs: 'data-device-cta' })}</div>`;
-        const all = `<a class="unc-linkbtn" href="${MODELS_URL}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('device.all_models'))}</a>`;
+        const all = `<a class="unc-linkbtn" href="${siteUrl('#models', window.UGREEN_NAS_VERSION)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('device.all_models'))}</a>`;
 
         if (!device) {
             q('#unc-device').innerHTML = `
@@ -3664,6 +3665,7 @@ function main(root: HTMLElement): void {
         });
         qa('[data-i18n-html]').forEach(element => {
             element.innerHTML = tRaw(element.dataset.i18nHtml ?? '');
+            element.querySelectorAll<HTMLAnchorElement>('a[data-site]').forEach(a => (a.href = siteUrl(a.dataset.site ?? '', window.UGREEN_NAS_VERSION)));
         });
         // Narrow layout shows icons only: the label stays as tooltip and accessible name.
         qa('.unc-nav button[data-nav]').forEach(button => {

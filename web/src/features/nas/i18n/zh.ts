@@ -340,7 +340,7 @@ export const zh: Record<Key, string> = {
     'about.thanks': '致谢',
     'about.maintainers': '维护者',
     'about.thanks_text':
-        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及所有在自己的型号上测试过的人',
+        '<a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a>（LED 控制的协议和盘位映射）、<a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a>（西班牙语翻译），以及<a data-site="#credits" target="_blank" rel="noopener">所有测试过的人</a>',
     'channel.now_stable': '通道：stable。切换到 next 可在正式发布前试用新改动。',
     'channel.now_next': '通道：next（测试版）。切换回 stable 即可使用正式发布的版本。',
     'channel.to_next': '切换到 next（测试版）',

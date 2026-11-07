@@ -6,6 +6,7 @@
 //   bun docs/site/build.ts
 import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+import { FORUM_TESTERS, MAINTAINERS, TESTERS } from '../tools/testers';
 import { loadModels } from '../../web/models/index';
 import { CAPABILITIES, type Capability, type Check, type Evidence, type Model, SERIES, monthYear, overallStatus } from '../../web/models/schema';
 import {
@@ -526,6 +527,17 @@ function helpProject(): string {
 </section>`;
 }
 
+function credits(): string {
+    const link = (login: string) => `<a href="https://github.com/${login}" rel="noopener">${esc(login)}</a>`;
+    const who = MAINTAINERS.map(m => `<a href="https://github.com/${m.login}" rel="noopener">${esc(m.name)}</a>`).join(' and ');
+    return `<section class="band" id="credits" aria-labelledby="crd">
+  <h2 id="crd">Credits.</h2>
+  <p class="intro">Maintained by ${who}. Everyone below tested on their own box, sent data or helped otherwise.</p>
+  <ul class="credit-list">${TESTERS.map(t => `<li>${link(t.login)}<span>${esc(t.did)}</span></li>`).join('')}</ul>
+  <p class="foot-note">On the Unraid forum: ${FORUM_TESTERS.map(esc).join(', ')}.</p>
+</section>`;
+}
+
 // ---- pages ------------------------------------------------------------------------------------------------
 
 function landing(listed: Model[]): string {
@@ -575,6 +587,7 @@ ${comparison()}
 ${support(listed, rel)}
 ${install(def)}
 ${helpProject()}
+${credits()}
 ${techies()}`;
     return layout({
         title: 'UGREEN NAS Control: Unraid plugin for UGREEN NAS, with the real UI live in your browser',

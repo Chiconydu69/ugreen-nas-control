@@ -27,6 +27,7 @@ Feature PRs target `next`; `main` holds releases only. Branch roles: [docs/relea
 ## Rules
 
 - Never edit `plugin/ugreen-nas-control.plg`, `CHANGELOG.md` or a version number. The release workflow writes them; CI rejects PRs that touch them.
+- Credit reporters and testers in the fragment as `[login](https://github.com/login)`, never `@login` (it notifies them), and add them to `docs/tools/testers.ts`; `just docs-check` enforces it.
 - Never commit generated files (JS bundles, PNG icons, `.build/`, the models tables by hand): [docs/development.md](../docs/development.md#generated-files).
 - New texts need keys in every language: [docs/translations.md](../docs/translations.md).
 - Scripts are TypeScript on Bun. No Python, no Node.

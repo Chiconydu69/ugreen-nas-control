@@ -4,9 +4,6 @@ import registry from '../../../../backend/internal/nasctl/models.json';
 import type { Vars } from '../../core/i18n';
 import type { Key } from './i18n/en';
 
-/** The models list on the project website. */
-export const MODELS_URL = 'https://ugreen-nas-control.github.io/ugreen-nas-control/#models';
-
 export type LedKind = 'bays' | 'power' | 'none';
 export type FanKind = 'fixed' | 'probe' | 'confirm' | 'none';
 export type ViewKind = 'full' | 'front-rear' | 'none';

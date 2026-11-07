@@ -46,6 +46,8 @@ Switching. Unraid compares versions as text (strcmp) and refuses a lower or equa
 
 Each deployment replaces the whole site, so only the current archive is hosted: a box that lost its boot cache cannot fetch an older next version, it installs the current one. Deployments run one after the other (concurrency group `pages`), so run numbers rise; if the workflow is ever recreated, its run numbers restart and Unraid will not offer the lower version until `plugin install <url> forced`. The old `next-build` prerelease and the asset `ugreen-nas-control-next.plg` are gone. The next channel is announced in the forum thread, Discussions and the README, not in Community Applications.
 
+Website links from the plugin UI (About: all supported models, credits) go through `siteUrl` in `web/src/features/nas/channel.ts`: a `-next.` version links the `/next/` site, stable and unknown versions the root. Static texts mark such a link `data-site="#anchor"`; never type the site URL in a string.
+
 ## Release
 
 1. Check `next` is green and the fragments in `.changes/` read well. Run `just models-check`: it lists stale checks; re-test them first, see [Re-test the maintainer boxes](#re-test-the-maintainer-boxes).

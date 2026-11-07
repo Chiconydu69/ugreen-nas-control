@@ -1,6 +1,7 @@
 /** People credited in the README (rendered by gen-docs.ts). Add the reporter's GitHub login when a model report is recorded (docs/hardware.md). */
 export const TESTERS: { login: string; did: string }[] = [
     { login: '321chills', did: 'DXP2800 GT: wiring research and fan control test' },
+    { login: 'miskcoo', did: 'LED protocol and bay mapping (ugreen_leds_controller driver)' },
     { login: 'datarepos76', did: 'DXP480T Plus' },
     { login: 'Chiconydu69', did: 'DXP8800 Plus: fan wiring, NVMe root ports, front-panel button tests' },
     { login: 'ivolution', did: 'Spanish translation, DXP4800 Plus tests' },

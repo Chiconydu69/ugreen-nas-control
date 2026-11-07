@@ -492,7 +492,7 @@ window.UGREEN_LED_THEME = <?= json_encode($unc_theme) ?>;
         <dl class="unc-facts">
             <dt data-i18n="about.how">Funktionsweise</dt><dd data-i18n="about.how_text">Spricht den Lüfter-Chip direkt über I/O-Ports an (ITE IT8613E beim DXP6800 Pro, Embedded Controller IT5571 beim DXP4800 GT) und den LED-Controller über I²C, ohne Kernel-Modul. Beim Stoppen oder Deinstallieren bekommen die Lüfter die Werte des BIOS zurück.</dd>
             <dt data-i18n="about.maintainers">Maintainer</dt><dd><a href="https://github.com/alexanderschubert" target="_blank" rel="noopener">Alexander Schubert</a>, <a href="https://github.com/j3n57h0m45" target="_blank" rel="noopener">Jens Thomas</a></dd>
-            <dt data-i18n="about.thanks">Dank an</dt><dd data-i18n-html="about.thanks_text"><a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und alle, die auf ihrem Modell getestet haben</dd>
+            <dt data-i18n="about.thanks">Dank an</dt><dd data-i18n-html="about.thanks_text"><a href="https://github.com/miskcoo/ugreen_leds_controller" target="_blank" rel="noopener">miskcoo</a> (Protokoll und Schacht-Zuordnung der LED-Steuerung), <a href="https://github.com/ivolution" target="_blank" rel="noopener">ivolution</a> (spanische Übersetzung) und <a data-site="#credits" target="_blank" rel="noopener">alle, die getestet haben</a></dd>
         </dl>
     </article>
 </section>
