@@ -41,7 +41,7 @@ export const SOCIAL_SUB = "No kernel module. Built on UGREEN's published driver 
 export const STRIP = [
     ['Quiet fans that fail safe.', 'Multi-point curves. Too hot: every fan to 100 percent. Plugin stops: BIOS values return.'],
     ['A frozen box reboots itself.', 'Keep the BIOS watchdog on. The plugin feeds it (supported models).'],
-    ['No kernel module.', 'Nothing to rebuild after an Unraid update.'],
+    ['No kernel module.', 'Nothing to rebuild after an Unraid update. A weekly check watches the newest Unraid kernel for what the plugin relies on.'],
     ['See your box.', 'Case view, bay LEDs and a dashboard tile, drawn for your model.']
 ] as const;
 
@@ -127,10 +127,17 @@ export const SOURCES = {
     title: "Built on UGREEN's published driver sources.",
     sub: 'UGREEN publishes its GPL kernel drivers. The plugin takes chip IDs, register addresses and frame formats from them and cites file and line. No UGREEN code is copied; the plugin is MIT. Nobody has checked that the published sources match the firmware UGREEN ships. Not endorsed or certified by UGREEN.',
     points: [
-        ['Fans', "Registers from UGREEN's IT5571 and IT8613E drivers. Hardware status stays in the matrix."],
+        [
+            'Fans',
+            "Registers from UGREEN's IT5571 and IT8613E drivers. Header 4 of the IT8613E follows UGREEN's control register 0x1e, untested on hardware. Hardware status stays in the matrix."
+        ],
         [
             'DXP2800 GT',
             "Fan control stays off until you run a one-minute probe and confirm. Wiring from UGREEN's driver; fan control confirmed on hardware by a community tester, LEDs not yet."
+        ],
+        [
+            'DXP2800 SUB2',
+            'The LED controller sits behind an Intel I2C controller. The LED path is opt-in and untested; a read-only check (lpss-probe) shows whether it fits your board.'
         ],
         ['LEDs', "Protocol from miskcoo's ugreen_leds_controller, which matches UGREEN's LED driver."]
     ],

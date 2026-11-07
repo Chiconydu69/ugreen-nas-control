@@ -29,7 +29,7 @@ UGREEN builds its boxes with their own fan controllers, LED chips and watchdog. 
 - **Fan curves in rpm.** Presets or your own curve, measured rpm, full speed when too hot, BIOS values back if the plugin stops. [More on fans →](docs/fan.md)
 - **LEDs that say something.** Colour, effects and brightness per LED: disk activity, errors, SMART, network speed, night mode. [More on LEDs →](docs/led.md)
 - **Hardware watchdog, kept on.** Leave it armed in the BIOS, the plugin feeds it, a frozen box reboots itself. [More on the watchdog →](docs/watchdog.md)
-- **Sensors, dashboard tile, MQTT.** Sleeping disks stay asleep; status to Home Assistant, read-only. [More on MQTT →](docs/mqtt.md)
+- **Sensors, dashboard tile, MQTT.** Sleeping disks stay asleep; status to Home Assistant, read-only. MQTT has no settings page yet: it is set in `fan.cfg`. [More on MQTT →](docs/mqtt.md)
 - **7 languages**, a command line (`ugreen-nas-ctl`, `ugreen-nas-fan`). [More on the CLI →](docs/cli.md) · [Languages →](docs/translations.md) · [FAQ →](docs/faq.md)
 
 ## Your model. Your status.
@@ -63,7 +63,7 @@ https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/plu
 
 3. Open **Settings, UGREEN NAS Control**. It names the model it found.
 
-Update: **Plugins, Check for Updates**. Next build (latest head of `next`, not for production): install `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`; it keeps your settings. **About, Switch to next** does the same in one click, **Back to stable** returns. [Channels and going back →](docs/releasing.md) · [Unraid versions →](docs/unraid.md)
+Update: **Plugins, Check for Updates**. Stable releases come about every week. Next build (latest head of `next`, not for production): install `https://ugreen-nas-control.github.io/ugreen-nas-control/next/ugreen-nas-control.plg`; it keeps your settings. **About, Switch to next** does the same in one click, **Back to stable** returns. [Channels and going back →](docs/releasing.md) · [Unraid versions →](docs/unraid.md)
 
 ## Help
 
@@ -88,8 +88,10 @@ Maintained by <a href="https://github.com/j3n57h0m45"><img src="https://wsrv.nl/
 <a href="https://github.com/datarepos76"><img src="https://wsrv.nl/?url=github.com/datarepos76.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="datarepos76"></a>
 <a href="https://github.com/Chiconydu69"><img src="https://wsrv.nl/?url=github.com/Chiconydu69.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="Chiconydu69"></a>
 <a href="https://github.com/ivolution"><img src="https://wsrv.nl/?url=github.com/ivolution.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="ivolution"></a>
+<a href="https://github.com/DanielRuppen"><img src="https://wsrv.nl/?url=github.com/DanielRuppen.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="DanielRuppen"></a>
+<a href="https://github.com/jsaltzman"><img src="https://wsrv.nl/?url=github.com/jsaltzman.png&w=96&h=96&fit=cover&mask=circle" width="48" height="48" alt="jsaltzman"></a>
 
-Thanks to [321chills](https://github.com/321chills) (DXP2800 GT), [datarepos76](https://github.com/datarepos76) (DXP480T Plus), [Chiconydu69](https://github.com/Chiconydu69) (DXP8800 Plus) and [ivolution](https://github.com/ivolution) (Spanish translation) for testing and translating. And on the Unraid forum: fkiesler, gigios, NullNull67, cardsdoc, gonzlobo.
+Thanks to [321chills](https://github.com/321chills) (DXP2800 GT: wiring research and fan control test), [datarepos76](https://github.com/datarepos76) (DXP480T Plus), [Chiconydu69](https://github.com/Chiconydu69) (DXP8800 Plus: fan wiring, NVMe root ports, front-panel button tests), [ivolution](https://github.com/ivolution) (Spanish translation, DXP4800 Plus tests), [DanielRuppen](https://github.com/DanielRuppen) (DXP2800 SUB2: ACPI and PCI data, lpss-probe runs) and [jsaltzman](https://github.com/jsaltzman) (DXP6800 Pro bug reports, the cause of the failing update check) for testing and translating. And on the Unraid forum: fkiesler, gigios, NullNull67, cardsdoc, gonzlobo.
 
 <!-- testers:end -->
 
