@@ -119,6 +119,11 @@ function init(): void {
     };
     w.confirm = (message: string) => (push('confirm', message), true);
     w.open = (url: string) => (push('open', url), null);
+    // The clipboard is recorded, not used: no permission prompt in the test browser, and the text is part of the snapshot.
+    Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: (text: string) => (push('clipboard', text.split('\n')[0] + ' [' + text.length + ' chars]'), Promise.resolve()) },
+        configurable: true
+    });
 
     // Fan icons stand still (the script-driven spin would make every snapshot differ).
     const matchMedia = w.matchMedia.bind(w);

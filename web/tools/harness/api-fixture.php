@@ -533,6 +533,16 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         $state = array_replace($state, $set);
         file_put_contents($stateFile, json_encode($state));
     };
+    if ($action === 'diag_start') {
+        // The Feedback page's job: the first status poll says running, the second done (the backend runs a real job).
+        // The first start is refused (diag exited within a second: HTTP 409, the command's message), the retry runs.
+        if (($state['diag_starts'] ?? 0) === 0) {
+            $save(['diag_starts' => 1]);
+            out(['ok' => false, 'error' => 'ERROR: run diag as root on the Unraid box.'], 409);
+        }
+        $save(['diag_polls' => 0]);
+        out(['ok' => true, 'job' => '0123456789abcdef']);
+    }
     $fanStatus = build_status($fx, $state);
     fan_post($action, $fan, $fanStatus, $state, $save);
     switch ($action) {
@@ -590,6 +600,36 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
             break;
     }
     out(['ok' => true]);
+}
+
+if (($_GET['action'] ?? '') === 'diag_status') {
+    if (($_GET['job'] ?? '') !== '0123456789abcdef') {
+        out(['ok' => false, 'error' => 'unknown job'], 404);
+    }
+    $polls = (int) ($state['diag_polls'] ?? 0) + 1;
+    $state['diag_polls'] = $polls;
+    file_put_contents($stateFile, json_encode($state));
+    if ($polls < 2) {
+        out(['ok' => true, 'state' => 'running', 'elapsed_ms' => 2000]);
+    }
+    $dmi = $fan['meta']['dmi'];
+    out([
+        'ok' => true,
+        'state' => 'done',
+        'result' => [
+            'schema' => 'feedback/1',
+            'model' => ['id' => strtolower(str_replace(' ', '-', $dmi)), 'name' => $dmi, 'known' => true],
+            'versions' => ['plugin' => '5.4.0-next.1', 'unraid' => '7.1.4', 'kernel' => '6.12.24-Unraid'],
+            'summary' => 'Model ' . $dmi . ' recognised. 5 of 5 checks match: fan chip, LED controller, drive bays, network ports, M.2 slots.',
+            'checks' => [
+                ['area' => 'fans', 'id' => 'fan_chip', 'expected' => 'present', 'detected' => 'present', 'ok' => true],
+                ['area' => 'leds', 'id' => 'led_controller', 'expected' => 'present', 'detected' => 'present', 'ok' => true],
+                ['area' => 'case', 'id' => 'lan_ports', 'expected' => null, 'detected' => 2, 'ok' => null],
+            ],
+            'diag_markdown' => "# ugreen-nas-ctl diag\n\n- model: $dmi\n- plugin: 5.4.0-next.1\n- unraid: 7.1.4\n\n## Fans\n\nchip found\n\n## LEDs\n\ncontroller found\n",
+            'took_ms' => 4200,
+        ],
+    ]);
 }
 
 fan_get((string) ($_GET['action'] ?? ''), $fan, build_status($fx, $state), $state);

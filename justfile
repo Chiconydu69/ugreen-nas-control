@@ -172,15 +172,17 @@ _deps:
 models-check:
     bun web/tools/check-models.ts
 
-# Regenerate the models tables in README.md and docs/hardware.md from web/models/
+# Regenerate the models tables in README.md and docs/hardware.md and the issue forms in .github/ISSUE_TEMPLATE from web/models/
 [group('docs')]
 docs:
     bun docs/tools/gen-docs.ts
+    bun docs/tools/gen-templates.ts
 
 # Fail when the generated docs are out of date or a link, path or just recipe in the docs is broken
 [group('docs')]
 docs-check:
     bun docs/tools/gen-docs.ts --check
+    bun docs/tools/gen-templates.ts --check
 
 # Fail when a generated file is tracked, a tracked file is gitignored, a generator writes to a tracked path, or the web build writes outside .build/
 [group('check')]

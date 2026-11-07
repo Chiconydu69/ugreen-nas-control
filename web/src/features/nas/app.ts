@@ -62,6 +62,7 @@ import { isCs201xModel } from './fan/cs201x';
 import { hasBeeper, hasButtons } from './panel-models';
 import { pluginChannel, switchTarget, SWITCH_COMMANDS } from './channel';
 import { caseText, modelBox, modelFacts, modelRows } from './model-info';
+import { createFeedback } from './feedback-view';
 import { fanModules, type FanCtx, type FanModule } from './fan/module';
 import * as components from './ui/components';
 
@@ -395,6 +396,7 @@ function main(root: HTMLElement): void {
         'led:schedules': 'sub.led_schedules',
         'led:system': 'sub.led_system',
         settings: 'sub.settings',
+        feedback: 'sub.feedback',
         about: 'sub.about'
     };
 
@@ -742,46 +744,6 @@ function main(root: HTMLElement): void {
         return t(led.warning === 'standalone' && !led.enabled ? 'system.ledctl_standalone' : 'system.ledctl_off');
     }
 
-    function bindModelsFold() {
-        const fold = q<HTMLDetailsElement>('#unc-models-fold');
-
-        try {
-            fold.open = localStorage.getItem('unc-models-open') === '1';
-        } catch (error) {
-            /* closed */
-        }
-        fold.addEventListener('toggle', () => {
-            try {
-                localStorage.setItem('unc-models-open', fold.open ? '1' : '0');
-            } catch (error) {
-                /* not remembered */
-            }
-        });
-    }
-
-    const CONFIRMS: [key: string, text: Key, when: () => boolean, line: string][] = [
-        ['leds', 'models.confirm_leds', () => state.data?.led?.supported !== false, 'LEDs: colours and effects work'],
-        ['bays', 'models.confirm_bays', () => state.data?.led?.supported !== false, 'LEDs: the right bay blinks with "Identify" (bay order is right)'],
-        ['case', 'models.confirm_case', () => caseKnown(), 'Case view: front and rear look like my device'],
-        [
-            'inside',
-            'models.confirm_inside',
-            () => Boolean(state.hw) && !caseModel(state.hw as Hardware).noInside && caseKnown(),
-            'Case view: the inside matches (M.2 slots, RAM)'
-        ],
-        ['fans', 'models.confirm_fans', () => fanKnown() && !fanOff(), 'Fan control: modes and curves work, the fans react'],
-        ['temps', 'models.confirm_temps', () => true, 'Temperatures and the dashboard tile show the right values']
-    ];
-
-    function renderConfirm() {
-        const box = q('#unc-confirm-list');
-        const ticked = new Set(qa('#unc-confirm-list input:checked').map(input => input.dataset.confirm));
-
-        box.innerHTML = CONFIRMS.filter(([, , when]) => when())
-            .map(([key, text]) => chipCheck(`data-confirm="${key}"`, ticked.has(key), escapeHtml(t(text))))
-            .join('');
-    }
-
     // Unraid's own install dialog (global openPlugin of the page layout); without it the commands are shown to copy.
     function renderChannel(): void {
         const channel = pluginChannel(window.UGREEN_NAS_VERSION);
@@ -790,35 +752,18 @@ function main(root: HTMLElement): void {
         q('#unc-channel-text').textContent = t(channel === 'next' ? 'channel.now_next' : 'channel.now_stable');
         q('#unc-channel-to-next').hidden = !canOpen || target !== 'next';
         q('#unc-channel-to-stable').hidden = !canOpen || target !== 'stable';
-        q('#unc-channel-cmd').hidden = canOpen;
-        q('#unc-channel-cmd-hint').textContent = t(target === 'next' ? 'channel.cmd_next' : 'channel.cmd_stable');
-        q('#unc-channel-cmd-text').textContent = SWITCH_COMMANDS[target];
+        // On next with the button: the stable page has no switch back, so the way back stays visible here.
+        const back = canOpen && target === 'stable';
+        q('#unc-channel-cmd').hidden = canOpen && !back;
+        q('#unc-channel-cmd-hint').textContent = t(back ? 'channel.cmd_back' : target === 'next' ? 'channel.cmd_next' : 'channel.cmd_stable');
+        q('#unc-channel-cmd-text').textContent = SWITCH_COMMANDS[back ? 'next' : target];
     }
 
     function switchChannel(target: 'next' | 'stable'): void {
         if (typeof window.openPlugin !== 'function') return;
-        if (!window.confirm(t(target === 'next' ? 'channel.confirm_next' : 'channel.confirm_stable'))) return;
+        const message = target === 'next' ? t('channel.confirm_next') : t('channel.confirm_stable', { cmd: SWITCH_COMMANDS.next });
+        if (!window.confirm(message)) return;
         window.openPlugin(SWITCH_COMMANDS[target], t(target === 'next' ? 'channel.title_next' : 'channel.title_stable'));
-    }
-
-    function openConfirmIssue() {
-        const info: Partial<Info> = state.data?.info || {};
-        const model = modelName() || 'unknown';
-        const marked = new Set(qa('#unc-confirm-list input:checked').map(input => input.dataset.confirm));
-        const lines = CONFIRMS.filter(([, , when]) => when()).map(([key, , , line]) => `- [${marked.has(key) ? 'x' : ' '}] ${line}`);
-        const comment = q<HTMLTextAreaElement>('#unc-confirm-text').value.trim();
-        const body = [
-            `Model: ${model}`,
-            `Plugin: ${window.UGREEN_NAS_VERSION || '?'}`,
-            `Unraid: ${info.unraid || '?'}, kernel ${info.kernel || '?'}`,
-            `Fan chip: ${state.data?.chip || 'none'}; LED controller: ${state.ledStatus?.i2c_address ? `I2C ${state.ledStatus.i2c_address}` : 'not found'}`,
-            '',
-            ...lines,
-            ...(comment ? ['', comment] : [])
-        ].join('\n');
-        const url = `https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?labels=${encodeURIComponent('model-report')}&title=${encodeURIComponent(`Model report: ${model}`)}&body=${encodeURIComponent(body)}`;
-
-        window.open(url, '_blank', 'noopener');
     }
 
     function renderModels() {
@@ -1783,7 +1728,7 @@ function main(root: HTMLElement): void {
         renderModes();
         renderSystem();
         renderModels();
-        renderConfirm();
+        feedback.render();
         renderCurves();
         renderSafety();
         drawFanModules();
@@ -1903,6 +1848,14 @@ function main(root: HTMLElement): void {
     // Fan control the page may offer comes from the status (fan_caps); the case pictures also for the DXP4800 family,
     // drawn after the DXP4800 Plus; elsewhere the pages stay out of the way.
     const modelName = () => state.hw?.model || state.data?.info?.model || '';
+    const feedback = createFeedback({
+        root,
+        api,
+        t,
+        product: modelName,
+        versions: () => ({ plugin: window.UGREEN_NAS_VERSION || '', unraid: state.data?.info?.unraid || '', kernel: state.data?.info?.kernel || '' }),
+        toast
+    });
     const fanKnown = () => state.data?.fan_caps?.kind === 'fixed' || (state.data?.fan_caps?.kind === 'probe' && state.data.fan_caps.channels > 0);
     const fanProbing = () => state.data?.fan_caps?.kind === 'probe' && state.data.fan_caps.channels === 0 && !fanOff();
     const fanOff = () => state.data?.settings?.fan_control === false;
@@ -3431,7 +3384,6 @@ function main(root: HTMLElement): void {
         });
         document.addEventListener('click', event => {
             if (!hit(event)?.closest('[data-models-link]')) return;
-            q<HTMLDetailsElement>('#unc-models-fold').open = true;
             showView('about');
             q('#unc-models-card').scrollIntoView({ block: 'start' });
         });
@@ -3618,8 +3570,7 @@ function main(root: HTMLElement): void {
             );
         });
 
-        bindModelsFold();
-        q('#unc-confirm-send').addEventListener('click', openConfirmIssue);
+        feedback.bind();
         q('#unc-channel-to-next').addEventListener('click', () => switchChannel('next'));
         q('#unc-channel-to-stable').addEventListener('click', () => switchChannel('stable'));
 

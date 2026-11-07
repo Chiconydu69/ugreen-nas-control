@@ -50,7 +50,7 @@ Per-capability status, versions, dates and evidence: [docs/hardware.md](docs/har
 
 <!-- models:end -->
 
-Not verified or missing? The probe wizard maps unknown fan wiring in about a minute, and **About, Confirm my device** files the report. [Report a model →](docs/cli.md#report-a-model)
+Not verified or missing? The probe wizard maps unknown fan wiring in about a minute, and the **Feedback** page files the report. [Report a model →](docs/cli.md#report-a-model)
 
 ## Install
 

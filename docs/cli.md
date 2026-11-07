@@ -102,6 +102,6 @@ Run the report on the Unraid box and paste the JSON into the [model report form]
 /usr/local/emhttp/plugins/ugreen-nas-control/backend/ugreen-nas-ctl report
 ```
 
-It prints the DMI product name, the chips found, the bus probe, the LED and fan self-test results and the plugin version as JSON, without serial numbers, IP addresses or drive names. Then tick in the form what works on your device. Without a shell, **About, Confirm my device** in the plugin opens a prepared issue with what you ticked. Check with _Identify_ on the LEDs page that the right bay blinks.
+It prints the DMI product name, the chips found, the bus probe, the LED and fan self-test results and the plugin version as JSON, without serial numbers, IP addresses or drive names. Then say in the form what works on your device. Without a shell, use the plugin's **Feedback** page: answer per capability, collect the data (scrubbed: no serial numbers, IP or MAC addresses, host or drive names), and one click copies it and opens the prepared issue; paste it into the _Device data_ field. **Report a problem** on the same page opens the bug form with the same data. The two forms are generated from the model registry (`just docs`). Check with _Identify_ on the LEDs page that the right bay blinks.
 
 A report turns an _expected_ capability into _community_ ([how verification works](hardware.md#how-verification-works)). To add the model yourself: [development.md](development.md#add-a-model).

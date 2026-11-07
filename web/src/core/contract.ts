@@ -351,7 +351,37 @@ export interface HardwareResponse {
 /** The hardware as the page holds it: lists the tool printed as null are empty. */
 export type Hardware = Omit<HardwareResponse, 'memory' | 'nvme' | 'net'> & { memory: Dimm[]; nvme: Nvme[]; net: NetPort[] };
 
+/** Feedback page (api.php diag_start / diag_status): one background job that collects the scrubbed diag. */
+export interface DiagCheck {
+    area: string;
+    id: string;
+    expected: string;
+    detected: string;
+    /** null: the check has no expected value to compare with. */
+    ok: boolean | null;
+}
+
+export interface DiagResult {
+    schema: 'feedback/1';
+    model: { id: string; name: string; known: boolean };
+    versions: { plugin: string; unraid: string; kernel: string };
+    /** At most 600 characters. */
+    summary: string;
+    checks: DiagCheck[];
+    diag_markdown: string;
+    took_ms: number;
+}
+
+export interface DiagStartResponse {
+    ok: true;
+    job: string;
+}
+
+export type DiagStatusResponse =
+    { ok: true; state: 'running'; elapsed_ms: number } | { ok: true; state: 'done'; result: DiagResult } | { ok: true; state: 'error'; error: string };
+
 export interface NasGet {
+    diag_status: DiagStatusResponse;
     status: StatusResponse;
     hardware: HardwareResponse;
     fan_inputs: FanInputsResponse;
@@ -369,6 +399,7 @@ export interface NasGet {
 type Flag = '0' | '1';
 
 export interface NasPost {
+    diag_start: Record<string, never>;
     mode: { value: Mode };
     min: { min_pct: number; case_follows_cpu: Flag };
     curves: { cpu_curve: string; case_curve: string; case_follows_cpu: Flag; min_pct: number };
@@ -399,6 +430,7 @@ export interface NasPost {
 
 /** Answers of POSTs that carry more than {ok: true}. */
 export interface NasPostReply {
+    diag_start: DiagStartResponse;
     fan_input_test: FanInputTestResponse;
     fan_profile_preview: FanProfilePreviewResponse;
     fan_profile_apply: FanProfileApplyResponse;
