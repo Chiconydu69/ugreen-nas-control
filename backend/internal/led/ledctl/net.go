@@ -22,17 +22,26 @@ func (c *Ctl) ipRouteDefault() []string {
 	return strings.Split(strings.TrimSuffix(s, "\n"), "\n")
 }
 
-// networkDevice is the interface behind the default route; a bridge is resolved to its uplink
-// (e.g. br0 -> bond0).
-func (c *Ctl) networkDevice() string {
-	dev := ""
-	// Unraid adds a second default route over shim-br0 (a macvlan for Docker): not the uplink.
+// uplinkRoute is the default route the NAS traffic uses: the first one `ip route show default` lists (lowest
+// metric), without Unraid's second route over shim-br0 (a macvlan for Docker). Device and gateway both come from
+// that one route, so the ping goes where the LED device's traffic goes.
+func (c *Ctl) uplinkRoute() (dev, gateway string) {
 	for _, line := range c.ipRouteDefault() {
 		if m := routeDevRe.FindStringSubmatch(line); m != nil && !strings.HasPrefix(m[1], "shim-") {
 			dev = m[1]
+			if v := routeViaRe.FindStringSubmatch(line); v != nil {
+				gateway = v[1]
+			}
 			break
 		}
 	}
+	return dev, gateway
+}
+
+// networkDevice is the interface behind the default route; a bridge is resolved to its uplink
+// (e.g. br0 -> bond0).
+func (c *Ctl) networkDevice() string {
+	dev, _ := c.uplinkRoute()
 
 	if dev != "" && isDir(c.Env.SysNet+"/"+dev+"/brif") {
 		for _, port := range listDir(c.Env.SysNet + "/" + dev + "/brif") {
@@ -46,9 +55,12 @@ func (c *Ctl) networkDevice() string {
 	return dev
 }
 
-// networkCheck is the verdict the network LED follows: the link is up and the gateway answers a ping. The reason
-// says which of the two failed.
-func (c *Ctl) networkCheck(dev string) (bool, string) {
+// gatewayFailLimit is how many probes in a row must miss the gateway before the verdict turns red.
+const gatewayFailLimit = 3
+
+// linkCheck is the immediate part of the verdict: operstate up, and a carrier on the device or on one of its
+// members (a bond keeps its carrier while one port is down).
+func (c *Ctl) linkCheck(dev string) (bool, string) {
 	state, _ := readLine(c.Env.SysNet + "/" + dev + "/operstate")
 	if state != "up" {
 		if state == "" {
@@ -56,20 +68,48 @@ func (c *Ctl) networkCheck(dev string) (bool, string) {
 		}
 		return false, "operstate " + state
 	}
-	gateway := ""
-	for _, line := range c.ipRouteDefault() {
-		if m := routeViaRe.FindStringSubmatch(line); m != nil {
-			gateway = m[1]
-			break
+	if carrier, _ := readLine(c.Env.SysNet + "/" + dev + "/carrier"); carrier == "0" {
+		for _, name := range listDir(c.Env.SysNet + "/" + dev) {
+			member, ok := strings.CutPrefix(name, "lower_")
+			if !ok || globAny(member, "veth*", "vnet*", "tap*") {
+				continue
+			}
+			if up, _ := readLine(c.Env.SysNet + "/" + member + "/carrier"); up == "1" {
+				return true, ""
+			}
 		}
-	}
-	if gateway == "" {
-		return true, ""
-	}
-	if _, code := c.Run.Output("ping", "-c", "1", "-W", "2", gateway); code != 0 {
-		return false, "gateway ping failed"
+		return false, "carrier 0"
 	}
 	return true, ""
+}
+
+// gatewayAnswers pings the gateway of the uplink route twice; one answer is enough. No gateway counts as answered.
+func (c *Ctl) gatewayAnswers() bool {
+	_, gateway := c.uplinkRoute()
+	if gateway == "" {
+		return true
+	}
+	_, code := c.Run.Output("ping", "-c", "2", "-W", "2", gateway)
+	return code == 0
+}
+
+// networkCheck is the verdict the network LED follows: the link is up (immediate) and the gateway answers
+// (red only after gatewayFailLimit failed probes in a row; fails is that count, kept by the caller). The reason says
+// what failed, or that a failure is being counted: "ok (gateway ping failed 1 of 3)".
+func (c *Ctl) networkCheck(dev string, fails *int) (bool, string) {
+	if ok, why := c.linkCheck(dev); !ok {
+		*fails = 0
+		return false, why
+	}
+	if c.gatewayAnswers() {
+		*fails = 0
+		return true, ""
+	}
+	*fails++
+	if *fails >= gatewayFailLimit {
+		return false, "gateway ping failed"
+	}
+	return true, fmt.Sprintf("ok (gateway ping failed %d of %d)", *fails, gatewayFailLimit)
 }
 
 // linkSpeed is the negotiated speed in Mbit/s as printed, "0" when unknown (no link, or the
