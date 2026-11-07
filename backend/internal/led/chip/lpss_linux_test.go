@@ -20,6 +20,7 @@ type fakeDW struct {
 	rx     []byte
 	resp   []byte
 	nak    bool
+	stuck  bool // ENABLE_STATUS never drops to 0
 	raw    uint32
 	log    []string // "r<off>" and "w<off>"
 	writes int
@@ -41,7 +42,7 @@ func (f *fakeDW) load(reg int) uint32 {
 	f.log = append(f.log, "r"+itoa(reg))
 	switch reg {
 	case dwEnableStatus:
-		if f.enable {
+		if f.enable || f.stuck {
 			return 1
 		}
 		return 0
@@ -396,5 +397,19 @@ func TestLPSSNoDevice(t *testing.T) {
 		if got := lpssNoDevice(c.err); got != c.want {
 			t.Errorf("lpssNoDevice(%v) = %v, want %v", c.err, got, c.want)
 		}
+	}
+}
+
+// A controller that does not disable is reported in the probe output, not ignored.
+func TestLPSSDisableFailureReported(t *testing.T) {
+	f := newFakeDW()
+	f.stuck = true
+	r, err := probe(t, sysOpts{}, f)
+	if err == nil {
+		t.Fatal("want a refusal")
+	}
+	text := strings.Join(r.lines, "\n")
+	if !strings.Contains(text, "disable:") || !strings.Contains(text, "may still be enabled") {
+		t.Errorf("report does not say the controller could not be disabled:\n%s", text)
 	}
 }

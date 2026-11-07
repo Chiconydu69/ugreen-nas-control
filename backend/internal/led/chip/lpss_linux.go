@@ -253,9 +253,12 @@ func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
 		return nil, r.refuse("cannot map BAR0: %v", err)
 	}
 	d := &dwI2C{mem: regs, unmap: unmap, addr: addr, timing: lpssTiming()}
+	// Teardown leaves RESETS as it is: intel_lpss_remove (intel-lpss.c:469-479.18) does not touch it either; only
+	// suspend writes 0 (:499-515). A failed disable is reported, not retried.
 	fail := func(format string, args ...any) (*dwI2C, error) {
-		_ = d.disable()
-		d.unmap()
+		if err := d.shutdown(); err != nil {
+			r.add("disable", "FAILED: %v (the controller may still be enabled)", err)
+		}
 		return nil, r.refuse(format, args...)
 	}
 
@@ -311,8 +314,13 @@ func (c *cli) runLPSSProbe(write bool) int {
 	r := &lpssReport{}
 	d, err := openLPSS(r, controllerAddr, write)
 	if err == nil && d != nil {
-		d.close()
-		r.add("result", "ok (the chip id matches; LED control needs lpss_leds=\"1\" in leds.cfg)")
+		if derr := d.shutdown(); derr != nil {
+			r.add("disable", "FAILED: %v (the controller may still be enabled)", derr)
+			r.add("result", "failed: the controller could not be disabled")
+			err = derr
+		} else {
+			r.add("result", "ok (the chip id matches; LED control needs lpss_leds=\"1\" in leds.cfg)")
+		}
 	}
 
 	text := strings.Join(r.lines, "\n") + "\n"

@@ -194,9 +194,17 @@ func openDW(addr uint8) (*dwI2C, error) {
 	return nil, fmt.Errorf("%s: %w", names[len(names)-1], err)
 }
 
-func (d *dwI2C) close() {
-	_ = d.disable()
+// shutdown disables the controller and releases the mappings, even when the disable fails.
+func (d *dwI2C) shutdown() error {
+	err := d.disable()
 	d.unmap()
+	return err
+}
+
+func (d *dwI2C) close() {
+	if err := d.shutdown(); err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, "ugreen-led-i2c:", err)
+	}
 }
 
 func (d *dwI2C) rd(reg int) uint32    { return d.mem.load(reg) }
