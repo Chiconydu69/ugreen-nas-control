@@ -323,7 +323,6 @@ export const es: Record<Key, string> = {
     'device.st_users': 'Confirmado por usuarios',
     'device.st_untested': 'Sin probar',
     'device.st_none': 'No compatible',
-    'device.details': 'Detalles',
     'device.untested': 'Aún sin confirmar en tu {model}: {list}. Dos minutos de tu tiempo ayudan a todos los propietarios de este modelo.',
     'device.all_confirmed': 'Todo lo que ofrece el plugin está confirmado en tu {model}.',
     'device.confirm': 'Confirmar mi dispositivo',
