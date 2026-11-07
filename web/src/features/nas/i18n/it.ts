@@ -332,6 +332,7 @@ export const it: Record<Key, string> = {
     'device.cap_panel': 'Pannello frontale',
     'device.st_confirmed': 'Confermato',
     'device.st_users': 'Confermato dagli utenti',
+    'device.st_partial': 'Confermato in parte',
     'device.st_untested': 'Non testato',
     'device.st_none': 'Non supportato',
     'device.untested': 'Non ancora confermato sul tuo {model}: {list}. Due minuti del tuo tempo aiutano ogni proprietario di questo modello.',

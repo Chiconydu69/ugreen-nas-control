@@ -320,6 +320,7 @@ export const zh: Record<Key, string> = {
     'device.cap_panel': '前面板',
     'device.st_confirmed': '已确认',
     'device.st_users': '用户已确认',
+    'device.st_partial': '部分已确认',
     'device.st_untested': '未测试',
     'device.st_none': '不支持',
     'device.untested': '你的 {model} 上尚未确认：{list}。花两分钟就能帮到这款机型的所有用户。',

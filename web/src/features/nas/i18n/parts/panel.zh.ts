@@ -6,6 +6,7 @@ export const panelZh: Record<keyof typeof panelEn, string> = {
     'panel.unconfirmed': '依据 UGREEN 驱动源码，尚未在你的硬件上确认。',
     'panel.confirmed': '已有用户在此型号上确认。',
     'panel.confirmed_by': '已有用户在此型号上确认：{by}。',
+    'panel.partial': '已有用户在此型号上部分确认：{by}。',
     'panel.buttons_title': '按键',
     'panel.buttons_hint': '读取一次电源键和复位键。按下不会触发任何动作：插件只读取。',
     'panel.power': '电源',

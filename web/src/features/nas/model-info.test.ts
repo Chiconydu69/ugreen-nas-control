@@ -60,7 +60,7 @@ test('everything confirmed: the quiet "confirm again" action, no untested capabi
     expect(d.rows.map(r => [r.cap, r.state])).toEqual([
         ['leds', 'confirmed'],
         ['fans', 'users'],
-        ['case', 'users'],
+        ['case', 'partial'],
         ['sensors', 'confirmed'],
         ['panel', 'users']
     ]);
@@ -76,9 +76,10 @@ test('some untested: the capabilities are listed and the primary action is "conf
     expect(d.cta).toBe('confirm');
 });
 
-test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus and DXP4800 Plus, nothing elsewhere', () => {
-    expect(panelEvidence('DXP8800 Plus')).toEqual({ state: 'users', by: 'Chiconydu69 (issue 165)' });
-    expect(panelEvidence('DXP4800 Plus')?.state).toBe('users');
+test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus, partly on the DXP4800 Plus, nothing elsewhere', () => {
+    expect(panelEvidence('DXP8800 Plus')).toMatchObject({ state: 'users', by: 'Chiconydu69 (issue 165)' });
+    expect(panelEvidence('DXP4800 Plus')?.state).toBe('partial');
+    expect(panelEvidence('DXP4800 Plus')?.note).toContain('Beeper: confirmed');
     expect(panelEvidence('DXP4800 GT')?.state).toBe('untested');
     expect(panelEvidence('DXP6800 Ultra')?.state).toBe('none');
     expect(panelEvidence('Something Else')).toBeNull();
@@ -96,4 +97,10 @@ test('every registry model gets a card with its name, series and a row per track
         expect(d.rows.length).toBe(5);
         expect(d.cta).toBe(d.untested.length ? 'confirm' : 'recheck');
     }
+});
+
+test('a partly confirmed capability is its own state, never "users", and keeps its note', () => {
+    const d = deviceInfo('X1', entry({ leds: ok, fans: ok, case: ok, sensors: ok, panel: { status: 'partial', note: 'Beeper only.' } }))!;
+    expect(d.rows.find(r => r.cap === 'panel')).toEqual({ cap: 'panel', state: 'partial', note: 'Beeper only.' });
+    expect(d.rows.filter(r => r.state === 'users')).toHaveLength(0);
 });

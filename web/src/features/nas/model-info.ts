@@ -51,8 +51,8 @@ export function modelBox(model: string, facts: ModelFacts | null, t: T): string 
 export const caseText = (t: T): string => t(VIEWS.none);
 
 export type DeviceCap = 'leds' | 'fans' | 'case' | 'sensors' | 'panel';
-/** confirmed = verified by a maintainer; users = confirmed or partly confirmed by users. */
-export type DeviceState = 'confirmed' | 'users' | 'untested' | 'none';
+/** confirmed = verified by a maintainer; users = confirmed by users; partial = checked, but something is open (the note says what). */
+export type DeviceState = 'confirmed' | 'users' | 'partial' | 'untested' | 'none';
 export type Cta = 'confirm' | 'recheck' | 'tell';
 
 export interface DeviceRow {
@@ -79,7 +79,7 @@ interface DeviceEntry {
     verified: Record<string, { status: string; by?: string; note?: string }>;
 }
 
-const STATE: Record<string, DeviceState> = { verified: 'confirmed', community: 'users', partial: 'users', expected: 'untested', unsupported: 'none' };
+const STATE: Record<string, DeviceState> = { verified: 'confirmed', community: 'users', partial: 'partial', expected: 'untested', unsupported: 'none' };
 const CAPS: DeviceCap[] = ['leds', 'fans', 'case', 'sensors', 'panel'];
 
 /** The "Your device" card of About: one row per capability the registry tracks for the model. Null for an unknown model. */
@@ -98,8 +98,8 @@ export function deviceInfo(product: string, models: readonly DeviceEntry[] = reg
 export function panelEvidence(
     product: string,
     models: readonly DeviceEntry[] = registry.models as unknown as DeviceEntry[]
-): { state: DeviceState; by: string } | null {
+): { state: DeviceState; by: string; note: string } | null {
     const hit = models.find(m => new RegExp(m.dmiPattern).test(product));
     const c = hit?.verified.panel;
-    return c ? { state: STATE[c.status] ?? 'untested', by: c.by ?? '' } : null;
+    return c ? { state: STATE[c.status] ?? 'untested', by: c.by ?? '', note: c.note ?? '' } : null;
 }

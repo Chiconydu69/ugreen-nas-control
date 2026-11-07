@@ -328,6 +328,7 @@ export const en = {
     'device.cap_panel': 'Front panel',
     'device.st_confirmed': 'Confirmed',
     'device.st_users': 'Confirmed by users',
+    'device.st_partial': 'Partly confirmed',
     'device.st_untested': 'Untested',
     'device.st_none': 'Not supported',
     'device.untested': 'Not yet confirmed on your {model}: {list}. Two minutes of your time helps every owner of this model.',
