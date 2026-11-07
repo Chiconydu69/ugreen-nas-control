@@ -35,6 +35,7 @@ jobs:
   prepare:
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
+    environment: release # deployment branch policy: next only
     timeout-minutes: 30
     # Holds write and OIDC tokens: no nix cache in this job.
     permissions:
