@@ -92,6 +92,8 @@ export const zh: Record<Key, string> = {
     'temps.gpu': '显卡（iGPU）',
     'temps.sensor': '传感器',
     'temps.board': '主板',
+    'temps.acpi': 'ACPI 区域',
+    'temps.acpi_hint': '固定的 BIOS 值(约 28 °C),并非实测。不用于风扇。',
 
     'system.title': '系统',
     'system.model': '型号',

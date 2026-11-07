@@ -3223,6 +3223,15 @@ function main(root: HTMLElement): void {
         board.push(
             sensorRow({ ico: icon('board'), name: t('temps.board'), src: data.chip ? chipName(data.chip) : 'acpitz', vals: [tempVal(s.board, 'other')] })
         );
+        if (s.acpi_zone != null)
+            board.push(
+                sensorRow({
+                    ico: icon('board'),
+                    name: t('temps.acpi'),
+                    src: `acpitz: ${t('temps.acpi_hint')}`,
+                    vals: [{ label: '', text: deg(plausible(s.acpi_zone)), level: 'na' }]
+                })
+            );
         (data.chip_temps || []).forEach((temp, i) => {
             if (plausible(temp) != null)
                 board.push(

@@ -907,3 +907,11 @@ func TestAsyncSectionsOverlap(t *testing.T) {
 		t.Errorf("blocks ran one after the other: %s", d)
 	}
 }
+
+func TestDiagMarksACPIZoneUnreliable(t *testing.T) {
+	status := `{"fan_control": true, "sensors": {"cpu": 38, "board": null, "acpi_zone": 28, "not_connected": []}}`
+	body := fanSection(FanDiag{Status: []byte(status)}).Body
+	if !strings.Contains(body, "temps: cpu 38 C  board -  acpi zone 28 C (fixed BIOS value on UGREEN boards, unreliable, not used)") {
+		t.Fatalf("section = %s", body)
+	}
+}

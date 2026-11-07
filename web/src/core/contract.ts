@@ -182,6 +182,8 @@ export interface Sensors {
     board: number | null;
     /** Inputs that report no real temperature (an unwired sensor); left out of the values above. */
     not_connected?: { source: string; name: string; raw: number }[];
+    /** The ACPI thermal zone (acpitz): a fixed BIOS value on UGREEN boards, no measurement. */
+    acpi_zone?: number | null;
 }
 
 export type FanRole = 'cpu' | 'case' | '';

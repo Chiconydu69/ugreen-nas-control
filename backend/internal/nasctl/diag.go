@@ -361,6 +361,7 @@ type fanStatus struct {
 	Sensors struct {
 		CPU          *int `json:"cpu"`
 		Board        *int `json:"board"`
+		ACPI         *int `json:"acpi_zone"`
 		NotConnected []struct {
 			Source string `json:"source"`
 			Name   string `json:"name"`
@@ -442,7 +443,11 @@ func fanSection(d FanDiag) Section {
 		}
 		l = append(l, line)
 	}
-	l = append(l, fmt.Sprintf("temps: cpu %s  board %s", tempText(st.Sensors.CPU), tempText(st.Sensors.Board)))
+	line := fmt.Sprintf("temps: cpu %s  board %s", tempText(st.Sensors.CPU), tempText(st.Sensors.Board))
+	if st.Sensors.ACPI != nil {
+		line += fmt.Sprintf("  acpi zone %s (fixed BIOS value on UGREEN boards, unreliable, not used)", tempText(st.Sensors.ACPI))
+	}
+	l = append(l, line)
 	for _, n := range st.Sensors.NotConnected {
 		l = append(l, fmt.Sprintf("temp %s %s: not connected (raw %d C)", n.Source, n.Name, n.Raw))
 	}
