@@ -82,7 +82,17 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
-      - run: nix develop .#fmt -c just fmt-check php-lint xml-lint models-check docs-check
+      # Outside contributors: a failing format check prints what the formatter would change (nothing is committed or pushed).
+      - name: Format check
+        run: |
+          if ! nix develop .#fmt -c just fmt-check; then
+            nix develop .#fmt -c just fmt >/dev/null 2>&1 || true
+            files="$(git diff --name-only | paste -sd, - | sed 's/,/, /g')"
+            git diff -U0
+            echo "::error title=Formatting::The formatter would change: ${files:-see the log above}. Maintainers fix formatting when they merge; you don't have to."
+            exit 1
+          fi
+      - run: nix develop .#fmt -c just php-lint xml-lint models-check docs-check
 
   go-lint:
     needs: changes
