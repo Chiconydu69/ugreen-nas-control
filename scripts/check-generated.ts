@@ -67,7 +67,7 @@ for (const f of allowed) if (!trackedSet.has(f)) problems.push(`.gitattributes: 
 // output that a moved or deleted .gitignore lets through (b) and that no generator declares any more (c).
 const OUTPUT_SEGMENT = /(^|\/)(dist|build|out|\.build|node_modules)\//;
 const IMAGE_SOURCES = ['web/assets/', 'web/plugin/led/images/'];
-const TRACKED_IMAGES = ['docs/ca/']; // Community Applications screenshots (`just ca-shots`), listed in .gitattributes
+const TRACKED_IMAGES: string[] = [];
 for (const f of tracked) {
     if (OUTPUT_SEGMENT.test(f)) problems.push(`${f}: tracked inside a build-output folder`);
     else if (/\.(png|jpe?g|gif|webp|ico|svg)$/i.test(f) && ![...IMAGE_SOURCES, ...TRACKED_IMAGES].some(d => f.startsWith(d)))
