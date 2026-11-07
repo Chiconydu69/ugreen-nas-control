@@ -457,7 +457,7 @@ func m2SlotsMatch(expected, detected []string, pcieSlot bool) bool {
 var issueRefRe = regexp.MustCompile(`/(?:issues|pull)/(\d+)$`)
 
 // PanelStatus is how well the front panel (buttons and beeper) is known on the model, from the registry's panel check
-// (web/models/*.ts), for `ugreen-nas panel` and the diag: "confirmed by users (#165)" or "vendor source, not yet confirmed".
+// (web/models/*.ts), for `ugreen-nas panel` and the diag: "confirmed by users, #165" or "vendor source, not yet confirmed".
 func PanelStatus(product string) string {
 	unconfirmed := panel.Unconfirmed
 	models, err := loadRegistry(modelsJSON)
@@ -484,7 +484,7 @@ func PanelStatus(product string) string {
 		return unconfirmed
 	}
 	if m := issueRefRe.FindStringSubmatch(c.Ref); m != nil {
-		text += " (#" + m[1] + ")"
+		text += ", #" + m[1]
 	}
 	return text
 }

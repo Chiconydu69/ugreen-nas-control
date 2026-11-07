@@ -336,10 +336,10 @@ func TestCLIButtons(t *testing.T) {
 		t.Errorf("opens %v writes %v", c.memOpens, c.mem.writes)
 	}
 	c = newCLI(t, "DXP4800")
-	c.Status = func(p string) string { return "confirmed by users (#165) on " + p }
+	c.Status = func(p string) string { return "confirmed by users, #165 on " + p }
 	c.mem.words[0xFD6A0980] = 0
 	c.mem.words[0xFD6D0B50] = 2
-	if rc, out := c.run("buttons"); rc != 0 || !strings.Contains(out, "model: DXP4800 (confirmed by users (#165) on DXP4800)") {
+	if rc, out := c.run("buttons"); rc != 0 || !strings.Contains(out, "model: DXP4800 (confirmed by users, #165 on DXP4800)") {
 		t.Errorf("status from Env: rc %d %q", rc, out)
 	}
 	c = newCLI(t, "Standard PC")

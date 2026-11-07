@@ -46,7 +46,7 @@ Without the map the daemon does not start on this model.
 
 ## ugreen-nas panel
 
-Front-panel buttons and beeper, from UGREEN's driver facts. `buttons` prints how well the model is known: `confirmed by users (#165)` or `vendor source, not yet confirmed` (the registry's `panel` check, [panel.md](panel.md)).
+Front-panel buttons and beeper, from UGREEN's driver facts. `buttons` prints how well the model is known: `confirmed by users, #165` or `vendor source, not yet confirmed` (the registry's `panel` check, [panel.md](panel.md)).
 
 - `buttons [--watch]`: power and reset button state; `--watch` prints press and release events. Read only.
 - `beep [--freq Hz] [--ms N]`: one tone, 20 to 2000 ms; the speaker is always switched off afterwards.
