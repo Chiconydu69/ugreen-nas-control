@@ -172,12 +172,6 @@ _ca-render: web-build
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview,fans,case,leds --theme dark --no-social
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview --theme light --no-social
 
-# The 5 Community Applications store screenshots and README hero images into docs/ca/ (the CA listing still loads them from main)
-[group('dev')]
-ca-shots: _ca-render
-    mkdir -p docs/ca
-    cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png docs/ca/
-
 # The same images into .build/site/shots/ (served by Pages, linked from the README); run after the site build, which clears .build/site
 [group('dev')]
 site-shots: _ca-render

@@ -94,4 +94,4 @@
       - any-glob-to-any-file: [.github/**, plugin/tools/**, scripts/**, web/tools/**, docs/tools/**, justfile, flake.*]
 documentation:
   - changed-files:
-      - any-glob-to-any-file: ['docs/*.md', docs/ca/**]
+      - any-glob-to-any-file: ['docs/*.md']

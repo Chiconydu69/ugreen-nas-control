@@ -13,10 +13,10 @@
   <ReadMe>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/README.md</ReadMe>
   <Icon>https://ugreen-nas-control.github.io/ugreen-nas-control/icon.png</Icon>
   <ExtraSearchTerms>ugreen nas dxp dx idx dxp6800 dxp4800 dxp2800 dxp8800 idx6011 led fan fan-control temperature case-view mqtt home-assistant</ExtraSearchTerms>
-  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/overview-dark.png</Screenshot>
-  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/fans-dark.png</Screenshot>
-  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/case-dark.png</Screenshot>
-  <Screenshot>https://raw.githubusercontent.com/ugreen-nas-control/ugreen-nas-control/main/docs/ca/leds-dark.png</Screenshot>
+  <Screenshot>https://ugreen-nas-control.github.io/ugreen-nas-control/shots/overview-dark.png</Screenshot>
+  <Screenshot>https://ugreen-nas-control.github.io/ugreen-nas-control/shots/fans-dark.png</Screenshot>
+  <Screenshot>https://ugreen-nas-control.github.io/ugreen-nas-control/shots/case-dark.png</Screenshot>
+  <Screenshot>https://ugreen-nas-control.github.io/ugreen-nas-control/shots/leds-dark.png</Screenshot>
   <License>MIT</License>
   <MinVer>7.2.0</MinVer>
 </Plugin>
