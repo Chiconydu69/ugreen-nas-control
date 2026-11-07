@@ -39,7 +39,7 @@ lpss-probe DXP2800 SUB2 boards: the LED controller sits behind an Intel LPSS I2C
           kernel driver. Read only by default: prints every check (ACPI path, PCI function, driver, power state,
           BAR0, DesignWare type) and stops before any write. With --write it then sets up the controller
           (writes controller registers, never an LED frame) and reads the chip id. Needs no opt-in; LED
-          control on this path is off until lpss_leds="1" is set in leds.cfg
+          control uses this path by default when every check passes (lpss_leds="0" in leds.cfg turns it off)
 
 --bus     the SMBus device (default: the "SMBus I801 adapter")
 --debug   print every step of the DXP2800 SUB2 path (power, bring-up, each transfer) to stderr;

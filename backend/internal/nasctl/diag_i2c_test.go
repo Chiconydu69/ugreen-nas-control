@@ -179,4 +179,10 @@ func TestI2CDiagLPSS(t *testing.T) {
 	if out := strings.Join(c.i2cDiag().lines(), "\n"); !strings.Contains(out, "lpss-probe (last run):\n  chip_id: 0xc5b2\n  result: ok") {
 		t.Errorf("probe report missing:\n%s", out)
 	}
+
+	c.Env.LPSSState = t.TempDir() + "/state"
+	write(t, c.Env.LPSSState, "refused: rule child-driver: x\n")
+	if out := strings.Join(c.i2cDiag().lines(), "\n"); !strings.Contains(out, "lpss led path (this boot): refused: rule child-driver: x") {
+		t.Errorf("state missing:\n%s", out)
+	}
 }

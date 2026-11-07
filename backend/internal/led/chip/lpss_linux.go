@@ -18,7 +18,7 @@ import (
 // DXP2800 "SUB2" boards (BIOS EM_DXP2800S_SUB2_*, miskcoo/ugreen_leds_controller#115, issue #214): the LED MCU
 // (ACPI HT32F522, \_SB_.PC00.I2C1.MCU0) sits behind an Intel Alder Lake-N LPSS DesignWare I2C controller. Unraid's
 // kernel has no i2c_designware module, so the controller is driven through /dev/mem, like the AMD one in
-// dwmem_linux.go. Off by default (lpss_leds="1" in leds.cfg); `ugreen-led-i2c lpss-probe` is read only, `lpss-probe --write` needs no opt-in.
+// dwmem_linux.go. On by default when every gate holds (lpss_auto_linux.go; lpss_leds="0" in leds.cfg opts out); `ugreen-led-i2c lpss-probe` is read only.
 //
 // Order: (1) read only: ACPI -> PCI function, no driver bound (or only intel-lpss without I2C child driver, see lpss_pm_linux.go), memory decoding on, D0, BAR0, DesignWare component
 // type, all through sysfs and a read-only mapping; (2) only when every check passed: take the controller out of
@@ -68,7 +68,7 @@ var (
 	lpssRetryWait = 20 * time.Millisecond // pause before the second bring-up after a 0x0000 chip id
 )
 
-var errLPSSOff = errors.New(`the DXP2800 SUB2 LED path is off: run "ugreen-led-i2c lpss-probe" and set lpss_leds="1" in leds.cfg to try it (untested on hardware)`)
+var errLPSSOff = errors.New(`the DXP2800 SUB2 LED path is switched off by lpss_leds="0" in leds.cfg`)
 
 // lpssTiming is the standard mode setup the Linux driver computes for the 133 MHz LPSS clock.
 func lpssTiming() dwTiming {
@@ -463,7 +463,7 @@ func (c *cli) runLPSSProbe(write bool) int {
 			r.add("result", "failed: the controller could not be disabled")
 			err = derr
 		} else {
-			r.add("result", "ok (the chip id matches; LED control needs lpss_leds=\"1\" in leds.cfg)")
+			r.add("result", "ok (the chip id matches; LED control uses this path unless lpss_leds=\"0\" is set in leds.cfg)")
 		}
 	}
 

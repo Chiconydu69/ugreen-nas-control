@@ -56,7 +56,7 @@ func ioctl(fd, request, arg uintptr) error {
 // findBus returns the I801 SMBus or DesignWare adapter (DXP4800 GT) the controller sits on, e.g. /dev/i2c-0.
 // The adapter is listed under /sys/bus/i2c even before i2c-dev creates /dev/i2c-N.
 func findBus() (string, error) {
-	names, _ := filepath.Glob("/sys/bus/i2c/devices/i2c-*/name")
+	names, _ := filepath.Glob(i2cSysBus + "/i2c-*/name")
 
 	for _, prefix := range []string{"SMBus I801 adapter", dwAdapter} {
 		for _, name := range names {
@@ -65,11 +65,11 @@ func findBus() (string, error) {
 				continue
 			}
 
-			path := "/dev/" + filepath.Base(filepath.Dir(name))
+			path := i2cDevDir + "/" + filepath.Base(filepath.Dir(name))
 			if _, err := os.Stat(path); err != nil {
 				return "", fmt.Errorf("%s is missing; load the i2c-dev module (modprobe i2c-dev)", path)
 			}
-			if prefix != dwAdapter && optIn(lpssOptInKey) && lpssHasMCU() && !lpssI801Answers(path) {
+			if prefix != dwAdapter && lpssAuto() && !i801Answers(path) {
 				return lpssPath, nil // DXP2800 SUB2: nothing at 0x3a on the SMBus, the MCU is behind the LPSS controller
 			}
 			return path, nil
@@ -80,7 +80,7 @@ func findBus() (string, error) {
 		return dwPath, nil
 	}
 
-	if optIn(lpssOptInKey) && lpssHasMCU() {
+	if lpssAuto() {
 		return lpssPath, nil
 	}
 
@@ -106,7 +106,8 @@ func openBus(path string, force bool) (*bus, error) {
 }
 
 func openBusAt(path string, addr uintptr, force bool) (*bus, error) {
-	if path == "" {
+	auto := path == ""
+	if auto {
 		found, err := findBus()
 		if err != nil {
 			return nil, err
@@ -120,15 +121,19 @@ func openBusAt(path string, addr uintptr, force bool) (*bus, error) {
 	}
 
 	if path == lpssPath {
-		if !optIn(lpssOptInKey) {
+		if lpssOff() {
 			_ = lock.Close()
 			return nil, errLPSSOff
 		}
 		dw, err := openLPSS(&lpssReport{}, uint8(addr), true)
 		if err != nil {
 			_ = lock.Close()
+			if auto && lpssNoteRefused(err) {
+				return openBusAt("", addr, force) // the old behaviour; findBus skips the LPSS path now
+			}
 			return nil, err
 		}
+		lpssNoteOK()
 		return &bus{path: path, dw: dw, lock: lock}, nil
 	}
 
