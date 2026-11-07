@@ -15,7 +15,7 @@ import (
 // DXP2800 "SUB2" boards (BIOS EM_DXP2800S_SUB2_*, miskcoo/ugreen_leds_controller#115, issue #214): the LED MCU
 // (ACPI HT32F522, \_SB_.PC00.I2C1.MCU0) sits behind an Intel Alder Lake-N LPSS DesignWare I2C controller. Unraid's
 // kernel has no i2c_designware module, so the controller is driven through /dev/mem, like the AMD one in
-// dwmem_linux.go. Off by default (lpss_leds="1" in leds.cfg); `ugreen-led-i2c lpss-probe` needs no opt-in.
+// dwmem_linux.go. Off by default (lpss_leds="1" in leds.cfg); `ugreen-led-i2c lpss-probe` is read only, `lpss-probe --write` needs no opt-in.
 //
 // Order: (1) read only: ACPI -> PCI function, no driver bound, memory decoding on, D0, BAR0, DesignWare component
 // type, all through sysfs and a read-only mapping; (2) only when every check passed: take the controller out of
@@ -154,9 +154,10 @@ func pciPowerState(cfg []byte) (state int, ok bool) {
 	return 0, false
 }
 
-// openLPSS runs the checks and the bring-up described above and returns the controller with the chip id
-// confirmed. Every step is recorded in r. Nothing is written before the last read only check passed.
-func openLPSS(r *lpssReport, addr uint8) (*dwI2C, error) {
+// openLPSS runs the checks and, with write, the bring-up described above and returns the controller with the chip
+// id confirmed. Without write it stops after the read only checks and returns nil, nil. Every step is recorded in r.
+// Nothing is written before the last read only check passed.
+func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
 	id, hid, path, status, controller, ok := lpssMCU()
 	if !ok {
 		return nil, r.refuse("no ACPI device with a HT32* hid (this is not a SUB2 board)")
@@ -240,6 +241,12 @@ func openLPSS(r *lpssReport, addr uint8) (*dwI2C, error) {
 		return nil, r.refuse("not a DesignWare I2C controller%s", hint)
 	}
 
+	if !write {
+		r.add("result", "ok (read only checks passed, nothing written)")
+		r.add("next", "run with --write to set up the controller and read the LED chip id (writes controller registers, not the LED chip)")
+		return nil, nil
+	}
+
 	// All read only checks passed: from here on registers are written.
 	regs, unmap, err := lpssMapMem(start, true)
 	if err != nil {
@@ -292,9 +299,9 @@ func mustRead(path string) []byte {
 	return data
 }
 
-// runLPSSProbe is "ugreen-led-i2c lpss-probe": the checks and the read only chip id probe, printed one per line.
-// It needs no opt-in; the report is kept for diag.
-func (c *cli) runLPSSProbe() int {
+// runLPSSProbe is "ugreen-led-i2c lpss-probe [--write]": the read only checks, printed one per line; with --write
+// also the bring-up and the chip id read. It needs no opt-in; the report is kept for diag.
+func (c *cli) runLPSSProbe(write bool) int {
 	lock, err := acquireLock()
 	if err != nil {
 		return c.fail(err)
@@ -302,8 +309,8 @@ func (c *cli) runLPSSProbe() int {
 	defer func() { _ = lock.Close() }()
 
 	r := &lpssReport{}
-	d, err := openLPSS(r, controllerAddr)
-	if err == nil {
+	d, err := openLPSS(r, controllerAddr, write)
+	if err == nil && d != nil {
 		d.close()
 		r.add("result", "ok (the chip id matches; LED control needs lpss_leds=\"1\" in leds.cfg)")
 	}

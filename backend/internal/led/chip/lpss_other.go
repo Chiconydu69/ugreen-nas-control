@@ -2,4 +2,4 @@
 
 package chip
 
-func (c *cli) runLPSSProbe() int { return c.fail(errNotLinux) }
+func (c *cli) runLPSSProbe(bool) int { return c.fail(errNotLinux) }

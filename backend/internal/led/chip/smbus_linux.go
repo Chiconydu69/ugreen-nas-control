@@ -124,7 +124,7 @@ func openBusAt(path string, addr uintptr, force bool) (*bus, error) {
 			_ = lock.Close()
 			return nil, errLPSSOff
 		}
-		dw, err := openLPSS(&lpssReport{}, uint8(addr))
+		dw, err := openLPSS(&lpssReport{}, uint8(addr), true)
 		if err != nil {
 			_ = lock.Close()
 			return nil, err

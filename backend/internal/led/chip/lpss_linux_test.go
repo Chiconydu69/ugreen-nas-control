@@ -187,7 +187,7 @@ func probe(t *testing.T, o sysOpts, f *fakeDW) (*lpssReport, error) {
 	fakeSys(t, o)
 	fakeMem(t, f)
 	r := &lpssReport{}
-	d, err := openLPSS(r, controllerAddr)
+	d, err := openLPSS(r, controllerAddr, true)
 	if d != nil {
 		d.close()
 	}
@@ -365,7 +365,7 @@ func TestLPSSProbeCommand(t *testing.T) {
 	}
 
 	var out, errOut strings.Builder
-	if rc := Run([]string{"lpss-probe"}, &out, &errOut); rc != 0 {
+	if rc := Run([]string{"lpss-probe", "--write"}, &out, &errOut); rc != 0 {
 		t.Fatalf("rc %d: %s %s", rc, out.String(), errOut.String())
 	}
 	t.Log("\n" + out.String())
