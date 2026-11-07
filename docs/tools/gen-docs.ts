@@ -12,6 +12,7 @@ import { ALL_OUTPUTS, CA_XML, DOC_FILES, REGISTRY_JSON } from '../../scripts/gen
 import { LANGUAGES, NO_KERNEL_MODULE, SITE, UNRAID_PLUS, caOverview } from '../site/facts';
 import { lintCredits } from './credits-lint';
 import { lintFacts } from './facts-lint';
+import { shieldsText } from './shields';
 import { FORUM_TESTERS, MAINTAINERS, TESTERS } from './testers';
 import { format } from '../../scripts/format';
 import { CAPABILITIES, type Capability, type Model, type Overall, SERIES, monthYear, overallStatus } from '../../web/models/schema';
@@ -170,7 +171,7 @@ function splice(text: string, body: string, name = 'models', source = 'web/model
 const INLINE_FACTS: Record<string, string> = {
     kernel: `${NO_KERNEL_MODULE}.`,
     languages: `**${LANGUAGES}**`,
-    'unraid-badge': `\n[![Unraid](https://img.shields.io/badge/Unraid-${UNRAID_PLUS.replace('+', '%2B')}-f15a2c)](docs/unraid.md)`,
+    'unraid-badge': `\n[![Unraid](https://img.shields.io/badge/Unraid-${shieldsText(UNRAID_PLUS)}-f15a2c)](docs/unraid.md)`,
     'unraid-min': `Unraid ${UNRAID_PLUS}`
 };
 
