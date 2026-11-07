@@ -601,7 +601,7 @@
           "version": "5.2.0",
           "date": "2026-11-05",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165",
-          "note": "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. On 5.2.0 header 4 (pwm4) stayed in automatic mode in the diag; it now uses the control register 0x1e of UGREEN's driver, to be confirmed."
+          "note": "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. On 5.2.0 header 4 (pwm4) stayed in automatic mode in the diag. Control register 0x1e of UGREEN's driver confirmed on 5.5.0-next.000133 (2026-11-07, #165): after a restart fan4 ran manual (48 %, 901 rpm, 0x1e = 0x08, bit 7 clear), where 5.4.0 showed it automatic at about 1061 rpm."
         },
         "case": {
           "status": "community",

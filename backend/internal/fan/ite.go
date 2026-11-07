@@ -43,7 +43,8 @@ const (
 // clear = manual, set = automatic; tach 0x80/0x81 and duty 0x7b agree with ours). Mainline it87.c:252 (v6.18) has 0x7f
 // as the fourth PWM control register, but that table is for chips such as the it8620/it8628 and mainline has no
 // IT8613 entry. On a DXP8800 Plus (issue 165) clearing bit 7 of 0x7f left the header in automatic mode (`auto true`,
-// hwmon pwm4_enable=2) while headers 2 and 3 went manual.
+// hwmon pwm4_enable=2) while headers 2 and 3 went manual; with 0x1e the header went manual (0x1e = 0x08, 901 rpm),
+// so 0x1e is confirmed on the IT8613E and the 0x7f cross-check does not apply to it.
 const iteCtrlHeader4 = 0x1e
 
 var it8613Channels = []Channel{
