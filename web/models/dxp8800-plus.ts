@@ -37,7 +37,7 @@ export default {
             version: '5.2.0',
             date: '2026-11-05',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165',
-            note: 'Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. Header 4 (pwm4) control register unconfirmed: the diag shows it in automatic mode.'
+            note: "Fan probe found cpu on pwm2 and the case fans on pwm3 and pwm4; fan control with custom curves confirmed by a user. On 5.2.0 header 4 (pwm4) stayed in automatic mode in the diag; it now uses the control register 0x1e of UGREEN's driver, to be confirmed."
         },
         case: {
             status: 'community',
