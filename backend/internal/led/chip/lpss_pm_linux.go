@@ -100,8 +100,10 @@ func lpssAdapters(dev string) []string {
 	return out
 }
 
-// lpssCheckBound decides whether the one bound driver, intel-lpss, is the harmless state: no child has a driver and
-// no I2C adapter exists below the function. It records the facts and returns the refusal naming the rule.
+// lpssCheckBound decides whether the one bound driver, intel-lpss, is the harmless state: no i2c_designware.N child
+// has a driver and no I2C adapter exists below the function. The idma64.N child may be bound: it has its own register
+// window at +0x800, size 0x800 (intel-lpss.c:46-47,102-114), separate from the I2C registers used here. It records the
+// facts and returns the refusal naming the rule.
 func lpssCheckBound(r *lpssReport, dev string) error {
 	names, drivers := lpssChildren(dev)
 	var parts []string
@@ -110,20 +112,24 @@ func lpssCheckBound(r *lpssReport, dev string) error {
 		if drv == "" {
 			drv = "none"
 		}
+		if strings.HasPrefix(n, "idma64.") {
+			r.add("lpss.idma64", "%s driver %s (own window at +0x800, not touched)", n, drv)
+			continue
+		}
 		parts = append(parts, n+" driver "+drv)
 	}
 	r.add("lpss.children", "%s", orNone(strings.Join(parts, ", ")))
 	adapters := lpssAdapters(dev)
 	r.add("lpss.adapters", "%s", orNone(strings.Join(adapters, ", ")))
 	for i, n := range names {
-		if drivers[i] != "" {
+		if strings.HasPrefix(n, "i2c_designware.") && drivers[i] != "" {
 			return r.refuse("rule child-driver: %s of %s is bound to %s", n, filepath.Base(dev), drivers[i])
 		}
 	}
 	if len(adapters) > 0 {
 		return r.refuse("rule adapter: %s exists below %s, the kernel owns the controller", strings.Join(adapters, ", "), filepath.Base(dev))
 	}
-	r.add("lpss.exception", "%s is bound, no child driver and no I2C adapter below %s", lpssBoundDriver, filepath.Base(dev))
+	r.add("lpss.exception", "%s is bound, no i2c_designware child driver and no I2C adapter below %s", lpssBoundDriver, filepath.Base(dev))
 	return nil
 }
 

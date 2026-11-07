@@ -656,8 +656,7 @@ func TestLPSSBoundRefusals(t *testing.T) {
 		o    sysOpts
 		want string
 	}{
-		{"child with a driver", sysOpts{driver: "intel-lpss", children: map[string]string{"i2c_designware.0": "i2c_designware", "idma64.0": ""}}, "rule child-driver"},
-		{"dma child with a driver", sysOpts{driver: "intel-lpss", children: map[string]string{"i2c_designware.0": "", "idma64.0": "idma64"}}, "rule child-driver"},
+		{"i2c child with a driver", sysOpts{driver: "intel-lpss", children: map[string]string{"i2c_designware.0": "i2c_designware", "idma64.0": ""}}, "rule child-driver"},
 		{"adapter below", sysOpts{driver: "intel-lpss", adapter: "below"}, "rule adapter"},
 		{"adapter by class", sysOpts{driver: "intel-lpss", adapter: "class"}, "rule adapter: i2c-9"},
 		{"other driver", sysOpts{driver: "i2c-designware-pci"}, "rule other-driver"},
@@ -687,6 +686,27 @@ func TestLPSSBoundRefusals(t *testing.T) {
 }
 
 // Without --write nothing is written: no power/control, no register, no writable mapping.
+// A bound idma64 child has its own register window: accepted, and reported.
+func TestLPSSBoundIDMA64Accepted(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	o := bound()
+	o.children = map[string]string{"i2c_designware.0": "", "idma64.0": "idma64"}
+	fakeSys(t, o)
+	fakePM(t, true)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err, r.lines)
+	}
+	d.close()
+	text := strings.Join(r.lines, "\n")
+	if want := rl("lpss.idma64", "idma64.0 driver idma64 (own window at +0x800, not touched)"); !strings.Contains(text, want) {
+		t.Errorf("report lacks %q:\n%s", want, text)
+	}
+}
+
 func TestLPSSBoundReadOnly(t *testing.T) {
 	f := newFakeDW()
 	fakeSys(t, bound())
