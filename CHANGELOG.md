@@ -2,6 +2,22 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.5.0
+
+- DXP2800 SUB2 boards: LED control through the Intel I2C controller is on by default, no `lpss_leds="1"` needed; the LEDs also came back by themselves after a cold reboot. `lpss_leds="0"` in `leds.cfg` turns it off. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- Front panel is a checked capability per model: the Front panel page, the About "Your device" card, the Feedback page and `panel buttons` say whether users confirmed buttons and beeper on your model. The DXP8800 Plus is the first. Thanks to [Chiconydu69](https://github.com/Chiconydu69).
+- LEDs on DXP2800 SUB2: the LPSS path also works when Unraid's intel-lpss driver holds the controller without an I2C driver; the plugin keeps the controller awake while it talks to it. Reported by DanielRuppen.
+- Diagnostics: boxes with an IT8613E fan chip list the raw values of registers 0x1e and 0x7f, so header 4's mode can be checked (read only). Reported by Chiconydu69.
+- Fans: the fan on IT8613E header 4 (second case fan of the DXP6800 and DXP8800 family) is switched to manual through UGREEN's register 0x1e, so it follows the curve instead of staying in automatic mode. Reported by Chiconydu69.
+- Feedback: the bug form asks for the device data, and "Download diag.md" stays next to the issue buttons once the data is collected.
+- Feedback: the model form needs the device data and no longer comes with a text in that field, the page says before the click where to paste it, the check summary is no longer cut mid-word and counts the LEDs the model has.
+- DXP2800 SUB2: a chip id of 0x0000 after the controller wakes is retried once after a fresh bring-up, the setup is checked before every transfer, and `ugreen-led-i2c --debug` prints a trace of the path.
+- Network LED: a single lost gateway ping no longer turns it red. The probe pings twice, and the LED turns red only after three failed probes in a row (about 90 s); a lost link or carrier is still red at once. Reported by [Chiconydu69](https://github.com/Chiconydu69).
+- DXP2800: fan control, case view and sensors confirmed by a user on a SUB2 board. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- DXP2800 SUB2 boards: LED control through the Intel I2C controller confirmed on hardware, bay order verified. Thanks to [DanielRuppen](https://github.com/DanielRuppen).
+- DXP8800 Plus: the beeper test is confirmed by a user. Thanks to [Chiconydu69](https://github.com/Chiconydu69).
+- DXP8800 Plus: front-panel buttons and fan header 4 (register 0x1e) confirmed on hardware. Reported by [Chiconydu69](https://github.com/Chiconydu69).
+
 ## 5.4.0
 
 - About now shows a "Your device" card instead of the full models table: your model, each capability with its status (confirmed, confirmed by users, untested, not supported) and a "Confirm my device" button that opens the Feedback page. The list of all models is one link away on the project website.
