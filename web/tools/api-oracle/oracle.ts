@@ -251,7 +251,7 @@ export async function startOracle(): Promise<Oracle> {
                 init.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
             }
             const res = await fetch(url, init);
-            const text = scrub(await res.text());
+            const text = scrub(await res.text()).replace(/"job":"([0-9a-f]{16})"/g, (m, id: string) => (id === '0123456789abcdef' ? m : '"job":"<job>"')); // random job ids
 
             const after = walk(join(fs, 'boot'));
             const files: Record<string, string | null> = {};

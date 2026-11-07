@@ -1875,6 +1875,159 @@
       "id": "led.schedule.trailing-newline",
       "api": "led",
       "body": { "action": "schedule", "start": "22:00\n", "end": "07:00", "night_action": "dim", "brightness": "20" }
+    },
+    {
+      "id": "nas.diag_start.started",
+      "api": "nas",
+      "body": { "action": "diag_start" },
+      "ctl": [
+        {
+          "args": ["diag", "--json"],
+          "out": {
+            "schema": "feedback/1",
+            "model": { "id": "dxp4800-gt", "name": "DXP4800 GT", "known": true },
+            "versions": { "plugin": "5.4.0", "unraid": "7.3.4", "kernel": "6.18.58-Unraid" },
+            "summary": "ok: bays.",
+            "checks": [{ "area": "case", "id": "bays", "expected": 4, "detected": 4, "ok": true }],
+            "diag_markdown": "## ugreen-nas-ctl diag\n",
+            "took_ms": 1200
+          },
+          "sleep": 3000
+        }
+      ]
+    },
+    {
+      "id": "nas.diag_start.done-within-a-second",
+      "api": "nas",
+      "body": { "action": "diag_start" },
+      "ctl": [
+        {
+          "args": ["diag", "--json"],
+          "out": {
+            "schema": "feedback/1",
+            "model": { "id": "dxp4800-gt", "name": "DXP4800 GT", "known": true },
+            "versions": { "plugin": "5.4.0", "unraid": "7.3.4", "kernel": "6.18.58-Unraid" },
+            "summary": "ok: bays.",
+            "checks": [{ "area": "case", "id": "bays", "expected": 4, "detected": 4, "ok": true }],
+            "diag_markdown": "## ugreen-nas-ctl diag\n",
+            "took_ms": 1200
+          }
+        }
+      ]
+    },
+    {
+      "id": "nas.diag_start.refused-409",
+      "api": "nas",
+      "body": { "action": "diag_start" },
+      "ctl": [{ "args": ["diag", "--json"], "code": 1, "err": "ERROR: run diag as root on the Unraid box.\n" }]
+    },
+    {
+      "id": "nas.diag_start.already-running",
+      "api": "nas",
+      "body": { "action": "diag_start" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/current": "0123456789abcdef",
+        "/proc/4242/keep": ""
+      }
+    },
+    {
+      "id": "nas.diag_start.finished-job-is-replaced",
+      "api": "nas",
+      "body": { "action": "diag_start" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/current": "0123456789abcdef",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "0",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.out": "{\"schema\":\"feedback/1\",\"model\":{\"id\":\"dxp4800-gt\",\"name\":\"DXP4800 GT\",\"known\":true},\"versions\":{\"plugin\":\"5.4.0\",\"unraid\":\"7.3.4\",\"kernel\":\"6.18.58-Unraid\"},\"summary\":\"ok: bays.\",\"checks\":[{\"area\":\"case\",\"id\":\"bays\",\"expected\":4,\"detected\":4,\"ok\":true}],\"diag_markdown\":\"## ugreen-nas-ctl diag\\n\",\"took_ms\":1200}"
+      },
+      "ctl": [
+        {
+          "args": ["diag", "--json"],
+          "out": {
+            "schema": "feedback/1",
+            "model": { "id": "dxp4800-gt", "name": "DXP4800 GT", "known": true },
+            "versions": { "plugin": "5.4.0", "unraid": "7.3.4", "kernel": "6.18.58-Unraid" },
+            "summary": "ok: bays.",
+            "checks": [{ "area": "case", "id": "bays", "expected": 4, "detected": 4, "ok": true }],
+            "diag_markdown": "## ugreen-nas-ctl diag\n",
+            "took_ms": 1200
+          },
+          "sleep": 3000
+        }
+      ]
+    },
+    { "id": "nas.diag_start.dir-not-creatable-500", "api": "nas", "body": { "action": "diag_start" }, "files": { "/var/run/ugreen-nas-control-diag": "" } },
+    { "id": "nas.diag_status.invalid-job-400", "api": "nas", "query": { "action": "diag_status", "job": "../../etc/passwd" } },
+    { "id": "nas.diag_status.uppercase-job-400", "api": "nas", "query": { "action": "diag_status", "job": "0123456789ABCDEF" } },
+    { "id": "nas.diag_status.missing-job-400", "api": "nas", "query": { "action": "diag_status" } },
+    { "id": "nas.diag_status.unknown-job", "api": "nas", "query": { "action": "diag_status", "job": "0123456789abcdef" } },
+    {
+      "id": "nas.diag_status.expired-job-is-swept",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999300}",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "0",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.out": "{\"schema\":\"feedback/1\",\"model\":{\"id\":\"dxp4800-gt\",\"name\":\"DXP4800 GT\",\"known\":true},\"versions\":{\"plugin\":\"5.4.0\",\"unraid\":\"7.3.4\",\"kernel\":\"6.18.58-Unraid\"},\"summary\":\"ok: bays.\",\"checks\":[{\"area\":\"case\",\"id\":\"bays\",\"expected\":4,\"detected\":4,\"ok\":true}],\"diag_markdown\":\"## ugreen-nas-ctl diag\\n\",\"took_ms\":1200}"
+      }
+    },
+    {
+      "id": "nas.diag_status.running",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": { "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}", "/proc/4242/keep": "" }
+    },
+    {
+      "id": "nas.diag_status.done",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "0",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.out": "{\"schema\":\"feedback/1\",\"model\":{\"id\":\"dxp4800-gt\",\"name\":\"DXP4800 GT\",\"known\":true},\"versions\":{\"plugin\":\"5.4.0\",\"unraid\":\"7.3.4\",\"kernel\":\"6.18.58-Unraid\"},\"summary\":\"ok: bays.\",\"checks\":[{\"area\":\"case\",\"id\":\"bays\",\"expected\":4,\"detected\":4,\"ok\":true}],\"diag_markdown\":\"## ugreen-nas-ctl diag\\n\",\"took_ms\":1200}"
+      }
+    },
+    {
+      "id": "nas.diag_status.exit-code-with-message",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "1",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.err": "ERROR: run diag as root on the Unraid box.\n"
+      }
+    },
+    {
+      "id": "nas.diag_status.exit-code-without-message",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "1"
+      }
+    },
+    {
+      "id": "nas.diag_status.no-valid-result",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": {
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999995}",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.code": "0",
+        "/var/run/ugreen-nas-control-diag/0123456789abcdef.out": "not json"
+      }
+    },
+    {
+      "id": "nas.diag_status.too-slow",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": { "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4242,\"started\":1759999600}", "/proc/4242/keep": "" }
+    },
+    {
+      "id": "nas.diag_status.process-gone",
+      "api": "nas",
+      "query": { "action": "diag_status", "job": "0123456789abcdef" },
+      "files": { "/var/run/ugreen-nas-control-diag/0123456789abcdef.meta": "{\"pid\":4243,\"started\":1759999995}" }
     }
   ]
 }

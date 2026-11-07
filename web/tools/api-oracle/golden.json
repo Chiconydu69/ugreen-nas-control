@@ -8235,5 +8235,274 @@
     },
     "raw": "{\"ok\":false,\"error\":\"Invalid schedule values\"}",
     "calls": []
+  },
+  "nas.diag_start.started": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "job": "<job>"
+    },
+    "raw": "{\"ok\":true,\"job\":\"<job>\"}",
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["diag", "--json"]
+      }
+    ]
+  },
+  "nas.diag_start.done-within-a-second": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "job": "<job>"
+    },
+    "raw": "{\"ok\":true,\"job\":\"<job>\"}",
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["diag", "--json"]
+      }
+    ]
+  },
+  "nas.diag_start.refused-409": {
+    "status": 409,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "ERROR: run diag as root on the Unraid box."
+    },
+    "raw": "{\"ok\":false,\"error\":\"ERROR: run diag as root on the Unraid box.\"}",
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["diag", "--json"]
+      }
+    ]
+  },
+  "nas.diag_start.already-running": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "job": "0123456789abcdef"
+    },
+    "raw": "{\"ok\":true,\"job\":\"0123456789abcdef\"}",
+    "calls": []
+  },
+  "nas.diag_start.finished-job-is-replaced": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "job": "<job>"
+    },
+    "raw": "{\"ok\":true,\"job\":\"<job>\"}",
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["diag", "--json"]
+      }
+    ]
+  },
+  "nas.diag_start.dir-not-creatable-500": {
+    "status": 500,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Cannot create /var/run/ugreen-nas-control-diag"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Cannot create /var/run/ugreen-nas-control-diag\"}",
+    "calls": []
+  },
+  "nas.diag_status.invalid-job-400": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid job"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid job\"}",
+    "calls": []
+  },
+  "nas.diag_status.uppercase-job-400": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid job"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid job\"}",
+    "calls": []
+  },
+  "nas.diag_status.missing-job-400": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid job"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid job\"}",
+    "calls": []
+  },
+  "nas.diag_status.unknown-job": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "Unknown job"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"Unknown job\"}",
+    "calls": []
+  },
+  "nas.diag_status.expired-job-is-swept": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "Unknown job"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"Unknown job\"}",
+    "calls": []
+  },
+  "nas.diag_status.running": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "running",
+      "elapsed_ms": 5000
+    },
+    "raw": "{\"ok\":true,\"state\":\"running\",\"elapsed_ms\":5000}",
+    "calls": []
+  },
+  "nas.diag_status.done": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "done",
+      "result": {
+        "schema": "feedback/1",
+        "model": {
+          "id": "dxp4800-gt",
+          "name": "DXP4800 GT",
+          "known": true
+        },
+        "versions": {
+          "plugin": "5.4.0",
+          "unraid": "7.3.4",
+          "kernel": "6.18.58-Unraid"
+        },
+        "summary": "ok: bays.",
+        "checks": [
+          {
+            "area": "case",
+            "id": "bays",
+            "expected": 4,
+            "detected": 4,
+            "ok": true
+          }
+        ],
+        "diag_markdown": "## ugreen-nas-ctl diag\n",
+        "took_ms": 1200
+      }
+    },
+    "raw": "{\"ok\":true,\"state\":\"done\",\"result\":{\"schema\":\"feedback/1\",\"model\":{\"id\":\"dxp4800-gt\",\"name\":\"DXP4800 GT\",\"known\":true},\"versions\":{\"plugin\":\"5.4.0\",\"unraid\":\"7.3.4\",\"kernel\":\"6.18.58-Unraid\"},\"summary\":\"ok: bays.\",\"checks\":[{\"area\":\"case\",\"id\":\"bays\",\"expected\":4,\"detected\":4,\"ok\":true}],\"diag_markdown\":\"## ugreen-nas-ctl diag\\n\",\"took_ms\":1200}}",
+    "calls": []
+  },
+  "nas.diag_status.exit-code-with-message": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "ERROR: run diag as root on the Unraid box."
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"ERROR: run diag as root on the Unraid box.\"}",
+    "calls": []
+  },
+  "nas.diag_status.exit-code-without-message": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "The diagnosis failed"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"The diagnosis failed\"}",
+    "calls": []
+  },
+  "nas.diag_status.no-valid-result": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "The diagnosis returned no valid result"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"The diagnosis returned no valid result\"}",
+    "calls": []
+  },
+  "nas.diag_status.too-slow": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "The diagnosis took too long"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"The diagnosis took too long\"}",
+    "calls": []
+  },
+  "nas.diag_status.process-gone": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "state": "error",
+      "error": "The diagnosis stopped without a result"
+    },
+    "raw": "{\"ok\":true,\"state\":\"error\",\"error\":\"The diagnosis stopped without a result\"}",
+    "calls": []
   }
 }

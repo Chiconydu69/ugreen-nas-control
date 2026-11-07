@@ -73,7 +73,26 @@ The _Features_ block has one line per feature, `<id>: state and effective values
 
 The _Model_ section compares what was detected with the model registry (`web/models/`): per area the registry state and what is still open, and expected against detected for bays, M.2 slots, LAN ports, fan chip and headers, LED controller and watchdog; a difference shows in _Checks_ as `MISMATCH`. The last block is the same result as JSON (`"schema": "diag/1"`) and can be attached as evidence for a model; the visual checks (Identify blinks the right bay, the case view matches) still come from the _Confirm my device_ form.
 
+In the text mode `diag` prints two progress lines to stderr (`diag: collecting, this takes up to a minute (I2C scan)...` at the start, `diag: done in N s` at the end), because the report only appears when every section is read; stdout is the report alone, so a redirect or pipe is unchanged. `--json` prints no progress.
+
 No hardware writes: no LED, fan, EC or Super-I/O register is written. The pad words are read through `/dev/mem` opened read-only (`0xFFFFFFFF` means the box does not answer there); the network block reads sysfs and `/proc/net/route` and sends nothing, the LED daemon's own probe supplies the ping verdict. The only system change is `modprobe i2c-dev` when the module is missing, because the I2C scan needs `/dev/i2c-*`; the tools it runs keep their own lock and cache files as in normal use. The output says so (`loaded i2c-dev for the scan`). When the LED probe fails and an I2C controller has no driver bound or an `HT32` ACPI device exists, _Checks_ adds one line saying the LED controller probably sits behind that controller. The new reads only list sysfs and `/proc/modules`; nothing is loaded or sent on any bus. `diag` does not load `i2c_i801`: without the SMBus adapter it skips `ugreen-led-ctl status` and says why.
+
+### Feedback JSON
+
+`ugreen-nas-ctl diag --json` runs the same diagnosis and prints one JSON line (`"schema":"feedback/1"`) for the plugin's Feedback page:
+
+- `model`: `id`, `name`, `known` (in the registry); `versions`: `plugin`, `unraid`, `kernel`.
+- `summary`: one paragraph of at most 600 bytes, built from the checks: the ids that are `MISMATCH`, `ok` and not compared, the fan chip, the LED probe with address and LED count, and the I2C controllers without a driver. A new check shows up in it by itself.
+- `checks`: `area`, `id`, `expected`, `detected`, `ok` per check of the `diag/1` evidence; `ok` is `null` where nothing can be compared.
+- `diag_markdown`: the text `diag` prints. `took_ms`: run time.
+
+Everything goes through the same scrubbing as the Markdown (no serials, addresses, host names or drive names).
+
+The page reaches it through `api.php`, which runs as root like the rest of the Unraid web UI:
+
+- `POST diag_start` starts the command in the background, one run at a time, and answers `{"ok":true,"job":"<16 hex>"}` (the running job if there is one; `409` with the command's message when it is refused at once).
+- `GET diag_status&job=<id>` answers `{"ok":true,"state":"running","elapsed_ms":…}`, then `{"ok":true,"state":"done","result":{…}}` or `{"ok":true,"state":"error","error":"…"}`. The result is handed over once. A malformed id is `400`; an unknown or expired id is state `error`.
+- The files live in `/var/run/ugreen-nas-control-diag` (tmpfs, mode 0700), never on the flash. A job is deleted after delivery, after 10 minutes, and stopped after 5 minutes.
 
 ## Report a model
 

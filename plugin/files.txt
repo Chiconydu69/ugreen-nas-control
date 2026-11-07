@@ -19,6 +19,7 @@ web/plugin/UGREENNASDashboard.page               UGREENNASDashboard.page        
 web/plugin/README.md                             README.md                                  644
 LICENSE                                          LICENSE                                    644
 docs/third-party.md                              third-party.md                             644
+web/plugin/include/diag.php                       include/diag.php                           644
 web/plugin/include/lang.php                      include/lang.php                           644
 web/plugin/include/fan_v2.php                    include/fan_v2.php                         644
 web/plugin/include/fan_schedule.php              include/fan_schedule.php                   644

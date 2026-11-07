@@ -55,9 +55,9 @@ func (a Anon) text(s string, ip bool) string {
 			continue
 		}
 		// Not inside a longer name: a host called "nas" must not cut "ugreen-nas-ctl".
-		re := regexp.MustCompile(`(?i)(^|[^A-Za-z0-9-])` + regexp.QuoteMeta(h) + `([^A-Za-z0-9-]|$)`)
+		re := regexp.MustCompile(`(?im)(^|[^A-Za-z0-9-])(` + regexp.QuoteMeta(h) + `)([^A-Za-z0-9-]|$)`)
 		for range 2 {
-			s = re.ReplaceAllString(s, "${1}<host>${2}")
+			s = replaceHost(re, s)
 		}
 	}
 	s = macRe.ReplaceAllString(s, "<removed>")
@@ -823,7 +823,7 @@ func (c *Ctl) fanDiag(model string) FanDiag {
 	return d
 }
 
-func (c *Ctl) diag() int {
+func (c *Ctl) diag(asJSON bool) int {
 	if runtime.GOOS != "linux" {
 		c.errf("ERROR: diag reads an Unraid (Linux) box; this is %s.\n", runtime.GOOS)
 		return 1
@@ -833,8 +833,10 @@ func (c *Ctl) diag() int {
 		return 1
 	}
 
+	c.diagNote(asJSON, "collecting, this takes up to a minute (I2C scan)...")
 	anon := Anon{Hostnames: hostnames()}
 	now := time.Now()
+	started := now
 	deadlineNano.Store(now.Add(diagBudget).UnixNano())
 	defer deadlineNano.Store(0)
 
@@ -942,13 +944,14 @@ func (c *Ctl) diag() int {
 	facts.Failed = secs.failed
 
 	var checks []string
+	var ev Evidence
 	list := secs.list
 	if msg := guard(func() {
 		var reg *RegModel
 		if models, err := loadRegistry(modelsJSON); err == nil {
 			reg = matchModel(models, model)
 		}
-		ev := BuildEvidence(EvInputs{Reg: reg, Now: now, Report: rep, Fan: facts.Fan, FanSt: facts.FanSt, LED: facts.LED, Rivals: facts.Rivals})
+		ev = BuildEvidence(EvInputs{Reg: reg, Now: now, Report: rep, Fan: facts.Fan, FanSt: facts.FanSt, LED: facts.LED, Rivals: facts.Rivals})
 		modelSec, modelChecks := modelSection(reg, ev)
 		list = append(append([]Section{modelSec}, list...), evidenceSection(ev))
 		checks = modelChecks
@@ -963,7 +966,16 @@ func (c *Ctl) diag() int {
 		c.errf("ERROR: diag failed while writing the output: %s\n", msg)
 		return 1
 	}
+	if asJSON {
+		if ev.Schema == "" {
+			ev.Model = EvModel{ID: "unknown", Name: rep.Machine.Product}
+			ev.PluginVersion, ev.UnraidVersion = rep.PluginVersion, rep.UnraidVersion
+		}
+		_, _ = c.Out.Write(BuildFeedback(anon, ev, rep, facts.LED.I2C, kernelVersion(c.Env.Proc), out, time.Since(started)).JSON())
+		return 0
+	}
 	c.out("%s", out)
+	c.diagNote(asJSON, "done in %d s", int(time.Since(started).Round(time.Second)/time.Second))
 	return 0
 }
 
@@ -1021,4 +1033,30 @@ func (c *Ctl) featureInputs(model string, f Facts) FeatureInputs {
 	in.MQTTLog = tail(c.Env.PubLog, 4096)
 	in.Scripts = scriptInterpreters(c.Env.SensorsDir)
 	return in
+}
+
+// replaceHost swaps the host name for <host>, except where it is the key of a "key: value" line: a box called
+// "Unraid" keeps its header line "unraid: 7.3.4".
+func replaceHost(re *regexp.Regexp, s string) string {
+	var b strings.Builder
+	last := 0
+	for _, m := range re.FindAllStringSubmatchIndex(s, -1) {
+		start, end := m[4], m[5] // the host name itself
+		lineStart := strings.LastIndexByte(s[:start], '\n') + 1
+		if strings.TrimSpace(s[lineStart:start]) == "" && strings.HasPrefix(s[end:], ":") {
+			continue
+		}
+		b.WriteString(s[last:start])
+		b.WriteString("<host>")
+		last = end
+	}
+	b.WriteString(s[last:])
+	return b.String()
+}
+
+// diagNote is the progress line on stderr of the text mode; stdout carries only the report, and --json stays silent.
+func (c *Ctl) diagNote(asJSON bool, format string, a ...any) {
+	if !asJSON {
+		c.errf("diag: "+format+"\n", a...)
+	}
 }
