@@ -165,7 +165,7 @@
         },
         "sensors": { "status": "expected" }
       },
-      "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: LEDs there need lpss_leds=\"1\" in leds.cfg and are untested; ugreen-led-i2c lpss-probe checks the board without changing an LED."
+      "note": "Two bays, two M.2 slots, one 2.5G LAN port. The V1.2 board (December 2025) has a new LED chip: the plugin falls back to the frame UGREEN ships for it, confirmed on a V1.2 board with miskcoo's tool, not yet with this plugin. SUB2 boards (BIOS EM_DXP2800S_SUB2) put the LED controller behind an Intel I2C controller without a kernel driver: LEDs there need lpss_leds=\"1\" in leds.cfg; chip id read confirmed on a SUB2 board (#214), LED frames untested; ugreen-led-i2c lpss-probe checks the board without changing an LED."
     },
     {
       "id": "dxp2800-gt",
