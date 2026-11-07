@@ -42,6 +42,7 @@ type Env struct {
 	SysNVMe      string // UGREEN_SYS_NVME
 	SysACPI      string // UGREEN_SYS_ACPI
 	LPSSProbe    string // UGREEN_LPSS_PROBE: the report of the last ugreen-led-i2c lpss-probe
+	LPSSState    string // UGREEN_LPSS_STATE: "ok" or "refused: <reason>" of the default LPSS LED path, this boot
 	LibModules   string // UGREEN_LIB_MODULES
 }
 
@@ -92,6 +93,7 @@ func EnvFromGetenv(get func(string) string, here string) Env {
 		SysNVMe:      orDefault(get, "UGREEN_SYS_NVME", "/sys/class/nvme"),
 		SysACPI:      orDefault(get, "UGREEN_SYS_ACPI", "/sys/bus/acpi/devices"),
 		LPSSProbe:    orDefault(get, "UGREEN_LPSS_PROBE", "/var/run/ugreen-nas-control.lpss-probe"),
+		LPSSState:    orDefault(get, "UGREEN_LPSS_STATE", "/var/run/ugreen-nas-control.lpss-state"),
 		LibModules:   orDefault(get, "UGREEN_LIB_MODULES", "/lib/modules"),
 	}
 }

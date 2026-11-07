@@ -4,7 +4,7 @@ export const TESTERS: { login: string; did: string }[] = [
     { login: 'datarepos76', did: 'DXP480T Plus' },
     { login: 'Chiconydu69', did: 'DXP8800 Plus: fan wiring, NVMe root ports, front-panel button tests' },
     { login: 'ivolution', did: 'Spanish translation, DXP4800 Plus tests' },
-    { login: 'DanielRuppen', did: 'DXP2800 SUB2: ACPI and PCI data, lpss-probe runs' },
+    { login: 'DanielRuppen', did: 'DXP2800 SUB2: ACPI and PCI data, lpss-probe runs, LED path confirmation' },
     { login: 'jsaltzman', did: 'DXP6800 Pro bug reports, the cause of the failing update check' }
 ];
 

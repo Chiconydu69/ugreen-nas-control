@@ -33,6 +33,28 @@ type fakeDW struct {
 	rwMaps int
 	roMaps int
 	unmaps int
+
+	// Power model (fakePower): a suspended or reset controller returns zeros; a resume leaves settle transfers
+	// returning zeros (a cold controller or chip).
+	id        []byte // chip id bytes handed out cyclically for read commands (instead of resp)
+	idPos     int
+	settle    int // zero transfers after a resume
+	zeroXfers int
+	zeroNow   bool
+	xfers     int // transfers started (IC_ENABLE set)
+}
+
+// suspend is intel_lpss_suspend: RESETS 0 and the DesignWare registers back to their reset values.
+func (f *fakeDW) suspend() {
+	f.enable = false
+	f.regs[lpssPrivResets] = 0
+	f.regs[dwCon], f.regs[dwSSHcnt], f.regs[dwSSLcnt], f.regs[dwTar] = 0x7d, 0, 0, 0x55
+}
+
+// resume is intel_lpss_resume: RESETS released, the DesignWare block still at its reset values.
+func (f *fakeDW) resume() {
+	f.regs[lpssPrivResets] = 0x7
+	f.zeroXfers = f.settle
 }
 
 func newFakeDW() *fakeDW {
@@ -78,6 +100,13 @@ func (f *fakeDW) store(reg int, v uint32) {
 	switch reg {
 	case dwEnable:
 		f.enable = v&1 != 0
+		if f.enable {
+			f.xfers++
+			f.zeroNow = f.zeroXfers > 0
+			if f.zeroNow {
+				f.zeroXfers--
+			}
+		}
 	case dwDataCmd:
 		if !f.enable {
 			return
@@ -94,6 +123,14 @@ func (f *fakeDW) store(reg int, v uint32) {
 			f.raw |= 1 << 6
 			f.regs[dwTxAbrtSource] = 1
 			return
+		}
+		if v&dwCmdRead != 0 && f.id != nil {
+			b := f.id[f.idPos%len(f.id)]
+			f.idPos++
+			if f.zeroNow || f.regs[lpssPrivResets]&3 != 3 || f.regs[dwCon]&0x7f != 0x63 {
+				b = 0
+			}
+			f.rx = append(f.rx, b)
 		}
 		if v&dwCmdRead != 0 && len(f.resp) > 0 {
 			f.rx, f.resp = append(f.rx, f.resp[0]), f.resp[1:]
@@ -428,7 +465,9 @@ func TestLPSSProbeCommand(t *testing.T) {
 	fakeMem(t, f)
 	lpssReports = filepath.Join(t.TempDir(), "probe")
 	t.Cleanup(func() { lpssReports = lpssReportFile })
-	// The lock file path is fixed; skip when it cannot be created.
+	oldLock := lockFile
+	lockFile = filepath.Join(t.TempDir(), "lock")
+	t.Cleanup(func() { lockFile = oldLock })
 	if lock, err := acquireLock(); err != nil {
 		t.Skip("no lock file:", err)
 	} else {
@@ -519,6 +558,9 @@ func TestLPSSProbeCommandReadOnly(t *testing.T) {
 	fakeMem(t, f)
 	lpssReports = filepath.Join(t.TempDir(), "probe")
 	t.Cleanup(func() { lpssReports = lpssReportFile })
+	oldLock := lockFile
+	lockFile = filepath.Join(t.TempDir(), "lock")
+	t.Cleanup(func() { lockFile = oldLock })
 	if lock, err := acquireLock(); err != nil {
 		t.Skip("no lock file:", err)
 	} else {

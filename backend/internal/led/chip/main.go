@@ -14,6 +14,7 @@ import (
 
 const usage = `Usage:
   ugreen-led-i2c [--bus /dev/i2c-N] [--force] probe
+  ugreen-led-i2c --debug <command>
   ugreen-led-i2c [--bus /dev/i2c-N] [--force] [--plain] get <led[,led...]|all>
   ugreen-led-i2c [--bus /dev/i2c-N] [--force] set <led[,led...]|all> <command>
   ugreen-led-i2c [--bus /dev/i2c-N] scan [all [--include-display]]
@@ -38,9 +39,11 @@ lpss-probe DXP2800 SUB2 boards: the LED controller sits behind an Intel LPSS I2C
           kernel driver. Read only by default: prints every check (ACPI path, PCI function, driver, power state,
           BAR0, DesignWare type) and stops before any write. With --write it then sets up the controller
           (writes controller registers, never an LED frame) and reads the chip id. Needs no opt-in; LED
-          control on this path is off until lpss_leds="1" is set in leds.cfg
+          control uses this path by default when every check passes (lpss_leds="0" in leds.cfg turns it off)
 
 --bus     the SMBus device (default: the "SMBus I801 adapter")
+--debug   print every step of the DXP2800 SUB2 path (power, bring-up, each transfer) to stderr;
+          UNC_LPSS_DEBUG=1 does the same
 --force   use the address even while a kernel driver (led_ugreen) holds it
 --plain   get prints one line per LED for shell scripts:
           <name> <mode> <brightness> <R> <G> <B> <on_ms> <off_ms>
@@ -114,10 +117,12 @@ func (c *cli) run(args []string) int {
 	speed := flags.Int("speed", 2, "")
 	reverse := flags.Bool("reverse", false, "")
 	idleOnly := flags.Bool("idle-only", false, "")
+	debug := flags.Bool("debug", false, "")
 
 	if err := flags.Parse(args); err != nil {
 		return 2
 	}
+	setLPSSDebug(*debug, c.err)
 	args = flags.Args()
 
 	if len(args) == 0 || (args[0] != "probe" && args[0] != "scan" && args[0] != "cs201x" && args[0] != "lpss-probe" && len(args) < 2) {

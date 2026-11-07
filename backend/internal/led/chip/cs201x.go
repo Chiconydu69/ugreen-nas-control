@@ -49,8 +49,8 @@ var cfgLineRe = regexp.MustCompile(`^([A-Za-z0-9_]+)="(.*)"$`)
 // cs201xOptIn: cs201x_leds="1" in leds.cfg.
 func cs201xOptIn() bool { return optIn(optInKey) }
 
-// optIn: key="1" in leds.cfg (the last such line wins), the same settings file ugreen-led-ctl reads.
-func optIn(key string) bool {
+// cfgValue is the last value of key in leds.cfg (the settings file ugreen-led-ctl reads), "" when the key or the file is missing.
+func cfgValue(key string) string {
 	path := csPaths.config
 	if path == "" {
 		path = testenv.Get("UGREEN_LED_CONFIG")
@@ -60,16 +60,19 @@ func optIn(key string) bool {
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return false
+		return ""
 	}
-	on := false
+	val := ""
 	for _, line := range strings.Split(string(data), "\n") {
 		if m := cfgLineRe.FindStringSubmatch(line); m != nil && m[1] == key {
-			on = m[2] == "1"
+			val = m[2]
 		}
 	}
-	return on
+	return val
 }
+
+// optIn: key="1" in leds.cfg.
+func optIn(key string) bool { return cfgValue(key) == "1" }
 
 // csPaths overrides the files the backend reads and writes (tests); empty means the default.
 var csPaths struct{ config, snapshot, modules string }
