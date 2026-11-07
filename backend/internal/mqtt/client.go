@@ -165,6 +165,9 @@ func (c *client) publish(topic string, payload []byte, retain bool) error {
 func (c *client) subscribe(topic string) error {
 	c.mu.Lock()
 	c.nextID++
+	if c.nextID == 0 { // [MQTT-2.3.1-1]: never 0
+		c.nextID = 1
+	}
 	id := c.nextID
 	c.mu.Unlock()
 	return c.write(subscribePacket(id, topic, 1))
