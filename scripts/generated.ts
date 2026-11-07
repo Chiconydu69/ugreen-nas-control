@@ -27,6 +27,9 @@ export const REGISTRY_JSON = 'backend/internal/nasctl/models.json';
 /** Blocks rendered into hand-written files and the registry JSON (docs/tools/gen-docs.ts). Tracked: GitHub renders the docs. */
 export const DOC_FILES = ['README.md', 'docs/hardware.md', REGISTRY_JSON] as const;
 
+/** The issue forms the Feedback page pre-fills, written by docs/tools/gen-templates.ts. Tracked: GitHub reads them from the repo. */
+export const TEMPLATE_FILES = ['.github/ISSUE_TEMPLATE/model-report.yml', '.github/ISSUE_TEMPLATE/bug.yml'] as const;
+
 /** Written by the release tooling (plugin/tools/changes.ts, plugin/tools/plg.ts). Tracked: installed systems read the plg from main. */
 export const RELEASE_FILES = ['CHANGELOG.md', 'plugin/ugreen-nas-control.plg'] as const;
 
@@ -42,6 +45,7 @@ export const ALL_OUTPUTS: string[] = [
     ...Object.values(WEB_BUNDLES),
     ...WEB_ICONS.map(i => i.out),
     ...DOC_FILES,
+    ...TEMPLATE_FILES,
     ...RELEASE_FILES,
     ...OUTPUT_DIRS,
     `${DEMO_DIR}/`,

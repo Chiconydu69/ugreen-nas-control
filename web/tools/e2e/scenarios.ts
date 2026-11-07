@@ -40,10 +40,7 @@ export const SCENARIOS: Scenario[] = [
             await s.go('case');
             if (await s.exists('[data-view="case"] [data-nav="curves"]:not([hidden])'))
                 await s.step('case -> fan settings link', () => s.click('[data-view="case"] [data-nav="curves"]'));
-            await s.step('about: fold models', async () => {
-                await s.go('about');
-                await s.click('#unc-models-fold summary');
-            });
+            await s.step('about: models table', () => s.go('about'));
         }
     },
     {
@@ -285,12 +282,31 @@ export const SCENARIOS: Scenario[] = [
                 await s.step('fan control on', () => s.click('#unc-fan-enabled'));
             }
             await s.go('about');
-            await s.step('models fold + confirm issue', async () => {
-                await s.click('#unc-models-fold summary');
-                if (await s.exists('#unc-confirm-list input[type="checkbox"]')) await s.click('#unc-confirm-list input[type="checkbox"]');
-                await s.set('#unc-confirm-text', 'works');
-                await s.click('#unc-confirm-send');
+        }
+    },
+    {
+        id: 'feedback',
+        applies: always,
+        async run(s) {
+            await s.open();
+            await s.step('feedback view', () => s.go('feedback'));
+            await s.step('answer: first row works', () => s.click('.unc-fb-row:first-child input[value="works"]'));
+            await s.step('answer: second row does not work', () => s.click('.unc-fb-row:nth-child(2) input[value="fails"]'));
+            await s.step('comment', () => s.set('#unc-fb-comment', 'thanks @alex, see #12'));
+            await s.step('issue without data', () => s.click('#unc-fb-issue'));
+            await s.step('collect: refused', async () => {
+                await s.click('#unc-fb-collect');
+                await s.until(`document.querySelector('#unc-fb-status').textContent.includes('Collecting failed')`, 'error');
             });
+            // Running and done are one step: the poll timer (2 s) lands in either of two steps depending on load.
+            await s.step('collect: try again, running, done', async () => {
+                await s.click('#unc-fb-collect');
+                await s.until(`document.querySelector('#unc-fb-status').textContent.includes('Collecting')`, 'running');
+                await s.until(`!document.querySelector('#unc-fb-result').hidden`, 'done', 9000);
+            });
+            await s.step('preview', () => s.click('.unc-fb-preview summary'));
+            await s.step('create issue', () => s.click('#unc-fb-issue'));
+            await s.step('report a problem', () => s.click('#unc-fb-bug'));
         }
     },
     {
