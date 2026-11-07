@@ -788,3 +788,28 @@ func TestWatchdogNotCountingIsNotAMismatch(t *testing.T) {
 		}
 	}
 }
+
+// Compressed IPv6 addresses (::) and dash-separated MACs got through; plain text with "::" or times stays.
+func TestAnonRemovesCompressedIPv6AndDashMAC(t *testing.T) {
+	a := Anon{}
+	for _, c := range []struct{ in, gone string }{
+		{"lease 2001:db8::8a2e:370:7334 up", "8a2e"},
+		{"addr fe80::1 scope link", "fe80"},
+		{"dial tcp [2001:db8:85a3::8a2e:370:7334]:1883: refused", "db8"},
+		{"peer ::ffff:192.168.1.5 ok", "192.168"},
+		{"2a02:8071:1234:5678::1 gw", "2a02"},
+		{"link aa-bb-cc-dd-ee-ff on eth0", "aa-bb-cc"},
+	} {
+		if got := a.Text(c.in); strings.Contains(got, c.gone) {
+			t.Errorf("%q -> %q still has %q", c.in, got, c.gone)
+		}
+	}
+	for _, keep := range []string{"std::string failed", "at 12:34:56 done", "Foo::bar", "key: value", "mode:: x"} {
+		if got := a.Text(keep); got != keep {
+			t.Errorf("%q became %q", keep, got)
+		}
+	}
+	if got := scrub("fe80::1"); strings.Contains(got, "fe80") {
+		t.Errorf("scrub: %q", got)
+	}
+}
