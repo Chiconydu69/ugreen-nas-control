@@ -11,6 +11,7 @@ import (
 	"strings"
 	"syscall"
 	"testing"
+	"time"
 )
 
 // fakeDW is a DesignWare controller behind an LPSS wrapper: plain registers, the enable bit mirrored to
@@ -109,7 +110,11 @@ func itoa(n int) string { return strconv.Itoa(n) }
 
 // sysOpts changes one thing in the fake sysfs.
 type sysOpts struct {
-	driver       bool
+	driver       string            // driver name bound to the function
+	children     map[string]string // MFD children (nil: i2c_designware.0) and their drivers
+	adapter      string            // "below": i2c-3 in a child; "class": a class device deeper below the function
+	pmControl    string            // default auto
+	pmStatus     string            // default active
 	pmState      int
 	noPM         bool
 	command      int
@@ -180,11 +185,38 @@ func fakeSys(t *testing.T, o sysOpts) {
 	if o.otherMatches {
 		pci("0000:00:19.0", "0x54c5", "\\_SB_.PC00.I2C1")
 	}
-	if o.driver {
-		if err := os.Symlink("../../../../bus/pci/drivers/intel-lpss", filepath.Join(dir, "bus/pci/devices/0000:00:15.0/driver")); err != nil {
+	dev := "bus/pci/devices/0000:00:15.0/"
+	put(dev+"power/control", []byte(orDefault(o.pmControl, "auto")+"\n"))
+	put(dev+"power/runtime_status", []byte(orDefault(o.pmStatus, "active")+"\n"))
+	link := func(rel, target string) {
+		_ = os.MkdirAll(filepath.Dir(filepath.Join(dir, rel)), 0o755)
+		if err := os.Symlink(target, filepath.Join(dir, rel)); err != nil {
 			t.Fatal(err)
 		}
 	}
+	if o.driver != "" {
+		link(dev+"driver", "../../../../bus/pci/drivers/"+o.driver)
+		children := o.children
+		if children == nil {
+			children = map[string]string{"i2c_designware.0": ""}
+		}
+		for name, drv := range children {
+			put(dev+name+"/uevent", nil)
+			if drv != "" {
+				link(dev+name+"/driver", "../../../../../bus/platform/drivers/"+drv)
+			}
+		}
+	}
+	switch o.adapter {
+	case "below":
+		put(dev+"i2c_designware.0/i2c-3/name", nil)
+	case "class":
+		put(dev+"i2c_designware.0/x/y/i2c-9/name", nil)
+		link("class/i2c-dev/i2c-9", "../../"+dev+"i2c_designware.0/x/y/i2c-9")
+	}
+	oldW, oldS, oldWait, oldPoll := lpssPMState, lpssSysWrite, lpssPMWait, lpssPMPoll
+	lpssPMState, lpssPMWait, lpssPMPoll = filepath.Join(t.TempDir(), "power"), 60*time.Millisecond, time.Millisecond
+	t.Cleanup(func() { lpssPMState, lpssSysWrite, lpssPMWait, lpssPMPoll = oldW, oldS, oldWait, oldPoll })
 	old := lpssSys
 	lpssSys = dir
 	t.Cleanup(func() { lpssSys = old })
@@ -316,7 +348,7 @@ func TestLPSSRefusals(t *testing.T) {
 		{"BAR0 under 4 KiB", sysOpts{resource: "0x0000000040171000 0x00000000401717ff 0x0000000000040200"}, nil, "at least 4 KiB"},
 		{"BAR0 empty", sysOpts{resource: "0x0 0x0 0x0"}, nil, "at least 4 KiB"},
 		{"read only map fails", sysOpts{}, func(f *fakeDW) { f.roErr = errors.New("operation not permitted") }, "cannot map BAR0 read only"},
-		{"driver bound", sysOpts{driver: true}, nil, "intel-lpss is bound"},
+		{"driver bound", sysOpts{driver: "i2c_designware_pci"}, nil, "other-driver"},
 		{"wrong vendor", sysOpts{vendor: "0x1022"}, nil, "not an Intel LPSS"},
 		{"wrong class", sysOpts{class: "0x060400"}, nil, "not an Intel LPSS"},
 		{"memory decoding off", sysOpts{command: 0x0004}, nil, "memory decoding"},
@@ -530,5 +562,337 @@ func TestLPSSRecheckBeforeFirstWrite(t *testing.T) {
 	}
 	if last := r.lines[len(r.lines)-1]; !strings.Contains(last, "refused") {
 		t.Errorf("last line %q", last)
+	}
+}
+
+func orDefault(s, def string) string {
+	if s == "" {
+		return def
+	}
+	return s
+}
+
+// fakePM replaces the sysfs write: every write is logged as "<file>=<value>" and a write of "on" to power/control
+// wakes the function when wake is set.
+func fakePM(t *testing.T, wake bool) *[]string {
+	t.Helper()
+	var log []string
+	lpssSysWrite = func(path, value string) error {
+		log = append(log, filepath.Base(path)+"="+value)
+		if err := os.WriteFile(path, []byte(value+"\n"), 0o644); err != nil {
+			return err
+		}
+		if wake && filepath.Base(path) == "control" && value == "on" {
+			return os.WriteFile(filepath.Join(filepath.Dir(path), "runtime_status"), []byte("active\n"), 0o644)
+		}
+		return nil
+	}
+	return &log
+}
+
+// rl is a report line as lpssReport.add formats it.
+func rl(name, value string) string { return fmt.Sprintf("%-18s %s", name+":", value) }
+
+func bound() sysOpts { return sysOpts{driver: "intel-lpss"} }
+
+func probeMode(t *testing.T, o sysOpts, f *fakeDW, write bool) (*lpssReport, error) {
+	t.Helper()
+	fakeSys(t, o)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, write)
+	if d != nil {
+		d.close()
+	}
+	return r, err
+}
+
+func pmControlFile(t *testing.T) string {
+	t.Helper()
+	return sysLine(filepath.Join(lpssSys, "bus/pci/devices/0000:00:15.0/power/control"))
+}
+
+func TestLPSSBoundAccepted(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	o := bound()
+	o.pmStatus = "suspended"
+	fakeSys(t, o)
+	pm := fakePM(t, true)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err, r.lines)
+	}
+	if got := pmControlFile(t); got != "on" {
+		t.Errorf("power/control %q while the controller is open, want on", got)
+	}
+	d.close()
+	t.Log("\n" + strings.Join(r.lines, "\n"))
+	if want := []string{"control=on", "control=auto"}; strings.Join(*pm, ",") != strings.Join(want, ",") {
+		t.Errorf("power/control writes %v, want %v", *pm, want)
+	}
+	if got := pmControlFile(t); got != "auto" {
+		t.Errorf("power/control %q after close, want auto", got)
+	}
+	if _, err := os.Stat(lpssPMState); err == nil {
+		t.Error("state file left behind")
+	}
+	if f.enable || f.regs[dwEnable]&1 != 0 {
+		t.Error("controller left enabled")
+	}
+	text := strings.Join(r.lines, "\n")
+	for _, want := range []string{rl("pci.driver", "intel-lpss"), rl("lpss.children", "i2c_designware.0 driver none"), rl("lpss.adapters", "-"), rl("pm.control", "auto"), rl("pm.runtime_status", "suspended"), rl("write.power", "auto -> on (saved auto)"), rl("pm.runtime_status", "active after"), rl("write.power", "restored to auto"), "intel-lpss.c:259-265"} {
+		if !strings.Contains(text, want) {
+			t.Errorf("report lacks %q", want)
+		}
+	}
+}
+
+func TestLPSSBoundRefusals(t *testing.T) {
+	cases := []struct {
+		name string
+		o    sysOpts
+		want string
+	}{
+		{"i2c child with a driver", sysOpts{driver: "intel-lpss", children: map[string]string{"i2c_designware.0": "i2c_designware", "idma64.0": ""}}, "rule child-driver"},
+		{"adapter below", sysOpts{driver: "intel-lpss", adapter: "below"}, "rule adapter"},
+		{"adapter by class", sysOpts{driver: "intel-lpss", adapter: "class"}, "rule adapter: i2c-9"},
+		{"other driver", sysOpts{driver: "i2c-designware-pci"}, "rule other-driver"},
+	}
+	for _, write := range []bool{false, true} {
+		for _, c := range cases {
+			t.Run(fmt.Sprintf("%s write=%v", c.name, write), func(t *testing.T) {
+				f := newFakeDW()
+				f.resp = []byte{0xb2, 0xc5}
+				fakeSys(t, c.o)
+				pm := fakePM(t, true)
+				fakeMem(t, f)
+				r := &lpssReport{}
+				d, err := openLPSS(r, controllerAddr, write)
+				if d != nil || err == nil || !strings.Contains(err.Error(), c.want) {
+					t.Fatalf("want a refusal with %q, got %v", c.want, err)
+				}
+				if f.writes != 0 || f.rwMaps != 0 || f.roMaps != 0 || len(*pm) != 0 {
+					t.Errorf("%d writes, %d writable maps, %d read only maps, sysfs writes %v", f.writes, f.rwMaps, f.roMaps, *pm)
+				}
+				if last := r.lines[len(r.lines)-1]; !strings.Contains(last, "refused") {
+					t.Errorf("last line %q", last)
+				}
+			})
+		}
+	}
+}
+
+// Without --write nothing is written: no power/control, no register, no writable mapping.
+// A bound idma64 child has its own register window: accepted, and reported.
+func TestLPSSBoundIDMA64Accepted(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	o := bound()
+	o.children = map[string]string{"i2c_designware.0": "", "idma64.0": "idma64"}
+	fakeSys(t, o)
+	fakePM(t, true)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err, r.lines)
+	}
+	d.close()
+	text := strings.Join(r.lines, "\n")
+	if want := rl("lpss.idma64", "idma64.0 driver idma64 (own window at +0x800, not touched)"); !strings.Contains(text, want) {
+		t.Errorf("report lacks %q:\n%s", want, text)
+	}
+}
+
+func TestLPSSBoundReadOnly(t *testing.T) {
+	f := newFakeDW()
+	fakeSys(t, bound())
+	pm := fakePM(t, true)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, false)
+	if d != nil || err != nil {
+		t.Fatal(d, err, r.lines)
+	}
+	t.Log("\n" + strings.Join(r.lines, "\n"))
+	if len(*pm) != 0 || f.writes != 0 || f.rwMaps != 0 || f.roMaps != 1 {
+		t.Errorf("sysfs writes %v, register writes %d, rw maps %d, ro maps %d", *pm, f.writes, f.rwMaps, f.roMaps)
+	}
+	text := strings.Join(r.lines, "\n")
+	for _, want := range []string{rl("pm.control", "auto"), rl("pm.runtime_status", "active"), "lpss.resets:", rl("result", "ok (read only checks passed, nothing written)")} {
+		if !strings.Contains(text, want) {
+			t.Errorf("report lacks %q", want)
+		}
+	}
+}
+
+// A suspended function is not woken by the read only probe: no config read, no register read, no write.
+func TestLPSSBoundSuspendedReadOnly(t *testing.T) {
+	f := newFakeDW()
+	o := bound()
+	o.pmStatus = "suspended"
+	fakeSys(t, o)
+	pm := fakePM(t, true)
+	fakeMem(t, f)
+	// An unreadable config file would be refused if it were read.
+	_ = os.Remove(filepath.Join(lpssSys, "bus/pci/devices/0000:00:15.0/config"))
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, false)
+	if d != nil || err != nil {
+		t.Fatal(d, err, r.lines)
+	}
+	t.Log("\n" + strings.Join(r.lines, "\n"))
+	if len(*pm) != 0 || len(f.log) != 0 || f.roMaps != 0 || f.rwMaps != 0 {
+		t.Errorf("sysfs writes %v, register log %v, maps %d/%d", *pm, f.log, f.roMaps, f.rwMaps)
+	}
+	text := strings.Join(r.lines, "\n")
+	if !strings.Contains(text, "runtime_status is suspended") || !strings.Contains(text, "does not wake") {
+		t.Errorf("report does not say why it stopped:\n%s", text)
+	}
+	if strings.Contains(text, "pci.command") || strings.Contains(text, "lpss.resets") {
+		t.Error("config space or registers were read")
+	}
+}
+
+func TestLPSSBoundWriteFailureRestores(t *testing.T) {
+	cases := []struct {
+		name string
+		mod  func(*fakeDW)
+		want string
+	}{
+		{"chip id mismatch", func(f *fakeDW) { f.resp = []byte{0x34, 0x12} }, "0x1234"},
+		{"nak", func(f *fakeDW) { f.nak = true }, "no acknowledge"},
+		{"not designware", func(f *fakeDW) { f.regs[dwCompTypeReg] = 0xffffffff }, "not a DesignWare"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			f := newFakeDW()
+			c.mod(f)
+			o := bound()
+			o.pmStatus = "suspended"
+			fakeSys(t, o)
+			pm := fakePM(t, true)
+			fakeMem(t, f)
+			_, err := openLPSS(&lpssReport{}, controllerAddr, true)
+			if err == nil || !strings.Contains(err.Error(), c.want) {
+				t.Fatalf("want %q, got %v", c.want, err)
+			}
+			if strings.Join(*pm, ",") != "control=on,control=auto" || pmControlFile(t) != "auto" {
+				t.Errorf("power/control writes %v, final %q", *pm, pmControlFile(t))
+			}
+			if f.enable {
+				t.Error("controller left enabled")
+			}
+		})
+	}
+}
+
+// The function does not wake within the wait: refused, nothing written to registers, power/control restored.
+func TestLPSSBoundWakeTimeout(t *testing.T) {
+	f := newFakeDW()
+	o := bound()
+	o.pmStatus = "suspended"
+	fakeSys(t, o)
+	pm := fakePM(t, false)
+	fakeMem(t, f)
+	r := &lpssReport{}
+	_, err := openLPSS(r, controllerAddr, true)
+	if err == nil || !strings.Contains(err.Error(), "not active") {
+		t.Fatalf("want a timeout refusal, got %v", err)
+	}
+	if strings.Join(*pm, ",") != "control=on,control=auto" || pmControlFile(t) != "auto" {
+		t.Errorf("power/control writes %v, final %q", *pm, pmControlFile(t))
+	}
+	if f.writes != 0 || f.roMaps != 0 || f.rwMaps != 0 {
+		t.Errorf("register access after a timeout: %v", f.log)
+	}
+}
+
+// A crashed run left "on" and its state file: the saved value wins over the current "on".
+func TestLPSSBoundRecoversSavedValue(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	o := bound()
+	o.pmControl = "on"
+	fakeSys(t, o)
+	if err := os.WriteFile(lpssPMState, []byte("0000:00:15.0 auto\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	fakePM(t, true)
+	fakeMem(t, f)
+	d, err := openLPSS(&lpssReport{}, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d.close()
+	if got := pmControlFile(t); got != "auto" {
+		t.Errorf("power/control %q, want auto", got)
+	}
+}
+
+// A restore that fails is reported and keeps the state file for the next run.
+func TestLPSSBoundRestoreFailureReported(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	fakeSys(t, bound())
+	fakePM(t, true)
+	orig := lpssSysWrite
+	lpssSysWrite = func(path, value string) error {
+		if value == "auto" {
+			return errors.New("busy")
+		}
+		return orig(path, value)
+	}
+	fakeMem(t, f)
+	r := &lpssReport{}
+	d, err := openLPSS(r, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d.close()
+	if text := strings.Join(r.lines, "\n"); !strings.Contains(text, "power.restore:") || !strings.Contains(text, "FAILED") {
+		t.Errorf("failed restore not reported:\n%s", text)
+	}
+	if _, err := os.Stat(lpssPMState); err != nil {
+		t.Error("state file removed although the restore failed")
+	}
+}
+
+// RESETS is only written when it shows the controller in reset.
+func TestLPSSBoundResetsNotWrittenWhenDeasserted(t *testing.T) {
+	f := newFakeDW() // RESETS 0x7
+	f.resp = []byte{0xb2, 0xc5}
+	fakeSys(t, bound())
+	fakePM(t, true)
+	fakeMem(t, f)
+	d, err := openLPSS(&lpssReport{}, controllerAddr, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d.close()
+	for _, e := range f.log {
+		if e == "w"+itoa(lpssPrivResets) {
+			t.Fatalf("RESETS written although deasserted:\n%v", f.log)
+		}
+	}
+}
+
+// No register is written before the last check: power/control comes first, the first register write follows the
+// component type reads.
+func TestLPSSBoundWriteOrder(t *testing.T) {
+	f := newFakeDW()
+	f.resp = []byte{0xb2, 0xc5}
+	f.regs[dwCompTypeReg] = 0xffffffff // checks fail
+	fakeSys(t, bound())
+	fakePM(t, true)
+	fakeMem(t, f)
+	if _, err := openLPSS(&lpssReport{}, controllerAddr, true); err == nil {
+		t.Fatal("want a refusal")
+	}
+	if f.writes != 0 || f.rwMaps != 0 {
+		t.Errorf("%d register writes, %d writable maps before the checks passed", f.writes, f.rwMaps)
 	}
 }

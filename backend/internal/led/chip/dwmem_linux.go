@@ -104,6 +104,7 @@ type dwTiming struct{ hcnt, lcnt, sdaHold uint32 }
 type dwI2C struct {
 	mem     dwRegs
 	unmap   func() // releases the mappings and the file
+	release func() // LPSS: restores the PCI power/control value once the controller is disabled
 	aoac    []byte // AMD: power registers
 	power   int    // AMD: offset of this controller's AOAC register in aoac
 	timing  dwTiming
@@ -198,6 +199,9 @@ func openDW(addr uint8) (*dwI2C, error) {
 func (d *dwI2C) shutdown() error {
 	err := d.disable()
 	d.unmap()
+	if d.release != nil {
+		d.release()
+	}
 	return err
 }
 

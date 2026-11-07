@@ -17,7 +17,7 @@ import (
 // kernel has no i2c_designware module, so the controller is driven through /dev/mem, like the AMD one in
 // dwmem_linux.go. Off by default (lpss_leds="1" in leds.cfg); `ugreen-led-i2c lpss-probe` is read only, `lpss-probe --write` needs no opt-in.
 //
-// Order: (1) read only: ACPI -> PCI function, no driver bound, memory decoding on, D0, BAR0, DesignWare component
+// Order: (1) read only: ACPI -> PCI function, no driver bound (or only intel-lpss without I2C child driver, see lpss_pm_linux.go), memory decoding on, D0, BAR0, DesignWare component
 // type, all through sysfs and a read-only mapping; (2) only when every check passed: take the controller out of
 // reset if it is in reset, set the SCL counts, enable it, read word register 0x5A at 0x3a; (3) no LED frame
 // unless that returns 0xC5B2, else IC_ENABLE=0 and report.
@@ -156,8 +156,21 @@ func pciPowerState(cfg []byte) (state int, ok bool) {
 
 // openLPSS runs the checks and, with write, the bring-up described above and returns the controller with the chip
 // id confirmed. Without write it stops after the read only checks and returns nil, nil. Every step is recorded in r.
-// Nothing is written before the last read only check passed.
+// Nothing is written before the last read only check passed. With intel-lpss bound (lpss_pm_linux.go) the only thing
+// done earlier is power/control "on"; it is restored on every exit: by the shutdown of the returned controller,
+// otherwise here.
 func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
+	pm := &lpssPM{r: r}
+	d, err := openLPSSChecked(r, addr, write, pm)
+	if d != nil {
+		d.release = pm.restore
+	} else {
+		pm.restore()
+	}
+	return d, err
+}
+
+func openLPSSChecked(r *lpssReport, addr uint8, write bool, pm *lpssPM) (*dwI2C, error) {
 	id, hid, path, status, controller, ok := lpssMCU()
 	if !ok {
 		return nil, r.refuse("no ACPI device with a HT32* hid (this is not a SUB2 board)")
@@ -186,11 +199,36 @@ func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
 		return nil, r.refuse("%s is not an Intel LPSS I2C controller (vendor 8086, class %s)", filepath.Base(dev), lpssClass)
 	}
 
+	bound := false
 	if target, err := os.Readlink(dev + "/driver"); err == nil {
-		r.add("pci.driver", "%s", filepath.Base(target))
-		return nil, r.refuse("the driver %s is bound to %s", filepath.Base(target), filepath.Base(dev))
+		name := filepath.Base(target)
+		r.add("pci.driver", "%s", name)
+		if name != lpssBoundDriver {
+			return nil, r.refuse("rule other-driver: the driver %s is bound to %s", name, filepath.Base(dev))
+		}
+		if err := lpssCheckBound(r, dev); err != nil {
+			return nil, err
+		}
+		bound = true
+		control, status := sysLine(dev+"/power/control"), sysLine(dev+"/power/runtime_status")
+		r.add("pm.control", "%s", orNone(control))
+		r.add("pm.runtime_status", "%s", orNone(status))
+		if control == "" || status == "" {
+			return nil, r.refuse("cannot read power/control or power/runtime_status of %s", filepath.Base(dev))
+		}
+		if !write && status != "active" {
+			r.add("result", "ok so far (runtime_status is %s: the PCI config space and the registers are not read, the read only probe does not wake the controller; they read 0xFF while it is suspended)", status)
+			r.add("next", "run with --write to keep the controller awake (power/control on, restored afterwards), check it and read the LED chip id")
+			return nil, nil
+		}
+		if write {
+			if err := pm.enable(dev, control); err != nil {
+				return nil, r.refuse("%v", err)
+			}
+		}
+	} else {
+		r.add("pci.driver", "none")
 	}
-	r.add("pci.driver", "none")
 
 	cfg, err := os.ReadFile(dev + "/config")
 	if err != nil || len(cfg) < 0x40 {
@@ -230,7 +268,11 @@ func openLPSS(r *lpssReport, addr uint8, write bool) (*dwI2C, error) {
 	resets := ro.load(lpssPrivResets)
 	comp, version := ro.load(dwCompTypeReg), ro.load(dwCompVersion)
 	unmapRO()
-	r.add("lpss.resets", "0x%08x", resets)
+	if bound {
+		r.add("lpss.resets", "0x%08x (intel-lpss writes 0x7 at probe and resume: intel_lpss_deassert_reset, intel-lpss.c:259-265)", resets)
+	} else {
+		r.add("lpss.resets", "0x%08x", resets)
+	}
 	r.add("dw.comp_version", "0x%08x", version)
 	r.add("dw.comp_type", "0x%08x (expected 0x%08x)", comp, dwCompType)
 	if comp != dwCompType {
