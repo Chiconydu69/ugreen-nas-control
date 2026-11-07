@@ -26,13 +26,14 @@ func newAutoBox(t *testing.T, cfg, i801 string, o sysOpts) *autoBox {
 	if err := os.WriteFile(cfgPath, []byte(cfg), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	oldCS, oldSys, oldDev, oldAns, oldState := csPaths.config, i2cSysBus, i2cDevDir, i801Answers, lpssState
+	oldCS, oldSys, oldDev, oldAns, oldState, oldLock := csPaths.config, i2cSysBus, i2cDevDir, i801Answers, lpssState, lockFile
 	t.Cleanup(func() {
-		csPaths.config, i2cSysBus, i2cDevDir, i801Answers, lpssState = oldCS, oldSys, oldDev, oldAns, oldState
+		csPaths.config, i2cSysBus, i2cDevDir, i801Answers, lpssState, lockFile = oldCS, oldSys, oldDev, oldAns, oldState, oldLock
 		lpssRefusedMem.Store(false)
 	})
 	csPaths.config = cfgPath
 	lpssState = filepath.Join(t.TempDir(), "state")
+	lockFile = filepath.Join(t.TempDir(), "lock")
 	lpssRefusedMem.Store(false)
 
 	i2cSysBus, i2cDevDir = t.TempDir(), t.TempDir()
