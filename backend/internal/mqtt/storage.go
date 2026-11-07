@@ -127,7 +127,9 @@ func readParity(path string) *PubParity {
 	dt, _ := strconv.ParseInt(v["mdResyncDt"], 10, 64)
 	if db > 0 && dt > 0 {
 		p.Speed = db * 1024 / dt
-		p.ETA = (size - pos) * 1024 / p.Speed
+		if p.Speed > 0 {
+			p.ETA = (size - pos) * 1024 / p.Speed
+		}
 	}
 	return p
 }
