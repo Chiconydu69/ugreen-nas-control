@@ -55,8 +55,9 @@ test('the registry offers the front panel exactly where the backend tables have 
     }
 });
 
-test('the DXP8800 Plus is the one model users confirmed buttons and beeper on (issue 165)', () => {
-    const confirmed = registry.models.filter(m => m.verified.panel.status === 'community').map(m => m.id);
-    expect(confirmed).toEqual(['dxp8800-plus']);
+test('no model has the buttons fully confirmed: the DXP8800 Plus and DXP4800 Plus are partial (issues 165, 266)', () => {
+    const checked = registry.models.filter(m => m.verified.panel.status === 'community' || m.verified.panel.status === 'partial').map(m => m.id);
+    expect(checked).toContain('dxp8800-plus');
+    expect(registry.models.filter(m => m.verified.panel.status === 'community')).toEqual([]);
     expect(registry.models.find(m => m.id === 'dxp8800-plus')!.verified.panel.ref).toContain('/issues/165');
 });

@@ -76,8 +76,9 @@ test('some untested: the capabilities are listed and the primary action is "conf
     expect(d.cta).toBe('confirm');
 });
 
-test('the front-panel evidence is the registry check of the model: users on the DXP8800 Plus, partly on the DXP4800 Plus, nothing elsewhere', () => {
-    expect(panelEvidence('DXP8800 Plus')).toMatchObject({ state: 'users', by: 'Chiconydu69 (issue 165)' });
+test('the front-panel evidence is the registry check of the model: partly on the DXP8800 Plus and the DXP4800 Plus, nothing elsewhere', () => {
+    expect(panelEvidence('DXP8800 Plus')).toMatchObject({ state: 'partial', by: 'Chiconydu69 (issue 165)' });
+    expect(panelEvidence('DXP8800 Plus')?.note).toContain('Power button');
     expect(panelEvidence('DXP4800 Plus')?.state).toBe('partial');
     expect(panelEvidence('DXP4800 Plus')?.note).toContain('Beeper: confirmed');
     expect(panelEvidence('DXP4800 GT')?.state).toBe('untested');

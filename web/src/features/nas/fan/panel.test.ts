@@ -46,7 +46,7 @@ test('the backlight is a number or the string "default"', () => {
 });
 
 test('the shutdown on a held power button is offered only where users confirmed the buttons', () => {
-    expect(powerVisible(status('DXP8800 Plus'))).toBe(true); // community
+    expect(powerVisible(status('DXP8800 Plus'))).toBe(false); // partial: the power pad shows only a pulse after about 10 s
     expect(powerVisible(status('DXP4800 Plus'))).toBe(false); // partial: the beeper only
     expect(powerVisible(status('DXP6800 Pro'))).toBe(false); // expected
     expect(powerVisible(status('DXP8800 Ultra'))).toBe(false);

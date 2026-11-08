@@ -185,7 +185,7 @@
       "de nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b3eab096574b"
+        "text": "4af3eabc3c1f"
       },
       "de nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -200,7 +200,7 @@
       "de nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "6ffff35103a9"
+        "text": "557561ad940c"
       },
       "language es": {
         "requests": [
@@ -259,7 +259,7 @@
       "es nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2b2ecb516877"
+        "text": "e7ddf8cea4c3"
       },
       "es nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -274,7 +274,7 @@
       "es nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "9201e4137c7d"
+        "text": "5d57a7704451"
       },
       "language fr": {
         "requests": [
@@ -333,7 +333,7 @@
       "fr nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "be32d8f6869c"
+        "text": "dbd5bdf832c2"
       },
       "fr nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -348,7 +348,7 @@
       "fr nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b534f4c4f9e4"
+        "text": "f0c7faad868b"
       },
       "language it": {
         "requests": [
@@ -407,7 +407,7 @@
       "it nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "75b7ecd0758e"
+        "text": "56f01720947d"
       },
       "it nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -422,7 +422,7 @@
       "it nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "3c8405e6ced2"
+        "text": "d3f17d80ec48"
       },
       "language nl": {
         "requests": [
@@ -481,7 +481,7 @@
       "nl nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "696511f3b1b5"
+        "text": "c4837292402c"
       },
       "nl nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -496,7 +496,7 @@
       "nl nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "b16971abe789"
+        "text": "10f88f10e62e"
       },
       "language zh": {
         "requests": [
@@ -555,7 +555,7 @@
       "zh nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "e7b60e79f9e0"
+        "text": "714070d20eac"
       },
       "zh nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -570,7 +570,7 @@
       "zh nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2bcbe57a3293"
+        "text": "5838942f9d07"
       },
       "language auto": {
         "requests": [
@@ -644,7 +644,7 @@
       "en nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2ef2f90bb67a"
+        "text": "2db8ac0a7b54"
       },
       "en nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -659,7 +659,7 @@
       "en nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2b33b63075b8"
+        "text": "70776dfd7434"
       }
     },
     "led-drives": {
@@ -1233,7 +1233,7 @@
       "nav panel": {
         "requests": ["nas GET {\"action\":\"panel_buttons\"}", "nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2ef2f90bb67a"
+        "text": "2db8ac0a7b54"
       },
       "nav settings": {
         "requests": ["nas GET {\"action\":\"power_ac_get\"}", "nas GET {\"action\":\"status\"}"],
@@ -1248,7 +1248,7 @@
       "nav about": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2b33b63075b8"
+        "text": "70776dfd7434"
       },
       "overview link": {
         "requests": ["nas GET {\"action\":\"hardware\"}", "nas GET {\"action\":\"status\"}"],
@@ -1263,7 +1263,7 @@
       "about: your device card": {
         "requests": ["nas GET {\"action\":\"status\"}"],
         "events": [],
-        "text": "2b33b63075b8"
+        "text": "70776dfd7434"
       },
       "about: confirm my device": {
         "requests": ["nas GET {\"action\":\"status\"}"],
