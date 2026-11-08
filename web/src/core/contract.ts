@@ -21,6 +21,7 @@ import type {
     FanProbeStatusResponse,
     FanProbeTachsResponse,
     PanelBeepResponse,
+    PanelPowerResponse,
     PanelButtonsResponse,
     PowerAcMode,
     PowerAcResponse,
@@ -395,6 +396,7 @@ export interface NasGet {
     fan_backlight: FanBacklightResponse;
     cs201x_read: Cs201xReadResponse;
     panel_buttons: PanelButtonsResponse;
+    panel_power: PanelPowerResponse;
     power_ac_get: PowerAcResponse;
 }
 
@@ -427,6 +429,7 @@ export interface NasPost {
     cs201x_confirm: { fans?: string };
     cs201x_forget: Record<string, never>;
     panel_beep: { ms?: number };
+    panel_power: { enabled: Flag; hold?: string };
     power_ac_set: { mode: PowerAcMode };
 }
 
@@ -440,6 +443,7 @@ export interface NasPostReply {
     fan_backlight: FanBacklightSetResponse;
     cs201x_confirm: Cs201xConfirmResponse;
     panel_beep: PanelBeepResponse;
+    panel_power: PanelPowerResponse;
     power_ac_set: PowerAcResponse;
 }
 

@@ -488,3 +488,19 @@ func PanelStatus(product string) string {
 	}
 	return text
 }
+
+// PanelConfirmed says whether users (or a maintainer) confirmed the front panel on the model: the registry's panel check
+// is community or verified. A partial check (the beeper only), an expected one or an unknown model is not enough for the
+// shutdown on a held power button.
+func PanelConfirmed(product string) bool {
+	models, err := loadRegistry(modelsJSON)
+	if err != nil {
+		return false
+	}
+	reg := matchModel(models, product)
+	if reg == nil {
+		return false
+	}
+	c, ok := reg.Verified["panel"]
+	return ok && (c.Status == "community" || c.Status == "verified")
+}

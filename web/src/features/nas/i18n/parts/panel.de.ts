@@ -25,6 +25,21 @@ export const panelDe: Record<keyof typeof panelEn, string> = {
     'panel.beeper_hint': 'Lässt den Piepser einmal 200 ms ertönen. Du hörst nichts, wenn im Modell kein Lautsprecher steckt.',
     'panel.beep': 'Testton',
     'panel.beeped': 'Ton gesendet',
+    'panel.power_title': 'Herunterfahren bei gehaltener Ein-/Aus-Taste',
+    'panel.power_hint':
+        'Standardmäßig aus. Wenn aktiv, fährt Unraid sauber herunter, sobald du die vordere Ein-/Aus-Taste gedrückt hältst: Zuerst wird das Array gestoppt, genau wie beim Button „Herunterfahren“ in der Unraid-Oberfläche. Ein kurzer Druck bewirkt nichts.',
+    'panel.power_warning':
+        'Wer die Ein-/Aus-Taste hält, fährt den Server herunter. Viele Boards schalten nach etwa 4 s hart ab; die Haltezeit hier bleibt darunter.',
+    'panel.power_toggle': 'Unraid herunterfahren, wenn die Ein-/Aus-Taste {s} s gehalten wird',
+    'panel.power_toggle_hint':
+        'Es greift, solange die Taste noch gehalten wird, nie bei einem kurzen Tipp, nie wenn die Tasten nicht lesbar sind und nicht in der ersten Minute nach dem Start des Plugins. Die Reset-Taste wird nie benutzt.',
+    'panel.power_hold': 'Haltezeit',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'Zum Testen ohne Herunterfahren führe das in einem Terminal aus und halte die Taste:',
+    'panel.power_confirm':
+        'Aktivieren? Wer die vordere Ein-/Aus-Taste {s} s hält, fährt damit Unraid herunter und stoppt das Array. Sorge dafür, dass niemand sie aus Versehen hält.',
+    'panel.power_saved_on': 'Herunterfahren bei gehaltener Ein-/Aus-Taste ist an',
+    'panel.power_saved_off': 'Herunterfahren bei gehaltener Ein-/Aus-Taste ist aus',
     'cs201x.title': 'Lüfter (Chipsea CS201x)',
     'cs201x.intro':
         'Der DXP2800 GT hat einen Chipsea-CS201x-Controller statt eines IT8613E, die Lüfter-Erkennung gilt hier nicht. Prüfe die Diagnose unten und bestätige dann die angeschlossenen Lüfter. Bis dahin bleibt die Lüftersteuerung aus.',

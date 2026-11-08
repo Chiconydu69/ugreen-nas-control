@@ -16,3 +16,20 @@ func TestPanelStatus(t *testing.T) {
 		}
 	}
 }
+
+// The shutdown on a held power button is offered where the registry's panel check is community or verified, not for a
+// partial or expected check, an unsupported model or an unknown one.
+func TestPanelConfirmed(t *testing.T) {
+	for product, want := range map[string]bool{
+		"DXP8800 Plus":   true,
+		"DXP4800 Plus":   false, // partial: the beeper only
+		"DXP6800 Pro":    false,
+		"DXP6800 Ultra":  false,
+		"Something Else": false,
+		"":               false,
+	} {
+		if got := PanelConfirmed(product); got != want {
+			t.Errorf("PanelConfirmed(%q) = %v, want %v", product, got, want)
+		}
+	}
+}

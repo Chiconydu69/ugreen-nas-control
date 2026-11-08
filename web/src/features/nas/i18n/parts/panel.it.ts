@@ -25,6 +25,21 @@ export const panelIt: Record<keyof typeof panelEn, string> = {
     'panel.beeper_hint': 'Fa suonare il cicalino una volta per 200 ms. Non senti nulla se il modello non ha un altoparlante.',
     'panel.beep': 'Segnale di prova',
     'panel.beeped': 'Segnale inviato',
+    'panel.power_title': 'Spegnimento tenendo premuto il pulsante di accensione',
+    'panel.power_hint':
+        'Disattivato per impostazione predefinita. Se attivo, tenere premuto il pulsante di accensione frontale spegne Unraid in modo pulito: prima si ferma l’array, come con il pulsante Spegni dell’interfaccia web di Unraid. Una pressione breve non fa nulla.',
+    'panel.power_warning':
+        'Tenere premuto il pulsante di accensione spegnerà il server. Molte schede tagliano l’alimentazione a forza dopo circa 4 s; il tempo di pressione qui impostato resta al di sotto.',
+    'panel.power_toggle': 'Spegni Unraid quando il pulsante di accensione è tenuto premuto per {s} s',
+    'panel.power_toggle_hint':
+        'Agisce mentre il pulsante è ancora premuto, mai con un tocco breve, mai se i pulsanti non sono leggibili e non nel primo minuto dopo l’avvio del plugin. Il pulsante reset non viene mai usato.',
+    'panel.power_hold': 'Tempo di pressione',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'Per provarlo senza spegnere, esegui questo in un terminale e tieni premuto il pulsante:',
+    'panel.power_confirm':
+        'Attivarlo? Tenere premuto il pulsante di accensione frontale per {s} s spegnerà Unraid e fermerà l’array. Assicurati che nessuno lo prema per errore.',
+    'panel.power_saved_on': 'Lo spegnimento con il pulsante di accensione tenuto premuto è attivo',
+    'panel.power_saved_off': 'Lo spegnimento con il pulsante di accensione tenuto premuto è disattivato',
     'cs201x.title': 'Ventole (Chipsea CS201x)',
     'cs201x.intro':
         'Il DXP2800 GT ha un controller integrato Chipsea CS201x invece di un IT8613E, quindi il rilevamento delle ventole non si applica. Controlla la diagnostica qui sotto, poi conferma le ventole collegate. Fino ad allora il controllo delle ventole resta spento.',

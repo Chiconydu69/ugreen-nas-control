@@ -332,6 +332,8 @@ export function createFan(model: Model, host: FanHost) {
                     const ac = powerAc();
                     return 'status' in ac ? ac : ok(powerAcAnswer(ac));
                 }
+                case 'panel_power':
+                    return ok({ ...(fan().panelPower ?? { enabled: false, hold: 1.5 }) });
                 case 'panel_buttons':
                     if (!shaped.panel.buttons) return fail(`no button map for model "${dmi}"`, 409);
                     return ok({
@@ -460,6 +462,18 @@ export function createFan(model: Model, host: FanHost) {
                     fan().powerAc = { mode, last: { mode, time: Math.floor(host.now() / 1000) } };
                     host.persist();
                     return ok({ set: mode, ...powerAcAnswer(ac), verified: ac.readable });
+                }
+                case 'panel_power': {
+                    const enabled = form.get('enabled');
+                    const hold = form.get('hold');
+                    if ((enabled !== '0' && enabled !== '1') || (hold !== null && !/^(3(\.0)?|[12](\.[0-9])?)$/.test(hold))) return fail('Invalid value');
+                    if (enabled === '1' && !shaped.panel.confirmed) {
+                        return fail(`Power button watcher did not start: the buttons of the ${dmi} are not confirmed by users yet`, 409);
+                    }
+                    const power = { enabled: enabled === '1', hold: hold !== null ? Number(hold) : ((fan().panelPower as Obj | undefined)?.hold ?? 1.5) };
+                    fan().panelPower = power;
+                    host.persist();
+                    return ok({ ...power });
                 }
                 case 'panel_beep': {
                     const raw = form.get('ms') ?? '200';

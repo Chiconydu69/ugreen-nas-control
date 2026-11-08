@@ -50,6 +50,7 @@ Front-panel buttons and beeper, from UGREEN's driver facts. `buttons` prints how
 
 - `buttons [--watch]`: power and reset button state; `--watch` prints press and release events. Read only.
 - `beep [--freq Hz] [--ms N]`: one tone, 20 to 2000 ms; the speaker is always switched off afterwards.
+- `power-action [--dry-run]`: the watcher of the opt-in shutdown on a held power button; `--dry-run` only prints `would shut down now` ([panel.md](panel.md#shut-down-on-a-held-power-button)).
 
 ## Support requests
 

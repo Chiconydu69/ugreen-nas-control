@@ -246,6 +246,12 @@
         },
         {
           "args": ["led-import"]
+        },
+        {
+          "args": ["power-stop"]
+        },
+        {
+          "args": ["power-start"]
         }
       ],
       "nas": [
@@ -753,6 +759,55 @@
       "body": { "action": "panel_beep" },
       "nas": [{ "args": ["panel", "beep"], "code": 1, "err": "ERROR: no beeper known for model \"DXP4800 GT\"\n" }]
     },
+    { "id": "nas.panel_power.get-default", "api": "nas", "query": { "action": "panel_power" } },
+    {
+      "id": "nas.panel_power.get-on",
+      "api": "nas",
+      "query": { "action": "panel_power" },
+      "files": { "fan.cfg": "panel_power_hold=\"2.5\"\npanel_power_shutdown=\"1\"\n" }
+    },
+    {
+      "id": "nas.panel_power.get-bad-hold",
+      "api": "nas",
+      "query": { "action": "panel_power" },
+      "files": { "fan.cfg": "panel_power_hold=\"9\"\npanel_power_shutdown=\"yes\"\n" }
+    },
+    { "id": "nas.panel_power.set-on", "api": "nas", "body": { "action": "panel_power", "enabled": "1" } },
+    { "id": "nas.panel_power.set-on-hold", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "2.0" } },
+    { "id": "nas.panel_power.set-hold-min", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "1" } },
+    { "id": "nas.panel_power.set-hold-max", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "3.0" } },
+    {
+      "id": "nas.panel_power.set-off",
+      "api": "nas",
+      "body": { "action": "panel_power", "enabled": "0" },
+      "files": { "fan.cfg": "panel_power_hold=\"2\"\npanel_power_shutdown=\"1\"\n" }
+    },
+    { "id": "nas.panel_power.set-missing", "api": "nas", "body": { "action": "panel_power" } },
+    { "id": "nas.panel_power.set-text", "api": "nas", "body": { "action": "panel_power", "enabled": "yes" } },
+    { "id": "nas.panel_power.set-hold-too-short", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "0.9" } },
+    { "id": "nas.panel_power.set-hold-too-long", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "3.1" } },
+    { "id": "nas.panel_power.set-hold-four", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "4" } },
+    { "id": "nas.panel_power.set-hold-text", "api": "nas", "body": { "action": "panel_power", "enabled": "1", "hold": "slow" } },
+    {
+      "id": "nas.panel_power.refused-409-settings-back",
+      "api": "nas",
+      "body": { "action": "panel_power", "enabled": "1", "hold": "2" },
+      "files": { "fan.cfg": "panel_power_hold=\"1.5\"\npanel_power_shutdown=\"0\"\n" },
+      "ctl": [
+        {
+          "args": ["power-start"],
+          "code": 1,
+          "err": "ERROR: Power button watcher did not start: the buttons of the DXP4800 Plus are not confirmed by users yet\n"
+        }
+      ]
+    },
+    {
+      "id": "nas.panel_power.refused-409-no-file-before",
+      "api": "nas",
+      "body": { "action": "panel_power", "enabled": "1", "hold": "2" },
+      "ctl": [{ "args": ["power-start"], "code": 1, "err": "ERROR: open /dev/mem: permission denied\n" }]
+    },
+    { "id": "nas.panel_power.unwritable-500", "api": "nas", "body": { "action": "panel_power", "enabled": "1" }, "blockConfig": true },
     { "id": "nas.mode.quiet-new-file", "api": "nas", "body": { "action": "mode", "value": "quiet" } },
     {
       "id": "nas.mode.keeps-others-sorted",

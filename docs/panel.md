@@ -1,14 +1,15 @@
 # Front panel: buttons and beeper
 
-`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); the DXP8800 Plus (issue #165) and, for the beeper only, the DXP4800 Plus (issue #266).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action; nothing reboots or shuts down.
+`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); the DXP8800 Plus (issue #165) and, for the beeper only, the DXP4800 Plus (issue #266).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action unless you switch on the shutdown on a held power button ([below](#shut-down-on-a-held-power-button)); that is off by default and the reset button is never used.
 
 ## Commands
 
-| Command                                      | What it does                                                                                            |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `ugreen-nas panel buttons`                   | Prints whether power and reset are held.                                                                |
-| `ugreen-nas panel buttons --watch`           | Polls every 50 ms and prints `down`, `press`, `up`, `release` with the hold time, until Ctrl-C.         |
-| `ugreen-nas panel beep [--freq Hz] [--ms N]` | Sounds the beeper for N ms (default 200, 20 to 2000). `--freq` (100 to 8000) only on PC speaker models. |
+| Command                                      | What it does                                                                                                                                                           |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ugreen-nas panel buttons`                   | Prints whether power and reset are held.                                                                                                                               |
+| `ugreen-nas panel buttons --watch`           | Polls every 50 ms and prints `down`, `press`, `up`, `release` with the hold time, until Ctrl-C.                                                                        |
+| `ugreen-nas panel beep [--freq Hz] [--ms N]` | Sounds the beeper for N ms (default 200, 20 to 2000). `--freq` (100 to 8000) only on PC speaker models.                                                                |
+| `ugreen-nas panel power-action [--dry-run]`  | Runs until the power button has been held for the hold time, then shuts Unraid down (the watcher of the setting below). `--dry-run` only prints `would shut down now`. |
 
 An unknown model is refused before anything is opened.
 
@@ -39,6 +40,47 @@ Vendor press rules, which `--watch` follows:
 - The DXP2800 GT driver clears bit 23 of each register at start (pin to input). The tool does not write, so it reads the pins as the firmware left them.
 - iDX6011/6012: the vendor comment says the power key sits on ACPI and cannot be read by address, yet it lists an address. Treat the power reading there as doubtful.
 
+## Shut down on a held power button
+
+Opt-in, off by default (issue [#165](https://github.com/ugreen-nas-control/ugreen-nas-control/issues/165)). On the Front panel page the card "Shut down on a held power button" has a switch ("Shut down Unraid when the power button is held for X s") and a hold time of 1 to 3 s. Switching it on asks first and shows a warning. The card appears only for a model whose registry `panel` check is `community` or `verified` (today the DXP8800 Plus); a `partial` or `expected` model does not get it, and the watcher refuses to start there as well.
+
+Settings in `fan.cfg` (the page writes them, `api.php` action `panel_power`): `panel_power_shutdown="1"` switches it on, `panel_power_hold="1.5"` is the hold in seconds (1 to 3; a missing or out-of-range value is 1.5).
+
+### Watcher
+
+`ugreen-nas panel power-action` is the watcher. `ugreen-nas-ctl start` and `power-start` run it detached (pid file `/var/run/ugreen-nas-control-power.pid`, log `/var/log/ugreen-nas-control-power.log`) only when the setting is on, the same way as the MQTT publisher: a small process of its own, not part of the fan daemon, because the fan daemon does not run where there is no fan controller and the LED daemon only runs if LEDs are switched on, while the buttons exist independently of both. The plugin's start script (`start_daemons` in the `.plg`) calls `power-start` also when the fan probe fails. `ugreen-nas-ctl stop` and `power-stop` end it. It reads the pad registers read-only through the panel `Tracker` (`NewPowerTracker` with the hold in polls as press threshold) and takes no hardware lock: pad reads touch no chip that the fan or LED code writes.
+
+### Guards
+
+- Off unless `panel_power_shutdown="1"`; on a model without confirmed buttons the command refuses to run.
+- Only after a hold: the Tracker must see the power pad held on every 50 ms poll for the whole hold time (1.0 to 3.0 s); a release or an unreadable poll starts the count again. It fires while the button is still held, not on release.
+- An unreadable read (a pad word of 0xFFFFFFFF on power or reset, or a read error) is no action and restarts the count.
+- The first 60 s after the start are ignored (boot glitches on the pads). A hold that began inside that minute does not count either; the button has to be seen released first.
+- One shot: after the action the process ends; nothing is queued, a second hold does nothing. If the shutdown command fails the failure is logged and the process ends.
+- Syslog (tag `ugreen-nas-control`) gets a line, and an Unraid notification "Shutdown requested by front power button" is raised right before the shutdown command is called.
+- The reset button is never read for this.
+
+`ugreen-nas panel power-action --dry-run` runs the same logic (also with the setting off, but not on an unconfirmed model) and only prints `would shut down now`:
+
+```
+model: DXP8800 Plus (confirmed by users, #165)
+dry run, nothing is shut down: a hold of 1.5 s ends with the line below (the first 60 s after the start are ignored)
+12:01:23.450 power held 1.5 s
+would shut down now
+```
+
+### Hold time
+
+The vendor driver reports a power press on the first 50 ms poll after the embedded controller forwards it (`seen == 1`, `ug_gpio_btn.c:88-93@c75c5ab`; on the DXP2800 GT at `seen == 100`, 5 s). A release is reported only after 100 polls (`:108-112`), and a reset press only after 260 polls (`:77-79`; the `seen == 100` branch at `:75` is empty). So the vendor treats a tap as a press; a deliberate hold has no vendor meaning below 5 s. The driver reports them only as key codes of its own input device `ug gpiokey`: KEY_F20 (192, "power") and KEY_F24 (194, "reset") (`:163-164,170-171`), not KEY_POWER, and it emits no uevent (`uevent_next_seqnum` is declared at `:41` and never called). What UGOS does with those keys is not in the source. A tap in #165 was down for 0.20 s (4 polls).
+
+Many boards force the power off at about 4 s of hold (the ACPI power button override). The clean shutdown has to start well before that, and well after a tap: the default is 1.5 s (30 polls); the range is 1 s (20 polls, five times a tap) to 3 s (60 polls, a second of margin to 4 s). The "5 to 10 s" a user reported in #165 is unverified and is not used; at that length the board would already have cut the power. Polls can be late but never early, so a late poll only lengthens the hold.
+
+### Shutdown command
+
+The command is `/sbin/poweroff -n`, the same call the Unraid web interface makes for its Shutdown button (`/usr/local/emhttp/plugins/dynamix/include/Boot.php:48`, posted from `ArrayOperation.page:900-903`, Unraid 7.3.4). `/sbin/poweroff` is `halt`; it hands over to init, whose runlevel 0 script `/etc/rc.d/rc.6` stops the services and the md driver, syncs and unmounts (`rc.6`, "Clean shutdown" when `mdState=STOPPED`). Unraid's ACPI power-button handler ends in `/sbin/init 0` (`/etc/acpi/acpi_handler.sh`), which is the same path. `/usr/local/sbin/powerdown` still exists but logs "has been deprecated" and runs `/sbin/init 0`; it is not used. If Settings > Power Options > Power Button is set to Shutdown and the board delivers the button as an ACPI event, a tap already shuts down; this setting is for boxes where the front button does not reach the OS that way.
+
+Not yet tested on hardware: the hold on a DXP8800 Plus, and whether the box has its registers readable at that boot (see below).
+
 ## Beeper
 
 | DMI product_name                                                                                                           | Backend                 | Source                                                                     |
@@ -65,5 +107,6 @@ The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound 
 
 - DXP4800 Plus buttons (issue #266): the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102) but the owner saw no button response; a `panel buttons --watch` test is requested.
 - Why the DXP8800 Plus pad registers read 0xFF on some boots only (issue #165), whether other models do the same, and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
+- The shutdown on a held power button on a real DXP8800 Plus: that the 1.5 s hold fires with the button still down and the array stops.
 - Whether a speaker is wired on each PC speaker model, and whether the EC and pad beepers sound.
 - The power button on iDX6011/6012 and the 5 s press on the DXP2800 GT.

@@ -3,7 +3,7 @@ import type { StatusResponse } from '../../../core/contract';
 import type { FanCaps } from '../../../core/contract-fan-probe';
 import { backlightView, DEFAULT_SLIDER_PCT } from './backlight';
 import { confirmFans, cs201xVisible, isCs201xModel } from './cs201x';
-import { beeperVisible, buttonsVisible } from './panel';
+import { beeperVisible, buttonsVisible, powerVisible } from './panel';
 import { probeVisible } from './probe';
 
 const status = (model: string, caps?: Partial<FanCaps>): StatusResponse =>
@@ -43,4 +43,13 @@ test('the backlight is a number or the string "default"', () => {
     expect(backlightView('55')).toEqual({ value: 55, isDefault: false });
     expect(backlightView('garbage')).toEqual({ value: DEFAULT_SLIDER_PCT, isDefault: true });
     expect(backlightView(130)).toEqual({ value: 100, isDefault: false });
+});
+
+test('the shutdown on a held power button is offered only where users confirmed the buttons', () => {
+    expect(powerVisible(status('DXP8800 Plus'))).toBe(true); // community
+    expect(powerVisible(status('DXP4800 Plus'))).toBe(false); // partial: the beeper only
+    expect(powerVisible(status('DXP6800 Pro'))).toBe(false); // expected
+    expect(powerVisible(status('DXP8800 Ultra'))).toBe(false);
+    expect(powerVisible(status('Standard PC'))).toBe(false);
+    expect(powerVisible(status(''))).toBe(false);
 });
