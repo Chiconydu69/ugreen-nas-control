@@ -373,3 +373,55 @@ func TestLedEnableFailsWhenTheFlagCannotBeWritten(t *testing.T) {
 		t.Fatalf("rc %d, stderr %q", rc, f.errw.String())
 	}
 }
+
+// The power button watcher is `ugreen-nas panel power-action`, started only with panel_power_shutdown="1", next to the
+// fan daemon and also where fan control is off.
+func TestPowerWatcherOnlyRunsWhenSwitchedOn(t *testing.T) {
+	f := newFixture(t)
+	args := filepath.Join(f.dir, "args")
+	f.c.Env.Panel = filepath.Join(f.dir, "ugreen-nas")
+	write(t, f.c.Env.Panel, "#!/bin/sh\necho \"$@\" >"+args+".tmp && mv "+args+".tmp "+args+"\nsleep 100\n")
+	if err := os.Chmod(f.c.Env.Panel, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	f.c.Env.PowerPidFile, f.c.Env.PowerLog = filepath.Join(f.dir, "run/power.pid"), filepath.Join(f.dir, "run/power.log")
+	f.c.Sleep = func(time.Duration) {
+		pid := strings.TrimSpace(string(must(os.ReadFile(f.c.Env.PowerPidFile))))
+		write(t, filepath.Join(f.c.Env.Proc, pid, "cmdline"), "/x/backend/ugreen-nas\x00panel\x00power-action\x00")
+		time.Sleep(200 * time.Millisecond)
+	}
+	for _, cfg := range []string{"", "panel_power_shutdown=\"0\"\n"} {
+		write(t, f.c.Env.FanCfg, cfg)
+		if rc := f.c.Main([]string{"power-start"}); rc != 0 {
+			t.Fatalf("rc %d", rc)
+		}
+		if _, err := os.Stat(args); err == nil {
+			t.Fatalf("the watcher started with %q", cfg)
+		}
+	}
+	if rc := f.c.Main([]string{"power-status"}); rc != 3 {
+		t.Errorf("status of a stopped watcher: rc %d", rc)
+	}
+	write(t, f.c.Env.FanCfg, "fan_control=\"0\"\npanel_power_shutdown=\"1\"\n")
+	if rc := f.c.Main([]string{"start"}); rc != 0 {
+		t.Fatalf("start: rc %d: %s", rc, f.errw)
+	}
+	if got := waitFile(t, args); got != "panel power-action" {
+		t.Errorf("started with %q", got)
+	}
+	if rc := f.c.Main([]string{"power-status"}); rc != 0 {
+		t.Errorf("status of a running watcher: rc %d", rc)
+	}
+	pid, _ := strconv.Atoi(f.c.pidText(f.c.Env.PowerPidFile))
+	f.c.Sleep = time.Sleep
+	f.c.Main([]string{"stop"})
+	deadline := time.Now().Add(3 * time.Second)
+	for syscall.Kill(pid, 0) == nil && time.Now().Before(deadline) {
+		time.Sleep(50 * time.Millisecond)
+	}
+	if syscall.Kill(pid, 0) == nil {
+		t.Error("the watcher was not stopped")
+	}
+}
+
+func must(b []byte, _ error) []byte { return b }

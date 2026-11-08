@@ -15,6 +15,7 @@ import (
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/ledctl"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 )
 
 // Result is the answer of one read-only tool call.
@@ -225,7 +226,7 @@ func fanCfgKey(k string) (known, private bool) {
 	switch {
 	case k == "ignore_drives":
 		return true, true
-	case slices.Contains(fan.UISettings, k):
+	case slices.Contains(fan.UISettings, k), slices.Contains(panel.PowerKeys, k):
 		return true, false
 	}
 	if known, private := mqtt.KnownKey(k); known {

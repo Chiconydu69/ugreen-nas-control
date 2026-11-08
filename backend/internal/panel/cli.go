@@ -6,6 +6,8 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log/syslog"
+	"os"
 	"strings"
 	"time"
 
@@ -29,6 +31,13 @@ type Env struct {
 	Conflicts func() []conflict.Conflict
 	// Status says how well the panel is known on a model (the model registry, nasctl.PanelStatus); default: not confirmed.
 	Status func(product string) string
+	// Confirmed says whether users confirmed the buttons on a model (registry panel check community or verified); default: no.
+	// Settings reads fan.cfg; Logf writes to the syslog; Notify raises an Unraid notification; Shutdown is the clean power-off.
+	Confirmed func(product string) bool
+	Settings  func() map[string]string
+	Logf      func(format string, a ...any)
+	Notify    func(subject, text string)
+	Shutdown  func() error
 }
 
 // Unconfirmed is the status of a model nobody confirmed the panel on.
@@ -66,12 +75,28 @@ func (e Env) withDefaults() Env {
 	if e.Status == nil {
 		e.Status = func(string) string { return Unconfirmed }
 	}
+	if e.Confirmed == nil {
+		e.Confirmed = func(string) bool { return false }
+	}
+	if e.Settings == nil {
+		e.Settings = defaultSettings
+	}
+	if e.Logf == nil {
+		e.Logf = syslogf()
+	}
+	if e.Notify == nil {
+		e.Notify = defaultNotify
+	}
+	if e.Shutdown == nil {
+		e.Shutdown = defaultShutdown
+	}
 	return e
 }
 
 const usage = `Usage: ugreen-nas panel <command>
   buttons [--watch]            read the power and reset button (read only); --watch prints presses until Ctrl-C
   beep [--freq Hz] [--ms N]    sound the beeper for N ms (default 200, at most 2000); --freq only on PC speaker models
+  power-action [--dry-run]       the opt-in shutdown on a held power button (runs until it acts); --dry-run only prints "would shut down now"
 Needs root. The facts are UGREEN's driver source; which model users confirmed is in docs/panel.md.`
 
 // Main runs `ugreen-nas panel ...` and returns the exit code. ctx ends on SIGINT/SIGTERM.
@@ -87,6 +112,8 @@ func Main(ctx context.Context, env Env, args []string, stdout, stderr io.Writer)
 		err = runButtons(ctx, env, args[1:], stdout, stderr)
 	case "beep":
 		err = runBeep(ctx, env, args[1:], stderr)
+	case "power-action":
+		err = runPowerAction(ctx, env, args[1:], stdout, stderr)
 	case "-h", "--help", "help":
 		say(stdout, "%s", usage)
 		return 0
@@ -213,3 +240,16 @@ func beeperModels() string {
 
 // say prints one line; a failed write to the terminal is not worth an error.
 func say(w io.Writer, format string, a ...any) { _, _ = fmt.Fprintf(w, format+"\n", a...) }
+
+// syslogf logs to the syslog under the tag of the plugin's daemons, to stderr when there is none.
+func syslogf() func(string, ...any) {
+	logger, _ := syslog.New(syslog.LOG_INFO|syslog.LOG_DAEMON, "ugreen-nas-control")
+	return func(format string, a ...any) {
+		msg := fmt.Sprintf(format, a...)
+		if logger != nil {
+			_ = logger.Info(msg)
+			return
+		}
+		_, _ = fmt.Fprintln(os.Stderr, msg)
+	}
+}
