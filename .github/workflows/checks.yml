@@ -70,7 +70,7 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -297,7 +297,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.shell == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -316,7 +316,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -335,7 +335,7 @@ jobs:
   e2e:
     if: ${{ inputs.e2e }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -362,7 +362,7 @@ jobs:
 
   plugin:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -431,7 +431,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.workflows == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -456,7 +456,7 @@ jobs:
       && github.event.pull_request.head.repo.full_name == github.repository)
       || (github.event_name == 'workflow_dispatch' && startsWith(github.ref_name, 'release/'))
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     permissions:
       contents: write # drafts are only listed for tokens with push access
     steps:
@@ -470,6 +470,8 @@ jobs:
           summarize: false
           diagnostic-endpoint: ''
       - uses: ./.github/actions/prefetch-nix-src
+        with:
+          cache: 'false' # holds a write token
       - name: Rebuild and compare with the draft
         env:
           GH_TOKEN: ${{ github.token }}

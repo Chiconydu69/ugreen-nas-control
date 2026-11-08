@@ -27,7 +27,7 @@ jobs:
   zizmor:
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:

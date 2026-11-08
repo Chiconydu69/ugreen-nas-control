@@ -44,7 +44,7 @@ jobs:
   build:
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 55
     permissions:
       contents: read
     env:
