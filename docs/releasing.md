@@ -5,7 +5,7 @@ For maintainers. Contributors only need [CONTRIBUTING.md](../.github/CONTRIBUTIN
 ## Branches
 
 - `main` is the default branch and holds released code only.
-- `next` is the development branch. Every PR targets it. Each push builds the next channel.
+- `next` is the development branch. Every PR targets it (the Labels workflow retargets any other PR opened against `main`, except `release/X.Y.Z` from this repository). Each push builds the next channel.
 - `main` also serves the installs: The installed plugin reads `plugin/ugreen-nas-control.plg` from `main` (raw URL), and the Community Applications entry points there too.
 - Feature PRs never touch `plugin/ugreen-nas-control.plg` or `CHANGELOG.md`; the CI `guard` job fails them unless the branch is `release/*`. Each PR adds one fragment `.changes/<slug>.md` ([format](../.changes/README.md)) or carries the label `no-changelog`.
 
