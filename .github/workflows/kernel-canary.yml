@@ -31,7 +31,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
-      - uses: ./.github/actions/prefetch-nix-src
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - name: Check the kernel and open or update the issue
         env:
           GH_TOKEN: ${{ github.token }}
