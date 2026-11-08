@@ -5,6 +5,7 @@ export const panelEn = {
     'panel.unconfirmed': 'From UGREEN’s driver source, not yet confirmed on your hardware.',
     'panel.confirmed': 'Confirmed by users on this model.',
     'panel.confirmed_by': 'Confirmed by users on this model: {by}.',
+    'panel.partial': 'Partly confirmed by users on this model: {by}.',
     'panel.buttons_title': 'Buttons',
     'panel.buttons_hint': 'Reads the power and reset button once. A press does nothing: the plugin only reads.',
     'panel.power': 'Power',

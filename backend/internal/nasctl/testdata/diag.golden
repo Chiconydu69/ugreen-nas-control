@@ -129,7 +129,7 @@ fan.scripts: script inputs: set, 2 files, interpreters: bash, php (names hidden)
 watchdog: armed, armed true, timeout 60 s, feed interval 20 s, last feed 10s before the sample, counter 7
 power_on_ac: mode on, readable true, settable true, source ite-sio
 panel.buttons: readable: DXP4800 Plus (vendor source) power: up, reset: up
-panel.beeper: present, backend PC speaker (never sounded by diag), vendor source, not yet confirmed
+panel.beeper: present, backend PC speaker (never sounded by diag), partly confirmed by users, #266
 lcd.backlight: n/a for this model
 mqtt: enabled true, publisher running true, host set (hidden), login set (hidden), tls false, port 1883, interval 5s, control true, control updates false, control containers false, connection: failing: connection refused
 conflicts: detected: module:it87 (warn); fan daemon yields to: -; LED takeover blocked by: -; rival processes running: 0

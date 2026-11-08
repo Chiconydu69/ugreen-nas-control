@@ -4,7 +4,7 @@ export const TESTERS: { login: string; did: string }[] = [
     { login: 'miskcoo', did: 'LED protocol and bay mapping (ugreen_leds_controller driver)' },
     { login: 'datarepos76', did: 'DXP480T Plus' },
     { login: 'Chiconydu69', did: 'DXP8800 Plus: fan wiring, header 4 confirmation, NVMe root ports, front-panel button tests, beeper test' },
-    { login: 'ivolution', did: 'Spanish translation, DXP4800 Plus tests' },
+    { login: 'ivolution', did: 'Spanish translation, DXP4800 Plus tests, DXP4800 Plus report' },
     { login: 'DanielRuppen', did: 'DXP2800 SUB2: ACPI and PCI data, lpss-probe runs, LED path confirmation' },
     { login: 'jsaltzman', did: 'DXP6800 Pro bug reports, the cause of the failing update check' }
 ];

@@ -25,14 +25,17 @@ function drawEvidence(status: StatusResponse, ctx: FanCtx): void {
     if (!slot) return;
     const found = panelEvidence(modelOf(status));
     const confirmed = found?.state === 'users' || found?.state === 'confirmed';
-    const html = confirmed
-        ? ctx.ui.note(escapeHtml(ctx.t(found.by ? 'panel.confirmed_by' : 'panel.confirmed', { by: found.by })), {
-              tone: 'info',
-              box: true,
-              tag: 'div',
-              ico: 'check'
-          })
-        : ctx.ui.note(escapeHtml(ctx.t('panel.unconfirmed')), { tone: 'info', box: true, tag: 'div', ico: 'info' });
+    const partial = found?.state === 'partial';
+    const html = partial
+        ? ctx.ui.note(escapeHtml(`${ctx.t('panel.partial', { by: found.by })} ${found.note}`.trim()), { tone: 'warn', box: true, tag: 'div', ico: 'info' })
+        : confirmed
+          ? ctx.ui.note(escapeHtml(ctx.t(found.by ? 'panel.confirmed_by' : 'panel.confirmed', { by: found.by })), {
+                tone: 'info',
+                box: true,
+                tag: 'div',
+                ico: 'check'
+            })
+          : ctx.ui.note(escapeHtml(ctx.t('panel.unconfirmed')), { tone: 'info', box: true, tag: 'div', ico: 'info' });
     if (slot.innerHTML !== html) slot.innerHTML = html;
 }
 

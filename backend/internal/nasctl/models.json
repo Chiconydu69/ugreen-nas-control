@@ -364,13 +364,19 @@
       "verified": {
         "leds": {
           "status": "community",
-          "by": "users",
-          "ref": "https://github.com/miskcoo/ugreen_leds_controller/issues/121",
-          "note": "Reported working by users of the Plus and the Pro (miskcoo issue 121)."
+          "by": "users, ivolution (issue 266)",
+          "version": "5.5.0",
+          "date": "2026-11-07",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/266",
+          "note": "Reported working by users of the Plus and the Pro (miskcoo issue 121), and by a Plus owner on 5.5.0 (#266): LED probe ok at 0x3a, 6 LEDs."
         },
         "fans": {
-          "status": "expected",
-          "note": "Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. Not run on this model yet. The Plus was reported to use outputs 2 and 3; UGREEN's own driver expects cpu on header 2 and case on header 3."
+          "status": "community",
+          "by": "ivolution (issue 266)",
+          "version": "5.5.0",
+          "date": "2026-11-07",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/266",
+          "note": "Reported working by a Plus owner on 5.5.0 (#266): IT8613 found, fan headers and spinning fans checked ok. Same IT8613E as the DXP6800 Pro, header wiring not known: the fan probe finds which output drives which fan and fan control stays off until you confirm its result. The Plus was reported to use outputs 2 and 3; UGREEN's own driver expects cpu on header 2 and case on header 3."
         },
         "case": {
           "status": "community",
@@ -378,10 +384,20 @@
           "version": "5.2.0",
           "date": "2026-11-05",
           "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/184",
-          "note": "Front and rear confirmed by a Plus owner. The two M.2 slots of the underside panel are printed M2-KEYM1 (next to the RAM) and M2-KEYM3 on the board, shown as M.2-1 and M.2-3 (UGREEN's photos agree); the third slot, M2-KEYM2, is inside the case. Inside view otherwise after UGREEN's manual, the Pro was not compared."
+          "note": "Front and rear confirmed by a Plus owner. The two M.2 slots of the underside panel are printed M2-KEYM1 (next to the RAM) and M2-KEYM3 on the board, shown as M.2-1 and M.2-3 (UGREEN's photos agree); the third slot, M2-KEYM2, is inside the case. Inside view otherwise after UGREEN's manual, the Pro was not compared. Works on 5.5.0 too (#266)."
         },
-        "sensors": { "status": "expected" },
-        "panel": { "status": "expected" }
+        "sensors": {
+          "status": "expected",
+          "note": "Not confirmed. A Plus owner reported the ACPI board temperature as a fixed value of about 28 C (5.5.0, #266); the sensors check is being looked at separately."
+        },
+        "panel": {
+          "status": "partial",
+          "by": "ivolution (issue 266)",
+          "version": "5.5.0",
+          "date": "2026-11-07",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/266",
+          "note": "Beeper: confirmed by a Plus owner. Buttons: the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102) but the buttons did not respond; a panel buttons --watch test is requested and still open."
+        }
       },
       "note": "Four bays, two M.2 slots, one 10G and one 2.5G LAN port. Fan control after a fan probe."
     },
