@@ -307,6 +307,7 @@ export function status(m: Model) {
             ],
             disks: [{ name: 'disk2', device: 'sdd', temp: 47, standby: false, hdd: true }],
             board: 30,
+            acpi_zone: null,
             not_connected: []
         },
         net_io: (m.lan?.maxMbit ?? [2500]).map((_, i) => ({ name: `eth${i}`, rx: 0, tx: 0 })),

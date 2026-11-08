@@ -3,6 +3,7 @@
 // with read-only fans; the model registry has one entry for the whole iDX6011/6012/Pro family, and the Pro is the sample there).
 import { fanSamples, status } from '../models/fixture';
 import type { Model } from '../models/schema';
+import { panelConfirmed } from '../src/features/nas/model-info';
 import { hasBeeper, hasButtons, powerDoubtful } from '../src/features/nas/panel-models';
 import { powerAcFor, type PowerAc } from '../src/features/nas/power-ac-models';
 
@@ -52,7 +53,7 @@ const CS201X_READ = {
 export interface Shaped {
     status: ReturnType<typeof status>;
     fan: ReturnType<typeof fanSamples>;
-    panel: { buttons: boolean; beeper: boolean; power: 'held' | 'released'; reset: 'held' | 'released'; power_readable: boolean };
+    panel: { buttons: boolean; beeper: boolean; confirmed: boolean; power: 'held' | 'released'; reset: 'held' | 'released'; power_readable: boolean };
     /** Power on after AC loss: what the model offers and the value the board starts with; null where the tool reaches nothing. */
     powerAc: (PowerAc & { mode: 'on' | 'off' | 'last' }) | null;
     /** The DXP2800 GT only: the sample of `cs201x` and the status fields once the fans are confirmed. */
@@ -66,7 +67,14 @@ export function shape(model: Model): Shaped {
     const out: Shaped = {
         status: status(model),
         fan: fanSamples(model),
-        panel: { buttons: hasButtons(dmi), beeper: hasBeeper(dmi), power: 'released', reset: 'released', power_readable: !powerDoubtful(dmi) },
+        panel: {
+            buttons: hasButtons(dmi),
+            beeper: hasBeeper(dmi),
+            confirmed: hasButtons(dmi) && panelConfirmed(dmi),
+            power: 'released',
+            reset: 'released',
+            power_readable: !powerDoubtful(dmi)
+        },
         powerAc: ac && { ...ac, mode: ac.settable.includes('last') ? 'last' : 'on' }
     };
     const st = out.status as unknown as Bag;

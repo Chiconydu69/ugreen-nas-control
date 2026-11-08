@@ -24,6 +24,13 @@ Feature PRs target `next`; `main` holds releases only. Branch roles: [docs/relea
 5. `just check` before you push. Run `just harness` and look at UI changes; say in the PR which model you tested on, or that you used the harness only.
 6. PR title: `type(scope): summary`, for example `feat(led): night mode per bay`. Types: `feat`, `fix`, `model`, `docs`, `chore`. The squash commit uses it.
 
+## What happens after you open a PR
+
+- A maintainer approves the CI run for your first PR (GitHub holds it until then).
+- If the format check fails, or the changelog entry is missing, you don't have to fix it. Maintainers do both in a follow-up PR that keeps your commits unchanged; yours shows as merged.
+- You are credited in the changelog and in the README.
+- One branch per change. On GitHub's web editor choose "Create a new branch for this commit", and press "Sync fork" first so your branch starts from the current `next`.
+
 ## Rules
 
 - Never edit `plugin/ugreen-nas-control.plg`, `CHANGELOG.md` or a version number. The release workflow writes them; CI rejects PRs that touch them.

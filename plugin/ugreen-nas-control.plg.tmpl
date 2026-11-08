@@ -79,6 +79,8 @@ start_daemons() {
     else
         log "WARNING: No supported fan controller found; only system info and temperatures are available."
     fi
+    # The shutdown on a held power button (off unless switched on in the settings) needs no fan controller.
+    "${PLUGIN_DIR}/backend/ugreen-nas-ctl" power-start 2>&1 | sed 's/^/[UGREEN NAS Control] /'
     if [ -f "${BOOT_DIR}/led.enabled" ]; then
         "${PLUGIN_DIR}/backend/ugreen-nas-ctl" led-boot 2>&1 | sed 's/^/[UGREEN NAS Control] /'
     fi

@@ -13,6 +13,8 @@ type Env struct {
 	FanCfg       string // UGREEN_FAN_CONFIG
 	PubPidFile   string // UGREEN_PUB_PIDFILE
 	PubLog       string // UGREEN_PUB_LOG
+	PowerPidFile string // UGREEN_POWER_PIDFILE
+	PowerLog     string // UGREEN_POWER_LOG
 	LEDDir       string // UGREEN_LED_DIR
 	LEDCtl       string // UGREEN_LED_CTL
 	LEDI2C       string // UGREEN_LED_I2C
@@ -64,6 +66,8 @@ func EnvFromGetenv(get func(string) string, here string) Env {
 		FanCfg:       orDefault(get, "UGREEN_FAN_CONFIG", boot+"/fan.cfg"),
 		PubPidFile:   orDefault(get, "UGREEN_PUB_PIDFILE", "/var/run/ugreen-nas-control-mqtt.pid"),
 		PubLog:       orDefault(get, "UGREEN_PUB_LOG", "/var/log/ugreen-nas-control-mqtt.log"),
+		PowerPidFile: orDefault(get, "UGREEN_POWER_PIDFILE", "/var/run/ugreen-nas-control-power.pid"),
+		PowerLog:     orDefault(get, "UGREEN_POWER_LOG", "/var/log/ugreen-nas-control-power.log"),
 		LEDDir:       ledDir,
 		LEDCtl:       orDefault(get, "UGREEN_LED_CTL", ledDir+"/ugreen-led-ctl"),
 		LEDI2C:       orDefault(get, "UGREEN_LED_I2C", ledDir+"/ugreen-led-i2c"),

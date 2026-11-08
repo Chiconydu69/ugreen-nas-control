@@ -15,6 +15,7 @@ import (
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/fan"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/led/ledctl"
 	"github.com/ugreen-nas-control/ugreen-nas-control/internal/mqtt"
+	"github.com/ugreen-nas-control/ugreen-nas-control/internal/panel"
 )
 
 // Result is the answer of one read-only tool call.
@@ -225,7 +226,7 @@ func fanCfgKey(k string) (known, private bool) {
 	switch {
 	case k == "ignore_drives":
 		return true, true
-	case slices.Contains(fan.UISettings, k):
+	case slices.Contains(fan.UISettings, k), slices.Contains(panel.PowerKeys, k):
 		return true, false
 	}
 	if known, private := mqtt.KnownKey(k); known {
@@ -469,6 +470,7 @@ type Facts struct {
 	Failed        []string // titles of the sections that failed
 	FanDaemonDown bool
 	Rivals        RivalDiag
+	Reg           *RegModel // the registry model, nil when unknown
 }
 
 // diagChecks is one line per detected problem, so a maintainer sees the issue at a glance.
@@ -494,26 +496,39 @@ func diagChecks(f Facts) []string {
 	} else if led.Modprobe != "" {
 		out = append(out, "i2c-dev was not loaded (diag loaded it for the scan)")
 	}
-	if led.Blocker == "" && r.LED.Probe == "failed" {
+	powerOnly := f.Reg.PowerLEDOnly()
+	if powerOnly && led.Blocker == "" {
+		line := "LED: power LED only, no controller at 0x3a on this model"
+		if answers, known := led.answersAt("0x26"); known && answers {
+			line += "; the power LED chip answers at 0x26"
+		} else if known {
+			line += "; the power LED chip does not answer at 0x26"
+		}
+		out = append(out, line)
+	}
+	if led.Blocker == "" && r.LED.Probe == "failed" && !powerOnly {
 		out = append(out, "LED controller probe failed: "+orDash(r.LED.Error))
 		if h := led.I2C.ledHint(); h != "" && !led.GT {
 			out = append(out, "LED: "+h)
 		}
 	}
-	if led.Blocker == "" && r.LED.Probe == "failed" && !led.GT && led.Skipped == "" && led.ScanErr == "" && led.Scan != "" && !strings.Contains(strings.ToLower(led.Scan), "0x3a") {
+	if led.Blocker == "" && r.LED.Probe == "failed" && !powerOnly && !led.GT && led.Skipped == "" && led.ScanErr == "" && led.Scan != "" && !strings.Contains(strings.ToLower(led.Scan), "0x3a") {
 		out = append(out, "no I2C device answers at 0x3a")
 	}
 	if led.ScanErr != "" && led.Skipped == "" {
 		out = append(out, "I2C scan failed: "+led.ScanErr)
 	}
-	if !r.Fan.Found {
+	noFan := f.Reg.NoFan()
+	if noFan {
+		out = append(out, "no fan control on this model")
+	} else if !r.Fan.Found {
 		out = append(out, "fan chip not found: "+orDash(r.Fan.Error))
 	}
 	if st := f.FanSt; st != nil {
 		if st.FanControl != nil && !*st.FanControl {
 			out = append(out, "fan control is off in the settings")
 		}
-		if st.ChipError != "" {
+		if st.ChipError != "" && !noFan {
 			out = append(out, "fan chip error: "+st.ChipError)
 		}
 		for _, c := range st.Conflicts {
@@ -528,7 +543,7 @@ func diagChecks(f Facts) []string {
 			out = append(out, "fan failsafe active: "+dm.Failsafe)
 		}
 	}
-	if f.FanDaemonDown && f.FanSt != nil && f.FanSt.FanControl != nil && *f.FanSt.FanControl {
+	if f.FanDaemonDown && !noFan && f.FanSt != nil && f.FanSt.FanControl != nil && *f.FanSt.FanControl {
 		out = append(out, "fan daemon not running")
 	}
 	for _, m := range f.Env.Modules {

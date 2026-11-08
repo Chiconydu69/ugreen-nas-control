@@ -62,6 +62,9 @@ func TestI2CControllers(t *testing.T) {
 	if x := by["0000:00:15.1"]; x.Driver != "intel-lpss" || len(x.Adapters) != 1 || x.Adapters[0] != "/dev/i2c-3 (Synopsys DesignWare I2C adapter)" {
 		t.Errorf("bound controller: %+v", x)
 	}
+	if by["0000:00:15.0"].Other || by["0000:00:15.1"].Other {
+		t.Errorf("LPSS I2C functions are not other buses: %+v", by)
+	}
 	if x := by["0000:00:1f.4"]; x.Driver != "i801_smbus" || len(x.Adapters) != 1 || !strings.HasPrefix(x.Adapters[0], "/dev/i2c-0 (SMBus I801") {
 		t.Errorf("smbus: %+v", x)
 	}
@@ -184,5 +187,46 @@ func TestI2CDiagLPSS(t *testing.T) {
 	write(t, c.Env.LPSSState, "refused: rule child-driver: x\n")
 	if out := strings.Join(c.i2cDiag().lines(), "\n"); !strings.Contains(out, "lpss led path (this boot): refused: rule child-driver: x") {
 		t.Errorf("state missing:\n%s", out)
+	}
+}
+
+// The SPI flash controller (00:1f.5, 8086:51a4/54a4) has PCI class 0c80 too but is no I2C controller.
+func TestI2CControllersOtherSerialBus(t *testing.T) {
+	c := i2cFixture(t, true)
+	pci := func(bdf, id string) {
+		write(t, c.Env.SysPCI+"/"+bdf+"/class", "0x0c8000\n")
+		write(t, c.Env.SysPCI+"/"+bdf+"/vendor", "0x8086\n")
+		write(t, c.Env.SysPCI+"/"+bdf+"/device", id+"\n")
+	}
+	pci("0000:00:1f.5", "0x51a4")
+	pci("0000:00:1f.6", "0x54a4")
+	// unknown ID, but its ACPI companion is an I2C node
+	pci("0000:00:19.0", "0xffff")
+	write(t, c.Env.SysPCI+"/0000:00:19.0/firmware_node/path", "\\_SB_.PC00.I2C4\n")
+	// unknown ID, but the kernel put a DesignWare child under it
+	pci("0000:00:19.1", "0xfffe")
+	write(t, c.Env.SysPCI+"/0000:00:19.1/i2c_designware.5/x", "")
+
+	d := c.i2cDiag()
+	other := map[string]bool{}
+	for _, x := range d.Controllers {
+		other[x.BDF] = x.Other
+	}
+	want := map[string]bool{"0000:00:1f.5": true, "0000:00:1f.6": true, "0000:00:19.0": false, "0000:00:19.1": false,
+		"0000:00:15.0": false, "0000:00:15.1": false, "0000:00:1f.4": false}
+	for bdf, w := range want {
+		if got, ok := other[bdf]; !ok || got != w {
+			t.Errorf("%s: other %v (listed %v), want %v", bdf, got, ok, w)
+		}
+	}
+	if d.unbound() != "0000:00:15.0" {
+		t.Errorf("unbound = %q, the SPI controllers must not count", d.unbound())
+	}
+	text := strings.Join(d.lines(), "\n")
+	if !strings.Contains(text, "0000:00:1f.5 8086:51a4 class 0x0c80 driver none adapters - (other serial bus, not I2C)") {
+		t.Errorf("lines:\n%s", text)
+	}
+	if strings.Contains(d.ledHint(), "1f.5") {
+		t.Errorf("hint names the SPI controller: %s", d.ledHint())
 	}
 }

@@ -14,13 +14,14 @@
 - Docs: look up via docs/README.md (one line per file). One topic per file, one home per fact, links elsewhere: versions → docs/releasing.md#versions, languages → docs/translations.md, model reporting → docs/cli.md#report-a-model, watchdog → docs/watchdog.md. New doc = a line in docs/README.md (`just docs-check` fails otherwise); current facts only, no dates or history.
 - Comments: only facts the code cannot show. → .github/CONTRIBUTING.md
 - PR labels: one type (matches the fragment type) + areas, `needs hardware test` when registers are written. → .github/CONTRIBUTING.md
+- Outside PRs: never push to a contributor's fork, not even via "Allow edits by maintainers". If it needs formatting or a fragment, first comment on the PR what you add and where; then take their commits unchanged onto a branch in this repo, add yours on top, open a PR that supersedes theirs and merge it with a merge commit (their PR shows as merged). Pure translation PRs get `no-changelog`; the credit goes into the follow-up PR's fragment.
 
 ## One component for all
 
 Plugin page, Unraid dashboard tile (`web/src/dash`), website (SSR `docs/site/live.ts`, live islands `docs/site/islands.ts` = bare-mode demo iframes) and live demo (`web/demo`) render the SAME modules from `web/src` with the plugin CSS (`web/plugin/css`).
 
 - Never build separate markup, copies, hand-made screenshots or mockups for site, README or tile. Extend the shared component (options/props); site and demo follow.
-- Only UI images: CI-rendered screenshots (`just site-shots` into Pages `/shots/`; `docs/ca/*.png` via `just ca-shots` for the CA listing).
+- Only UI images: CI-rendered screenshots (`just site-shots` into Pages `/shots/`; the CA listing loads them from there).
 
 ## Site copy
 

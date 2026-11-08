@@ -99,6 +99,64 @@ export const SCENARIOS: Scenario[] = [
         }
     },
     {
+        // Unraid's own theme and the plugin's colour scheme are separate settings. Whatever the combination, the history
+        // table and the feedback preview must stay readable (WCAG AA 4.5:1), so the host's table/pre colours must not reach them.
+        id: 'host-theme-contrast',
+        applies: withFan,
+        async run(s) {
+            await s.open();
+            const hostTheme = (host: 'light' | 'dark') =>
+                s.eval(`(() => {
+                    document.getElementById('e2e-host')?.remove();
+                    const [fg, bg] = ${JSON.stringify(host)} === 'light' ? ['#1c1c1b', '#f2f2f2'] : ['#f2f2f2', '#1c1b1b'];
+                    const style = document.createElement('style');
+                    style.id = 'e2e-host';
+                    style.textContent = 'body{color:' + fg + ';background:' + bg + '} table tbody td, table thead th, table caption, pre{color:' + fg + '}';
+                    document.head.append(style);
+                })()`);
+            const low: string[] = [];
+            for (const [plugin, host] of [
+                ['dark', 'light'],
+                ['light', 'dark']
+            ] as const) {
+                await s.step(
+                    `plugin ${plugin}, Unraid ${host}`,
+                    async () => {
+                        await s.go('settings');
+                        await s.set('#unc-theme', plugin);
+                        await hostTheme(host);
+                        await s.go('history');
+                        await s.until(`Boolean(document.querySelector('.unc-hist-table summary'))`, 'history table');
+                        await s.click('.unc-hist-table summary');
+                    },
+                    { quiet: 600 }
+                );
+                const ratios = await s.eval<number[]>(`(() => {
+                    const px = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
+                    px.canvas.width = px.canvas.height = 1;
+                    const rgba = c => { px.clearRect(0, 0, 1, 1); px.fillStyle = '#000'; px.fillStyle = c; px.fillRect(0, 0, 1, 1); const d = px.getImageData(0, 0, 1, 1).data; return [d[0], d[1], d[2], d[3] / 255]; };
+                    const over = (f, b) => [0, 1, 2].map(i => f[i] * f[3] + b[i] * (1 - f[3]));
+                    const lum = c => { const [r, g, b] = c.map(v => { v /= 255; return v <= .03928 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4; }); return .2126 * r + .7152 * g + .0722 * b; };
+                    const backdrop = el => { const layers = []; for (let e = el; e; e = e.parentElement) layers.push(rgba(getComputedStyle(e).backgroundColor)); let c = [255, 255, 255]; for (const l of layers.reverse()) c = over(l, c); return c; };
+                    return [...document.querySelectorAll('.unc-hist-table summary, .unc-hist-table caption, .unc-hist-table th, .unc-hist-table td')].map(el => {
+                        const bg = backdrop(el), fg = over(rgba(getComputedStyle(el).color), bg);
+                        const [a, b] = [lum(fg), lum(bg)].sort((x, y) => y - x);
+                        return Math.round(((a + .05) / (b + .05)) * 100) / 100;
+                    });
+                })()`);
+                const worst = Math.min(...ratios);
+                console.log(`host-theme-contrast: plugin ${plugin}, Unraid ${host}: worst ${worst}:1 over ${ratios.length} cells`);
+                if (!ratios.length || worst < 4.5) low.push(`${worst}:1 with plugin ${plugin} on Unraid ${host}`);
+                const dir = process.env.E2E_SHOTS_DIR;
+                if (dir) {
+                    await s.eval(`document.querySelector('.unc-hist-table').scrollIntoView({ block: 'center' })`);
+                    await Bun.write(`${dir}/plugin-${plugin}-unraid-${host}.png`, await s.view.screenshot());
+                }
+            }
+            if (low.length) throw new Error(`history table below 4.5:1: ${low.join('; ')}`);
+        }
+    },
+    {
         id: 'fan-mode',
         applies: withFan,
         async run(s) {

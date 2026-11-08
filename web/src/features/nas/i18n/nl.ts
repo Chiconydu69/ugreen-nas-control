@@ -94,6 +94,8 @@ export const nl: Record<Key, string> = {
     'temps.gpu': 'Videochip (iGPU)',
     'temps.sensor': 'Sensor',
     'temps.board': 'Moederbord',
+    'temps.acpi': 'ACPI-zone',
+    'temps.acpi_hint': 'Vaste BIOS-waarde (ongeveer 28 °C), geen meting. Niet gebruikt voor ventilatoren.',
 
     'system.title': 'Systeem',
     'system.model': 'Model',
@@ -333,6 +335,7 @@ export const nl: Record<Key, string> = {
     'device.cap_panel': 'Voorpaneel',
     'device.st_confirmed': 'Bevestigd',
     'device.st_users': 'Bevestigd door gebruikers',
+    'device.st_partial': 'Gedeeltelijk bevestigd',
     'device.st_untested': 'Niet getest',
     'device.st_none': 'Niet ondersteund',
     'device.untested': 'Nog niet bevestigd op jouw {model}: {list}. Twee minuten van je tijd helpen elke eigenaar van dit model.',

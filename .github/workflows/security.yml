@@ -9,6 +9,7 @@ permissions: {}
 
 jobs:
   govulncheck:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -19,11 +20,14 @@ jobs:
           persist-credentials: false
           ref: next
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - run: nix develop .#go -c bash -c 'cd backend && govulncheck ./...'
 
   zizmor:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -32,11 +36,15 @@ jobs:
           persist-credentials: false
           ref: next
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#lint -c zizmor .github/workflows
         env:
           GH_TOKEN: ${{ github.token }}
 
   flake-update:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -48,6 +56,8 @@ jobs:
           persist-credentials: false
           ref: next
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
+        with:
+          source-tag: v3.24.1
       - name: Update flake.lock and open a PR
         env:
           # PRs from GITHUB_TOKEN do not start CI; RELEASE_PR_TOKEN (optional) does. See release.yml.

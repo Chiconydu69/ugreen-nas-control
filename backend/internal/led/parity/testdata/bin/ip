@@ -1,4 +1,9 @@
 #!/bin/bash
 echo "ip $*" >>"$STUB_LOG"
+# the neighbour table: the gateway is REACHABLE unless stubs/ping.fail asks for an empty answer
+if [ "$2" = neigh ]; then
+    if [ -e "$STUBS/ping.fail" ]; then echo '[]'; else echo "[{\"dst\":\"$4\",\"dev\":\"$6\",\"state\":[\"REACHABLE\"]}]"; fi
+    exit 0
+fi
 cat "$STUBS/ip.out" 2>/dev/null
 exit 0

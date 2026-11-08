@@ -1,0 +1,74 @@
+name: Prefetch bun
+description: >-
+  Puts the bun release asset the flake's dev shells use into the nix store before the first `nix develop`. It is a
+  fixed-output fetch from GitHub releases that no binary cache has. The zip comes from the Actions cache when present,
+  else from GitHub with retries for about 25 minutes. Nix checks the fixed hash on every path, so a cache entry
+  from any ref cannot change what is built: a wrong file is rejected and downloaded again.
+inputs:
+  cache:
+    description: "'false' skips the Actions cache (jobs holding write or OIDC tokens)"
+    default: 'true'
+runs:
+  using: composite
+  steps:
+    - id: src
+      shell: bash
+      run: |
+        set -euo pipefail
+        system="$(nix eval --impure --raw --expr builtins.currentSystem)"
+        drv="$(nix eval --raw --apply 'p: (builtins.head (builtins.filter (x: builtins.match "bun-.*" (x.name or "") != null) (p.nativeBuildInputs ++ p.buildInputs))).src.drvPath' ".#devShells.$system.default")"
+        info="$(nix derivation show "$drv" | jq -c '[.derivations[]][0] | {name, hash: .outputs.out.hash, url: (.structuredAttrs.urls // (.env.urls | split(" ")))[0]}')"
+        key="$(jq -r '"\(.url) \(.hash)"' <<<"$info" | sha256sum | cut -c1-32)"
+        {
+          echo "drv=$drv"
+          echo "name=$(jq -r .name <<<"$info")"
+          echo "hash=$(jq -r .hash <<<"$info")"
+          echo "key=nix-src-$key"
+        } >>"$GITHUB_OUTPUT"
+    # Not a cache-poisoning risk: the file is imported only if it matches the fixed hash from flake.nix (see the next step).
+    - id: restore
+      if: inputs.cache == 'true'
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/nix-src
+        key: ${{ steps.src.outputs.key }}
+    - id: fetch
+      shell: bash
+      env:
+        DRV: ${{ steps.src.outputs.drv }}
+        NAME: ${{ steps.src.outputs.name }}
+        HASH: ${{ steps.src.outputs.hash }}
+        CACHE: ${{ inputs.cache }}
+      run: |
+        set -uo pipefail
+        dir="$HOME/.cache/nix-src"
+        mkdir -p "$dir"
+        # Cached zip: nix-prefetch-url stores it as a fixed-output path only if its hash equals $HASH (the path then is the one the derivation wants).
+        if [ "$CACHE" = true ] && [ -f "$dir/$NAME" ]; then
+          if nix-prefetch-url --name "$NAME" --type sha256 "file://$dir/$NAME" "$HASH" >/dev/null; then
+            echo "bun: imported from the Actions cache"
+          else
+            echo "::warning::Cached bun zip does not match the hash; downloading it again."
+            rm -f "$dir/$NAME"
+          fi
+        fi
+        start=$SECONDS
+        delay=10
+        until out="$(nix build --no-link --print-out-paths "$DRV^*")"; do
+          if ((SECONDS - start + delay > 1500)); then
+            echo "::error title=CI infrastructure::Could not download bun from GitHub releases (HTTP errors). Not a problem with your change."
+            exit 1
+          fi
+          echo "bun download failed; retrying in ${delay}s"
+          sleep "$delay"
+          delay=$((delay * 2 > 60 ? 60 : delay * 2))
+        done
+        if [ "$CACHE" = true ] && [ ! -f "$dir/$NAME" ]; then
+          cp "$out" "$dir/$NAME"
+          echo "save=true" >>"$GITHUB_OUTPUT"
+        fi
+    - if: steps.fetch.outputs.save == 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.cache/nix-src
+        key: ${{ steps.src.outputs.key }}

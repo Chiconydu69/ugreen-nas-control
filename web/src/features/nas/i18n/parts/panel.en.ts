@@ -5,6 +5,7 @@ export const panelEn = {
     'panel.unconfirmed': 'From UGREEN’s driver source, not yet confirmed on your hardware.',
     'panel.confirmed': 'Confirmed by users on this model.',
     'panel.confirmed_by': 'Confirmed by users on this model: {by}.',
+    'panel.partial': 'Partly confirmed by users on this model: {by}.',
     'panel.buttons_title': 'Buttons',
     'panel.buttons_hint': 'Reads the power and reset button once. A press does nothing: the plugin only reads.',
     'panel.power': 'Power',
@@ -23,6 +24,21 @@ export const panelEn = {
     'panel.beeper_hint': 'Sounds the beeper once for 200 ms. You hear nothing if the model has no speaker fitted.',
     'panel.beep': 'Test beep',
     'panel.beeped': 'Beep sent',
+    'panel.power_title': 'Shut down on a held power button',
+    'panel.power_hint':
+        'Off by default. When on, holding the front power button shuts Unraid down cleanly: the array stops first, the same as the Shutdown button in Unraid’s web interface. A short press does nothing.',
+    'panel.power_warning':
+        'Holding the power button will shut the server down. Many boards cut the power by force after about 4 s; the hold time here stays below that.',
+    'panel.power_toggle': 'Shut down Unraid when the power button is held for {s} s',
+    'panel.power_toggle_hint':
+        'It acts while the button is still held, never on a tap, never when the buttons cannot be read, and not in the first minute after the plugin starts. The reset button is never used.',
+    'panel.power_hold': 'Hold time',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'To try it without a shutdown, run this in a terminal and hold the button:',
+    'panel.power_confirm':
+        'Switch this on? Holding the front power button for {s} s will then shut down Unraid and stop the array. Make sure nobody presses it by accident.',
+    'panel.power_saved_on': 'Shutdown on a held power button is on',
+    'panel.power_saved_off': 'Shutdown on a held power button is off',
     'cs201x.title': 'Fans (Chipsea CS201x)',
     'cs201x.intro':
         'The DXP2800 GT has a Chipsea CS201x embedded controller, not an IT8613E, so the fan probe does not apply. Check the diagnostics below, then confirm the fans that are connected. Fan control stays off until you do.',

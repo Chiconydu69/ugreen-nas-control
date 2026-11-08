@@ -17,7 +17,7 @@ default:
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint docs-check kernel-canary-test
+check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint workflows-policy-test docs-check kernel-canary-test fmt-hint-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -155,6 +155,12 @@ changes-check:
 [group('plugin')]
 workflows-lint:
     if ls .github/workflows/*.yml >/dev/null 2>&1; then actionlint; else echo "skip: no .github/workflows"; fi
+    bun scripts/workflows-policy.ts
+
+# Tests of the workflow policy lint
+[group('check')]
+workflows-policy-test:
+    bun test scripts/workflows-policy.test.ts
 
 # Fake Unraid on php -S around the plugin files, API from the fixture of one model in web/models/: just harness dxp4800-gt
 [group('dev')]
@@ -171,12 +177,6 @@ shots *args: web-build
 _ca-render: web-build
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview,fans,case,leds --theme dark --no-social
     SHOTS_OUT=.build/ca-shots bun web/tools/shots.ts dxp6800-pro --page overview --theme light --no-social
-
-# The 5 Community Applications store screenshots and README hero images into docs/ca/ (the CA listing still loads them from main)
-[group('dev')]
-ca-shots: _ca-render
-    mkdir -p docs/ca
-    cp .build/ca-shots/dxp6800-pro/*-dark.png .build/ca-shots/dxp6800-pro/overview-light.png docs/ca/
 
 # The same images into .build/site/shots/ (served by Pages, linked from the README); run after the site build, which clears .build/site
 [group('dev')]
@@ -245,6 +245,11 @@ site-preview *args: web-build
 [group('check')]
 kernel-canary-test:
     bun test scripts/kernel-canary.test.ts
+
+# Unit tests of the CI format-check hint (fake commands)
+[group('check')]
+fmt-hint-test:
+    bun test scripts/fmt-hint.test.ts
 
 # Newest Unraid kernel config against what the plugin relies on (docs/decisions.md); needs network; --issue opens or updates the GitHub issue (weekly in kernel-canary.yml)
 [group('check')]

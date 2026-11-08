@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 	"time"
@@ -40,11 +41,11 @@ func TestNetDiagShowsWhatColoursTheLED(t *testing.T) {
 		"bond0\t00000000\t0100A8C0\t0003\t0\t0\t0\t00000000\t0\t0\t0\n" +
 		"bond0\t0000A8C0\t00000000\t0001\t0\t0\t0\t00FFFFFF\t0\t0\t0\n"
 	c := netFixture(t, route)
-	d := c.netDiag(`{"network_device":"bond0","network_ok":false,"network_reason":"gateway ping failed"}`)
+	d := c.netDiag(`{"network_device":"bond0","network_ok":false,"network_reason":"gateway neighbour FAILED"}`)
 	body := strings.Join(d.lines(), "\n")
 	for _, want := range []string{
 		"LED network device: bond0",
-		"LED daemon verdict: not ok: gateway ping failed",
+		"LED daemon verdict: not ok: gateway neighbour FAILED",
 		"bond0: operstate up  carrier 1  slaves eth0 eth1",
 		"eth0: operstate up  carrier 1",
 		"eth1: operstate down  carrier 0",
@@ -58,6 +59,16 @@ func TestNetDiagShowsWhatColoursTheLED(t *testing.T) {
 		if strings.Contains(body, no) {
 			t.Errorf("must not show %q:\n%s", no, body)
 		}
+	}
+
+	// A healthy verdict names the neighbour state, never the address or the MAC.
+	ok := c.netDiag(`{"network_device":"bond0","network_ok":true,"network_reason":"ok (gateway neighbour STALE)"}`)
+	okBody := strings.Join(ok.lines(), "\n")
+	if !strings.Contains(okBody, "LED daemon verdict: ok (gateway neighbour STALE)") {
+		t.Errorf("neighbour state missing:\n%s", okBody)
+	}
+	if strings.Contains(okBody, "192.168") || regexp.MustCompile(`[0-9a-f]{2}(:[0-9a-f]{2}){5}`).MatchString(okBody) {
+		t.Errorf("diag must not show the gateway address or MAC:\n%s", okBody)
 	}
 
 	// A bridge lists its ports, not the container ports.

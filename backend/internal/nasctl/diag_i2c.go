@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -12,6 +13,7 @@ import (
 // I2CCtl is one PCI device that can host an I2C or SMBus adapter: Intel Serial IO I2C (class 0x0c80) or SMBus (0x0c05).
 type I2CCtl struct {
 	BDF, ID, Class, Driver string
+	Other                  bool     // class 0x0c80 function that is no I2C controller (SPI flash 51a4/54a4, LPSS SPI, UART): "other serial bus"
 	Adapters               []string // "/dev/i2c-5 (Synopsys DesignWare I2C adapter)"
 }
 
@@ -71,9 +73,26 @@ func (c *Ctl) i2cControllers() []I2CCtl {
 			}
 		}
 		sort.Slice(x.Adapters, func(i, j int) bool { return natural(x.Adapters[i]) < natural(x.Adapters[j]) })
+		x.Other = strings.HasPrefix(class, "0x0c80") && !c.isLPSSI2C(d, x)
 		out = append(out, x)
 	}
 	return out
+}
+
+// isLPSSI2C: an Intel LPSS I2C function by device ID (Linux v6.18 intel-lpss-pci.c), or one that has an I2C adapter or
+// i2c_designware child, or whose ACPI companion is an I2C node (\_SB_.PC00.I2C0). The SPI flash controller on 00:1f.5
+// (8086:51a4, 54a4) is none of these.
+func (c *Ctl) isLPSSI2C(dir string, x I2CCtl) bool {
+	if strings.HasPrefix(x.ID, "8086:") && lpssI2CIDs[strings.TrimPrefix(x.ID, "8086:")] {
+		return true
+	}
+	if len(x.Adapters) > 0 {
+		return true
+	}
+	if kids, _ := filepath.Glob(filepath.Join(dir, "i2c_designware.*")); len(kids) > 0 {
+		return true
+	}
+	return strings.Contains(strings.ToUpper(sysfsLine(filepath.Join(dir, "firmware_node", "path"))), ".I2C")
 }
 
 // i2cMCUs lists the ACPI devices with an HT32 HID. The parent is the last PCI address on the path of the
@@ -172,11 +191,30 @@ func (c *Ctl) i2cDiag() I2CDiag {
 // unbound is the first I2C or SMBus controller without a driver, or "".
 func (d I2CDiag) unbound() string {
 	for _, x := range d.Controllers {
-		if x.Driver == "none" {
+		if x.Driver == "none" && !x.Other {
 			return x.BDF
 		}
 	}
 	return ""
+}
+
+// answersAt: whether a scanned bus lists addr as answering; known is false when there is no scan to read.
+func (d LEDDiag) answersAt(addr string) (answers, known bool) {
+	if d.Scan == "" || d.ScanErr != "" || d.Skipped != "" {
+		return false, false
+	}
+	for _, line := range strings.Split(scanText(d.Scan), "\n") {
+		_, rest, ok := strings.Cut(line, ": ")
+		if !ok || strings.Contains(line, "): skipped") {
+			continue
+		}
+		rest, _, _ = strings.Cut(rest, "  busy:")
+		rest, _, _ = strings.Cut(rest, "  error:")
+		if slices.Contains(strings.Fields(rest), addr) {
+			return true, true
+		}
+	}
+	return false, true
 }
 
 // ledHint is the one factual line for a failed 0x3a probe: the MCU is probably behind a controller without a driver.
@@ -196,9 +234,13 @@ func (d I2CDiag) ledHint() string {
 }
 
 func (d I2CDiag) lines() []string {
-	l := []string{"i2c controllers (PCI class 0c80 Serial IO, 0c05 SMBus; read only):"}
+	l := []string{"i2c controllers (PCI class 0c80 serial bus, 0c05 SMBus; read only):"}
 	for _, x := range d.Controllers {
-		l = append(l, fmt.Sprintf("  %s %s class %s driver %s adapters %s", x.BDF, x.ID, x.Class, x.Driver, orDash(strings.Join(x.Adapters, ", "))))
+		kind := ""
+		if x.Other {
+			kind = " (other serial bus, not I2C)"
+		}
+		l = append(l, fmt.Sprintf("  %s %s class %s driver %s adapters %s%s", x.BDF, x.ID, x.Class, x.Driver, orDash(strings.Join(x.Adapters, ", ")), kind))
 	}
 	if len(d.Controllers) == 0 {
 		l = append(l, "  -")

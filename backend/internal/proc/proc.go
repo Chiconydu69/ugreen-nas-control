@@ -18,7 +18,7 @@ var toolNames = map[string]bool{
 	"ugreen-nas-fan": true, "ugreen-led-i2c": true, "ugreen-led-ctl": true, "ugreen-nas-ctl": true,
 }
 
-var subcommands = map[string]bool{"fan": true, "led-i2c": true, "led-ctl": true, "nas-ctl": true}
+var subcommands = map[string]bool{"fan": true, "led-i2c": true, "led-ctl": true, "nas-ctl": true, "panel": true}
 
 // DefaultRoot is the proc filesystem.
 const DefaultRoot = "/proc"

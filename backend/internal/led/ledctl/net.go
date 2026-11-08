@@ -1,6 +1,7 @@
 package ledctl
 
 import (
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -24,7 +25,7 @@ func (c *Ctl) ipRouteDefault() []string {
 
 // uplinkRoute is the default route the NAS traffic uses: the first one `ip route show default` lists (lowest
 // metric), without Unraid's second route over shim-br0 (a macvlan for Docker). Device and gateway both come from
-// that one route, so the ping goes where the LED device's traffic goes.
+// that one route, so the probe looks where the LED device's traffic goes.
 func (c *Ctl) uplinkRoute() (dev, gateway string) {
 	for _, line := range c.ipRouteDefault() {
 		if m := routeDevRe.FindStringSubmatch(line); m != nil && !strings.HasPrefix(m[1], "shim-") {
@@ -83,33 +84,88 @@ func (c *Ctl) linkCheck(dev string) (bool, string) {
 	return true, ""
 }
 
-// gatewayAnswers pings the gateway of the uplink route twice; one answer is enough. No gateway counts as answered.
-func (c *Ctl) gatewayAnswers() bool {
-	_, gateway := c.uplinkRoute()
-	if gateway == "" {
-		return true
+// neighbourAlive: the kernel neighbour states that mean the gateway's link-layer address is known. The kernel ages
+// them without our traffic (REACHABLE -> STALE -> DELAY -> PROBE), so a STALE entry on an idle box is fine.
+var neighbourAlive = map[string]bool{"REACHABLE": true, "STALE": true, "DELAY": true, "PROBE": true, "PERMANENT": true, "NOARP": true, "COMPLETE": true}
+
+// gatewayNeighbour is the kernel neighbour state of the gateway on dev ("" = no entry). It sends no packet.
+// `ip -j neigh` covers IPv4 and IPv6; when it is missing or prints no JSON, /proc/net/arp answers for IPv4
+// (flag 0x2 = complete, reported as COMPLETE; anything else as INCOMPLETE).
+func (c *Ctl) gatewayNeighbour(dev, gateway string) string {
+	out, code := c.Run.Output("ip", "-j", "neigh", "show", gateway, "dev", dev)
+	var entries []struct {
+		Dst   string   `json:"dst"`
+		State []string `json:"state"`
 	}
-	_, code := c.Run.Output("ping", "-c", "2", "-W", "2", gateway)
-	return code == 0
+	if code == 0 && json.Unmarshal(out, &entries) == nil {
+		best := ""
+		for _, e := range entries {
+			if e.Dst != gateway {
+				continue
+			}
+			for _, s := range e.State {
+				if best == "" || (neighbourAlive[s] && !neighbourAlive[best]) {
+					best = s
+				}
+			}
+		}
+		return best
+	}
+	if strings.Contains(gateway, ":") {
+		return ""
+	}
+	lines, _ := readLines(c.Env.Proc + "/net/arp")
+	for _, line := range lines {
+		f := strings.Fields(line)
+		if len(f) >= 6 && f[0] == gateway && f[5] == dev {
+			if f[2] == "0x2" {
+				return "COMPLETE"
+			}
+			return "INCOMPLETE"
+		}
+	}
+	return ""
 }
 
-// networkCheck is the verdict the network LED follows: the link is up (immediate) and the gateway answers
-// (red only after gatewayFailLimit failed probes in a row; fails is that count, kept by the caller). The reason says
-// what failed, or that a failure is being counted: "ok (gateway ping failed 1 of 3)".
+// gatewayMiss is "" while the gateway has a live neighbour entry, else the reason of this probe's miss. state is
+// the neighbour state to show ("" when no gateway is configured). The address and MAC never appear in a reason.
+func (c *Ctl) gatewayMiss() (state, miss string) {
+	dev, gateway := c.uplinkRoute()
+	if gateway == "" {
+		return "", ""
+	}
+	state = c.gatewayNeighbour(dev, gateway)
+	switch {
+	case state == "":
+		return state, "no neighbour entry for the gateway"
+	case !neighbourAlive[state]:
+		return state, "gateway neighbour " + state
+	}
+	return state, ""
+}
+
+// networkCheck is the verdict the network LED follows: the link is up (immediate) and the gateway has a live
+// neighbour entry (red only after gatewayFailLimit misses in a row; fails is that count, kept by the caller). The
+// reason says what failed, or that a miss is being counted: "ok (gateway neighbour FAILED, 1 of 3)"; a healthy
+// verdict names the state: "ok (gateway neighbour STALE)".
 func (c *Ctl) networkCheck(dev string, fails *int) (bool, string) {
 	if ok, why := c.linkCheck(dev); !ok {
 		*fails = 0
 		return false, why
 	}
-	if c.gatewayAnswers() {
+	state, miss := c.gatewayMiss()
+	if miss == "" {
 		*fails = 0
-		return true, ""
+		if state == "" {
+			return true, ""
+		}
+		return true, "ok (gateway neighbour " + state + ")"
 	}
 	*fails++
 	if *fails >= gatewayFailLimit {
-		return false, "gateway ping failed"
+		return false, miss
 	}
-	return true, fmt.Sprintf("ok (gateway ping failed %d of %d)", *fails, gatewayFailLimit)
+	return true, fmt.Sprintf("ok (%s, %d of %d)", miss, *fails, gatewayFailLimit)
 }
 
 // linkSpeed is the negotiated speed in Mbit/s as printed, "0" when unknown (no link, or the

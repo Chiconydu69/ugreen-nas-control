@@ -27,6 +27,8 @@ const usageText = `Usage:
                                              where it only watches) and, if switched on, the MQTT publisher
   ugreen-nas-ctl mqtt-start|mqtt-stop|mqtt-status
                                              the MQTT publisher alone (mqtt_enabled="1" in fan.cfg)
+  ugreen-nas-ctl power-start|power-stop|power-status
+                                             the power button watcher alone (panel_power_shutdown="1" in fan.cfg, docs/panel.md)
   ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict
   ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off
   ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control
@@ -111,6 +113,19 @@ func (c *Ctl) Main(args []string) int {
 	case "status":
 		if c.running(c.Env.PidFile) {
 			c.out("running (pid %s)\n", c.pidText(c.Env.PidFile))
+			return 0
+		}
+		c.out("stopped\n")
+		return 3
+	case "power-start":
+		return c.powerStart()
+	case "power-stop":
+		c.powerStop()
+		c.out("Power button watcher stopped.\n")
+		return 0
+	case "power-status":
+		if c.running(c.Env.PowerPidFile) {
+			c.out("running (pid %s)\n", c.pidText(c.Env.PowerPidFile))
 			return 0
 		}
 		c.out("stopped\n")
@@ -240,10 +255,11 @@ func probeError(probe string) string {
 	return probe
 }
 
-// start: the publisher's failure must not stop the fans from starting, nor the other way round.
+// start: the failure of the publisher or the power button watcher must not stop the fans from starting, nor the other way round.
 func (c *Ctl) start() int {
 	rc := c.fanStart()
 	c.pubStart()
+	c.powerStart()
 	return rc
 }
 
@@ -288,6 +304,7 @@ func (c *Ctl) fanStart() int {
 }
 
 func (c *Ctl) stop() {
+	c.powerStop()
 	c.pubStop()
 	c.fanStop()
 }
@@ -632,3 +649,49 @@ func (c *Ctl) eventStopping() {
 	}
 	_, _ = detach(c.Env.LEDCtl, "", "shutdown")
 }
+
+// powerEnabled: panel_power_shutdown="1" in fan.cfg (the last such line wins).
+func (c *Ctl) powerEnabled() bool {
+	data, err := os.ReadFile(c.Env.FanCfg)
+	if err != nil {
+		return false
+	}
+	last := ""
+	for _, line := range strings.Split(string(data), "\n") {
+		if v, ok := strings.CutPrefix(line, panel.CfgPowerShutdown+`="`); ok {
+			last = strings.TrimSuffix(v, `"`)
+		}
+	}
+	return last == "1"
+}
+
+// powerStart runs `ugreen-nas panel power-action` apart from the fan daemon, so it also runs where the fans are not
+// controlled. Without the setting it does nothing; on a model whose buttons nobody confirmed it ends at once with the reason.
+func (c *Ctl) powerStart() int {
+	if !c.powerEnabled() || c.running(c.Env.PowerPidFile) {
+		return 0
+	}
+	pid, err := detach(c.Env.Panel, c.Env.PowerLog, "panel", "power-action")
+	if err != nil {
+		c.errf("ERROR: Power button watcher did not start: %v\n", err)
+		return 1
+	}
+	_ = fsx.WriteFile(c.Env.PowerPidFile, []byte(strconv.Itoa(pid)+"\n"), 0o644)
+
+	c.Sleep(500 * time.Millisecond)
+	if !c.running(c.Env.PowerPidFile) {
+		_ = os.Remove(c.Env.PowerPidFile)
+		last := ""
+		if data, err := os.ReadFile(c.Env.PowerLog); err == nil {
+			lines := strings.Split(strings.TrimRight(string(data), "\n"), "\n")
+			last = strings.TrimPrefix(lines[len(lines)-1], "ERROR: ")
+		}
+		c.errf("ERROR: Power button watcher did not start: %s\n", last)
+		return 1
+	}
+
+	c.out("Power button watcher started.\n")
+	return 0
+}
+
+func (c *Ctl) powerStop() { c.terminate(c.Env.PowerPidFile, 30) }

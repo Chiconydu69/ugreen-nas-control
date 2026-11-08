@@ -772,8 +772,8 @@ function main(root: HTMLElement): void {
         const mine = modelName();
         const device = deviceInfo(mine);
         const model = device?.name ?? mine;
-        const ICO = { confirmed: 'check', users: 'check', untested: 'alert', none: 'info' } as const;
-        const TONE = { confirmed: 'ok', users: 'ok', untested: 'warn', none: 'plain' } as const;
+        const ICO = { confirmed: 'check', users: 'check', partial: 'info', untested: 'alert', none: 'info' } as const;
+        const TONE = { confirmed: 'ok', users: 'ok', partial: 'warn', untested: 'warn', none: 'plain' } as const;
         const go = (label: string, tone: string, ico: Ico) => `<div class="unc-actions">${btn({ label, ico, tone, attrs: 'data-device-cta' })}</div>`;
         const all = `<a class="unc-linkbtn" href="${siteUrl('#models', window.UGREEN_NAS_VERSION)}" target="_blank" rel="noopener noreferrer">${escapeHtml(t('device.all_models'))}</a>`;
 
@@ -3223,6 +3223,15 @@ function main(root: HTMLElement): void {
         board.push(
             sensorRow({ ico: icon('board'), name: t('temps.board'), src: data.chip ? chipName(data.chip) : 'acpitz', vals: [tempVal(s.board, 'other')] })
         );
+        if (s.acpi_zone != null)
+            board.push(
+                sensorRow({
+                    ico: icon('board'),
+                    name: t('temps.acpi'),
+                    src: `acpitz: ${t('temps.acpi_hint')}`,
+                    vals: [{ label: '', text: deg(plausible(s.acpi_zone)), level: 'na' }]
+                })
+            );
         (data.chip_temps || []).forEach((temp, i) => {
             if (plausible(temp) != null)
                 board.push(

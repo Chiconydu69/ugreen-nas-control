@@ -1,10 +1,11 @@
-# Review by a maintainer is required only where a change can reach CI secrets, release assets or the published site.
+# Review by a maintainer is required where a change can reach CI secrets, release assets, the published site or code that runs as root on the NAS.
 # Everything else needs no code-owner approval (ruleset: next and main).
 /.github/ @ugreen-nas-control/maintainers
-/plugin/tools/ @ugreen-nas-control/maintainers
-/plugin/ugreen-nas-control.plg @ugreen-nas-control/maintainers
-/plugin/ugreen-nas-control.plg.tmpl @ugreen-nas-control/maintainers
-/plugin/files.txt @ugreen-nas-control/maintainers
+/plugin/ @ugreen-nas-control/maintainers
+/web/plugin/ @ugreen-nas-control/maintainers
+/backend/ @ugreen-nas-control/maintainers
+/web/package.json @ugreen-nas-control/maintainers
+/web/bun.lock @ugreen-nas-control/maintainers
 /scripts/ @ugreen-nas-control/maintainers
 /justfile @ugreen-nas-control/maintainers
 /flake.nix @ugreen-nas-control/maintainers

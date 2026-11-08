@@ -151,6 +151,7 @@
               "xz"
             ];
             lint = [
+              "bun"
               "shellcheck"
               "shfmt"
               "actionlint"

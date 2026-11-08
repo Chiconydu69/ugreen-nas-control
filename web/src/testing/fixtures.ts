@@ -36,7 +36,8 @@ export const status: StatusResponse = {
             { name: 'parity', device: 'sdb', id: 'WDC_WD40_X2', temp: null, standby: true, hdd: true },
             { name: 'flash', device: 'sdc', temp: null, standby: false, hdd: false }
         ],
-        board: 44
+        board: 44,
+        acpi_zone: 28
     },
     presets: {
         quiet: ['50:15,65:25,75:45,85:80,92:100', '35:20,40:25,45:40,50:70,55:100'],

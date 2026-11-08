@@ -6,6 +6,7 @@ export const panelNl: Record<keyof typeof panelEn, string> = {
     'panel.unconfirmed': "Volgens de broncode van de UGREEN-stuurprogramma's, nog niet bevestigd op jouw hardware.",
     'panel.confirmed': 'Door gebruikers bevestigd op dit model.',
     'panel.confirmed_by': 'Door gebruikers bevestigd op dit model: {by}.',
+    'panel.partial': 'Gedeeltelijk door gebruikers bevestigd op dit model: {by}.',
     'panel.buttons_title': 'Knoppen',
     'panel.buttons_hint': 'Leest de aan/uit- en de resetknop één keer. Indrukken doet niets: de plug-in leest alleen.',
     'panel.power': 'Aan/uit',
@@ -25,6 +26,21 @@ export const panelNl: Record<keyof typeof panelEn, string> = {
     'panel.beeper_hint': 'Laat de zoemer één keer 200 ms klinken. Je hoort niets als het model geen luidspreker heeft.',
     'panel.beep': 'Testpiep',
     'panel.beeped': 'Piep gestuurd',
+    'panel.power_title': 'Afsluiten bij ingedrukt gehouden aan-/uitknop',
+    'panel.power_hint':
+        'Standaard uit. Als dit aan staat, sluit het ingedrukt houden van de aan-/uitknop aan de voorkant Unraid netjes af: eerst wordt de array gestopt, net als met de knop Afsluiten in de webinterface van Unraid. Een korte druk doet niets.',
+    'panel.power_warning':
+        'Het ingedrukt houden van de aan-/uitknop sluit de server af. Veel borden schakelen na ongeveer 4 s geforceerd uit; de houdtijd hier blijft daaronder.',
+    'panel.power_toggle': 'Unraid afsluiten als de aan-/uitknop {s} s ingedrukt wordt gehouden',
+    'panel.power_toggle_hint':
+        'Het grijpt in terwijl de knop nog ingedrukt is, nooit bij een korte tik, nooit als de knoppen niet te lezen zijn en niet in de eerste minuut na het starten van de plugin. De resetknop wordt nooit gebruikt.',
+    'panel.power_hold': 'Houdtijd',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'Om het zonder afsluiten te proberen, voer je dit uit in een terminal en houd je de knop ingedrukt:',
+    'panel.power_confirm':
+        'Inschakelen? De aan-/uitknop aan de voorkant {s} s ingedrukt houden sluit Unraid af en stopt de array. Zorg dat niemand hem per ongeluk ingedrukt houdt.',
+    'panel.power_saved_on': 'Afsluiten bij ingedrukt gehouden aan-/uitknop staat aan',
+    'panel.power_saved_off': 'Afsluiten bij ingedrukt gehouden aan-/uitknop staat uit',
     'cs201x.title': 'Ventilatoren (Chipsea CS201x)',
     'cs201x.intro':
         'De DXP2800 GT heeft een Chipsea CS201x-controller in plaats van een IT8613E, dus de ventilatordetectie is hier niet van toepassing. Bekijk de diagnose hieronder en bevestig daarna de aangesloten ventilatoren. Tot dan blijft de ventilatorregeling uit.',

@@ -76,7 +76,7 @@ func runLEDCtl(name string, args []string) int {
 func runPanel(args []string) int {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer stop()
-	return panel.Main(ctx, panel.Env{Status: nasctl.PanelStatus}, args, os.Stdout, os.Stderr)
+	return panel.Main(ctx, panel.Env{Status: nasctl.PanelStatus, Confirmed: nasctl.PanelConfirmed}, args, os.Stdout, os.Stderr)
 }
 
 func runNasCtl(args []string) int {

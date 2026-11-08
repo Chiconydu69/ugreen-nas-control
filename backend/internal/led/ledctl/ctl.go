@@ -34,7 +34,7 @@ type SpawnSpec struct {
 	Stderr string // file that receives stderr (truncated), empty = discard
 }
 
-// Runner runs the external commands (ip, ping, ethtool, udevadm, pgrep, ...).
+// Runner runs the external commands (ip, ethtool, udevadm, pgrep, ...).
 type Runner interface {
 	// Output runs a command and returns its stdout and exit code; stderr is discarded.
 	// The code is 127 when the command cannot be started.

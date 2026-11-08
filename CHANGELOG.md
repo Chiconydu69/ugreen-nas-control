@@ -2,6 +2,18 @@
 
 User-visible changes per release, newest first. Written by `bun plugin/tools/changes.ts release` from the files in .changes/; the plugin's change list is generated from this file.
 
+## 5.6.0
+
+- Front panel: optional clean shutdown when the power button is held for 1 to 3 seconds (off by default, only on models where users confirmed the buttons), idea from [Chiconydu69](https://github.com/Chiconydu69).
+- Sensors: the ACPI thermal zone, a fixed BIOS value of about 28 °C on UGREEN boards, is no longer shown as the mainboard temperature; the Sensors page lists it as "ACPI zone, not a measurement" and diag marks it unreliable. Diag also points to the Feedback page for "Confirm my device" and no longer lists the SPI flash controller as an I2C controller without driver. Reported by [ivolution](https://github.com/ivolution).
+- Diagnosis on the DXP480T Plus: no false LED controller mismatch (diag now checks the power LED chip), no LED or fan chip hints for hardware the model does not have, "power LED only" instead of an LED count, and an unknown M.2 slot order is no longer reported as a mismatch. Thanks to [datarepos76](https://github.com/datarepos76) for the report.
+- Spanish: clearer wording on the fan history, fan input, front panel, power, schedule and tools pages. Thanks to [ivolution](https://github.com/ivolution).
+- Fans: the "Show as table" view under History is readable again when the plugin colour scheme and the Unraid theme differ (thanks to [ivolution](https://github.com/ivolution)).
+- Network LED: the gateway check looks up the router in the system's address table instead of pinging it, so a router that ignores pings no longer turns the LED red. Thanks to [Chiconydu69](https://github.com/Chiconydu69).
+- About and Front panel: a capability users confirmed only in part now shows as "Partly confirmed" instead of "Confirmed by users".
+- DXP4800 Plus: LEDs, fan control and case view confirmed, and the front-panel beeper works; the buttons are still open. Thanks to [ivolution](https://github.com/ivolution).
+- DXP480T Plus: sensors confirmed, case view and front panel partly confirmed on 5.5.0; the LEDs are still open. Thanks to [datarepos76](https://github.com/datarepos76).
+
 ## 5.5.0
 
 - DXP2800 SUB2 boards: LED control through the Intel I2C controller is on by default, no `lpss_leds="1"` needed; the LEDs also came back by themselves after a cold reboot. `lpss_leds="0"` in `leds.cfg` turns it off. Thanks to [DanielRuppen](https://github.com/DanielRuppen).

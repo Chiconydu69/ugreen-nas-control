@@ -99,7 +99,7 @@ func modelLEDCount(reg *RegModel, product string) (n int, ok bool) {
 // and the I2C controllers without a driver. It is at most summaryMax bytes by construction: the fan chip and LED
 // clauses always stay, the id lists take what is left (MISMATCH first) and end in "…" where ids were left out.
 // leds is the model's LED count, or -1 to show what the probe answered.
-func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int) string {
+func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int, reg *RegModel) string {
 	var bad, good, open, none []string
 	for _, c := range checks {
 		switch {
@@ -115,8 +115,13 @@ func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int) string {
 	if r.Fan.Found {
 		fan = "Fan chip " + r.Fan.Chip + "."
 	}
+	if reg.NoFan() {
+		fan = "No fan control on this model."
+	}
 	led := "LED probe " + r.LED.Probe
-	if r.LED.Address != "" {
+	if reg.PowerLEDOnly() {
+		led = "Power LED only"
+	} else if r.LED.Address != "" {
 		if leds < 0 {
 			leds = r.LED.LEDCount
 		}
@@ -124,7 +129,7 @@ func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int) string {
 	}
 	led += "."
 	for _, x := range i2c.Controllers {
-		if x.Driver == "none" {
+		if x.Driver == "none" && !x.Other {
 			none = append(none, x.BDF)
 		}
 	}
@@ -160,7 +165,7 @@ func BuildFeedback(a Anon, ev Evidence, reg *RegModel, r Report, i2c I2CDiag, ke
 		Schema:       "feedback/1",
 		Model:        FBModel{ID: ev.Model.ID, Name: a.Meta(ev.Model.Name), Known: ev.Model.Known},
 		Versions:     FBVersions{Plugin: ev.PluginVersion, Unraid: ev.UnraidVersion, Kernel: kernel},
-		Summary:      a.Meta(feedbackSummary(checks, r, i2c, leds)),
+		Summary:      a.Meta(feedbackSummary(checks, r, i2c, leds, reg)),
 		Checks:       checks,
 		DiagMarkdown: diagMarkdown,
 		TookMS:       took.Milliseconds(),

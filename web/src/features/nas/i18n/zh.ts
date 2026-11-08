@@ -92,6 +92,8 @@ export const zh: Record<Key, string> = {
     'temps.gpu': '显卡（iGPU）',
     'temps.sensor': '传感器',
     'temps.board': '主板',
+    'temps.acpi': 'ACPI 区域',
+    'temps.acpi_hint': '固定的 BIOS 值(约 28 °C),并非实测。不用于风扇。',
 
     'system.title': '系统',
     'system.model': '型号',
@@ -320,6 +322,7 @@ export const zh: Record<Key, string> = {
     'device.cap_panel': '前面板',
     'device.st_confirmed': '已确认',
     'device.st_users': '用户已确认',
+    'device.st_partial': '部分已确认',
     'device.st_untested': '未测试',
     'device.st_none': '不支持',
     'device.untested': '你的 {model} 上尚未确认：{list}。花两分钟就能帮到这款机型的所有用户。',

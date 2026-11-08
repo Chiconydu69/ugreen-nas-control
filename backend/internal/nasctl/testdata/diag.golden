@@ -65,15 +65,15 @@ open points in the registry: panel: Buttons from UGREEN's driver source; the ven
 enabled: true  supported: true  untested model: false  daemon running: true
 blocker: -  warning: -
 i2c adapters: -
-i2c controllers (PCI class 0c80 Serial IO, 0c05 SMBus; read only):
+i2c controllers (PCI class 0c80 serial bus, 0c05 SMBus; read only):
   -
 acpi devices HT32* (LED MCU):
   -
 designware modules for kernel -:
   -
-network (what colours the network LED; read only, nothing is pinged):
+network (what colours the network LED; read only, nothing is sent):
   LED network device: bond0
-  LED daemon verdict: not ok: gateway ping failed
+  LED daemon verdict: not ok: gateway neighbour FAILED
   bond0: operstate up  carrier 1  slaves eth0 eth1
   eth0: operstate up  carrier 1
   eth1: operstate down  carrier 0
@@ -129,7 +129,7 @@ fan.scripts: script inputs: set, 2 files, interpreters: bash, php (names hidden)
 watchdog: armed, armed true, timeout 60 s, feed interval 20 s, last feed 10s before the sample, counter 7
 power_on_ac: mode on, readable true, settable true, source ite-sio
 panel.buttons: readable: DXP4800 Plus (vendor source) power: up, reset: up
-panel.beeper: present, backend PC speaker (never sounded by diag), vendor source, not yet confirmed
+panel.beeper: present, backend PC speaker (never sounded by diag), partly confirmed by users, #266
 lcd.backlight: n/a for this model
 mqtt: enabled true, publisher running true, host set (hidden), login set (hidden), tls false, port 1883, interval 5s, control true, control updates false, control containers false, connection: failing: connection refused
 conflicts: detected: module:it87 (warn); fan daemon yields to: -; LED takeover blocked by: -; rival processes running: 0

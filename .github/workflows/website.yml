@@ -34,19 +34,19 @@ on:
 
 permissions: {}
 
-# Queued, not cancelled: a release waits on its call of this workflow, cancelling it would leave the release a draft
+# A release call (workflow_call; github.workflow then names the caller, Release (manual)) has its own group, so a push never cancels it: the release waits on it and a cancelled call would leave the release a draft.
+# Builds of pushes and dispatches queue in `pages`, a newer one replaces a pending older one. The deploy job has its own group `pages-deploy` for all events: deployments never overlap.
 concurrency:
-  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.number) || 'pages' }}
+  group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.number) || github.workflow == 'Release (manual)' && 'pages-release' || 'pages' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 55
     permissions:
       contents: read
-      id-token: write
-      attestations: write
     env:
       MAIN_REF: ${{ inputs.ref }}
       REPO: ${{ github.repository }}
@@ -58,6 +58,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - name: Check out the streams
         run: |
           set -euo pipefail
@@ -104,14 +105,15 @@ jobs:
             cp .build/dist/ugreen-nas-control-*.tar.xz .build/dist/ugreen-nas-control.plg "$dest/"
             (cd "$dest" && sha256sum -- ugreen-nas-control-*.tar.xz ugreen-nas-control.plg > SHA256SUMS)
           '
-      # An attestation hiccup must not block the site deploy
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+      # The attest job (not this one, which runs PR code) signs the next channel files
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: github.event_name != 'pull_request' && vars.NEXT_CHANNEL_ENABLED == 'true'
-        continue-on-error: true
         with:
-          subject-path: |
+          name: next-channel
+          path: |
             ${{ runner.temp }}/pages/next/ugreen-nas-control-*.tar.xz
             ${{ runner.temp }}/pages/next/ugreen-nas-control.plg
+          if-no-files-found: error
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         if: github.event_name != 'pull_request'
         with:
@@ -125,9 +127,12 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event_name != 'pull_request'
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name != 'pull_request') }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
     permissions:
@@ -140,8 +145,31 @@ jobs:
       - id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
 
+  # An attestation hiccup must not block the site deploy: nothing needs this job
+  attest:
+    needs: build
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name != 'pull_request' && vars.NEXT_CHANNEL_ENABLED == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: next-channel
+          path: next-channel
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: |
+            next-channel/ugreen-nas-control-*.tar.xz
+            next-channel/ugreen-nas-control.plg
+
   # One environment per stream, so the Environments page links each one; the deployment itself is the single github-pages one above.
   streams:
+    if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     needs: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 5
