@@ -145,13 +145,18 @@ func reportSummary(r Report) string {
 		mem = append(mem, fmt.Sprintf("%d MB %s %d MT/s", m.SizeMB, m.Type, m.SpeedMT))
 	}
 	l = append(l, "memory: "+orDash(strings.Join(mem, "; ")))
-	if r.Fan.Found {
+	reg := productReg(r.Machine.Product)
+	if reg.NoFan() {
+		l = append(l, "fan chip: no fan control on this model")
+	} else if r.Fan.Found {
 		l = append(l, fmt.Sprintf("fan chip: %s revision %v base %s ports %s", r.Fan.Chip, orDash(fmt.Sprint(orNil(r.Fan.Revision))), orDash(r.Fan.Base), orDash(r.Fan.Ports)))
 	} else {
 		l = append(l, "fan chip: not found: "+orDash(r.Fan.Error))
 	}
 	led := fmt.Sprintf("led: supported %t, blocker %s, probe %s", r.LED.Supported, orDash(r.LED.Blocker), r.LED.Probe)
-	if r.LED.Bus != "" || r.LED.Address != "" {
+	if reg.PowerLEDOnly() {
+		led += ", power LED only"
+	} else if r.LED.Bus != "" || r.LED.Address != "" {
 		led += fmt.Sprintf(", bus %s address %s, %d leds", r.LED.Bus, r.LED.Address, r.LED.LEDCount)
 	}
 	if r.LED.Error != "" {
@@ -1041,6 +1046,7 @@ func (c *Ctl) diag(asJSON bool) int {
 	}
 	var out string
 	if msg := guard(func() {
+		facts.Reg = reg
 		checks = append(diagChecks(facts), checks...)
 		out = RenderDiag(anon, now, kernelVersion(c.Env.Proc), rep, checks, list)
 	}); msg != "" {

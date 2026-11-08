@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"sort"
 	"strings"
 )
@@ -195,6 +196,25 @@ func (d I2CDiag) unbound() string {
 		}
 	}
 	return ""
+}
+
+// answersAt: whether a scanned bus lists addr as answering; known is false when there is no scan to read.
+func (d LEDDiag) answersAt(addr string) (answers, known bool) {
+	if d.Scan == "" || d.ScanErr != "" || d.Skipped != "" {
+		return false, false
+	}
+	for _, line := range strings.Split(scanText(d.Scan), "\n") {
+		_, rest, ok := strings.Cut(line, ": ")
+		if !ok || strings.Contains(line, "): skipped") {
+			continue
+		}
+		rest, _, _ = strings.Cut(rest, "  busy:")
+		rest, _, _ = strings.Cut(rest, "  error:")
+		if slices.Contains(strings.Fields(rest), addr) {
+			return true, true
+		}
+	}
+	return false, true
 }
 
 // ledHint is the one factual line for a failed 0x3a probe: the MCU is probably behind a controller without a driver.
