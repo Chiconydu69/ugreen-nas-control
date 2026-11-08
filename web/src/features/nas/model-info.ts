@@ -103,3 +103,10 @@ export function panelEvidence(
     const c = hit?.verified.panel;
     return c ? { state: STATE[c.status] ?? 'untested', by: c.by ?? '', note: c.note ?? '' } : null;
 }
+
+/** Users or a maintainer confirmed the front-panel buttons on the model (registry panel check community or verified; partial is the beeper only). The shutdown on a held power button is offered only then (backend nasctl.PanelConfirmed). */
+export function panelConfirmed(product: string, models: readonly DeviceEntry[] = registry.models as unknown as DeviceEntry[]): boolean {
+    const hit = models.find(m => new RegExp(m.dmiPattern).test(product));
+    const status = hit?.verified.panel?.status;
+    return status === 'community' || status === 'verified';
+}

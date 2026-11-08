@@ -242,6 +242,9 @@ if ($method === 'GET') {
     if ($action === 'panel_buttons') {
         panel_buttons();
     }
+    if ($action === 'panel_power') {
+        panel_power_get();
+    }
     if ($action === 'power_ac_get') {
         power_ac_get();
     }
@@ -499,6 +502,9 @@ if ($action === 'cs201x_forget') {
 }
 if ($action === 'panel_beep') {
     panel_beep($input);
+}
+if ($action === 'panel_power') {
+    panel_power_set($input);
 }
 if ($action === 'power_ac_set') {
     power_ac_set($input);

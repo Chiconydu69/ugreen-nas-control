@@ -3206,6 +3206,306 @@
       }
     ]
   },
+  "nas.panel_power.get-default": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": false,
+      "hold": 1.5
+    },
+    "raw": "{\"ok\":true,\"enabled\":false,\"hold\":1.5}",
+    "calls": []
+  },
+  "nas.panel_power.get-on": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": true,
+      "hold": 2.5
+    },
+    "raw": "{\"ok\":true,\"enabled\":true,\"hold\":2.5}",
+    "calls": []
+  },
+  "nas.panel_power.get-bad-hold": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": false,
+      "hold": 1.5
+    },
+    "raw": "{\"ok\":true,\"enabled\":false,\"hold\":1.5}",
+    "calls": []
+  },
+  "nas.panel_power.set-on": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": true,
+      "hold": 1.5
+    },
+    "raw": "{\"ok\":true,\"enabled\":true,\"hold\":1.5}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_shutdown=\"1\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      }
+    ]
+  },
+  "nas.panel_power.set-on-hold": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": true,
+      "hold": 2
+    },
+    "raw": "{\"ok\":true,\"enabled\":true,\"hold\":2}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_hold=\"2\"\npanel_power_shutdown=\"1\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      }
+    ]
+  },
+  "nas.panel_power.set-hold-min": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": true,
+      "hold": 1
+    },
+    "raw": "{\"ok\":true,\"enabled\":true,\"hold\":1}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_hold=\"1\"\npanel_power_shutdown=\"1\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      }
+    ]
+  },
+  "nas.panel_power.set-hold-max": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": true,
+      "hold": 3
+    },
+    "raw": "{\"ok\":true,\"enabled\":true,\"hold\":3}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_hold=\"3\"\npanel_power_shutdown=\"1\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      }
+    ]
+  },
+  "nas.panel_power.set-off": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": true,
+      "enabled": false,
+      "hold": 2
+    },
+    "raw": "{\"ok\":true,\"enabled\":false,\"hold\":2}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_hold=\"2\"\npanel_power_shutdown=\"0\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      }
+    ]
+  },
+  "nas.panel_power.set-missing": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.set-text": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.set-hold-too-short": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.set-hold-too-long": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.set-hold-four": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.set-hold-text": {
+    "status": 400,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Invalid value"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Invalid value\"}",
+    "calls": []
+  },
+  "nas.panel_power.refused-409-settings-back": {
+    "status": 409,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "Power button watcher did not start: the buttons of the DXP4800 Plus are not confirmed by users yet"
+    },
+    "raw": "{\"ok\":false,\"error\":\"Power button watcher did not start: the buttons of the DXP4800 Plus are not confirmed by users yet\"}",
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      }
+    ]
+  },
+  "nas.panel_power.refused-409-no-file-before": {
+    "status": 409,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "open /dev/mem: permission denied"
+    },
+    "raw": "{\"ok\":false,\"error\":\"open /dev/mem: permission denied\"}",
+    "files": {
+      "/boot/config/plugins/ugreen-nas-control/fan.cfg": "panel_power_shutdown=\"0\"\n"
+    },
+    "calls": [
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-start"]
+      },
+      {
+        "tool": "ctl",
+        "args": ["power-stop"]
+      }
+    ]
+  },
+  "nas.panel_power.unwritable-500": {
+    "status": 500,
+    "headers": {
+      "content-type": "application/json; charset=utf-8"
+    },
+    "body": {
+      "ok": false,
+      "error": "/boot/config/plugins/ugreen-nas-control/fan.cfg is not writable"
+    },
+    "raw": "{\"ok\":false,\"error\":\"/boot/config/plugins/ugreen-nas-control/fan.cfg is not writable\"}",
+    "calls": [],
+    "phpErrors": [
+      "Warning:  file_put_contents(/boot/config/plugins/ugreen-nas-control/fan.cfg.<pid>.tmp): Failed to open stream: No such file or directory in /usr/local/emhttp/plugins/ugreen-nas-control/api.php"
+    ]
+  },
   "nas.mode.quiet-new-file": {
     "status": 200,
     "headers": {

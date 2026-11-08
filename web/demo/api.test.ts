@@ -34,6 +34,7 @@ const READS: [string, string, string][] = [
     ['nas', 'api.php', 'action=fan_backlight'],
     ['nas', 'api.php', 'action=cs201x_read'],
     ['nas', 'api.php', 'action=panel_buttons'],
+    ['nas', 'api.php', 'action=panel_power'],
     ['nas', 'api.php', 'action=power_ac_get'],
     ['led', 'led/api.php', 'action=status'],
     ['led', 'led/api.php', 'action=list'],

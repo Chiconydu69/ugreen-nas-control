@@ -25,6 +25,21 @@ export const panelEs: Record<keyof typeof panelEn, string> = {
     'panel.beeper_hint': 'Hace sonar el bíper una vez durante 200 ms. No oirás nada si el modelo no tiene altavoz.',
     'panel.beep': 'Pitido de prueba',
     'panel.beeped': 'Pitido enviado',
+    'panel.power_title': 'Apagar al mantener pulsado el botón de encendido',
+    'panel.power_hint':
+        'Desactivado por defecto. Si se activa, mantener pulsado el botón de encendido frontal apaga Unraid de forma limpia: primero se detiene el array, igual que con el botón Apagar de la interfaz web de Unraid. Una pulsación corta no hace nada.',
+    'panel.power_warning':
+        'Mantener pulsado el botón de encendido apagará el servidor. Muchas placas cortan la corriente a la fuerza tras unos 4 s; el tiempo de pulsación de aquí queda por debajo.',
+    'panel.power_toggle': 'Apagar Unraid cuando el botón de encendido se mantiene pulsado {s} s',
+    'panel.power_toggle_hint':
+        'Actúa mientras el botón sigue pulsado, nunca con una pulsación breve, nunca si los botones no se pueden leer y no durante el primer minuto tras iniciar el plugin. El botón reset no se usa nunca.',
+    'panel.power_hold': 'Tiempo de pulsación',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'Para probarlo sin apagar, ejecuta esto en un terminal y mantén pulsado el botón:',
+    'panel.power_confirm':
+        '¿Activarlo? Mantener pulsado el botón de encendido frontal {s} s apagará Unraid y detendrá el array. Asegúrate de que nadie lo pulse por error.',
+    'panel.power_saved_on': 'El apagado con el botón de encendido mantenido está activado',
+    'panel.power_saved_off': 'El apagado con el botón de encendido mantenido está desactivado',
     'cs201x.title': 'Ventiladores (Chipsea CS201x)',
     'cs201x.intro':
         'El DXP2800 GT tiene un controlador embebido Chipsea CS201x en lugar de un IT8613E, así que la detección de ventiladores no se aplica. Revisa el diagnóstico de abajo y confirma los ventiladores conectados. Hasta entonces el control de ventiladores sigue desactivado.',

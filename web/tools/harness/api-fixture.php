@@ -255,6 +255,9 @@ function fan_get(string $action, array $fan, array $status, array $state): void
         case 'power_ac_get':
             out(['ok' => true] + power_ac_answer($state));
             // no break
+        case 'panel_power':
+            out(['ok' => true] + ($state['panel_power'] ?? ['enabled' => false, 'hold' => 1.5]));
+            // no break
         case 'panel_buttons':
             $panel = $GLOBALS['fx']['panel'];
             if (!$panel['buttons']) {
@@ -484,6 +487,23 @@ function fan_post(string $action, array $fan, array $status, array $state, calla
             $state['power_ac_mode'] = $mode;
             $state['power_ac_last'] = ['mode' => $mode, 'time' => fx_time()];
             out(['ok' => true, 'set' => $mode] + power_ac_answer($state) + ['verified' => $ac['readable']]);
+            // no break
+        case 'panel_power':
+            $enabled = $_POST['enabled'] ?? null;
+            $hold = $_POST['hold'] ?? null;
+            if (!is_string($enabled) || !in_array($enabled, ['0', '1'], true) || (isset($_POST['hold']) && (!is_string($hold) || preg_match('/^(3(\\.0)?|[12](\\.[0-9])?)$/D', $hold) !== 1))) {
+                fan_fail('Invalid value');
+            }
+            if ($enabled === '1' && !$GLOBALS['fx']['panel']['confirmed']) {
+                fan_fail('Power button watcher did not start: the buttons of the ' . $fan['meta']['dmi'] . ' are not confirmed by users yet', 409);
+            }
+            $power = $state['panel_power'] ?? ['enabled' => false, 'hold' => 1.5];
+            $power['enabled'] = $enabled === '1';
+            if ($hold !== null) {
+                $power['hold'] = (float) $hold;
+            }
+            $save(['panel_power' => $power]);
+            out(['ok' => true] + $power);
             // no break
         case 'panel_beep':
             $raw = $_POST['ms'] ?? '200';

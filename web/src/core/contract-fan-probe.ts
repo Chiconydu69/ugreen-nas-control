@@ -179,6 +179,9 @@ export type PanelButtonsResponse = ApiOk & {
 /** POST panel_beep ms=20..2000 (optional, default 200). */
 export type PanelBeepResponse = ApiOk & { ms: number };
 
+/** GET and POST panel_power: the opt-in shutdown on a held power button (fan.cfg panel_power_shutdown, panel_power_hold). POST enabled=0|1, hold=1..3 (optional, one decimal); a watcher that cannot start (model not confirmed) is HTTP 409 and the old settings stay. */
+export type PanelPowerResponse = ApiOk & { enabled: boolean; hold: number };
+
 /*
  * Power on after AC loss (web/plugin/include/power_ac.php, backend/internal/fan/acloss_cmd.go, docs/power-on-ac.md).
  * A refusal (a fan rival runs, the mode is not offered, the board holds a value the tool does not know) is HTTP 409 with the reason.

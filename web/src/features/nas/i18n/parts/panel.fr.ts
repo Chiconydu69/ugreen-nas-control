@@ -26,6 +26,21 @@ export const panelFr: Record<keyof typeof panelEn, string> = {
     'panel.beeper_hint': 'Fait sonner le buzzer une fois pendant 200 ms. Vous n’entendez rien si le modèle n’a pas de haut-parleur.',
     'panel.beep': 'Bip de test',
     'panel.beeped': 'Bip envoyé',
+    'panel.power_title': 'Arrêt par appui long sur le bouton d’alimentation',
+    'panel.power_hint':
+        'Désactivé par défaut. Une fois activé, un appui long sur le bouton d’alimentation en façade arrête Unraid proprement : l’Array est d’abord arrêté, comme avec le bouton Arrêter de l’interface web d’Unraid. Un appui bref ne fait rien.',
+    'panel.power_warning':
+        'Un appui long sur le bouton d’alimentation arrêtera le serveur. Beaucoup de cartes coupent le courant de force après environ 4 s ; la durée d’appui réglée ici reste en dessous.',
+    'panel.power_toggle': 'Arrêter Unraid quand le bouton d’alimentation est maintenu {s} s',
+    'panel.power_toggle_hint':
+        'L’action part tant que le bouton est encore maintenu, jamais sur un simple appui, jamais si les boutons ne sont pas lisibles, et pas pendant la première minute après le démarrage du plugin. Le bouton reset n’est jamais utilisé.',
+    'panel.power_hold': 'Durée d’appui',
+    'panel.power_secs': '{s} s',
+    'panel.power_dry': 'Pour essayer sans arrêt, lancez ceci dans un terminal et maintenez le bouton :',
+    'panel.power_confirm':
+        'Activer ? Maintenir le bouton d’alimentation en façade pendant {s} s arrêtera Unraid et l’Array. Assurez-vous que personne ne le maintienne par erreur.',
+    'panel.power_saved_on': 'L’arrêt par appui long sur le bouton d’alimentation est activé',
+    'panel.power_saved_off': 'L’arrêt par appui long sur le bouton d’alimentation est désactivé',
     'cs201x.title': 'Ventilateurs (Chipsea CS201x)',
     'cs201x.intro':
         'Le DXP2800 GT a un contrôleur embarqué Chipsea CS201x et non un IT8613E : la détection des ventilateurs ne s’applique pas. Vérifiez le diagnostic ci-dessous, puis confirmez les ventilateurs branchés. Jusque-là, le contrôle des ventilateurs reste désactivé.',

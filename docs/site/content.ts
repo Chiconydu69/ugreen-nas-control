@@ -157,7 +157,10 @@ export const EXTRAS = {
     title: 'Front panel, power and new models.',
     sub: "Smaller controls from UGREEN's driver sources. None is confirmed on hardware yet.",
     points: [
-        ['Front-panel buttons', 'Read only. Shows power and reset presses and triggers nothing.'],
+        [
+            'Front-panel buttons',
+            'Shows power and reset presses. Where users confirmed the buttons, an opt-in switch shuts Unraid down cleanly when the power button is held.'
+        ],
         ['Beeper test', 'Sounds the beeper where UGREEN names a beeper path.'],
         ['Power on after AC loss', 'On, stay off or last state. Written only when you choose.'],
         ['New models', 'DXP6800 and Plus, DXP6800S, DXP8800 and Pro, DXP2800S. Expected to work; nobody has run them.'],

@@ -71,3 +71,79 @@ function panel_beep(array $input): never
 
     respond(['ok' => true, 'ms' => $ms]);
 }
+
+// GET panel_power / POST panel_power: the opt-in shutdown on a held power button (docs/panel.md). The settings are
+// panel_power_shutdown="1" and panel_power_hold="1".."3" in fan.cfg; `ugreen-nas-ctl power-start` runs the watcher
+// (`ugreen-nas panel power-action`), which itself refuses a model whose buttons nobody confirmed. Uses read_settings(),
+// save_settings() and CTL from api.php.
+
+const PANEL_POWER_HOLD_DEFAULT = 1.5;
+
+// "1".."3" with at most one decimal (1, 1.5, 3.0); the value as the tool reads it, null otherwise.
+function panel_power_hold(mixed $value): ?string
+{
+    if (!is_string($value) || preg_match('/^(3(\.0)?|[12](\.[0-9])?)$/D', $value) !== 1) {
+        return null;
+    }
+
+    return (string) (float) $value;
+}
+
+function panel_power_state(): array
+{
+    $config = read_settings();
+    $hold = panel_power_hold($config['panel_power_hold'] ?? null);
+
+    return [
+        'enabled' => ($config['panel_power_shutdown'] ?? '0') === '1',
+        'hold' => $hold === null ? PANEL_POWER_HOLD_DEFAULT : (float) $hold,
+    ];
+}
+
+function panel_power_get(): never
+{
+    respond(['ok' => true] + panel_power_state());
+}
+
+// POST panel_power enabled=0|1, hold=1..3 (optional): save, then restart the watcher. A watcher that cannot start (the
+// model is not confirmed, the registers cannot be opened) puts the old settings back and answers 409.
+function panel_power_set(array $input): never
+{
+    $enabled = $input['enabled'] ?? null;
+    $hold = isset($input['hold']) ? panel_power_hold($input['hold']) : null;
+
+    if (!is_string($enabled) || !in_array($enabled, ['0', '1'], true) || (isset($input['hold']) && $hold === null)) {
+        respond(['ok' => false, 'error' => 'Invalid value'], 400);
+    }
+
+    $before = read_settings();
+    $changes = ['panel_power_shutdown' => $enabled];
+
+    if ($hold !== null) {
+        $changes['panel_power_hold'] = $hold;
+    }
+
+    if (!save_settings($changes)) {
+        respond(['ok' => false, 'error' => CONFIG_FILE . ' is not writable'], 500);
+    }
+
+    run(CTL, ['power-stop']);
+
+    if ($enabled === '1') {
+        $started = run(CTL, ['power-start']);
+
+        if ($started['code'] !== 0) {
+            $back = ['panel_power_shutdown' => (string) ($before['panel_power_shutdown'] ?? '0')];
+
+            if (isset($before['panel_power_hold'])) {
+                $back['panel_power_hold'] = (string) $before['panel_power_hold'];
+            }
+
+            save_settings($back, isset($before['panel_power_hold']) ? [] : ['panel_power_hold']);
+            run(CTL, ['power-stop']);
+            respond(['ok' => false, 'error' => fan_tool_error($started['message'])], 409);
+        }
+    }
+
+    respond(['ok' => true] + panel_power_state());
+}
