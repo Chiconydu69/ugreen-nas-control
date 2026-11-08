@@ -148,7 +148,7 @@ func goldenDiag(t *testing.T) string {
 	led := LEDDiag{Enabled: true, Supported: true, DaemonRunning: true, Bays: rep.Bays, Slots: slotNames(h),
 		Modprobe: "loaded i2c-dev for the scan (modprobe i2c-dev, the only change diag makes)",
 		Get:      "power on 255 255 255 255 0 0\ndisk1 on 255 0 255 0 0 0\n", Scan: "/dev/i2c-4: 0x3a\n",
-		Net: NetDiag{Dev: "bond0", Verdict: "not ok: gateway ping failed", DefaultVia: "bond0", Ifaces: []NetIface{
+		Net: NetDiag{Dev: "bond0", Verdict: "not ok: gateway neighbour FAILED", DefaultVia: "bond0", Ifaces: []NetIface{
 			{Name: "bond0", Oper: "up", Carrier: "1", Slaves: "eth0 eth1"}, {Name: "eth0", Oper: "up", Carrier: "1"}, {Name: "eth1", Oper: "down", Carrier: "0"}}}}
 	ev, reg := evidenceFixture(t)
 	modelSec, _ := modelSection(reg, ev)

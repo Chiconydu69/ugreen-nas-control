@@ -154,10 +154,10 @@ func TestParity(t *testing.T) {
 				equal.Add(1)
 				return
 			}
-			// The gateway probe sends 2 pings where the shell sent 1 (see daemon-run-netdev-gateway-down); that line is the only difference.
-			if strings.ReplaceAll(want, "ping -c 1 -W 2 ", "ping -c 2 -W 2 ") == got {
+			// The gateway probe reads the kernel neighbour table where the shell pinged; those calls are the only difference.
+			if dropLines(want, "ping ") == dropLines(got, "ip -j neigh ") {
 				intendedDiff.Add(1)
-				t.Logf("intended difference: the gateway probe pings twice")
+				t.Logf("intended difference: the gateway probe reads the neighbour table, the shell pinged")
 				return
 			}
 			different.Add(1)
@@ -414,4 +414,16 @@ func idxPorts(r *rig) {
 		r.mkdir(fmt.Sprintf("sys/devices/pci0000:00/0000:00:01.0/0000:01:00.0/ata%d", n))
 		r.symlink(fmt.Sprintf("sys/class/ata_port/ata%d", n), fmt.Sprintf("../../devices/pci0000:00/0000:00:01.0/0000:01:00.0/ata%d", n))
 	}
+}
+
+// dropLines removes every line that, once trimmed of list punctuation, starts with prefix.
+func dropLines(text, prefix string) string {
+	var keep []string
+	for _, l := range strings.Split(text, "\n") {
+		if strings.HasPrefix(strings.TrimLeft(l, " \t\",'"), prefix) {
+			continue
+		}
+		keep = append(keep, l)
+	}
+	return strings.Join(keep, "\n")
 }
