@@ -70,7 +70,7 @@ jobs:
 
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -82,6 +82,7 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       # Outside contributors: a failing format check prints what the formatter would change (nothing is committed or pushed).
       - name: Format check
         run: |
@@ -296,7 +297,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.shell == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -308,13 +309,14 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#lint -c just sh-lint
 
   web:
     needs: changes
     if: needs.changes.outputs.web == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -326,13 +328,14 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#web -c just web-check
 
   # Hangs on Linux so far (Chrome logs dbus errors until the timeout); manual only (workflow_dispatch input e2e), not in ci-ok.
   e2e:
     if: ${{ inputs.e2e }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -344,6 +347,7 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#e2e -c just e2e --jobs 1 --out .build/e2e
       - run: nix develop .#e2e -c just shots dxp4800-gt
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -358,7 +362,7 @@ jobs:
 
   plugin:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -370,6 +374,7 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#plugin -c just plg-check
       - run: nix develop .#plugin -c just changes-check
       - run: nix develop .#plugin -c just generated-check
@@ -426,7 +431,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.workflows == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -438,6 +443,7 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#lint -c actionlint
       - run: nix develop .#lint -c zizmor --offline .github/workflows
       - run: nix develop .#lint -c bash -c 'bun test scripts/workflows-policy.test.ts && bun scripts/workflows-policy.ts'
@@ -450,7 +456,7 @@ jobs:
       && github.event.pull_request.head.repo.full_name == github.repository)
       || (github.event_name == 'workflow_dispatch' && startsWith(github.ref_name, 'release/'))
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     permissions:
       contents: write # drafts are only listed for tokens with push access
     steps:
@@ -463,6 +469,9 @@ jobs:
           source-tag: v3.24.1
           summarize: false
           diagnostic-endpoint: ''
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
+        with:
+          cache: 'false' # holds a write token
       - name: Rebuild and compare with the draft
         env:
           GH_TOKEN: ${{ github.token }}

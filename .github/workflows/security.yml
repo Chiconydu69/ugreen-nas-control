@@ -27,7 +27,7 @@ jobs:
   zizmor:
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: read
     steps:
@@ -38,6 +38,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
       - run: nix develop .#lint -c zizmor .github/workflows
         env:
           GH_TOKEN: ${{ github.token }}
