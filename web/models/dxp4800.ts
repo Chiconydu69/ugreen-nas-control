@@ -51,7 +51,7 @@ export default {
         },
         sensors: {
             status: 'expected',
-            note: 'Not confirmed. A Plus owner reported the ACPI board temperature as a fixed value of about 28 C (5.5.0, #266); the sensors check is being looked at separately.'
+            note: 'Not confirmed. A Plus owner reported the ACPI thermal zone as a fixed value of about 28 C (5.5.0, #266). It is a BIOS constant, not a mainboard reading, and is no longer shown as the mainboard temperature.'
         },
         panel: {
             status: 'partial',
@@ -59,7 +59,7 @@ export default {
             version: '5.5.0',
             date: '2026-11-07',
             ref: 'https://github.com/ugreen-nas-control/ugreen-nas-control/issues/266',
-            note: 'Beeper: confirmed by a Plus owner. Buttons: the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102) but the buttons did not respond; a panel buttons --watch test is requested and still open.'
+            note: 'Beeper: confirmed by a Plus owner. Buttons: the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102). panel buttons --watch saw the reset button (down and up, held 0.60 s) but never the power button. The power button does start the box from off, so it may reach Linux as an ACPI power-button event instead of through this pad; not checked yet.'
         }
     },
     sources: [

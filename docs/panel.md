@@ -1,6 +1,6 @@
 # Front panel: buttons and beeper
 
-`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); the DXP8800 Plus (issue #165) and, for the beeper only, the DXP4800 Plus (issue #266).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action unless you switch on the shutdown on a held power button ([below](#shut-down-on-a-held-power-button)); that is off by default and the reset button is never used.
+`ugreen-nas panel` reads the power and reset button and sounds the beeper. Both come from UGREEN's open-source drivers (GPL-2.0-only, `drivers/ugreen/` at c75c5ab); the code is our own, only the facts are taken ([third-party.md](third-party.md)). **Every entry below is vendor source. Which model users confirmed is the `panel` check of the model in `web/models/` ([hardware.md](hardware.md)); the DXP8800 Plus (issue #165) and, for the beeper and the reset button only, the DXP4800 Plus (issue #266).** `panel buttons` prints that state behind the model name, `diag` shows it on the `panel.buttons` and `panel.beeper` lines, the Front panel page and the About card show it. Needs root. No press triggers an action unless you switch on the shutdown on a held power button ([below](#shut-down-on-a-held-power-button)); that is off by default and the reset button is never used.
 
 ## Commands
 
@@ -105,7 +105,7 @@ The beeper test is confirmed on the DXP8800 Plus by a user, who heard the sound 
 
 ## Open on hardware
 
-- DXP4800 Plus buttons (issue #266): the pad registers read real values (power 0xFD6A0980 = 0x04000100, reset 0xFD6D0A10 = 0x84000102) but the owner saw no button response; a `panel buttons --watch` test is requested.
+- DXP4800 Plus power button (issue #266): `panel buttons --watch` sees reset, but the power pad (0xFD6A0980, 0x04000100) never changes on a press, while the button does start the box from off. Open: whether it reaches Linux as an ACPI power-button event (`/proc/bus/input/devices`, `acpi_listen`) instead of through the pad.
 - Why the DXP8800 Plus pad registers read 0xFF on some boots only (issue #165), whether other models do the same, and whether they can be mapped on the running kernel (`STRICT_DEVMEM`, a driver that claimed the range) and whether the bit meaning and levels above hold on each model.
 - The shutdown on a held power button on a real DXP8800 Plus: that the 1.5 s hold fires with the button still down and the array stops.
 - Whether a speaker is wired on each PC speaker model, and whether the EC and pad beepers sound.
