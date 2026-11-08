@@ -94,6 +94,8 @@ export const fr: Record<Key, string> = {
     'temps.gpu': 'GPU intégré (iGPU)',
     'temps.sensor': 'Capteur',
     'temps.board': 'Carte mère',
+    'temps.acpi': 'Zone ACPI',
+    'temps.acpi_hint': 'Valeur fixe du BIOS (environ 28 °C), pas une mesure. Non utilisée pour les ventilateurs.',
 
     'system.title': 'Système',
     'system.model': 'Modèle',

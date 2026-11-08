@@ -94,6 +94,8 @@ export const nl: Record<Key, string> = {
     'temps.gpu': 'Videochip (iGPU)',
     'temps.sensor': 'Sensor',
     'temps.board': 'Moederbord',
+    'temps.acpi': 'ACPI-zone',
+    'temps.acpi_hint': 'Vaste BIOS-waarde (ongeveer 28 °C), geen meting. Niet gebruikt voor ventilatoren.',
 
     'system.title': 'Systeem',
     'system.model': 'Model',

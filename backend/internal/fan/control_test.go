@@ -172,8 +172,8 @@ rotational="1"
 	if len(s.NVMe) != 1 || s.NVMe[0].Name != "nvme0" || *s.NVMe[0].Temp != 42 {
 		t.Fatalf("nvme = %+v", s.NVMe)
 	}
-	if s.Board == nil || *s.Board != 28 {
-		t.Fatalf("board = %v", s.Board)
+	if s.ACPI == nil || *s.ACPI != 28 || s.Board != nil {
+		t.Fatalf("acpi = %v, board = %v", s.ACPI, s.Board)
 	}
 	if len(s.Disks) != 3 || !s.Disks[1].Standby || s.Disks[1].Temp != nil || *s.MaxDisk() != 38 {
 		t.Fatalf("disks = %+v", s.Disks)
@@ -456,8 +456,8 @@ func TestImplausibleTemperaturesAreNotConnected(t *testing.T) {
 			hwmonDir, disksINI = dir, filepath.Join(dir, "none.ini")
 			s := ReadSensors()
 
-			if (tc.want == nil) != (s.Board == nil) || (tc.want != nil && *s.Board != *tc.want) {
-				t.Fatalf("board = %v, want %v", s.Board, tc.want)
+			if (tc.want == nil) != (s.ACPI == nil) || (tc.want != nil && *s.ACPI != *tc.want) || s.Board != nil {
+				t.Fatalf("acpi = %v, want %v", s.ACPI, tc.want)
 			}
 			if len(s.NVMe) != 1 || (tc.want == nil) != (s.NVMe[0].Temp == nil) {
 				t.Fatalf("nvme = %+v", s.NVMe)

@@ -93,6 +93,8 @@ export const it: Record<Key, string> = {
     'temps.gpu': 'Grafica (iGPU)',
     'temps.sensor': 'Sensore',
     'temps.board': 'Scheda madre',
+    'temps.acpi': 'Zona ACPI',
+    'temps.acpi_hint': 'Valore fisso del BIOS (circa 28 °C), non una misura. Non usato per le ventole.',
 
     'system.title': 'Sistema',
     'system.model': 'Modello',

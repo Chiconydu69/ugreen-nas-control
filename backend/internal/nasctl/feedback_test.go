@@ -67,6 +67,9 @@ func TestFeedbackSummary(t *testing.T) {
 		{"unbound controller", nil, Report{Fan: fan, LED: LEDReport{Probe: "failed"}},
 			I2CDiag{Controllers: []I2CCtl{{BDF: "0000:00:15.0", Driver: "none"}, {BDF: "0000:00:1f.4", Driver: "i801_smbus"}}},
 			"Fan chip it8613. LED probe failed. I2C controllers without driver: 0000:00:15.0."},
+		{"spi flash controller is no I2C controller", nil, Report{Fan: fan, LED: LEDReport{Probe: "ok", Address: "0x3a"}},
+			I2CDiag{Controllers: []I2CCtl{{BDF: "0000:00:1f.5", ID: "8086:51a4", Driver: "none", Other: true}}},
+			"Fan chip it8613. LED probe ok at 0x3a, 0 LEDs."},
 	}
 	for _, c := range cases {
 		if got := feedbackSummary(c.checks, c.r, c.i2c, -1); got != c.want {

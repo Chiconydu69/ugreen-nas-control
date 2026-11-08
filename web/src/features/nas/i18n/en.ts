@@ -92,6 +92,8 @@ export const en = {
     'temps.gpu': 'Graphics (iGPU)',
     'temps.sensor': 'Sensor',
     'temps.board': 'Mainboard',
+    'temps.acpi': 'ACPI zone',
+    'temps.acpi_hint': 'Fixed BIOS value (about 28 °C), not a measurement. Not used for fans.',
 
     'system.title': 'System',
     'system.model': 'Model',

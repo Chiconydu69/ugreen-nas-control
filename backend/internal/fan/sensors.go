@@ -55,7 +55,10 @@ type Sensors struct {
 	NIC       []NICTemp `json:"nic"`
 	GPU       *int      `json:"gpu"`
 	Disks     []Disk    `json:"disks"`
-	Board     *int      `json:"board"`
+	Board     *int      `json:"board"` // mainboard temperature of the fan controller (EC, CS201x); never the ACPI zone
+	// ACPI is the acpitz zone. On UGREEN boards it holds a fixed BIOS value (about 28 °C, model reports #165, #266), so it
+	// is no measurement: shown as raw data only, never a fan input.
+	ACPI *int `json:"acpi_zone"`
 	// NotConnected lists the inputs whose reading is not a temperature (an unwired thermistor); they are left out above.
 	NotConnected []NotConnected `json:"not_connected"`
 }
@@ -173,8 +176,8 @@ func ReadSensors() Sensors {
 				}
 			}
 		case "acpitz":
-			if s.Board == nil {
-				s.Board = s.temp(chip, filepath.Join(dir, "temp1_input"))
+			if s.ACPI == nil {
+				s.ACPI = s.temp(chip, filepath.Join(dir, "temp1_input"))
 			}
 		case "amdgpu", "nouveau", "i915", "xe":
 			if s.GPU == nil {

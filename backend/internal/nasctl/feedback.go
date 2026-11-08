@@ -124,7 +124,7 @@ func feedbackSummary(checks []FBCheck, r Report, i2c I2CDiag, leds int) string {
 	}
 	led += "."
 	for _, x := range i2c.Controllers {
-		if x.Driver == "none" {
+		if x.Driver == "none" && !x.Other {
 			none = append(none, x.BDF)
 		}
 	}

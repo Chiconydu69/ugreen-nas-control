@@ -65,7 +65,7 @@ open points in the registry: panel: Buttons from UGREEN's driver source; the ven
 enabled: true  supported: true  untested model: false  daemon running: true
 blocker: -  warning: -
 i2c adapters: -
-i2c controllers (PCI class 0c80 Serial IO, 0c05 SMBus; read only):
+i2c controllers (PCI class 0c80 serial bus, 0c05 SMBus; read only):
   -
 acpi devices HT32* (LED MCU):
   -
