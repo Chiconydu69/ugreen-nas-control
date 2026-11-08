@@ -66,6 +66,6 @@ Everything `just check` runs (format, PHP syntax, XML, docs links, models, gener
 
 - Type, matching the `.changes` fragment type: `bug` = fix, `enhancement` = feat, `model` = model, `documentation` = docs, `chore` = chore. `no-changelog`: the CI guard skips the fragment check. The guard reads the labels when it runs: after adding the label later, re-run the failed `guard` job.
 - Area, one per component: `area: fans`, `area: leds`, `area: panel` (front panel buttons, beeper, power-on after power loss), `area: widget` (Unraid dashboard), `area: mqtt`, `area: install` (install, update, daemon start/stop), `area: ui` (plugin page), `area: site`, `area: tooling`.
-- Status: `needs hardware test` (writes registers or unconfirmed hardware: test on a device before release), `release` (release prep and tracking).
+- Status: `needs hardware test` (writes registers or unconfirmed hardware: test on a device before release), `release` (release prep and tracking), `waiting for reply` (the reporter or contributor acts next; remove it when they answer), `on hold` (parked until a maintainer decides).
 - Area and type labels are set automatically: type from the issue form, area from the form's Area field (issues) or the changed paths (PRs). Fix a wrong one by hand; it is not removed again.
 - Other: `model-report`, `good first issue`, `help wanted`.
