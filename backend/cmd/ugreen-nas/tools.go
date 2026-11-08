@@ -76,7 +76,18 @@ func runLEDCtl(name string, args []string) int {
 func runPanel(args []string) int {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer stop()
-	return panel.Main(ctx, panel.Env{Status: nasctl.PanelStatus, Confirmed: nasctl.PanelConfirmed}, args, os.Stdout, os.Stderr)
+	get := testenv.Get
+	out := os.Stdout
+	if len(args) > 0 && args[0] == "reset-network-watch" {
+		out = os.Stderr
+	}
+	return panel.Main(ctx, panel.Env{
+		DMIDir: get("UGREEN_DMI"), ResetEnabled: get("UGREEN_PANEL_RESET_FLAG"),
+		NetworkCfg: get("UGREEN_NETWORK_CFG"), NetworkRules: get("UGREEN_NETWORK_RULES"),
+		NetworkBackups: get("UGREEN_NETWORK_BACKUPS"), Powerdown: get("UGREEN_POWERDOWN"),
+		SafeModeFlag: get("UGREEN_SAFE_MODE_FLAG"), Status: nasctl.PanelStatus,
+		Confirmed: nasctl.PanelConfirmed,
+	}, args, out, os.Stderr)
 }
 
 func runNasCtl(args []string) int {

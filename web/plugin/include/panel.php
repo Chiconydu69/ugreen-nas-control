@@ -44,6 +44,28 @@ function panel_buttons(): never
     ]);
 }
 
+function panel_reset_status(): never
+{
+    $result = run(CTL, ['panel-reset-status']);
+    if ($result['code'] !== 0 || !is_array($status = json_decode($result['output'], true))) {
+        respond(['ok' => false, 'error' => fan_tool_error($result['message'])], 500);
+    }
+    respond($status);
+}
+
+function panel_reset_set(array $input): never
+{
+    $value = $input['value'] ?? null;
+    if (!is_string($value) || !in_array($value, ['on', 'off'], true)) {
+        respond(['ok' => false, 'error' => 'Invalid setting'], 400);
+    }
+    $result = run(CTL, [$value === 'on' ? 'panel-reset-enable' : 'panel-reset-disable']);
+    if ($result['code'] !== 0) {
+        respond(['ok' => false, 'error' => fan_tool_error($result['message'])], 409);
+    }
+    respond(['ok' => true, 'enabled' => $value === 'on']);
+}
+
 // "20".."2000" without leading zeros; null otherwise.
 function panel_beep_ms(mixed $value): ?int
 {

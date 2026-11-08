@@ -221,6 +221,11 @@ func (t *Tracker) Poll(active bool) (ev []Event) {
 
 // Watch polls until ctx ends. tick delivers the polls (a 50 ms ticker in production); now stamps the lines.
 func (s *ButtonSpec) Watch(ctx context.Context, m MemReader, out io.Writer, tick <-chan time.Time, now func() time.Time) error {
+	return s.WatchEvents(ctx, m, out, tick, now, nil)
+}
+
+// WatchEvents reports transitions to onEvent as well as to the optional text writer.
+func (s *ButtonSpec) WatchEvents(ctx context.Context, m MemReader, out io.Writer, tick <-chan time.Time, now func() time.Time, onEvent func(name, event string, polls int)) error {
 	st, err := s.ReadState(m)
 	if err != nil {
 		return err
@@ -249,6 +254,9 @@ func (s *ButtonSpec) Watch(ctx context.Context, m MemReader, out io.Writer, tick
 			active bool
 		}{{"power", pw, st.Power}, {"reset", rs, st.Reset}} {
 			for _, e := range b.t.Poll(b.active) {
+				if onEvent != nil {
+					onEvent(b.name, e.Name, e.Polls)
+				}
 				line := fmt.Sprintf("%s %s %s", now().Format("15:04:05.000"), b.name, e.Name)
 				if e.Polls > 0 {
 					line += fmt.Sprintf(" (held %.2f s)", float64(e.Polls)*Poll.Seconds())

@@ -3,7 +3,7 @@
 // UGREEN driver source; the page says per model whether users confirmed it (the registry's panel check, model-info.ts).
 import { errorMessage } from '../../../core/api';
 import type { StatusResponse } from '../../../core/contract';
-import type { PanelButtonsResponse, PanelPowerResponse } from '../../../core/contract-fan-probe';
+import type { PanelButtonsResponse, PanelPowerResponse, PanelResetStatusResponse } from '../../../core/contract-fan-probe';
 import { berlin } from '../../../core/format';
 import { escapeHtml } from '../../../core/html';
 import { panelConfirmed, panelEvidence } from '../model-info';
@@ -68,6 +68,46 @@ function drawButtons(ctx: FanCtx): void {
     state.shown = html;
     body.innerHTML = html;
 }
+
+const resetStatus = { value: null as PanelResetStatusResponse | null, loading: false, asked: false };
+
+async function loadResetStatus(ctx: FanCtx): Promise<void> {
+    if (resetStatus.loading) return;
+    resetStatus.loading = true;
+    resetStatus.asked = true;
+    try { resetStatus.value = await ctx.api.get('panel_reset_status'); }
+    catch { resetStatus.value = null; }
+    resetStatus.loading = false;
+    const slot = ctx.el.querySelector<HTMLElement>('[data-reset-status]');
+    if (!slot) return;
+    const enabled = resetStatus.value?.enabled === true;
+    slot.innerHTML = `${ctx.ui.note(escapeHtml(ctx.t(enabled ? 'panel.network_enabled_hint' : 'panel.network_disabled_hint')), { tone: enabled ? 'warn' : 'info', box: true, tag: 'div', ico: enabled ? 'alert' : 'info' })}
+        ${ctx.ui.btn({ label: ctx.t(enabled ? 'panel.network_disable' : 'panel.network_enable'), ico: enabled ? 'close' : 'check', attrs: `data-act="network-reset" data-enabled="${enabled}"${!resetStatus.value?.supported || resetStatus.loading ? ' disabled' : ''}` })}`;
+}
+
+registerFanModule({
+    id: 'panel-network-reset',
+    host: 'panel',
+    order: 5,
+    visible: status => modelOf(status) === 'DXP8800 Plus',
+    render: ctx => `<article class="unc-card">
+        ${ctx.ui.cardHead(ctx.t('panel.network_title'), { ico: 'reset' })}
+        <p class="unc-muted">${escapeHtml(ctx.t('panel.network_hint'))}</p>
+        <div data-reset-status><p class="unc-muted">${escapeHtml(ctx.t('panel.network_loading'))}</p></div>
+    </article>`,
+    update: (_status, ctx) => { if (!resetStatus.asked && onScreen(ctx)) void loadResetStatus(ctx); },
+    bind: ctx => {
+        ctx.el.addEventListener('click', event => {
+            const button = (event.target as Element | null)?.closest<HTMLButtonElement>('[data-act="network-reset"]');
+            if (!button || button.disabled) return;
+            const enabled = button.dataset.enabled === 'true';
+            if (!enabled && !window.confirm(ctx.t('panel.network_confirm'))) return;
+            button.disabled = true;
+            void ctx.run(() => ctx.api.post('panel_reset_set', { value: enabled ? 'off' : 'on' }), ctx.t(enabled ? 'panel.network_disabled' : 'panel.network_enabled'))
+                .then(() => loadResetStatus(ctx)).finally(() => { button.disabled = false; });
+        });
+    }
+});
 
 async function load(ctx: FanCtx): Promise<void> {
     if (state.loading) return;

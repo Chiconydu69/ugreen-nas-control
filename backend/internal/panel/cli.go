@@ -8,6 +8,8 @@ import (
 	"io"
 	"log/syslog"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -17,7 +19,13 @@ import (
 
 // Env is what the commands touch; the zero value of a field means the real thing.
 type Env struct {
-	DMIDir    string
+	DMIDir         string
+	ResetEnabled   string
+	NetworkCfg     string
+	NetworkRules   string
+	NetworkBackups string
+	Powerdown      string
+	SafeModeFlag   string
 	OpenPorts func() (hw.Ports, error)
 	OpenMem   func(write bool) (Mem, error)
 	// Tick returns the poll channel and its stop func; Wait sleeps until d passed or ctx ends; Now stamps events.
@@ -46,6 +54,25 @@ const Unconfirmed = "vendor source, not yet confirmed"
 func (e Env) withDefaults() Env {
 	if e.DMIDir == "" {
 		e.DMIDir = hw.DMIDir
+	}
+	const boot = "/boot/config/plugins/ugreen-nas-control"
+	if e.ResetEnabled == "" {
+		e.ResetEnabled = boot + "/network-reset.enabled"
+	}
+	if e.NetworkCfg == "" {
+		e.NetworkCfg = "/boot/config/network.cfg"
+	}
+	if e.NetworkRules == "" {
+		e.NetworkRules = "/boot/config/network-rules.cfg"
+	}
+	if e.NetworkBackups == "" {
+		e.NetworkBackups = boot + "/network-backups"
+	}
+	if e.Powerdown == "" {
+		e.Powerdown = "/usr/local/sbin/powerdown"
+	}
+	if e.SafeModeFlag == "" {
+		e.SafeModeFlag = "/boot/unraidsafemode"
 	}
 	if e.OpenPorts == nil {
 		e.OpenPorts = hw.OpenPorts
@@ -112,6 +139,8 @@ func Main(ctx context.Context, env Env, args []string, stdout, stderr io.Writer)
 		err = runButtons(ctx, env, args[1:], stdout, stderr)
 	case "beep":
 		err = runBeep(ctx, env, args[1:], stderr)
+	case "reset-network-watch":
+		err = runResetNetworkWatch(ctx, env, args[1:], stdout)
 	case "power-action":
 		err = runPowerAction(ctx, env, args[1:], stdout, stderr)
 	case "-h", "--help", "help":
@@ -221,6 +250,170 @@ func runBeep(ctx context.Context, env Env, args []string, stderr io.Writer) erro
 }
 
 const unreadableNote = "not readable on this box (GPIO registers read as 0xFF; the BIOS hides them)"
+// runResetNetworkWatch performs a one-shot network reset only after a continuous 13-second Reset hold and release.
+// It is restricted to the user-confirmed DXP8800 Plus and remains off unless explicitly enabled.
+func runResetNetworkWatch(ctx context.Context, env Env, args []string, out io.Writer) error {
+	if len(args) != 0 {
+		return usageError("unexpected argument " + args[0])
+	}
+	model := product(env)
+	// The registry marks this panel partially confirmed because its power path is doubtful; the Reset pad itself
+	// was observed by the user and is the only input used by this separate network-reset action.
+	if model != "DXP8800 Plus" {
+		return fmt.Errorf("network reset is only available on the user-confirmed DXP8800 Plus")
+	}
+	if _, err := os.Stat(env.ResetEnabled); err != nil {
+		return fmt.Errorf("network reset is disabled")
+	}
+	spec := ButtonsFor(model)
+	if spec == nil || spec.Reset == nil {
+		return fmt.Errorf("reset button is not mapped")
+	}
+	m, err := env.OpenMem(false)
+	if err != nil {
+		return fmt.Errorf("open /dev/mem: %w", err)
+	}
+	defer func() { _ = m.Close() }()
+	state, err := spec.ReadState(m)
+	if err != nil {
+		return err
+	}
+	if state.ResetUnreadable {
+		return ErrUnreadable
+	}
+	if state.Reset {
+		say(out, "Reset held at monitor start; waiting for release before arming")
+		for state.Reset {
+			if err := waitResetPoll(ctx, env); err != nil {
+				return err
+			}
+			state, err = spec.ReadState(m)
+			if err != nil {
+				return err
+			}
+			if state.ResetUnreadable {
+				return ErrUnreadable
+			}
+		}
+	}
+	say(out, "Network reset armed: hold Reset for 13 seconds, then release")
+	tick, stop := env.Tick()
+	defer stop()
+	watchCtx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	triggered := false
+	return spec.WatchEvents(watchCtx, m, out, tick, env.Now, func(button, event string, polls int) {
+		if button != "reset" || event != EvRelease || polls < resetPressAfter || triggered {
+			return
+		}
+		triggered = true
+		if err := armSafeMode(env.SafeModeFlag); err != nil {
+			say(out, "ERROR: network reset was not performed: cannot request one-time Safe Mode boot: %v", err)
+			cancel()
+			return
+		}
+		backupDir, moved, err := resetNetworkFiles(env)
+		if err != nil {
+			_ = os.Remove(env.SafeModeFlag)
+			say(out, "ERROR: network reset was not performed: %v", err)
+			cancel()
+			return
+		}
+		// Disarm before reboot so a failed restart cannot trigger a second reset on the next boot.
+		if err := os.Remove(env.ResetEnabled); err != nil && !os.IsNotExist(err) {
+			restoreNetworkFiles(backupDir, moved, filepath.Dir(env.NetworkCfg))
+			_ = os.Remove(env.SafeModeFlag)
+			say(out, "ERROR: network reset was not performed: cannot disarm the one-shot setting: %v", err)
+			cancel()
+			return
+		}
+		say(out, "Saved %s in %s; requesting a one-time Safe Mode boot", strings.Join(moved, " and "), backupDir)
+		cmd := exec.Command(env.Powerdown, "-r")
+		cmd.Stdout, cmd.Stderr = out, out
+		if err := cmd.Run(); err != nil {
+			say(out, "ERROR: orderly reboot failed: %v; restoring network files", err)
+			restoreNetworkFiles(backupDir, moved, filepath.Dir(env.NetworkCfg))
+			_ = os.Remove(env.SafeModeFlag)
+		}
+		cancel()
+	})
+}
+
+func waitResetPoll(ctx context.Context, env Env) error {
+	ch, stop := env.Tick()
+	defer stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-ch:
+		return nil
+	}
+}
+
+// armSafeMode preserves an existing request and reports failure before moving network configuration.
+func armSafeMode(path string) error {
+	f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		return err
+	}
+	if err := f.Sync(); err != nil {
+		_ = f.Close()
+		_ = os.Remove(path)
+		return err
+	}
+	return f.Close()
+}
+
+func resetNetworkFiles(env Env) (string, []string, error) {
+	if st, err := os.Stat(env.NetworkCfg); err != nil {
+		return "", nil, fmt.Errorf("network.cfg is unavailable: %w", err)
+	} else if !st.Mode().IsRegular() {
+		return "", nil, fmt.Errorf("network.cfg is not a regular file")
+	}
+	stamp := time.Now().Format("20060102-150405.000000000")
+	dir := filepath.Join(env.NetworkBackups, stamp)
+	if err := os.MkdirAll(env.NetworkBackups, 0o700); err != nil {
+		return "", nil, err
+	}
+	if err := os.Mkdir(dir, 0o700); err != nil {
+		return "", nil, err
+	}
+	var sources []string
+	for _, src := range []string{env.NetworkCfg, env.NetworkRules} {
+		st, err := os.Stat(src)
+		if os.IsNotExist(err) {
+			continue
+		}
+		if err != nil {
+			return "", nil, err
+		}
+		if !st.Mode().IsRegular() {
+			return "", nil, fmt.Errorf("%s is not a regular file", filepath.Base(src))
+		}
+		sources = append(sources, src)
+	}
+	var moved []string
+	for _, src := range sources {
+		name := filepath.Base(src)
+		if err := os.Rename(src, filepath.Join(dir, name)); err != nil {
+			restoreNetworkFiles(dir, moved, filepath.Dir(src))
+			_ = os.Remove(dir)
+			return "", nil, err
+		}
+		moved = append(moved, name)
+	}
+	if len(moved) == 0 {
+		_ = os.Remove(dir)
+		return "", nil, fmt.Errorf("no Unraid network configuration files found")
+	}
+	return dir, moved, nil
+}
+
+func restoreNetworkFiles(backupDir string, names []string, targetDir string) {
+	for i := len(names) - 1; i >= 0; i-- {
+		_ = os.Rename(filepath.Join(backupDir, names[i]), filepath.Join(targetDir, names[i]))
+	}
+}
 
 func buttonModels() string {
 	var n []string

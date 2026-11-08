@@ -29,6 +29,8 @@ const usageText = `Usage:
                                              the MQTT publisher alone (mqtt_enabled="1" in fan.cfg)
   ugreen-nas-ctl power-start|power-stop|power-status
                                              the power button watcher alone (panel_power_shutdown="1" in fan.cfg, docs/panel.md)
+  ugreen-nas-ctl panel-reset-status|panel-reset-enable|panel-reset-disable
+                                             opt-in DXP8800 Plus long-press network reset
   ugreen-nas-ctl led-status                  LED part as JSON: enabled, supported, conflict
   ugreen-nas-ctl led-enable|led-disable      switch the LED part on or off
   ugreen-nas-ctl led-import                  take over the settings of UGREEN LED Control
@@ -130,6 +132,19 @@ func (c *Ctl) Main(args []string) int {
 		}
 		c.out("stopped\n")
 		return 3
+	case "panel-reset-status":
+		c.panelResetStatus()
+		return 0
+	case "panel-reset-enable":
+		return c.panelResetEnable()
+	case "panel-reset-disable":
+		c.panelResetDisable()
+		return 0
+	case "panel-reset-start":
+		return c.panelResetStart()
+	case "panel-reset-stop":
+		c.panelResetStop()
+		return 0
 	case "led-status":
 		c.ledStatus()
 		return 0
@@ -260,6 +275,7 @@ func (c *Ctl) start() int {
 	rc := c.fanStart()
 	c.pubStart()
 	c.powerStart()
+	c.panelResetStart()
 	return rc
 }
 
@@ -304,10 +320,77 @@ func (c *Ctl) fanStart() int {
 }
 
 func (c *Ctl) stop() {
+	c.panelResetStop()
 	c.powerStop()
 	c.pubStop()
 	c.fanStop()
 }
+
+func (c *Ctl) panelResetSupported() bool {
+	data, err := os.ReadFile(filepath.Join(c.Env.DMIDir, "product_name"))
+	return err == nil && strings.TrimSpace(string(data)) == "DXP8800 Plus"
+}
+
+func (c *Ctl) panelResetStatus() {
+	c.out(
+		"{\"ok\":true,\"supported\":%t,\"enabled\":%t,\"running\":%t}\n",
+		c.panelResetSupported(), isFile(c.Env.PanelResetFlag), c.running(c.Env.PanelResetPID),
+	)
+}
+
+func (c *Ctl) panelResetEnable() int {
+	if !c.panelResetSupported() {
+		c.errf("ERROR: network reset is only supported on the confirmed DXP8800 Plus\n")
+		return 1
+	}
+	if err := os.MkdirAll(filepath.Dir(c.Env.PanelResetFlag), 0o755); err != nil {
+		c.errf("ERROR: %v\n", err)
+		return 1
+	}
+	if err := fsx.WriteFile(c.Env.PanelResetFlag, []byte("enabled\n"), 0o600); err != nil {
+		c.errf("ERROR: %v\n", err)
+		return 1
+	}
+	if code := c.panelResetStart(); code != 0 {
+		_ = os.Remove(c.Env.PanelResetFlag)
+		return code
+	}
+	return 0
+}
+
+func (c *Ctl) panelResetDisable() {
+	_ = os.Remove(c.Env.PanelResetFlag)
+	c.panelResetStop()
+}
+
+func (c *Ctl) panelResetStart() int {
+	if !isFile(c.Env.PanelResetFlag) || !c.panelResetSupported() || c.running(c.Env.PanelResetPID) {
+		return 0
+	}
+	pid, err := detach(c.Env.Panel, c.Env.PanelResetLog, "panel", "reset-network-watch")
+	if err != nil {
+		c.errf("ERROR: panel reset watcher did not start: %v\n", err)
+		return 1
+	}
+	if err := fsx.WriteFile(c.Env.PanelResetPID, []byte(strconv.Itoa(pid)+"\n"), 0o600); err != nil {
+		_ = syscall.Kill(pid, syscall.SIGTERM)
+		c.errf("ERROR: %v\n", err)
+		return 1
+	}
+	c.Sleep(250 * time.Millisecond)
+	if !c.running(c.Env.PanelResetPID) {
+		_ = os.Remove(c.Env.PanelResetPID)
+		message := "watcher exited during startup"
+		if data, readErr := os.ReadFile(c.Env.PanelResetLog); readErr == nil && strings.TrimSpace(string(data)) != "" {
+			message = strings.TrimSpace(string(data))
+		}
+		c.errf("ERROR: panel reset watcher did not stay running: %s\n", message)
+		return 1
+	}
+	return 0
+}
+
+func (c *Ctl) panelResetStop() { c.terminate(c.Env.PanelResetPID, 10) }
 
 // fanStop waits for the daemon: it writes the BIOS fan settings back on SIGTERM.
 func (c *Ctl) fanStop() {

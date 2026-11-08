@@ -67,6 +67,7 @@ stop_daemons() {
     # The daemon hands the fans back to the BIOS values; the LED daemon and an LED effect must not keep writing either.
     if [ -x "${PLUGIN_DIR}/backend/ugreen-nas-ctl" ]; then
         "${PLUGIN_DIR}/backend/ugreen-nas-ctl" stop >/dev/null 2>&1
+        "${PLUGIN_DIR}/backend/ugreen-nas-ctl" panel-reset-stop >/dev/null 2>&1
         "${PLUGIN_DIR}/backend/ugreen-nas-ctl" led-stop >/dev/null 2>&1
     fi
 }
@@ -81,6 +82,7 @@ start_daemons() {
     fi
     # The shutdown on a held power button (off unless switched on in the settings) needs no fan controller.
     "${PLUGIN_DIR}/backend/ugreen-nas-ctl" power-start 2>&1 | sed 's/^/[UGREEN NAS Control] /'
+    "${PLUGIN_DIR}/backend/ugreen-nas-ctl" panel-reset-start 2>&1 | sed 's/^/[UGREEN NAS Control] /'
     if [ -f "${BOOT_DIR}/led.enabled" ]; then
         "${PLUGIN_DIR}/backend/ugreen-nas-ctl" led-boot 2>&1 | sed 's/^/[UGREEN NAS Control] /'
     fi
@@ -156,7 +158,7 @@ start_daemons
 
 #
 # Drop cached files of older versions: only folders named like a version (3.6, 5.0.0, 5.1.0-next.000123).
-# Settings (fan.cfg, leds.cfg, fan_rpm.json, led.enabled) and anything else in there stay.
+# Settings and network backups stay in the boot folder.
 #
 
 for dir in "${BOOT_DIR}"/*/; do
@@ -178,7 +180,7 @@ log "Installation complete."
 <!-- REMOVE -->
 <!-- ========================================================= -->
 
-<!-- Removing keeps the settings in the boot folder (fan.cfg, leds.cfg, fan_rpm.json, led.enabled), so a reinstall
+<!-- Removing keeps settings and network backups in the boot folder, so a reinstall
      starts where you left off. To wipe them too: rm -rf /boot/config/plugins/ugreen-nas-control -->
 <FILE Run="/bin/bash" Method="remove">
 <INLINE>

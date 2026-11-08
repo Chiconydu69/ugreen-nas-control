@@ -245,6 +245,9 @@ if ($method === 'GET') {
     if ($action === 'panel_power') {
         panel_power_get();
     }
+    if ($action === 'panel_reset_status') {
+        panel_reset_status();
+    }
     if ($action === 'power_ac_get') {
         power_ac_get();
     }
@@ -505,6 +508,9 @@ if ($action === 'panel_beep') {
 }
 if ($action === 'panel_power') {
     panel_power_set($input);
+}
+if ($action === 'panel_reset_set') {
+    panel_reset_set($input);
 }
 if ($action === 'power_ac_set') {
     power_ac_set($input);

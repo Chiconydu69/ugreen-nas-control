@@ -8,10 +8,21 @@
 | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `ugreen-nas panel buttons`                   | Prints whether power and reset are held.                                                                                                                               |
 | `ugreen-nas panel buttons --watch`           | Polls every 50 ms and prints `down`, `press`, `up`, `release` with the hold time, until Ctrl-C.                                                                        |
+| `ugreen-nas panel reset-network-watch`       | Internal opt-in watcher: Reset held for 13 s and released backs up and removes Unraid network files, then runs `powerdown -r`. |
 | `ugreen-nas panel beep [--freq Hz] [--ms N]` | Sounds the beeper for N ms (default 200, 20 to 2000). `--freq` (100 to 8000) only on PC speaker models.                                                                |
 | `ugreen-nas panel power-action [--dry-run]`  | Runs until the power button has been held for the hold time, then shuts Unraid down (the watcher of the setting below). `--dry-run` only prints `would shut down now`. |
 
 An unknown model is refused before anything is opened.
+
+## Unraid network reset on the DXP8800 Plus
+
+The Front panel page offers an explicit enable switch. It is off by default and supported only for the exact DMI name `DXP8800 Plus`, where users confirmed the Reset-button events. Once enabled, the watcher starts with the plugin and stops when it is updated or removed. A short Reset tap does nothing. The action triggers only after Reset has been held for 13 seconds and released; if the watcher starts while Reset is already held, it waits for release before arming.
+
+Before reboot, the watcher requests Unraid's one-time Safe Mode boot by creating `/boot/unraidsafemode`, then moves `/boot/config/network.cfg` and `/boot/config/network-rules.cfg` (when present) into a timestamped directory under `/boot/config/plugins/ugreen-nas-control/network-backups/`. It calls Unraid's `powerdown -r` path. Unraid recreates default network settings at boot; the NAS IP may change. If the reboot command fails, saved files are moved back and the Safe Mode marker is removed. Backups remain available for manual restoration. The enable setting disarms once the action triggers; enable it again in the Front panel page for another reset.
+
+Safe Mode skips plugins. The array does not auto-start, so Docker containers do not auto-start either. The one-time marker is Unraid's existing Safe Mode mechanism; this reset flow has not yet been exercised on hardware. Confirm the current Unraid release's startup behavior before relying on it.
+
+The physical hold threshold follows UGREEN's driver constant (260 polls × 50 ms = 13 seconds). Button reading was confirmed by a user on the DXP8800 Plus; a 13-second Reset hold, the Safe Mode marker, and the full network reset have not been tested on hardware. Enable it only if you can reconnect at a potentially changed DHCP address and restore a backup if needed.
 
 ## Buttons
 

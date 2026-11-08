@@ -178,6 +178,10 @@ export type PanelButtonsResponse = ApiOk & {
 
 /** POST panel_beep ms=20..2000 (optional, default 200). */
 export type PanelBeepResponse = ApiOk & { ms: number };
+/** GET panel_reset_status: opt-in Reset-button network reset service. */
+export type PanelResetStatusResponse = ApiOk & { supported: boolean; enabled: boolean; running: boolean };
+/** POST panel_reset_set: enable or disable the long-press network reset. */
+export type PanelResetSetResponse = ApiOk & { enabled: boolean };
 
 /** GET and POST panel_power: the opt-in shutdown on a held power button (fan.cfg panel_power_shutdown, panel_power_hold). POST enabled=0|1, hold=1..3 (optional, one decimal); a watcher that cannot start (model not confirmed) is HTTP 409 and the old settings stay. */
 export type PanelPowerResponse = ApiOk & { enabled: boolean; hold: number };
