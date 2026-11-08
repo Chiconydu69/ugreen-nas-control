@@ -1910,6 +1910,30 @@
         "text": "3c8416e50997"
       }
     },
+    "host-theme-contrast": {
+      "plugin dark, Unraid light": {
+        "requests": [
+          "nas POST {\"action\":\"theme\",\"value\":\"dark\"}",
+          "led GET {\"action\":\"all\"}",
+          "led GET {\"action\":\"bays\"}",
+          "led GET {\"action\":\"schedule\"}",
+          "led GET {\"action\":\"status\"}",
+          "nas GET {\"action\":\"fan_history\",\"range\":\"1h\"}",
+          "nas GET {\"action\":\"fan_inputs\"}",
+          "nas GET {\"action\":\"fan_profile_sources\"}",
+          "nas GET {\"action\":\"hardware\"}",
+          "nas GET {\"action\":\"power_ac_get\"}",
+          "nas GET {\"action\":\"status\"}"
+        ],
+        "events": ["toast: Saved [success]"],
+        "text": "38c8757095bc"
+      },
+      "plugin light, Unraid dark": {
+        "requests": ["nas POST {\"action\":\"theme\",\"value\":\"light\"}", "nas GET {\"action\":\"status\"}"],
+        "events": ["toast: Saved [success]"],
+        "text": "43e461e788b9"
+      }
+    },
     "language": {
       "language de": {
         "requests": [
@@ -3855,6 +3879,30 @@
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20DXP6800%20Pro&model=DXP6800%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20DXP6800%20"
         ],
         "text": "ce88708dd874"
+      }
+    },
+    "host-theme-contrast": {
+      "plugin dark, Unraid light": {
+        "requests": [
+          "nas POST {\"action\":\"theme\",\"value\":\"dark\"}",
+          "led GET {\"action\":\"all\"}",
+          "led GET {\"action\":\"bays\"}",
+          "led GET {\"action\":\"schedule\"}",
+          "led GET {\"action\":\"status\"}",
+          "nas GET {\"action\":\"fan_history\",\"range\":\"1h\"}",
+          "nas GET {\"action\":\"fan_inputs\"}",
+          "nas GET {\"action\":\"fan_profile_sources\"}",
+          "nas GET {\"action\":\"hardware\"}",
+          "nas GET {\"action\":\"power_ac_get\"}",
+          "nas GET {\"action\":\"status\"}"
+        ],
+        "events": ["toast: Saved [success]"],
+        "text": "754fd2a04e3f"
+      },
+      "plugin light, Unraid dark": {
+        "requests": ["nas POST {\"action\":\"theme\",\"value\":\"light\"}", "nas GET {\"action\":\"status\"}"],
+        "events": ["toast: Saved [success]"],
+        "text": "86a73149bd85"
       }
     },
     "language": {
@@ -5811,6 +5859,31 @@
           "open: https://github.com/ugreen-nas-control/ugreen-nas-control/issues/new?template=bug.yml&title=Problem%20on%20iDX6011%20Pro&model=iDX6011%20Pro&versions=Unraid%207.1.4%2C%20plugin%205.4.0-next.1%2C%20kernel%206.12.24-Unraid&results=LEDs%3A%20works%0AFan%20control%3A%20does%20not%20work%0ACase%20view%3A%20not%20tried%0ASensors%3A%20not%20tried%0AFront%20panel%3A%20not%20tried&summary=Model%20iDX6011%20"
         ],
         "text": "34fdf947bee0"
+      }
+    },
+    "host-theme-contrast": {
+      "plugin dark, Unraid light": {
+        "requests": [
+          "nas POST {\"action\":\"theme\",\"value\":\"dark\"}",
+          "led GET {\"action\":\"all\"}",
+          "led GET {\"action\":\"bays\"}",
+          "led GET {\"action\":\"schedule\"}",
+          "led GET {\"action\":\"status\"}",
+          "nas GET {\"action\":\"fan_backlight\"}",
+          "nas GET {\"action\":\"fan_history\",\"range\":\"1h\"}",
+          "nas GET {\"action\":\"fan_inputs\"}",
+          "nas GET {\"action\":\"fan_profile_sources\"}",
+          "nas GET {\"action\":\"hardware\"}",
+          "nas GET {\"action\":\"power_ac_get\"}",
+          "nas GET {\"action\":\"status\"}"
+        ],
+        "events": ["toast: Saved [success]"],
+        "text": "32089b01bde2"
+      },
+      "plugin light, Unraid dark": {
+        "requests": ["nas POST {\"action\":\"theme\",\"value\":\"light\"}", "nas GET {\"action\":\"status\"}"],
+        "events": ["toast: Saved [success]"],
+        "text": "638ae4e996f0"
       }
     },
     "language": {
