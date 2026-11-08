@@ -72,7 +72,7 @@ func TestFeedbackSummary(t *testing.T) {
 			"Fan chip it8613. LED probe ok at 0x3a, 0 LEDs."},
 	}
 	for _, c := range cases {
-		if got := feedbackSummary(c.checks, c.r, c.i2c, -1); got != c.want {
+		if got := feedbackSummary(c.checks, c.r, c.i2c, -1, nil); got != c.want {
 			t.Errorf("%s:\n got %q\nwant %q", c.name, got, c.want)
 		}
 	}
@@ -80,7 +80,7 @@ func TestFeedbackSummary(t *testing.T) {
 	for range 100 {
 		many = append(many, FBCheck{ID: "some_check_id", OK: okp(false)})
 	}
-	if got := feedbackSummary(many, Report{}, I2CDiag{}, -1); len(got) > summaryMax {
+	if got := feedbackSummary(many, Report{}, I2CDiag{}, -1, nil); len(got) > summaryMax {
 		t.Errorf("summary has %d bytes", len(got))
 	}
 }
@@ -123,7 +123,7 @@ func TestFeedbackSummaryFitsByConstruction(t *testing.T) {
 		ctl[i] = I2CCtl{BDF: "0000:00:1f.5", Driver: "none"}
 	}
 	r := Report{Fan: FanReport{Found: true, Chip: "IT8613"}, LED: LEDReport{Probe: "ok", Address: "0x3a"}}
-	got := feedbackSummary(many, r, I2CDiag{Controllers: ctl}, 4)
+	got := feedbackSummary(many, r, I2CDiag{Controllers: ctl}, 4, nil)
 	if len(got) > summaryMax {
 		t.Errorf("summary has %d bytes", len(got))
 	}

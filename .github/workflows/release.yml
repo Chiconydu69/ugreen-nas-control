@@ -36,7 +36,7 @@ jobs:
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     environment: release # deployment branch policy: next only
-    timeout-minutes: 30
+    timeout-minutes: 55
     # Holds write and OIDC tokens: no nix cache in this job.
     permissions:
       contents: write
@@ -59,6 +59,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
+        with:
+          cache: 'false' # holds a write token
       - name: Refuse an existing tag, published release or branch
         env:
           GH_TOKEN: ${{ github.token }}
@@ -171,7 +174,7 @@ jobs:
     needs: check
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (needs.check.outputs.changed == 'true') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 40
     permissions:
       contents: write
     outputs:
@@ -183,6 +186,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
+        with:
+          cache: 'false' # holds a write token
       - name: Release state
         id: state
         env:
@@ -225,7 +231,7 @@ jobs:
     needs: [check, verify, pages]
     if: ${{ github.repository == 'ugreen-nas-control/ugreen-nas-control' && (needs.verify.outputs.state == 'draft') }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 35
     permissions:
       contents: write
     steps:
@@ -235,6 +241,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
+        with:
+          cache: 'false' # holds a write token
       - name: Tag at the merge commit and publish
         env:
           GH_TOKEN: ${{ github.token }}
