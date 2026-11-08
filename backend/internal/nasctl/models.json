@@ -115,18 +115,36 @@
           "status": "partial",
           "by": "users",
           "ref": "https://github.com/miskcoo/ugreen_leds_controller/issues/6",
-          "note": "Only the power LED works; the model has no drive bays."
+          "note": "Only the power LED works; the model has no drive bays. A 5.5.0 owner (#271) reports the LEDs do not work there: LED probe failed, 0 LEDs; the power LED blinks white at power-on."
         },
         "fans": {
           "status": "unsupported",
           "note": "UGREEN's fan driver expects cpu on header 3 and case fans on headers 2 and 4; header 4 is unconfirmed, so there is no fan control."
         },
         "case": {
-          "status": "expected",
-          "note": "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order."
+          "status": "partial",
+          "by": "datarepos76 (issue 271)",
+          "version": "5.5.0",
+          "date": "2026-11-08",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/271",
+          "note": "Drawn after UGREEN's manual (front, rear ports, four M.2 slots 01 to 04, two SO-DIMM sockets); which SSD sits in which slot is assumed from the PCIe order. Works on 5.5.0 (#271): no bays, one LAN port and the M.2 drives are listed; the diag found five NVMe drives where the registry has four slots, all shown as plain m2, so the slot order is still unconfirmed."
         },
-        "sensors": { "status": "expected" },
-        "panel": { "status": "expected" }
+        "sensors": {
+          "status": "community",
+          "by": "datarepos76 (issue 271)",
+          "version": "5.5.0",
+          "date": "2026-11-08",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/271",
+          "note": "Reported working by an owner on 5.5.0 (#271): CPU temperature check ok (coretemp 55 C), NVMe temperatures read."
+        },
+        "panel": {
+          "status": "partial",
+          "by": "datarepos76 (issue 271)",
+          "version": "5.5.0",
+          "date": "2026-11-08",
+          "ref": "https://github.com/ugreen-nas-control/ugreen-nas-control/issues/271",
+          "note": "An owner on 5.5.0 (#271) ticked the front panel as working. The diag reads real pad registers (power 0xFD6E0810 = 0x44000100, reset 0xFD6E0770 = 0x44000102) and both buttons read released; a panel buttons --watch test is still open."
+        }
       },
       "note": "All-flash model: no SATA bays, four M.2 slots (shown as drives in the case view), one 10G LAN port. Only the power LED works."
     },
