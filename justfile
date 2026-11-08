@@ -17,7 +17,7 @@ default:
 
 # Everything CI runs
 [group('check')]
-check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint workflows-policy-test docs-check kernel-canary-test
+check: _deps fmt-check go-lint go-vet go-test parity sh-lint php-lint xml-lint web-check plg-check changes-check generated-check models-check workflows-lint workflows-policy-test docs-check kernel-canary-test fmt-hint-test
 
 # Format everything (writes files): Bun (TS/JS/CSS/HTML/JSON/YAML/Markdown), Go, shell, PHP, XML, Nix
 [group('check')]
@@ -245,6 +245,11 @@ site-preview *args: web-build
 [group('check')]
 kernel-canary-test:
     bun test scripts/kernel-canary.test.ts
+
+# Unit tests of the CI format-check hint (fake commands)
+[group('check')]
+fmt-hint-test:
+    bun test scripts/fmt-hint.test.ts
 
 # Newest Unraid kernel config against what the plugin relies on (docs/decisions.md); needs network; --issue opens or updates the GitHub issue (weekly in kernel-canary.yml)
 [group('check')]

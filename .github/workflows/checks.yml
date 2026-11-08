@@ -83,16 +83,15 @@ jobs:
           summarize: false
           diagnostic-endpoint: ''
       - uses: ./.github/actions/prefetch-nix-src # zizmor: ignore[self-repository] actionlint rejects the $/ form
-      # Outside contributors: a failing format check prints what the formatter would change (nothing is committed or pushed).
-      - name: Format check
+      - name: Formatter toolchain
         run: |
-          if ! nix develop .#fmt -c just fmt-check; then
-            nix develop .#fmt -c just fmt >/dev/null 2>&1 || true
-            files="$(git diff --name-only | paste -sd, - | sed 's/,/, /g')"
-            git diff -U0
-            echo "::error title=Formatting::The formatter would change: ${files:-see the log above}. Maintainers fix formatting when they merge; you don't have to."
+          nix develop .#fmt -c true || {
+            echo "::error title=CI infrastructure::Could not run the formatter (toolchain or download failure). This is not a problem with your change."
             exit 1
-          fi
+          }
+      # Outside contributors: a failing format check prints what the formatter would change (nothing is committed or pushed); scripts/fmt-hint.ts
+      - name: Format check
+        run: nix develop .#fmt -c bun scripts/fmt-hint.ts
       - run: nix develop .#fmt -c just php-lint xml-lint models-check docs-check
 
   go-lint:
