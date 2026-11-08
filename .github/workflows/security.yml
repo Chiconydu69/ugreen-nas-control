@@ -38,6 +38,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@3138316df39ed29be04236d7ffc686fa525866aa # v23
         with:
           source-tag: v3.24.1
+      - uses: ./.github/actions/prefetch-nix-src
       - run: nix develop .#lint -c zizmor .github/workflows
         env:
           GH_TOKEN: ${{ github.token }}

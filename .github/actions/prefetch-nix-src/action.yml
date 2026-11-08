@@ -1,0 +1,23 @@
+name: Prefetch bun
+description: >-
+  Downloads the bun release asset the flake's dev shells use (a fixed-output fetch from GitHub releases that no binary cache
+  has) before the first `nix develop`, retrying for about 10 minutes. Nix still checks the hash.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        set -uo pipefail
+        system="$(nix eval --impure --raw --expr builtins.currentSystem)"
+        drv="$(nix eval --raw --apply 'p: (builtins.head (builtins.filter (x: builtins.match "bun-.*" (x.name or "") != null) (p.nativeBuildInputs ++ p.buildInputs))).src.drvPath' ".#devShells.$system.default")"
+        start=$SECONDS
+        delay=10
+        until nix build --no-link "$drv^*"; do
+          if ((SECONDS - start + delay > 600)); then
+            echo "::error title=CI infrastructure::Could not download bun from GitHub releases (HTTP errors). Not a problem with your change."
+            exit 1
+          fi
+          echo "bun download failed; retrying in ${delay}s"
+          sleep "$delay"
+          delay=$((delay * 2 > 60 ? 60 : delay * 2))
+        done
