@@ -207,6 +207,10 @@
 .unc-hist-table caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
 .unc-hist-table th, .unc-hist-table td { padding: 4px 8px; border-bottom: 1px solid var(--unc-border); text-align: left; }
 .unc-hist-table th { color: var(--unc-muted); font-weight: 600; }
+/* Unraid's table styles (text colour and stripes of its own theme) must not reach through: the card is ours. */
+.unc .unc-hist-table table, .unc .unc-hist-table caption, .unc .unc-hist-table thead, .unc .unc-hist-table tbody, .unc .unc-hist-table tr, .unc .unc-hist-table th, .unc .unc-hist-table td { background: transparent !important; }
+.unc .unc-hist-table caption, .unc .unc-hist-table td { color: var(--unc-text) !important; }
+.unc .unc-hist-table th { color: var(--unc-muted) !important; }
 .unc-hist-table { overflow-x: auto; }
 
 @media (max-width: 720px) {
