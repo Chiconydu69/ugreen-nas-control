@@ -350,7 +350,7 @@ func more() []scenario {
 			sc.intended = "a bay at brightness 0 (night off) stays dark when its disk is in standby; the shell clamped the dimmed value to 1 and lit it faintly"
 		}
 		if d.name == "daemon-run-netdev-gateway-down" {
-			sc.intended = "one silent gateway no longer turns the network LED red: it takes 3 failed probes (about 90 s) after 2 pings each; the shell turned red on the first single ping"
+			sc.intended = "one silent gateway no longer turns the network LED red: it takes 3 probes in a row without a live neighbour entry for the gateway (about 90 s); the shell turned red on the first failed ping, and Go sends no ping at all"
 		}
 		list = append(list, sc)
 	}

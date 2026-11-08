@@ -172,7 +172,7 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 	c.log("status daemon started (bays: " + strconv.Itoa(bays) + ", network: " + name + ")")
 	c.powerBoot()
 
-	// Every 30 s: link and gateway. A ping can take seconds, so it runs beside the LED loop.
+	// Every 30 s: link and gateway. The probe runs beside the LED loop.
 	ctx, cancel := context.WithCancel(ctx)
 	var wg sync.WaitGroup
 	if netDev != "" {
@@ -189,7 +189,7 @@ func (c *Ctl) daemonRun(ctx context.Context) int {
 			}
 		})
 	}
-	// Leave without waiting for a ping that is still out; it ends by itself (ping -W 2).
+	// Leave without waiting for a probe that is still out.
 	defer func() {
 		done := make(chan struct{})
 		go func() { wg.Wait(); close(done) }()

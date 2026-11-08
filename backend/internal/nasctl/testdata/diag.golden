@@ -71,9 +71,9 @@ acpi devices HT32* (LED MCU):
   -
 designware modules for kernel -:
   -
-network (what colours the network LED; read only, nothing is pinged):
+network (what colours the network LED; read only, nothing is sent):
   LED network device: bond0
-  LED daemon verdict: not ok: gateway ping failed
+  LED daemon verdict: not ok: gateway neighbour FAILED
   bond0: operstate up  carrier 1  slaves eth0 eth1
   eth0: operstate up  carrier 1
   eth1: operstate down  carrier 0

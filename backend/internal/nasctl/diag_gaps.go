@@ -17,15 +17,15 @@ import (
 )
 
 // Everything in this file only reads: sysfs, procfs, files of the plugin and the pad registers through /dev/mem
-// opened read-only. No ping, no bus traffic, no write.
+// opened read-only. No packet, no bus traffic, no write.
 
 // ---- LED network state ----
 
 // NetIface is one network device the LED verdict depends on.
 type NetIface struct{ Name, Oper, Carrier, Slaves string }
 
-// NetDiag is why the network LED has its colour: the LED turns red when the device is not "up" or the gateway does
-// not answer a ping (backend/internal/led/ledctl/net.go). Diag pings nothing; the verdict is the one the LED daemon
+// NetDiag is why the network LED has its colour: the LED turns red when the device is not "up" or the gateway has
+// no live neighbour entry (backend/internal/led/ledctl/net.go). Diag sends nothing; the verdict is the one the LED daemon
 // stored.
 type NetDiag struct {
 	Dev, Verdict, DefaultVia string
@@ -83,6 +83,9 @@ func (c *Ctl) netDiag(ledStatus string) NetDiag {
 		d.Verdict = "none yet (the LED daemon is not running or has not probed)"
 	case *st.OK:
 		d.Verdict = "ok"
+		if st.Reason != "" {
+			d.Verdict = st.Reason
+		}
 	default:
 		d.Verdict = "not ok: " + orDash(st.Reason)
 	}
@@ -110,7 +113,7 @@ func (c *Ctl) netDiag(ledStatus string) NetDiag {
 }
 
 func (d NetDiag) lines() []string {
-	l := []string{"network (what colours the network LED; read only, nothing is pinged):",
+	l := []string{"network (what colours the network LED; read only, nothing is sent):",
 		"  LED network device: " + orDash(d.Dev), "  LED daemon verdict: " + d.Verdict}
 	for _, i := range d.Ifaces {
 		s := fmt.Sprintf("  %s: operstate %s  carrier %s", i.Name, orDash(i.Oper), orDash(i.Carrier))
